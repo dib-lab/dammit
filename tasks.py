@@ -453,6 +453,5 @@ def get_transcriptome_stats_task(transcriptome, out_dir):
             'title': title_with_actions,
             'actions': [(cmd, [])],
             'file_dep': [transcriptome],
-            'task_dep': ['create_folder:' + out_dir],
             'targets': [target],
             'clean': [clean_targets]}

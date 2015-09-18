@@ -8,6 +8,12 @@ from tasks import *
 from doit.cmd_base import TaskLoader
 from doit.doit_cmd import DoitMain
 
+DOIT_CONFIG = {
+                'backend': 'sqlite3',
+                'dep_file': None,
+                'verbosity': 2
+              }
+
 def run_tasks(tasks, args, config={'verbosity': 2}):
     
     if type(tasks) is not list:
@@ -81,6 +87,16 @@ def main():
     if out_dir is None:
         out_dir = transcriptome + '.dammit'
 
+    try:
+        os.mkdir(out_dir)
+    except OSError:
+        # Already exists, carry on
+        pass
+
+    # We want to store pydoit's dependency db in the output dir
+    doit_db = os.path.join(out_dir, '.' + os.path.basename(transcriptome) + '.doit.db')
+    DOIT_CONFIG['dep_file'] = doit_db
+
     # Master list of tasks
     tasks = []
 
@@ -100,7 +116,6 @@ def main():
     # Create directories
     prep_tasks.append(get_create_folder_task(work_dir))
     prep_tasks.append(get_create_folder_task(db_dir))
-    prep_tasks.append(get_create_folder_task(out_dir))
 
     # Get Pfam-A and prepare it for use with hmmer
     PFAM = db_dir(resources['pfam']['filename'])
@@ -259,7 +274,7 @@ def main():
             pprint.pprint(task.__dict__)
     '''
     if doit_args:
-        run_tasks(tasks, doit_args)
+        run_tasks(tasks, doit_args, config=DOIT_CONFIG)
 
 
 main()
