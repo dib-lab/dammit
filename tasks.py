@@ -162,7 +162,7 @@ def get_blast_format_task(db_fn, db_out_fn, db_type):
     return {'name': name,
             'title': title_with_actions,
             'actions': [LongRunning(cmd), 'touch '+db_out_fn],
-            'targets': [target_fn, db_out_fn],
+            'targets': [db_out_fn],
             'file_dep': [db_fn],
             'clean': [clean_targets, 'rm -f {target_fn}.*'.format(**locals())] }
 
