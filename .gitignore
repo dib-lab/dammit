@@ -1,0 +1,8 @@
+*.pyc
+
+*.swp
+*.swo
+
+*.fasta
+*.fasta.gz
+*.dammit
