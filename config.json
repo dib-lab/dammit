@@ -25,11 +25,8 @@
 
         "busco": {
             "path": "/work/BUSCO_v1.1b1/BUSCO_v1.1b1.py",
-            "n_threads": 4,
-            "vert_url": "http://busco.ezlab.org/files/vertebrata_buscos.tar.gz",
-			"metazoa_url": "http://busco.ezlab.org/files/metazoa_buscos.tar.gz",
             "db_dir": "busco_db",
-            "output_suffix": "busco.results"
+            "output_suffix": ".busco.results"
         },
 
         "hmmscan": {

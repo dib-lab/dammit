@@ -32,6 +32,33 @@
 		"fileformat": "gz",
         "version": 8,
 		"url": "ftp://cegg.unige.ch/OrthoDB8/Eukaryotes/FASTA/aa_seq_euk.fasta.gz"
-	}
+	},
+
+    "busco": {
+
+        "metazoa": {
+            "access": "download",
+            "db_type": "hmm",
+            "url": "http://busco.ezlab.org/files/metazoa_buscos.tar.gz"
+        },
+
+        "vertebrata": {
+            "access": "download",
+            "db_type": "hmm",
+            "url": "http://busco.ezlab.org/files/vertebrata_buscos.tar.gz"
+        },
+
+        "arthropoda": {
+            "access": "download",
+            "db_type": "hmm",
+            "url": "http://busco.ezlab.org/files/arthropoda_buscos.tar.gz"
+        },
+
+        "eukaryota": {
+            "access": "download",
+            "db_type": "hmm",
+            "url": "http://busco.ezlab.org/files/eukaryota_buscos.tar.gz"
+        }
+    }
 
 }

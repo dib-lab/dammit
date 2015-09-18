@@ -89,6 +89,14 @@ def prep(resources, config, db_dir, args, cmd='run'):
         ORTHODB += '.db'
         databases['ORTHODB'] = os.path.abspath(ORTHODB)
 
+        busco_db = args.busco_group
+        prep_tasks.append(
+            get_download_and_untar_task(resources['busco'][busco_db]['url'], 
+                                        'buscodb',
+                                        label=busco_db)
+        )
+        databases['BUSCO'] = os.path.abspath(os.path.join('buscodb', busco_db))
+
         # Get uniref90 if the user specifies
         if args.full:
             UNIREF = resources['uniref90']['filename']
@@ -102,6 +110,9 @@ def prep(resources, config, db_dir, args, cmd='run'):
             UNIREF += '.db'
             databases['UNIREF'] = os.path.abspath(UNIREF)
 
+        if args.debug:
+            print_tasks(prep_tasks)
+            cmd = 'list'
         run_tasks(prep_tasks, [cmd], config=doit_config)
 
     finally:
@@ -114,8 +125,10 @@ def main():
     parser.add_argument('--transcriptome', required=True)
     parser.add_argument('--output-dir', default=None)
     parser.add_argument('--database-dir', default=None)
+    parser.add_argument('--busco-group', default='metazoa')
     parser.add_argument('--n_threads', type=int, default=1)
     parser.add_argument('--user-databases', nargs='+')
+    parser.add_argument('--debug', action='store_true', default=False)
     parser.add_argument('--full', action='store_true', default=False,
                         help='Do full annotation with uniref90')
     args, doit_args = parser.parse_known_args()
@@ -156,6 +169,7 @@ def main():
     dammit databases. Then, prep the user supplied databases in
     the output directory.
     '''
+
     DAMMIT_DATABASES = prep(resources, config, db_dir, args, cmd='run')
 
     USER_DATABASES = []
@@ -238,12 +252,7 @@ def main():
     '''
     busco_cfg = config['pipeline']['busco']
     busco_tasks = []
-    busco_vert_db_task = download_and_untar_task(busco_cfg['vert_url'], 
-                                                 busco_cfg['db_dir'],
-                                                 label='vertebrata')
-    busco_metz_db_task = download_and_untar_task(busco_cfg['metazoa_url'],
-                                                 busco_cfg['db_dir'],
-                                                 label='metazoa')
+
     busco_tasks.append(busco_vert_db_task)
     busco_tasks.append(busco_metz_db_task)
 
@@ -275,12 +284,10 @@ def main():
                                           assembly_fn+'.annotations.h5')
     tasks.append(ann_task)
     '''
-    '''
-    if args.print_tasks:
-        for task in tasks:
-            print('-----\n', task)
-            pprint.pprint(task.__dict__)
-    '''
+    
+    if args.debug:
+        print_tasks(TASKS)
+
     if doit_args:
         run_tasks(TASKS, doit_args, config=doit_config)
 

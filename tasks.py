@@ -10,7 +10,7 @@ from shutil import rmtree
 import shutil
 import sys
 
-from doit.tools import run_once, create_folder, title_with_actions
+from doit.tools import run_once, create_folder, title_with_actions, LongRunning
 from doit.task import clean_targets, dict_to_task
 
 from bioservices import UniProt
@@ -18,6 +18,11 @@ import jinja2
 import pandas as pd
 #import screed
 from khmer import HLLCounter, ReadParser
+
+def print_tasks(tasks):
+    for task in tasks:
+        print('-----\n', task)
+        pprint.pprint(task.__dict__)
 
 def clean_folder(target):
     try:
@@ -78,7 +83,7 @@ def get_download_and_untar_task(url, target_dir, label):
     cmd1 = 'mkdir -p {target_dir}; curl {url} | tar -xz -C {target_dir}'.format(**locals())
     name = 'download_and_untar:' + target_dir.strip('/') + '-' + label
     done = os.path.join(target_dir, name + '.done')
-    cmd2 = 'touch {name}'.format(name=name)
+    cmd2 = 'touch {done}'.format(done=done)
 
     return {'name': name,
             'title': title_with_actions,
@@ -156,7 +161,7 @@ def get_blast_format_task(db_fn, db_out_fn, db_type):
 
     return {'name': name,
             'title': title_with_actions,
-            'actions': [cmd, 'touch '+db_out_fn],
+            'actions': [LongRunning(cmd), 'touch '+db_out_fn],
             'targets': [target_fn, db_out_fn],
             'file_dep': [db_fn],
             'clean': [clean_targets, 'rm -f {target_fn}.*'.format(**locals())] }
@@ -303,7 +308,7 @@ def get_busco_task(input_filename, output_dir, busco_db_dir, input_type, busco_c
 @create_task_object
 def get_cmpress_task(db_filename):
 
-    cmd = 'cmpress:' + os.path.basename(db_filename)
+    cmd = 'cmpress ' + os.path.basename(db_filename)
 
     return {'name': 'cmpress:' + os.path.basename(db_filename),
             'title': title_with_actions,
