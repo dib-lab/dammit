@@ -156,7 +156,7 @@ def main():
     dammit databases. Then, prep the user supplied databases in
     the output directory.
     '''
-    DAMMIT_DATABASES = prep(resources, config, db_dir, args, cmd='list')
+    DAMMIT_DATABASES = prep(resources, config, db_dir, args, cmd='run')
 
     USER_DATABASES = []
     if args.user_databases:
