@@ -1,0 +1,47 @@
+{
+    "meta" : {
+	    "authors": ["Camille Scott"],
+	    "description": "dammit! a tool for easy de novo transcriptome annotation",
+	    "date": 2015
+    },
+
+    "settings": {
+        "work_dir": "_work",
+        "db_dir": "_db",
+        
+        "blast": { 
+            "evalue": 0.000001,
+            "params": ""
+        },
+
+		"bowtie2_build": {
+			"n_threads": 4,
+            "extra_args": "--offrate 1"
+		},
+
+        "bowtie2_align": {
+            "extra_args": "--mm -a -X 600 --rdg 6,5 --rfg 6,5 --score-min L,-.6,-.4 --no-discordant --no-mixed"
+        },
+
+        "busco": {
+            "path": "/work/BUSCO_v1.1b1/BUSCO_v1.1b1.py",
+            "n_threads": 4,
+            "vert_url": "http://busco.ezlab.org/files/vertebrata_buscos.tar.gz",
+			"metazoa_url": "http://busco.ezlab.org/files/metazoa_buscos.tar.gz",
+            "db_dir": "busco_db",
+            "output_suffix": "busco.results"
+        },
+
+        "hmmscan": {
+        },
+
+		"cmscan": {
+			"db_dir": "cm_db"
+		},
+
+        "transdecoder": {
+            "min_prot_len": 80,
+            "orf_cutoff": 600
+        }
+    }
+}
