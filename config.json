@@ -7,7 +7,7 @@
 
     "settings": {
         "work_dir": "_work",
-        "db_dir": "_db",
+        "db_dir": "dammit_db",
         
         "blast": { 
             "evalue": 0.000001,

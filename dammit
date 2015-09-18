@@ -8,11 +8,7 @@ from tasks import *
 from doit.cmd_base import TaskLoader
 from doit.doit_cmd import DoitMain
 
-DOIT_CONFIG = {
-                'backend': 'sqlite3',
-                'dep_file': None,
-                'verbosity': 2
-              }
+
 
 def run_tasks(tasks, args, config={'verbosity': 2}):
     
@@ -26,46 +22,103 @@ def run_tasks(tasks, args, config={'verbosity': 2}):
    
     DoitMain(Loader()).run(args)
 
-def get_database_prep_tasks(resources_df):
+
+def prep(resources, config, db_dir, args, cmd='run'):
     '''
-    Database prep, homology search
-    
-    First, we get remote flat files.
+    Database prep. These tasks download the necessary databases to the
+    database folder and prep them for use. They are gathered under the
+    'prep' task group. Current databases being used are:
+
+        * Pfam-A (protein domans)
+        * Rfam (RNA models)
+        * OrthoDB8 (conserved ortholog groups)
+        * uniref90 (protiens, if --full selected)
+        * Any user supplied databases
+
+    This set of tasks keeps its own doit db in the db folder to share
+    them between all runs.
     '''
-    tasks = []
-    for key, row in resources_df[resources_df.access == 'remote_file'].iterrows():
-        tasks.append(download_and_gunzip_task(row.url, row.filename))
-    
-    # Programmatically query uniprot
-    for key, row in  resources_df[(resources_df.access == 'remote_query') & \
-                                  (resources_df.q_type == 'uniprot')].iterrows():
-   
-        tasks.append(uniprot_query_task(row.terms, row.filename, label=row.filename))
 
-    # Prep HMM profiles
-    for key, row in resources_df[resources_df.meta_type == 'hmm_profiles'].iterrows():
-        tasks.append(hmmpress_task(row.filename))
+    doit_config = {
+                    'backend': 'sqlite3',
+                    'verbosity': 2
+                  }
+    db_dir = os.path.abspath(db_dir)
+    databases = {}
 
-    # Truncate the long fasta names so blast doesn't choke
-    for key, row in resources_df[resources_df.meta_type == 'fasta_database'].iterrows():
-        tasks.append(truncate_fasta_header_task(row.filename))
+    # Move into the database directory
+    old_dir = os.getcwd()
+    try:
+        try:
+            os.mkdir(db_dir)
+        except OSError:
+            pass
+        os.chdir(db_dir)
 
-    # Generate blast indices
-    for key, row in resources_df[resources_df.meta_type.isin(['fasta_database', 'assembly'])].iterrows():
-        tasks.append(blast_format_task(row.filename, row.filename + '.db', row.db_type))
+        prep_tasks = []
 
-    return tasks
+        # Get Pfam-A and prepare it for use with hmmer
+        PFAM = resources['pfam']['filename']
+        prep_tasks.append(
+            get_download_and_gunzip_task(resources['pfam']['url'], PFAM)
+        )
+        prep_tasks.append(
+            get_hmmpress_task(PFAM)
+        )
+        databases['PFAM'] = os.path.abspath(PFAM)
+
+        # Get Rfam and prepare it for use with Infernal
+        RFAM = resources['rfam']['filename']
+        prep_tasks.append(
+            get_download_and_gunzip_task(resources['rfam']['url'], RFAM)
+        )
+        prep_tasks.append(
+            get_cmpress_task(RFAM)
+        )
+        databases['RFAM'] = os.path.abspath(RFAM)
+
+        # Get OrthoDB and prepare it for BLAST use
+        ORTHODB = resources['orthodb']['filename']
+        prep_tasks.append(
+            get_download_and_gunzip_task(resources['orthodb']['url'], ORTHODB)
+        )
+        prep_tasks.append(
+            get_blast_format_task(ORTHODB, ORTHODB + '.db', 
+                                  resources['orthodb']['db_type'])
+        )
+        ORTHODB += '.db'
+        databases['ORTHODB'] = os.path.abspath(ORTHODB)
+
+        # Get uniref90 if the user specifies
+        if args.full:
+            UNIREF = resources['uniref90']['filename']
+            prep_tasks.append(
+                get_download_and_gunzip_task(resources['uniref90']['url'], UNIREF)
+            )
+            prep_tasks.append(
+                get_blast_format_task(UNIREF, UNIREF + '.db',
+                                      resources['uniref90']['db_type'])
+            )
+            UNIREF += '.db'
+            databases['UNIREF'] = os.path.abspath(UNIREF)
+
+        run_tasks(prep_tasks, [cmd], config=doit_config)
+
+    finally:
+        os.chdir(old_dir)
+
+    return databases
 
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--transcriptome', required=True)
     parser.add_argument('--output-dir', default=None)
+    parser.add_argument('--database-dir', default=None)
     parser.add_argument('--n_threads', type=int, default=1)
-    parser.add_argument('--databases', nargs='+')
+    parser.add_argument('--user-databases', nargs='+')
     parser.add_argument('--full', action='store_true', default=False,
                         help='Do full annotation with uniref90')
     args, doit_args = parser.parse_known_args()
-
     # Get the config metadata
     with open('resources.json', 'r') as fp:
         resources = json.load(fp)
@@ -76,16 +129,18 @@ def main():
     print(config['meta']['description'], file=sys.stderr)
     print(', '.join(config['meta']['authors']), config['meta']['date'], file=sys.stderr)
 
-    # Functions to join the database and work dirs with a file
-    def work_dir(fn):
-        return os.path.join(config['settings']['work_dir'], fn)
-    def db_dir(fn):
-        return os.path.join(config['settings']['db_dir'], fn)
+    # By default, we store databases in the home directory
+    db_dir = args.database_dir
+    if db_dir is None:
+        db_dir = os.path.join(os.environ['HOME'], config['settings']['db_dir'])
+    db_dir = os.path.abspath(db_dir)
+    print('DB_DIR', db_dir, file=sys.stderr)
 
     transcriptome = args.transcriptome
     out_dir = args.output_dir
     if out_dir is None:
         out_dir = transcriptome + '.dammit'
+    out_dir = os.path.abspath(out_dir)
 
     try:
         os.mkdir(out_dir)
@@ -93,85 +148,38 @@ def main():
         # Already exists, carry on
         pass
 
-    # We want to store pydoit's dependency db in the output dir
-    doit_db = os.path.join(out_dir, '.' + os.path.basename(transcriptome) + '.doit.db')
-    DOIT_CONFIG['dep_file'] = doit_db
-
-    # Master list of tasks
-    tasks = []
+    # Main task list
+    TASKS = []
 
     '''
-    Database prep. These tasks download the necessary databases to the
-    database folder and prep them for use. They are gathered under the
-    'prep' task group. Current databases being used are:
-        * Pfam-A (protein domans)
-        * Rfam (RNA models)
-        * OrthoDB8 (conserved ortholog groups)
-        * uniref90 (protiens, if --full selected)
-        * Any user supplied databases
+    Set up all the databases. First, run prep(...) to get all the
+    dammit databases. Then, prep the user supplied databases in
+    the output directory.
     '''
+    DAMMIT_DATABASES = prep(resources, config, db_dir, args, cmd='list')
 
-    prep_tasks = []
-
-    # Create directories
-    prep_tasks.append(get_create_folder_task(work_dir))
-    prep_tasks.append(get_create_folder_task(db_dir))
-
-    # Get Pfam-A and prepare it for use with hmmer
-    PFAM = db_dir(resources['pfam']['filename'])
-    prep_tasks.append(
-        get_download_and_gunzip_task(resources['pfam']['url'], PFAM)
-    )
-    prep_tasks.append(
-        get_hmmpress_task(PFAM)
-    )
-
-    # Get Rfam and prepare it for use with Infernal
-    RFAM = db_dir(resources['rfam']['filename'])
-    prep_tasks.append(
-        get_download_and_gunzip_task(resources['rfam']['url'], RFAM)
-    )
-    prep_tasks.append(
-        get_cmpress_task(RFAM)
-    )
-
-    # Get OrthoDB and prepare it for BLAST use
-    ORTHODB = db_dir(resources['orthodb']['filename'])
-    prep_tasks.append(
-        get_download_and_gunzip_task(resources['orthodb']['url'], ORTHODB)
-    )
-    prep_tasks.append(
-        get_blast_format_task(ORTHODB, ORTHODB + '.db', 
-                              resources['orthodb']['db_type'])
-    )
-    ORTHODB += '.db'
-
-    # Get uniref90 if the user specifies
-    if args.full:
-        UNIREF = db_dir(resources['uniref90']['filename'])
-        prep_tasks.append(
-            get_download_and_gunzip_task(resources['uniref90']['url'], UNIREF)
-        )
-        prep_tasks.append(
-            get_blast_format_task(UNIREF, UNIREF + '.db',
-                                  resources['uniref90']['db_type'])
-        )
-        UNIREF += '.db'
-
-    # If there are user-supplied databases, use them
     USER_DATABASES = []
-    if args.databases:
+    if args.user_databases:
         for db in args.databases:
-            db_name = db_dir(db + '.db')
-            prep_tasks.append(
+            db_name = os.path.join(out_dir, db + '.db')
+            TASKS.append(
                 get_blast_format_task(db, db_name, 'prot')
             )
             USER_DATABASES.append(db_name)
 
-    # Make a task group specifically for the database prep tasks
-    tasks.extend(prep_tasks)
-    tasks.append(get_group_task('prep', prep_tasks))
+    '''
+    Set up doit's config for the actual analysis tasks.
+    We'll put the doit database for these tasks into the output
+    directory so that we don't end up scattering them around the
+    filesystem, or worse, with one master db containing dependency
+    metadata from every analysis ever run by the user!
+    '''
 
+    doit_config = {
+                    'backend': 'sqlite3',
+                    'verbosity': 2,
+                    'dep_file': os.path.join(out_dir, '.' + os.path.basename(transcriptome) + '.doit.db')
+                  }
 
     '''
     Calculate assembly information. First it runs some basic stats like N50 and
@@ -185,8 +193,8 @@ def main():
         get_transcriptome_stats_task(transcriptome, out_dir)
     )
     
-    tasks.extend(assess_tasks)
-    tasks.append(get_group_task('assess', assess_tasks))
+    TASKS.extend(assess_tasks)
+    TASKS.append(get_group_task('assess', assess_tasks))
 
     '''
     BLAST
@@ -274,7 +282,7 @@ def main():
             pprint.pprint(task.__dict__)
     '''
     if doit_args:
-        run_tasks(tasks, doit_args, config=DOIT_CONFIG)
+        run_tasks(TASKS, doit_args, config=doit_config)
 
 
 main()

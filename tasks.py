@@ -57,7 +57,7 @@ def get_download_task(url, target_fn, label='default'):
             'actions': [cmd],
             'targets': [target_fn],
             'clean': [clean_targets],
-            'uptodate': [run_once]}
+            'uptodate': [True]}
 
 @create_task_object
 def get_download_and_gunzip_task(url, target_fn):
@@ -70,7 +70,7 @@ def get_download_and_gunzip_task(url, target_fn):
             'actions': [cmd],
             'targets': [target_fn],
             'clean': [clean_targets],
-            'uptodate': [run_once]}
+            'uptodate': [True]}
 
 @create_task_object
 def get_download_and_untar_task(url, target_dir, label):
@@ -85,7 +85,7 @@ def get_download_and_untar_task(url, target_dir, label):
             'actions': [cmd1, cmd2],
             'targets': [done],
             'clean': [(clean_folder, [target_dir])],
-            'uptodate': [run_once]}
+            'uptodate': [True]}
 
 @create_task_object
 def get_uniprot_query_task(query, target_fn, fmt='fasta'):
