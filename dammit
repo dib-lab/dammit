@@ -3,8 +3,7 @@ from __future__ import print_function
 
 import argparse
 
-from petmarrna.annotate import *
-from petmarrna.tasks import *
+from tasks import *
 
 from doit.cmd_base import TaskLoader
 from doit.doit_cmd import DoitMain
@@ -54,132 +53,213 @@ def get_database_prep_tasks(resources_df):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--transcriptome', required=True)
+    parser.add_argument('--output-dir', default=None)
+    parser.add_argument('--n_threads', type=int, default=1)
     parser.add_argument('--databases', nargs='+')
-
+    parser.add_argument('--full', action='store_true', default=False,
+                        help='Do full annotation with uniref90')
     args, doit_args = parser.parse_known_args()
 
-    with open(args.resources_metadata, 'r') as fp:
+    # Get the config metadata
+    with open('resources.json', 'r') as fp:
         resources = json.load(fp)
-    with open(args.config_metadata, 'r') as fp:
+    with open('config.json', 'r') as fp:
         config = json.load(fp)
 
+    # Print out the infos~
     print(config['meta']['description'], file=sys.stderr)
     print(', '.join(config['meta']['authors']), config['meta']['date'], file=sys.stderr)
 
-    work_dir = config['settings']['work_dir']
-    db_dir = config['settings']['db_dir']
+    # Functions to join the database and work dirs with a file
+    def work_dir(fn):
+        return os.path.join(config['settings']['work_dir'], fn)
+    def db_dir(fn):
+        return os.path.join(config['settings']['db_dir'], fn)
 
-    resources_df = pd.DataFrame(resources).transpose()
+    transcriptome = args.transcriptome
+    out_dir = args.output_dir
+    if out_dir is None:
+        out_dir = transcriptome + '.dammit'
 
-    # Collect doit tasks
+    # Master list of tasks
     tasks = []
 
+    '''
+    Database prep. These tasks download the necessary databases to the
+    database folder and prep them for use. They are gathered under the
+    'prep' task group. Current databases being used are:
+        * Pfam-A (protein domans)
+        * Rfam (RNA models)
+        * OrthoDB8 (conserved ortholog groups)
+        * uniref90 (protiens, if --full selected)
+        * Any user supplied databases
+    '''
+
+    prep_tasks = []
+
     # Create directories
-    tasks.append(get_create_folder_task(work_dir))
-    tasks.append(get_create_folder_task(db_dir))
+    prep_tasks.append(get_create_folder_task(work_dir))
+    prep_tasks.append(get_create_folder_task(db_dir))
+    prep_tasks.append(get_create_folder_task(out_dir))
 
-        db_prep_tasks = get_database_prep_tasks(resources_df)
-        tasks.extend(db_prep_tasks)
-        tasks.append(group_task('databases', [t.name for t in db_prep_tasks]))
+    # Get Pfam-A and prepare it for use with hmmer
+    PFAM = db_dir(resources['pfam']['filename'])
+    prep_tasks.append(
+        get_download_and_gunzip_task(resources['pfam']['url'], PFAM)
+    )
+    prep_tasks.append(
+        get_hmmpress_task(PFAM)
+    )
 
-        '''
-        BLAST
-        '''
-        blast_iters = []
-        for fn in resources_df[resources_df.meta_type == 'assembly'].filename:
+    # Get Rfam and prepare it for use with Infernal
+    RFAM = db_dir(resources['rfam']['filename'])
+    prep_tasks.append(
+        get_download_and_gunzip_task(resources['rfam']['url'], RFAM)
+    )
+    prep_tasks.append(
+        get_cmpress_task(RFAM)
+    )
 
-            blast_iters.extend([blast_task(row, config, fn) \
-                        for _, row in resources_df[(resources_df.meta_type == 'fasta_database') &
-                                                   (resources_df.meta_type != 'assembly')].iterrows()])
+    # Get OrthoDB and prepare it for BLAST use
+    ORTHODB = db_dir(resources['orthodb']['filename'])
+    prep_tasks.append(
+        get_download_and_gunzip_task(resources['orthodb']['url'], ORTHODB)
+    )
+    prep_tasks.append(
+        get_blast_format_task(ORTHODB, ORTHODB + '.db', 
+                              resources['orthodb']['db_type'])
+    )
+    ORTHODB += '.db'
 
-        blast_iters.extend([blast_task(row, config, resources_df.ix['petMar2_cdna'].filename) \
-                        for _, row in resources_df[(resources_df.meta_type == 'fasta_database') &
-                                                   (resources_df.filename != 'petMar2.cdna.fa')].iterrows()])
+    # Get uniref90 if the user specifies
+    if args.full:
+        UNIREF = db_dir(resources['uniref90']['filename'])
+        prep_tasks.append(
+            get_download_and_gunzip_task(resources['uniref90']['url'], UNIREF)
+        )
+        prep_tasks.append(
+            get_blast_format_task(UNIREF, UNIREF + '.db',
+                                  resources['uniref90']['db_type'])
+        )
+        UNIREF += '.db'
 
-        blast_tasks = []
-        for tskiter in blast_iters:
-            blast_tasks.extend([dict_to_task(tsk) for tsk in tskiter])
-        tasks.extend(blast_tasks)
-        tasks.append(group_task('blast', [t.name for t in blast_tasks]))
+    # If there are user-supplied databases, use them
+    USER_DATABASES = []
+    if args.databases:
+        for db in args.databases:
+            db_name = db_dir(db + '.db')
+            prep_tasks.append(
+                get_blast_format_task(db, db_name, 'prot')
+            )
+            USER_DATABASES.append(db_name)
 
-        '''
-        TransDecoder and hmmscan
-        '''
-        tdc_tasks = []
-        dbfn = resources_df.ix['pfamA'].filename
-        tdc_tasks.append(transdecoder_orf_task(assembly_fn, config['pipeline']['transdecoder']))
-        pep_fn = os.path.join(assembly_fn+'.transdecoder_dir', 'longest_orfs.pep')
-        tdc_tasks.append(hmmscan_task(pep_fn, assembly_fn + '.pfam-A.out', dbfn, 
-                                      config['pipeline']['hmmscan']))
-        tdc_tasks.append(transdecoder_predict_task(assembly_fn, assembly_fn + '.pfam-A.out',
-                         config['pipeline']['transdecoder']))
-        tasks.extend(tdc_tasks)
-        tasks.append(group_task('transdecoder', [t.name for t in tdc_tasks]))
-
-        '''
-        BUSCO
-        '''
-
-        busco_cfg = config['pipeline']['busco']
-        busco_tasks = []
-        busco_vert_db_task = download_and_untar_task(busco_cfg['vert_url'], 
-                                                     busco_cfg['db_dir'],
-                                                     label='vertebrata')
-        busco_metz_db_task = download_and_untar_task(busco_cfg['metazoa_url'],
-                                                     busco_cfg['db_dir'],
-                                                     label='metazoa')
-        busco_tasks.append(busco_vert_db_task)
-        busco_tasks.append(busco_metz_db_task)
-
-        for fn in [assembly_fn, resources_df.ix['petMar2_cdna'].filename]:
-            for db in ['metazoa', 'vertebrata']:
-                output_dir = '.'.join([fn, db, busco_cfg['output_suffix']])
-                busco_tasks.append(busco_task(fn, output_dir, 
-                                   os.path.join(busco_cfg['db_dir'], db), 
-                                   'trans', busco_cfg))
-
-        tasks.extend(busco_tasks)
-        tasks.append(group_task('busco', [t.name for t in busco_tasks]))
-
-        '''
-        infernal and Rfam
-        '''
-        cmscan_cfg = config['pipeline']['cmscan']
-        cmscan_tasks = []
-        cmscan_tasks.append(download_and_untar_task(resources_df.ix['rfam'].url,
-                                                    cmscan_cfg['db_dir'],
-                                                    label='rfam'))
+    # Make a task group specifically for the database prep tasks
+    tasks.extend(prep_tasks)
+    tasks.append(get_group_task('prep', prep_tasks))
 
 
+    '''
+    Calculate assembly information. First it runs some basic stats like N50 and
+    number of contigs, and uses the HyperLogLog counter from khmer to
+    estimate unique k-mers for checking redundancy. Then it runs BUSCO to
+    assess completeness. These tasks are grouped under the 'assess' task.
+    '''
 
-        '''
-        Abundance estimation (bowtie2, eXpress)
-        '''
+    assess_tasks = []
+    assess_tasks.append(
+        get_transcriptome_stats_task(transcriptome, out_dir)
+    )
+    
+    tasks.extend(assess_tasks)
+    tasks.append(get_group_task('assess', assess_tasks))
 
-        abundance_tasks = get_abundance_estimation_tasks(assembly_fn, sample_df, config)
-        tasks.extend(abundance_tasks)
-        tasks.append(group_task('abundance', [t.name for t in abundance_tasks]))
+    '''
+    BLAST
+    '''
+    '''
+    blast_iters = []
+    for fn in resources_df[resources_df.meta_type == 'assembly'].filename:
+
+        blast_iters.extend([blast_task(row, config, fn) \
+                    for _, row in resources_df[(resources_df.meta_type == 'fasta_database') &
+                                               (resources_df.meta_type != 'assembly')].iterrows()])
+
+    blast_iters.extend([blast_task(row, config, resources_df.ix['petMar2_cdna'].filename) \
+                    for _, row in resources_df[(resources_df.meta_type == 'fasta_database') &
+                                               (resources_df.filename != 'petMar2.cdna.fa')].iterrows()])
+
+    blast_tasks = []
+    for tskiter in blast_iters:
+        blast_tasks.extend([dict_to_task(tsk) for tsk in tskiter])
+    tasks.extend(blast_tasks)
+    tasks.append(group_task('blast', [t.name for t in blast_tasks]))
+    '''
+    '''
+    TransDecoder and hmmscan
+    '''
+    '''
+    tdc_tasks = []
+    dbfn = resources_df.ix['pfamA'].filename
+    tdc_tasks.append(transdecoder_orf_task(assembly_fn, config['pipeline']['transdecoder']))
+    pep_fn = os.path.join(assembly_fn+'.transdecoder_dir', 'longest_orfs.pep')
+    tdc_tasks.append(hmmscan_task(pep_fn, assembly_fn + '.pfam-A.out', dbfn, 
+                                  config['pipeline']['hmmscan']))
+    tdc_tasks.append(transdecoder_predict_task(assembly_fn, assembly_fn + '.pfam-A.out',
+                     config['pipeline']['transdecoder']))
+    tasks.extend(tdc_tasks)
+    tasks.append(group_task('transdecoder', [t.name for t in tdc_tasks]))
+    '''
+    '''
+    BUSCO
+    '''
+    '''
+    busco_cfg = config['pipeline']['busco']
+    busco_tasks = []
+    busco_vert_db_task = download_and_untar_task(busco_cfg['vert_url'], 
+                                                 busco_cfg['db_dir'],
+                                                 label='vertebrata')
+    busco_metz_db_task = download_and_untar_task(busco_cfg['metazoa_url'],
+                                                 busco_cfg['db_dir'],
+                                                 label='metazoa')
+    busco_tasks.append(busco_vert_db_task)
+    busco_tasks.append(busco_metz_db_task)
+
+    for fn in [assembly_fn, resources_df.ix['petMar2_cdna'].filename]:
+        for db in ['metazoa', 'vertebrata']:
+            output_dir = '.'.join([fn, db, busco_cfg['output_suffix']])
+            busco_tasks.append(busco_task(fn, output_dir, 
+                               os.path.join(busco_cfg['db_dir'], db), 
+                               'trans', busco_cfg))
+
+    tasks.extend(busco_tasks)
+    tasks.append(group_task('busco', [t.name for t in busco_tasks]))
+    '''
+    '''
+    infernal and Rfam
+    '''
+    '''
+    cmscan_cfg = config['pipeline']['cmscan']
+    cmscan_tasks = []
+    cmscan_tasks.append(download_and_untar_task(resources_df.ix['rfam'].url,
+                                                cmscan_cfg['db_dir'],
+                                                label='rfam'))
 
 
-        blast_targets = list(resources_df[(resources_df.meta_type == 'fasta_database') &
-                                          (resources_df.meta_type != 'assembly')].filename)
-        ann_task = aggregate_annotations_task(assembly_fn, blast_targets, 
-                                              assembly_fn+'.transdecoder.gff3',
-                                              assembly_fn+'.pfam-A.out', sample_df,
-                                              assembly_fn+'.eXpress.tpm.tsv',
-                                              assembly_fn+'.annotations.h5')
-        tasks.append(ann_task)
+    ann_task = aggregate_annotations_task(assembly_fn, blast_targets, 
+                                          assembly_fn+'.transdecoder.gff3',
+                                          assembly_fn+'.pfam-A.out', sample_df,
+                                          assembly_fn+'.eXpress.tpm.tsv',
+                                          assembly_fn+'.annotations.h5')
+    tasks.append(ann_task)
+    '''
+    '''
+    if args.print_tasks:
+        for task in tasks:
+            print('-----\n', task)
+            pprint.pprint(task.__dict__)
+    '''
+    if doit_args:
+        run_tasks(tasks, doit_args)
 
-
-        if args.print_tasks:
-            for task in tasks:
-                print('-----\n', task)
-                pprint.pprint(task.__dict__)
-
-        if doit_args:
-            run_tasks(tasks, doit_args)
-
-    finally:
-        os.chdir(old_dir)
 
 main()

@@ -16,9 +16,8 @@ from doit.task import clean_targets, dict_to_task
 from bioservices import UniProt
 import jinja2
 import pandas as pd
-import screed
-
-from peasoup.tasks import BlastTask
+#import screed
+from khmer import HLLCounter, ReadParser
 
 def clean_folder(target):
     try:
@@ -41,9 +40,16 @@ def create_task_object(task_dict_func):
     return d_to_t
 
 @create_task_object
-def get_download_and_gunzip_task(url, target_fn, label=''):
-    cmd = 'curl {url} | gunzip -c > {target_fn}'.format(**locals())
+def get_group_task(group_name, tasks):
 
+    return {'name': group_name,
+            'actions': None,
+            'task_dep': [t.name for t in tasks]}
+
+@create_task_object
+def get_download_task(url, target_fn, label='default'):
+
+    cmd = 'curl -o {target_fn} {url}'.format(**locals())
     name = '_'.join(['download_gunzip', target_fn, label])
 
     return {'title': title_with_actions,
@@ -54,11 +60,24 @@ def get_download_and_gunzip_task(url, target_fn, label=''):
             'uptodate': [run_once]}
 
 @create_task_object
-def get_download_and_untar_task(url, target_dir, label=''):
+def get_download_and_gunzip_task(url, target_fn):
+    cmd = 'curl {url} | gunzip -c > {target_fn}'.format(**locals())
+
+    name = 'download_and_gunzip:' + os.path.basename(target_fn)
+
+    return {'title': title_with_actions,
+            'name': name,
+            'actions': [cmd],
+            'targets': [target_fn],
+            'clean': [clean_targets],
+            'uptodate': [run_once]}
+
+@create_task_object
+def get_download_and_untar_task(url, target_dir, label):
 
     cmd1 = 'mkdir -p {target_dir}; curl {url} | tar -xz -C {target_dir}'.format(**locals())
-    name = '_'.join(['download_untar', target_dir.strip('/'), label])
-    done = name + '.done'
+    name = 'download_and_untar:' + target_dir.strip('/') + '-' + label
+    done = os.path.join(target_dir, name + '.done')
     cmd2 = 'touch {name}'.format(name=name)
 
     return {'name': name,
@@ -69,7 +88,7 @@ def get_download_and_untar_task(url, target_dir, label=''):
             'uptodate': [run_once]}
 
 @create_task_object
-def get_uniprot_query_task(query, target_fn, fmt='fasta', label=''):
+def get_uniprot_query_task(query, target_fn, fmt='fasta'):
 
     def func():
         u = UniProt()
@@ -77,9 +96,7 @@ def get_uniprot_query_task(query, target_fn, fmt='fasta', label=''):
         with open(target_fn, 'wb') as fp:
             fp.write(res)
 
-    if not label:
-        label = query
-    name = 'uniprot_query_' + label
+    name = 'uniprot_query:' + query
 
     return {'name': name,
             'title': title_with_actions,
@@ -103,7 +120,7 @@ def get_truncate_fasta_header_task(fasta_fn, length=500):
 
         shutil.move(tmp_fn, fasta_fn)
     
-    name = 'truncate_fasta_header_{fasta_fn}'.format(**locals())
+    name = 'truncate_fasta_header:' + os.path.basename(fasta_fn)
 
     return {'name': name,
             'title': title_with_actions,
@@ -135,7 +152,7 @@ def get_blast_format_task(db_fn, db_out_fn, db_type):
     else:
         target_fn = db_out_fn + '.phr'
 
-    name = 'makeblastdb_{db_out_fn}'.format(**locals())
+    name = 'makeblastdb:' + os.path.basename(db_fn)
 
     return {'name': name,
             'title': title_with_actions,
@@ -144,46 +161,33 @@ def get_blast_format_task(db_fn, db_out_fn, db_type):
             'file_dep': [db_fn],
             'clean': [clean_targets, 'rm -f {target_fn}.*'.format(**locals())] }
 
-def get_blast_task(query, query_type, db, db_type, out_fn, blast_cfg, assembly):
-    assert query_type in ['nucl', 'prot']
-    assert db_type in ['nucl', 'prot']
-    prog = None
-    if query_type == 'nucl':
-        if db_type == '
+def get_blast_task(query, db, prog, out_fn, n_threads, blast_cfg, assembly):
+    assert prog in ['blastp', 'blastx', 'blastn', 'tblastn', 'tblastx']
+    name = 'blast:' + os.path.basename(out_fn)
 
-    
-    blast_params = blast_cfg['params']
-    blast_evalue = blast_cfg['evalue']
+    params = blast_cfg['params']
+    evalue = blast_cfg['evalue']
 
-    db_name = row.filename + '.db'
+    cmd = '{prog} -query {query} -db {db} -num_threads {n_threads} '\
+          '-evalue {evalue} -outfmt 6 {params} -o {out_fn}'.format(**locals())
 
-    t1 = '{0}.x.{1}.tsv'.format(assembly, db_name)
-    t2 = '{0}.x.{1}.tsv'.format(db_name, assembly)
-
-    if row.db_type == 'prot':
-        yield BlastTask('blastx', assembly, db_name, t1,
-                        num_threads=blast_threads, evalue=blast_evalue,
-                        params=blast_params).tasks().next()
-        yield BlastTask('tblastn', row.filename, '{}.db'.format(assembly),
-                        t2, num_threads=blast_threads, evalue=blast_evalue,
-                        params=blast_params).tasks().next()
-    else:
-        yield BlastTask('blastn', assembly, db_name, t1,
-                        num_threads=blast_threads, evalue=blast_evalue,
-                        params=blast_params).tasks().next()
-        yield BlastTask('blastn', row.filename, '{}.db'.format(assembly),
-                        t2, num_threads=blast_threads, evalue=blast_evalue,
-                        params=blast_params).tasks().next()
+    return {'name': name,
+            'title': title_with_actions,
+            'actions': [cmd],
+            'targets': [out_fn],
+            'file_dep': [db],
+            'clean': [clean_targets]}
 
 @create_task_object
-def get_link_file_task(src):
+def link_file_task(src, dst=''):
     ''' Soft-link file to the current directory
     '''
-    cmd = 'ln -fs {src}'.format(src=src)
+    cmd = 'ln -fs {src} {dst}'.format(src=src, dst=dst)
     return {'title': title_with_actions,
-            'name': 'ln_' + os.path.basename(src),
+            'name': 'ln:' + os.path.basename(src) + ('-' + dst if dst else ''),
             'actions': [cmd],
-            'targets': [os.path.basename(src)],
+            'file_dep': [src],
+            'targets': [os.path.basename(src) if not dst else dst],
             'uptodate': [run_once],
             'clean': [clean_targets]}
 
@@ -197,7 +201,7 @@ def get_bowtie2_build_task(input_fn, db_basename, bowtie2_cfg):
                 ['.1.bt2', '.2.bt2', '.3.bt2', '.4.bt2', '.rev.1.bt2', '.rev.2.bt2']]
     targets.append(db_basename)
 
-    name = 'bowtie2_build_{db_basename}'.format(**locals())
+    name = 'bowtie2_build:' + os.path.basename(db_basename)
     return {'title': title_with_actions,
             'name': db_basename,
             'actions': [cmd, 'touch {db_basename}'.format(**locals())],
@@ -206,7 +210,7 @@ def get_bowtie2_build_task(input_fn, db_basename, bowtie2_cfg):
             'clean': [clean_targets] }
 
 @create_task_object
-def get_bowtie2_align_task(db_basename, target_fn, bowtie2_cfg, left_fn='', right_fn='', singleton_fn='',
+def get_bowtie2_align_task(db_basename, target_fn, bowtie2_cfg, n_threads, left_fn='', right_fn='', singleton_fn='',
                         read_fmt='-q', samtools_convert=True,
                         encoding='phred33'):
 
@@ -215,14 +219,15 @@ def get_bowtie2_align_task(db_basename, target_fn, bowtie2_cfg, left_fn='', righ
     encoding = '--' + encoding
     if (left_fn or right_fn):
         assert (left_fn and right_fn)
-    n_threads = bowtie2_cfg['n_threads']
     extra_args = bowtie2_cfg['extra_args']
     cmd = 'bowtie2 -p {n_threads} {extra_args} {encoding} {read_fmt} -x {db_basename} '.format(**locals())
     
     file_dep = [db_basename]
     targets = []
 
-    name = 'bowtie2_align' + ''.join('+' + fn if fn else fn for fn in [left_fn, right_fn, singleton_fn, db_basename])
+    name = 'bowtie2_align:' + ''.join('+' + os.path.basename(fn) if fn \
+                                      else os.path.basename(fn) \
+                                      for fn in [left_fn, right_fn, singleton_fn, db_basename])
 
     if left_fn:
         file_dep.extend([left_fn, right_fn])
@@ -252,7 +257,7 @@ def get_samtools_sort_task(bam_fn):
     
     cmd = 'samtools sort -n {bam_fn} {bam_fn}.sorted'.format(**locals())
 
-    name = 'samtools_sort_{bam_fn}'.format(**locals())
+    name = 'samtools_sort:' + os.path.basename(bam_fn)
 
     return {'name': name,
             'title': title_with_actions,
@@ -266,26 +271,19 @@ def get_cat_task(file_list, target_fn):
     cmd = 'cat {files} > {t}'.format(files=' '.join(file_list), t=target_fn)
 
     return {'title': title_with_actions,
-            'name': 'cat_' + target_fn,
+            'name': 'cat:' + os.path.basename(target_fn),
             'actions': [cmd],
             'file_dep': file_list,
             'targets': [target_fn],
             'clean': [clean_targets]}
 
-@create_task_object
-def get_group_task(group_name, task_names):
-    return {'name': group_name,
-            'actions': None,
-            'task_dep': task_names}
-
 # python3 BUSCO_v1.1b1/BUSCO_v1.1b1.py -in petMar2.cdna.fa -o petMar2.cdna.busco.test -l vertebrata/ -m trans -c 4
 @create_task_object
-def get_busco_task(input_filename, output_dir, busco_db_dir, input_type, busco_cfg):
+def get_busco_task(input_filename, output_dir, busco_db_dir, input_type, busco_cfg, n_threads):
     
-    name = '_'.join(['busco', input_filename, os.path.basename(busco_db_dir)])
+    name = 'busco:' + os.path.basename(input_filename) + '-' + os.path.basename(busco_db_dir)
 
     assert input_type in ['genome', 'OGS', 'trans']
-    n_threads = busco_cfg['n_threads']
     busco_path = busco_cfg['path']
 
     cmd = 'python3 {busco_path} -in {in_fn} -o {out_dir} -l {db_dir} '\
@@ -303,9 +301,9 @@ def get_busco_task(input_filename, output_dir, busco_db_dir, input_type, busco_c
             'clean': [(clean_folder, ['run_' + output_dir])]}
 
 @create_task_object
-def get_cmpress_task(db_fileame):
+def get_cmpress_task(db_filename):
 
-    cmd = 'cmpress ' + db_filename
+    cmd = 'cmpress:' + os.path.basename(db_filename)
 
     return {'name': 'cmpress:' + os.path.basename(db_filename),
             'title': title_with_actions,
@@ -315,12 +313,11 @@ def get_cmpress_task(db_fileame):
             'clean': [clean_targets]}
 
 @create_task_object
-def get_cmscan_task(input_filename, output_filename, db_filename, cmscan_cfg, label=''):
+def get_cmscan_task(input_filename, output_filename, db_filename, cmscan_cfg, n_threads):
     
     name = 'cmscan:' + os.path.basename(input_filename) + '.x.' + \
            os.path.basename(db_filename)
 
-    n_threads = cmscan_cfg['n_threads']
     cmd = 'cmscan --cpu {n_threads} --cut_ga --rfam --nohmmonly --tblout {output_filename}.tbl'\
           ' {db_filename} {input_filename} > {output_filename}.cmscan'.format(**locals())
 
@@ -334,12 +331,11 @@ def get_cmscan_task(input_filename, output_filename, db_filename, cmscan_cfg, la
 @create_task_object
 def get_hmmpress_task(db_filename, label=''):
     
-    if not label:
-        label = 'hmmpress_' + os.path.basename(db_filename)
+    name = 'hmmpress:' + os.path.basename(db_filename)
 
     cmd = 'hmmpress ' + db_filename
 
-    return {'name': label,
+    return {'name': name,
             'title': title_with_actions,
             'actions': [cmd],
             'targets': [db_filename + ext for ext in ['.h3f', '.h3i', '.h3m', '.h3p']],
@@ -347,13 +343,11 @@ def get_hmmpress_task(db_filename, label=''):
             'clean': [clean_targets]}
 
 @create_task_object
-def get_hmmscan_task(input_filename, output_filename, db_filename, hmmscan_cfg, label=''):
+def get_hmmscan_task(input_filename, output_filename, db_filename, hmmscan_cfg, n_threads,):
 
-    if not label:
-        label = 'hmmscan_' + os.path.basename(input_filename) + '.x.' + \
+    name = 'hmmscan:' + os.path.basename(input_filename) + '.x.' + \
                 os.path.basename(db_filename)
 
-    n_threads = hmmscan_cfg['n_threads']
     cmd = 'hmmscan --cpu {n_threads} --domtblout {output_filename} \
           {db_filename} {input_filename}'.format(**locals())
 
@@ -365,10 +359,9 @@ def get_hmmscan_task(input_filename, output_filename, db_filename, hmmscan_cfg, 
             'clean': [clean_targets]}
 
 @create_task_object
-def get_transdecoder_orf_task(input_filename, transdecoder_cfg, label=''):
+def get_transdecoder_orf_task(input_filename, transdecoder_cfg):
 
-    if not label:
-        label = 'TransDecoder.LongOrfs_' + os.path.basename(input_filename)
+    name = 'TransDecoder.LongOrfs:' + os.path.basename(input_filename)
 
     min_prot_len = transdecoder_cfg['min_prot_len']
     cmd = 'TransDecoder.LongOrfs -t {input_filename} -m {min_prot_len}'.format(**locals())
@@ -382,13 +375,11 @@ def get_transdecoder_orf_task(input_filename, transdecoder_cfg, label=''):
 
 # TransDecoder.Predict -t lamp10.fasta --retain_pfam_hits lamp10.fasta.pfam-A.out
 @create_task_object
-def get_transdecoder_predict_task(input_filename, db_filename, transdecoder_cfg, label=''):
+def get_transdecoder_predict_task(input_filename, db_filename, transdecoder_cfg, n_threads):
 
-    if not label:
-        label = 'TransDecoder.Predict_' + os.path.basename(input_filename)
+    name = 'TransDecoder.Predict:' + os.path.basename(input_filename)
 
     orf_cutoff = transdecoder_cfg['orf_cutoff']
-    n_threads = transdecoder_cfg['n_threads']
 
     cmd = 'TransDecoder.Predict -t {input_filename} --retain_pfam_hits {db_filename} \
             --retain_long_orfs {orf_cutoff} --cpu {n_threads}'.format(**locals())
@@ -399,3 +390,69 @@ def get_transdecoder_predict_task(input_filename, db_filename, transdecoder_cfg,
             'file_dep': [input_filename, input_filename + '.transdecoder_dir/longest_orfs.pep', db_filename],
             'targets': [input_filename + ext for ext in ['.bed', '.cds', '.pep', '.gff3', '.mRNA']],
             'clean': [clean_targets, (clean_folder, [input_filename + '.transdecoder_dir'])]}
+
+@create_task_object
+def get_transcriptome_stats_task(transcriptome, out_dir):
+
+    name = 'transcriptome_stats:' + os.path.basename(transcriptome)
+    target = os.path.join(out_dir, transcriptome + '.stats')
+    K = 25
+    
+    def parse(fn):
+        hll = HLLCounter(.01, K)
+        lens = []
+        names = []
+        for contig in ReadParser(fn):
+            lens.append(len(contig.sequence))
+            names.append(contig.name)
+            hll.consume_string(contig.sequence)
+        S = pd.Series(lens, index=names)
+        S.sort()
+        return S, hll.estimate_cardinality()
+
+    def calc_NX(lens, X):
+        N = lens.sum()
+        threshold = (float(X) / 100.0) * N
+
+        NXlen = 0
+        NXpos = 0
+        cms = 0
+        for n, l in enumerate(lens):
+            cms += l
+            if cms >= threshold:
+                NXlen = l
+                NXpos = n
+                break
+        return NXlen, NXpos
+
+    def cmd():
+        lens, uniq_kmers = parse(transcriptome)
+        
+        exp_kmers = (lens - (K+1)).sum()
+        redundancy = float(exp_kmers - uniq_kmers) / exp_kmers
+        if redundancy < 0:
+            redundancy = 0.0
+
+        N50len, N50pos = calc_NX(lens, 50)
+        stats = {'N': len(lens),
+                 'sum': lens.sum(),
+                 'min': lens.min(),
+                 'max': lens.max(),
+                 'med': lens.median(),
+                 'mean': lens.mean(),
+                 'N50len': N50len,
+                 'N50pos': N50pos,
+                 '25_mers': exp_kmers,
+                 '25_mers_unique': uniq_kmers,
+                 'redundancy': redundancy}
+        
+        with open(target, 'wb') as fp:
+            json.dump(stats, fp, indent=4)
+
+    return {'name': name,
+            'title': title_with_actions,
+            'actions': [(cmd, [])],
+            'file_dep': [transcriptome],
+            'task_dep': ['create_folder:' + out_dir],
+            'targets': [target],
+            'clean': [clean_targets]}

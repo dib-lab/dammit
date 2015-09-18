@@ -1,5 +1,5 @@
 {
-    "pfamA": {
+    "pfam": {
         "access": "download",
         "db_type": "hmm",
         "filename": "Pfam-A.hmm",
@@ -11,8 +11,8 @@
 		"access": "download",
 		"db_type": "cm",
 		"filename": "Rfam.cm",
-		"fileformat": "tar.gz",
-		"url": "ftp://ftp.ebi.ac.uk/pub/databases/Rfam/CURRENT/Rfam.tar.gz"
+		"fileformat": "gz",
+		"url": "ftp://ftp.ebi.ac.uk/pub/databases/Rfam/CURRENT/Rfam.cm.gz"
 	},
 	"uniref90": {
 		"access": "download",
@@ -22,10 +22,10 @@
 		"url": "ftp://ftp.uniprot.org/pub/databases/uniprot/uniref/uniref90/uniref90.fasta.gz"
 	},
 
-	"OrthoDB": {
+	"orthodb": {
 		"access": "download",
 		"db_type": "prot",
-		"filename": "",
+		"filename": "orthodb.fasta",
 		"fileformat": "gz",
 		"url": "ftp://cegg.unige.ch/OrthoDB8/Eukaryotes/FASTA/aa_seq_euk.fasta.gz"
 	}
