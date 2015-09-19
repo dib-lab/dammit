@@ -23,102 +23,28 @@ def run_tasks(tasks, args, config={'verbosity': 2}):
     DoitMain(Loader()).run(args)
 
 
-def prep(resources, config, db_dir, args, cmd='run'):
+def install(resources, config, db_dir, args, cmd='run'):
     '''
-    Database prep. These tasks download the necessary databases to the
-    database folder and prep them for use. They are gathered under the
-    'prep' task group. Current databases being used are:
 
-        * Pfam-A (protein domans)
-        * Rfam (RNA models)
-        * OrthoDB8 (conserved ortholog groups)
-        * uniref90 (protiens, if --full selected)
-        * Any user supplied databases
+
+    Current binary distributions being used are:
+
 
     This set of tasks keeps its own doit db in the db folder to share
     them between all runs.
     '''
+    
 
     doit_config = {
                     'backend': 'sqlite3',
-                    'verbosity': 2
+                    'verbosity': 2,
+                    'dep_file': dep_file
                   }
+
     db_dir = os.path.abspath(db_dir)
     databases = {}
 
-    # Move into the database directory
-    old_dir = os.getcwd()
-    try:
-        try:
-            os.mkdir(db_dir)
-        except OSError:
-            pass
-        os.chdir(db_dir)
 
-        prep_tasks = []
-
-        # Get Pfam-A and prepare it for use with hmmer
-        PFAM = resources['pfam']['filename']
-        prep_tasks.append(
-            get_download_and_gunzip_task(resources['pfam']['url'], PFAM)
-        )
-        prep_tasks.append(
-            get_hmmpress_task(PFAM)
-        )
-        databases['PFAM'] = os.path.abspath(PFAM)
-
-        # Get Rfam and prepare it for use with Infernal
-        RFAM = resources['rfam']['filename']
-        prep_tasks.append(
-            get_download_and_gunzip_task(resources['rfam']['url'], RFAM)
-        )
-        prep_tasks.append(
-            get_cmpress_task(RFAM)
-        )
-        databases['RFAM'] = os.path.abspath(RFAM)
-
-        # Get OrthoDB and prepare it for BLAST use
-        ORTHODB = resources['orthodb']['filename']
-        prep_tasks.append(
-            get_download_and_gunzip_task(resources['orthodb']['url'], ORTHODB)
-        )
-        prep_tasks.append(
-            get_blast_format_task(ORTHODB, ORTHODB + '.db', 
-                                  resources['orthodb']['db_type'])
-        )
-        ORTHODB += '.db'
-        databases['ORTHODB'] = os.path.abspath(ORTHODB)
-
-        busco_db = args.busco_group
-        prep_tasks.append(
-            get_download_and_untar_task(resources['busco'][busco_db]['url'], 
-                                        'buscodb',
-                                        label=busco_db)
-        )
-        databases['BUSCO'] = os.path.abspath(os.path.join('buscodb', busco_db))
-
-        # Get uniref90 if the user specifies
-        if args.full:
-            UNIREF = resources['uniref90']['filename']
-            prep_tasks.append(
-                get_download_and_gunzip_task(resources['uniref90']['url'], UNIREF)
-            )
-            prep_tasks.append(
-                get_blast_format_task(UNIREF, UNIREF + '.db',
-                                      resources['uniref90']['db_type'])
-            )
-            UNIREF += '.db'
-            databases['UNIREF'] = os.path.abspath(UNIREF)
-
-        if args.debug:
-            print_tasks(prep_tasks)
-            cmd = 'list'
-        run_tasks(prep_tasks, [cmd], config=doit_config)
-
-    finally:
-        os.chdir(old_dir)
-
-    return databases
 
 def main():
     parser = argparse.ArgumentParser()
@@ -140,12 +66,14 @@ def main():
 
     # Print out the infos~
     print(config['meta']['description'], file=sys.stderr)
-    print(', '.join(config['meta']['authors']), config['meta']['date'], file=sys.stderr)
+    print(', '.join(config['meta']['authors']), config['meta']['date'], 
+          file=sys.stderr)
 
     # By default, we store databases in the home directory
     db_dir = args.database_dir
     if db_dir is None:
-        db_dir = os.path.join(os.environ['HOME'], config['settings']['db_dir'])
+        db_dir = os.path.join(os.environ['HOME'], 
+                              config['settings']['db_dir'])
     db_dir = os.path.abspath(db_dir)
     print('DB_DIR', db_dir, file=sys.stderr)
 
@@ -192,7 +120,9 @@ def main():
     doit_config = {
                     'backend': 'sqlite3',
                     'verbosity': 2,
-                    'dep_file': os.path.join(out_dir, '.' + os.path.basename(transcriptome) + '.doit.db')
+                    'dep_file': os.path.join(out_dir, '.' +
+                                             os.path.basename(transcriptome) +
+                                             '.doit.db')
                   }
 
     '''
@@ -249,13 +179,7 @@ def main():
     '''
     BUSCO
     '''
-    '''
-    busco_cfg = config['pipeline']['busco']
-    busco_tasks = []
-
-    busco_tasks.append(busco_vert_db_task)
-    busco_tasks.append(busco_metz_db_task)
-
+    busco_cfg = config['settings']['busco']
     for fn in [assembly_fn, resources_df.ix['petMar2_cdna'].filename]:
         for db in ['metazoa', 'vertebrata']:
             output_dir = '.'.join([fn, db, busco_cfg['output_suffix']])
@@ -265,7 +189,6 @@ def main():
 
     tasks.extend(busco_tasks)
     tasks.append(group_task('busco', [t.name for t in busco_tasks]))
-    '''
     '''
     infernal and Rfam
     '''
