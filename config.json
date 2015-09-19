@@ -6,39 +6,56 @@
     },
 
     "settings": {
-        "work_dir": "_work",
-        "db_dir": "dammit_db",
+		"dammit_dir": ".dammit",
+		"dep_dir": "depencies",
+        "db_dir": "databases",
+		"dep_url": "http://edhar.genomecenter.ucdavis.edu/~camille/dammit-deps.tar.gz",
         
-        "blast": { 
+        "blast": {
             "evalue": 0.000001,
             "params": ""
         },
 
-		"bowtie2_build": {
-			"n_threads": 4,
-            "extra_args": "--offrate 1"
-		},
-
-        "bowtie2_align": {
-            "extra_args": "--mm -a -X 600 --rdg 6,5 --rfg 6,5 --score-min L,-.6,-.4 --no-discordant --no-mixed"
-        },
-
         "busco": {
-            "path": "/work/BUSCO_v1.1b1/BUSCO_v1.1b1.py",
+            "path": "BUSCO_v1.1b1/",
             "db_dir": "busco_db",
             "output_suffix": ".busco.results"
         },
 
-        "hmmscan": {
-        },
+		"hmmer": {
+			"path": {
+				"linux": "hmmer-3.1b2-linux-intel-x86_64/binaries/",
+				"macosx": "hmmer-3.1b2-macosx-intel/binaries"
+			},
 
-		"cmscan": {
-			"db_dir": "cm_db"
+			"hmmscan": {
+			},
+
+			"hmmpress": {
+			}
+		},
+
+		"infernal": {
+
+			"path": {
+				"linux": "infernal-1.1.1-linux-intel-gcc/binaries/",
+				"macosx": "infernal-1.1.1-macosx-intel/binaries/"
+			},
+			"cmscan": {
+			},
+
+			"cmpress": {
+			}
 		},
 
         "transdecoder": {
-            "min_prot_len": 80,
-            "orf_cutoff": 600
+			"path": "Transdecoder-2.0.1/",
+			"longorfs": {
+				"min_prot_len": 80
+			},
+			"predict": {
+				"orf_cutoff": 600
+			}
         }
     }
 }
