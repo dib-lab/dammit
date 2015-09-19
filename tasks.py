@@ -166,14 +166,15 @@ def get_blast_format_task(db_fn, db_out_fn, db_type):
             'file_dep': [db_fn],
             'clean': [clean_targets, 'rm -f {target_fn}.*'.format(**locals())] }
 
-def get_blast_task(query, db, prog, out_fn, n_threads, blast_cfg, assembly):
+def get_blast_task(query, db, prog, out_fn, n_threads, blast_dir, blast_cfg):
     assert prog in ['blastp', 'blastx', 'blastn', 'tblastn', 'tblastx']
     name = 'blast:' + os.path.basename(out_fn)
 
     params = blast_cfg['params']
     evalue = blast_cfg['evalue']
+    exc = os.path.join(blast_dir, prog)
 
-    cmd = '{prog} -query {query} -db {db} -num_threads {n_threads} '\
+    cmd = '{exc} -query {query} -db {db} -num_threads {n_threads} '\
           '-evalue {evalue} -outfmt 6 {params} -o {out_fn}'.format(**locals())
 
     return {'name': name,
@@ -282,16 +283,16 @@ def get_cat_task(file_list, target_fn):
             'targets': [target_fn],
             'clean': [clean_targets]}
 
-# python3 BUSCO_v1.1b1/BUSCO_v1.1b1.py -in petMar2.cdna.fa -o petMar2.cdna.busco.test -l vertebrata/ -m trans -c 4
 @create_task_object
-def get_busco_task(input_filename, output_dir, busco_db_dir, input_type, busco_cfg, n_threads):
+def get_busco_task(input_filename, output_dir, busco_db_dir, input_type,
+                   n_threads, busco_dir, busco_cfg):
     
     name = 'busco:' + os.path.basename(input_filename) + '-' + os.path.basename(busco_db_dir)
 
     assert input_type in ['genome', 'OGS', 'trans']
-    busco_path = busco_cfg['path']
+    exc = os.path.join(busco_dir, 'BUSCO_v1.1b1.py')
 
-    cmd = 'python3 {busco_path} -in {in_fn} -o {out_dir} -l {db_dir} '\
+    cmd = 'python3 {exc} -in {in_fn} -o {out_dir} -l {db_dir} '\
             '-m {in_type} -c {n_threads}'.format(busco_path=busco_path, 
             in_fn=input_filename, out_dir=output_dir, db_dir=busco_db_dir, 
             in_type=input_type, n_threads=n_threads)
@@ -306,9 +307,10 @@ def get_busco_task(input_filename, output_dir, busco_db_dir, input_type, busco_c
             'clean': [(clean_folder, ['run_' + output_dir])]}
 
 @create_task_object
-def get_cmpress_task(db_filename):
+def get_cmpress_task(db_filename, infernal_dir, infernal_cfg):
 
-    cmd = 'cmpress ' + os.path.basename(db_filename)
+    exc = os.path.join(infernal_dir, 'cmpress')
+    cmd = '{exc} {db_filename}'.format(**locals())
 
     return {'name': 'cmpress:' + os.path.basename(db_filename),
             'title': title_with_actions,
@@ -318,12 +320,14 @@ def get_cmpress_task(db_filename):
             'clean': [clean_targets]}
 
 @create_task_object
-def get_cmscan_task(input_filename, output_filename, db_filename, cmscan_cfg, n_threads):
+def get_cmscan_task(input_filename, output_filename, db_filename, 
+                    n_threads, infernal_dir, infernal_cfg):
     
     name = 'cmscan:' + os.path.basename(input_filename) + '.x.' + \
            os.path.basename(db_filename)
-
-    cmd = 'cmscan --cpu {n_threads} --cut_ga --rfam --nohmmonly --tblout {output_filename}.tbl'\
+    
+    exc = os.path.join(infernal_dir, 'cmscan')
+    cmd = '{exc} --cpu {n_threads} --cut_ga --rfam --nohmmonly --tblout {output_filename}.tbl'\
           ' {db_filename} {input_filename} > {output_filename}.cmscan'.format(**locals())
 
     return {'name': name,
@@ -334,11 +338,11 @@ def get_cmscan_task(input_filename, output_filename, db_filename, cmscan_cfg, n_
             'clean': [clean_targets]}
 
 @create_task_object
-def get_hmmpress_task(db_filename, label=''):
+def get_hmmpress_task(db_filename, hmmer_dir, hmmer_cfg):
     
     name = 'hmmpress:' + os.path.basename(db_filename)
-
-    cmd = 'hmmpress ' + db_filename
+    exc = os.path.join(hmmer_dir, 'hmmpress')
+    cmd = '{exc} {db_filename}'.format(**locals())
 
     return {'name': name,
             'title': title_with_actions,
@@ -348,12 +352,14 @@ def get_hmmpress_task(db_filename, label=''):
             'clean': [clean_targets]}
 
 @create_task_object
-def get_hmmscan_task(input_filename, output_filename, db_filename, hmmscan_cfg, n_threads,):
+def get_hmmscan_task(input_filename, output_filename, db_filename, 
+                     n_threads, hmmer_dir, hmmer_cfg):
 
     name = 'hmmscan:' + os.path.basename(input_filename) + '.x.' + \
                 os.path.basename(db_filename)
-
-    cmd = 'hmmscan --cpu {n_threads} --domtblout {output_filename} \
+    
+    exc = os.path.join(hmmer_dir, 'hmmscan')
+    cmd = '{exc} --cpu {n_threads} --domtblout {output_filename} \
           {db_filename} {input_filename}'.format(**locals())
 
     return {'name': label,
@@ -364,12 +370,13 @@ def get_hmmscan_task(input_filename, output_filename, db_filename, hmmscan_cfg, 
             'clean': [clean_targets]}
 
 @create_task_object
-def get_transdecoder_orf_task(input_filename, transdecoder_cfg):
+def get_transdecoder_orf_task(input_filename, transdecoder_dir, transdecoder_cfg):
 
     name = 'TransDecoder.LongOrfs:' + os.path.basename(input_filename)
 
     min_prot_len = transdecoder_cfg['min_prot_len']
-    cmd = 'TransDecoder.LongOrfs -t {input_filename} -m {min_prot_len}'.format(**locals())
+    exc = os.path.join(transdecoder_dir, 'TransDecoder.LongOrfs')
+    cmd = '{exc} -t {input_filename} -m {min_prot_len}'.format(**locals())
 
     return {'name': label,
             'title': title_with_actions,
@@ -380,13 +387,14 @@ def get_transdecoder_orf_task(input_filename, transdecoder_cfg):
 
 # TransDecoder.Predict -t lamp10.fasta --retain_pfam_hits lamp10.fasta.pfam-A.out
 @create_task_object
-def get_transdecoder_predict_task(input_filename, db_filename, transdecoder_cfg, n_threads):
+def get_transdecoder_predict_task(input_filename, db_filename, n_threads, 
+                                  transdecoder_dir, transdecoder_cfg,):
 
     name = 'TransDecoder.Predict:' + os.path.basename(input_filename)
 
     orf_cutoff = transdecoder_cfg['orf_cutoff']
-
-    cmd = 'TransDecoder.Predict -t {input_filename} --retain_pfam_hits {db_filename} \
+    exc = os.path.join(transdecoder_dir, 'TransDecoder.Predict')
+    cmd = '{exc} -t {input_filename} --retain_pfam_hits {db_filename} \
             --retain_long_orfs {orf_cutoff} --cpu {n_threads}'.format(**locals())
     
     return {'name': label,
