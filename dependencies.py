@@ -5,6 +5,7 @@ import os
 from platform import system
 import sys
 
+import common
 from tasks import get_download_and_untar_task
 
 def which(program):
@@ -37,14 +38,15 @@ def which(program):
 
     return None
 
-def get_dammit_dir(config):
+def get_dammit_dir():
     return os.path.join(os.environ['HOME'],
-                        config['settings']['dammit_dir'])
+                        common.CONFIG['settings']['dammit_dir'])
 
-def get_dependency_dir(config):
-    return os.path.join(get_dammit_dir(config), config['settings']['dep_dir'])
+def get_dependency_dir():
+    return os.path.join(get_dammit_dir(common.CONFIG), \
+                        common.CONFIG['settings']['dep_dir'])
 
-def get_dependencies_tasks(config):
+def get_dependencies_tasks():
     '''Check for dependencies and generate tasks for them if missing.
 
     These tasks check for each dependency on the system PATH, and generate a
@@ -59,16 +61,13 @@ def get_dependencies_tasks(config):
         * BLAST+ 2.2.31
         * TransDecoder 2.0.1
 
-    Args:
-        config (dict): The config dictionary.
-
     Returns:
     dict: A dictionary of the final binary paths.
     list: The doit tasks.
 
     '''
 
-    dep_dir = get_dependency_dir(config)
+    dep_dir = get_dependency_dir()
 
     # This fails hard on Windows. For shame.
     # It also might fail hard on some linux distros, so probably should
@@ -85,7 +84,7 @@ def get_dependencies_tasks(config):
     hmmscan = which('hmmscan')
     hmmpress = which('hmmpress')
     if hmmscan is None or hmmpress is None:
-        url = config['settings']['hmmer']['url'][cur_platform]
+        url = common.CONFIG['settings']['hmmer']['url'][cur_platform]
         tasks.append(
             get_download_and_untar_task(url,
                                         dep_dir,
@@ -98,7 +97,7 @@ def get_dependencies_tasks(config):
     cmscan = which('cmscan')
     cmpress = which('cmpress')
     if cmscan is None or cmpress is None:
-        url = config['settings']['infernal']['url'][cur_platform]
+        url = common.CONFIG['settings']['infernal']['url'][cur_platform]
         tasks.append(
             get_download_and_untar_task(url,
                                         dep_dir,
@@ -114,7 +113,7 @@ def get_dependencies_tasks(config):
     if blastn is None or blastx is None \
         or tblastn is None or makeblastdb is None:
 
-        url = config['settings']['blast']['url'][cur_platform]
+        url = common.CONFIG['settings']['blast']['url'][cur_platform]
         tasks.append(
             get_download_and_untar_task(url,
                                         dep_dir,
@@ -126,7 +125,7 @@ def get_dependencies_tasks(config):
     # Check for BUSCO
     busco = which('BUSCO_v1.1b1.py')
     if busco is None:
-        url = config['settings']['busco']['url']
+        url = common.CONFIG['settings']['busco']['url']
         tasks.append(
             get_download_and_untar_task(url,
                                         dep_dir,
@@ -138,7 +137,7 @@ def get_dependencies_tasks(config):
     longorfs = which('TransDecoder.LongOrfs')
     predict = which('TransDecoder.Predict')
     if longorfs is None or predict is None:
-        url = config['settings']['busco']['url']
+        url = common.CONFIG['settings']['busco']['url']
         tasks.append(
             get_download_and_untar_task(url,
                                         dep_dir,
@@ -150,17 +149,17 @@ def get_dependencies_tasks(config):
     return paths, tasks
 
 
-def run_install_dependecies(config, tasks, args=['run']):
+def run_install_dependecies(tasks, args=['run']):
     '''
     This set of tasks keeps its own doit db in the db folder to share
     them between all runs.
     '''
     
-    dep_dir = dependencies.get_dependency_dir(config)
+    dep_dir = get_dependency_dir()
     doit_config = {
                     'backend': DB_BACKEND,
                     'verbosity': DOIT_VERBOSITY,
                     'dep_file': os.path.join(dep_dir, 'dependencies.doit.db')
                   }
 
-    run_tasks(tasks, args, config=doit_config)
+    common.run_tasks(tasks, args, config=doit_config)

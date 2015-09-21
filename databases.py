@@ -1,9 +1,14 @@
 #!/usr/bin/enb python
 from __future__ import print_function
 
-from tasks import *
+import common
+from tasks import get_download_and_gunzip_task,
+                  get_hmmpress_task,
+                  get_cmpress_task,
+                  get_blast_format_task
 
-def get_databases_tasks(resources, db_dir, busco_db, full):
+
+def get_databases_tasks(common.DATABASES, db_dir, busco_db, full):
     '''Generate tasks for installing the bundled databases. 
     
     These tasks download the databases, unpack them, and format them for use.
@@ -17,7 +22,6 @@ def get_databases_tasks(resources, db_dir, busco_db, full):
     User-supplied databases are downloaded separately.
 
     Args:
-        resources (dict): The resources dictionary.
         db_dir (str): Directory where the databases wille be stored.
         busco_db (str): The BUSCO group to use.
         full (bool): Whether to do a full run and get UNIREF90 as well.
@@ -37,9 +41,9 @@ def get_databases_tasks(resources, db_dir, busco_db, full):
     databases = {}
 
     # Get Pfam-A and prepare it for use with hmmer
-    PFAM = os.path.join(db_dir, resources['pfam']['filename'])
+    PFAM = os.path.join(db_dir, common.DATABASES['pfam']['filename'])
     tasks.append(
-        get_download_and_gunzip_task(resources['pfam']['url'], PFAM)
+        get_download_and_gunzip_task(common.DATABASES['pfam']['url'], PFAM)
     )
     tasks.append(
         get_hmmpress_task(PFAM)
@@ -47,9 +51,9 @@ def get_databases_tasks(resources, db_dir, busco_db, full):
     databases['PFAM'] = os.path.abspath(PFAM)
 
     # Get Rfam and prepare it for use with Infernal
-    RFAM = os.path.join(db_dir, resources['rfam']['filename'])
+    RFAM = os.path.join(db_dir, common.DATABASES['rfam']['filename'])
     tasks.append(
-        get_download_and_gunzip_task(resources['rfam']['url'], RFAM)
+        get_download_and_gunzip_task(common.DATABASES['rfam']['url'], RFAM)
     )
     tasks.append(
         get_cmpress_task(RFAM)
@@ -57,13 +61,13 @@ def get_databases_tasks(resources, db_dir, busco_db, full):
     databases['RFAM'] = os.path.abspath(RFAM)
 
     # Get OrthoDB and prepare it for BLAST use
-    ORTHODB = os.path.join(db_dir, resources['orthodb']['filename'])
+    ORTHODB = os.path.join(db_dir, common.DATABASES['orthodb']['filename'])
     tasks.append(
-        get_download_and_gunzip_task(resources['orthodb']['url'], ORTHODB)
+        get_download_and_gunzip_task(common.DATABASES['orthodb']['url'], ORTHODB)
     )
     tasks.append(
         get_blast_format_task(ORTHODB, ORTHODB + '.db', 
-                              resources['orthodb']['db_type'])
+                              common.DATABASES['orthodb']['db_type'])
     )
     ORTHODB += '.db'
     databases['ORTHODB'] = os.path.abspath(ORTHODB)
@@ -72,7 +76,7 @@ def get_databases_tasks(resources, db_dir, busco_db, full):
     BUSCO = os.path.join(db_dir, 'buscodb')
     tasks.append(
         # That top-level path is given to the download task:
-        get_download_and_untar_task(resources['busco'][busco_db]['url'], 
+        get_download_and_untar_task(common.DATABASES['busco'][busco_db]['url'], 
                                     BUSCO,
                                     label=busco_db)
     )
@@ -81,13 +85,13 @@ def get_databases_tasks(resources, db_dir, busco_db, full):
 
     # Get uniref90 if the user specifies
     if full:
-        UNIREF = os.path.join(resources['uniref90']['filename'])
+        UNIREF = os.path.join(common.DATABASES['uniref90']['filename'])
         tasks.append(
-            get_download_and_gunzip_task(resources['uniref90']['url'], UNIREF)
+            get_download_and_gunzip_task(common.DATABASES['uniref90']['url'], UNIREF)
         )
         tasks.append(
             get_blast_format_task(UNIREF, UNIREF + '.db',
-                                  resources['uniref90']['db_type'])
+                                  common.DATABASES['uniref90']['db_type'])
         )
         UNIREF += '.db'
         databases['UNIREF'] = os.path.abspath(UNIREF)
