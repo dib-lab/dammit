@@ -2,13 +2,23 @@
 from __future__ import print_function
 
 import argparse
+import sys
+import os
 
+import dependencies
 from tasks import *
 
 from doit.cmd_base import TaskLoader
 from doit.doit_cmd import DoitMain
 
+DOIT_BACKEND = 'sqlite3'
+DOIT_VERBOSITY = 2
 
+# Configuration stuff!
+with open('.databases.json', 'r') as fp:
+    DATABASES = json.load(fp)
+with open('.config.json', 'r') as fp:
+    CONFIG = json.load(fp)
 
 def run_tasks(tasks, args, config={'verbosity': 2}):
     
@@ -22,51 +32,49 @@ def run_tasks(tasks, args, config={'verbosity': 2}):
    
     DoitMain(Loader()).run(args)
 
+def handle_databases():
+    pass
 
-def install(resources, config, db_dir, args, cmd='run'):
-    '''
+def handle_dependencies():
+    pass
 
-
-    Current binary distributions being used are:
-
-
-    This set of tasks keeps its own doit db in the db folder to share
-    them between all runs.
-    '''
-    
-
-    doit_config = {
-                    'backend': 'sqlite3',
-                    'verbosity': 2,
-                    'dep_file': dep_file
-                  }
-
-    db_dir = os.path.abspath(db_dir)
-    databases = {}
-
-
+def handle_annotate():
+    pass
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--transcriptome', required=True)
-    parser.add_argument('--output-dir', default=None)
+   
     parser.add_argument('--database-dir', default=None)
-    parser.add_argument('--busco-group', default='metazoa')
-    parser.add_argument('--n_threads', type=int, default=1)
-    parser.add_argument('--user-databases', nargs='+')
     parser.add_argument('--debug', action='store_true', default=False)
     parser.add_argument('--full', action='store_true', default=False,
                         help='Do full annotation with uniref90')
+    
+    subparsers = parser.add_subparsers()
+    
+    databases_parser = subparsers.add_parser('databases')
+    databases_parser.add_argument('--install', action='store_true',
+                                  default=False)
+    databases_parser.set_defaults(func=handle_databases)
+
+    dependencies_parser = subparsers.add_parser('dependencies')
+    dependencies_parser.add_argument('--install', action='store_true',
+                                     default=False)
+    dependencies_parser.set_defaults(func=handle_dependencies)
+
+    annotate_parser = subparsers.add_parser('annotate')
+    annotate_parser.add_argument('-o', '--output-dir', default=None)
+    annotate_parser.add_argument('--busco-group', default='metazoa')
+    annotate_parser.add_argument('--n_threads', type=int, default=1)
+    annotate_parser.add_argument('--user-databases', nargs='+')
+    annotate_parser.add_argument('transcriptome')
+    annotate_parser.set_defaults(func=handle_annotate)
+
     args, doit_args = parser.parse_known_args()
-    # Get the config metadata
-    with open('resources.json', 'r') as fp:
-        resources = json.load(fp)
-    with open('config.json', 'r') as fp:
-        config = json.load(fp)
+
 
     # Print out the infos~
-    print(config['meta']['description'], file=sys.stderr)
-    print(', '.join(config['meta']['authors']), config['meta']['date'], 
+    print(CONFIG['meta']['description'], file=sys.stderr)
+    print(', '.join(CONFIG['meta']['authors']), CONFIG['meta']['date'], 
           file=sys.stderr)
 
     # By default, we store databases in the home directory
