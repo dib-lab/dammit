@@ -81,7 +81,8 @@ def get_download_and_gunzip_task(url, target_fn):
 def get_download_and_untar_task(url, target_dir, label):
 
     cmd1 = 'mkdir -p {target_dir}; curl {url} | tar -xz -C {target_dir}'.format(**locals())
-    name = 'download_and_untar:' + target_dir.strip('/') + '-' + label
+    name = 'download_and_untar:'  + \
+            os.path.basename(os.path.dirname(target_dir)) + '-' + label
     done = os.path.join(target_dir, name + '.done')
     cmd2 = 'touch {done}'.format(done=done)
 
