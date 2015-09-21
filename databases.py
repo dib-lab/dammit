@@ -94,4 +94,14 @@ def get_databases_tasks(resources, db_dir, busco_db, full):
 
     return databases, tasks
 
+def run_install_databases(db_dir, tasks, args=['run']):
+    
+    doit_config = {
+                    'backend': DB_BACKEND,
+                    'verbosity': DOIT_VERBOSITY,
+                    'dep_file': os.path.join(db_dir, 'databases.doit.db')
+                  }
+
+    run_tasks(tasks, args, config=doit_config)
+
 
