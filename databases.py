@@ -2,13 +2,13 @@
 from __future__ import print_function
 
 import common
-from tasks import get_download_and_gunzip_task,
-                  get_hmmpress_task,
-                  get_cmpress_task,
+from tasks import get_download_and_gunzip_task, \
+                  get_hmmpress_task, \
+                  get_cmpress_task, \
                   get_blast_format_task
 
 
-def get_databases_tasks(common.DATABASES, db_dir, busco_db, full):
+def get_database_tasks(db_dir, busco_db, full):
     '''Generate tasks for installing the bundled databases. 
     
     These tasks download the databases, unpack them, and format them for use.
@@ -101,8 +101,8 @@ def get_databases_tasks(common.DATABASES, db_dir, busco_db, full):
 def run_install_databases(db_dir, tasks, args=['run']):
     
     doit_config = {
-                    'backend': DB_BACKEND,
-                    'verbosity': DOIT_VERBOSITY,
+                    'backend': common.DOIT_BACKEND,
+                    'verbosity': common.DOIT_VERBOSITY,
                     'dep_file': os.path.join(db_dir, 'databases.doit.db')
                   }
 
