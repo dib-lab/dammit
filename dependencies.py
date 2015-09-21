@@ -43,10 +43,10 @@ def get_dammit_dir():
                         common.CONFIG['settings']['dammit_dir'])
 
 def get_dependency_dir():
-    return os.path.join(get_dammit_dir(common.CONFIG), \
+    return os.path.join(get_dammit_dir(), \
                         common.CONFIG['settings']['dep_dir'])
 
-def get_dependencies_tasks():
+def get_dependency_tasks():
     '''Check for dependencies and generate tasks for them if missing.
 
     These tasks check for each dependency on the system PATH, and generate a
@@ -149,7 +149,7 @@ def get_dependencies_tasks():
     return paths, tasks
 
 
-def run_install_dependecies(tasks, args=['run']):
+def run_install_dependencies(tasks, args=['run']):
     '''
     This set of tasks keeps its own doit db in the db folder to share
     them between all runs.
@@ -157,8 +157,8 @@ def run_install_dependecies(tasks, args=['run']):
     
     dep_dir = get_dependency_dir()
     doit_config = {
-                    'backend': DB_BACKEND,
-                    'verbosity': DOIT_VERBOSITY,
+                    'backend': common.DOIT_BACKEND,
+                    'verbosity': common.DOIT_VERBOSITY,
                     'dep_file': os.path.join(dep_dir, 'dependencies.doit.db')
                   }
 
