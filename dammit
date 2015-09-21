@@ -5,41 +5,85 @@ import argparse
 import sys
 import os
 
+import common
+import annotate
+import databases
 import dependencies
-from tasks import *
+from tasks import print_tasks
 
-from doit.cmd_base import TaskLoader
-from doit.doit_cmd import DoitMain
+def get_database_dir(args):
+    # By default, we store databases in the home directory
+    db_dir = args.database_dir
+    if db_dir is None:
+        db_dir = os.path.join(os.environ['HOME'], 
+                              common.CONFIG['settings']['db_dir'])
+    return os.path.abspath(db_dir)
 
-DOIT_BACKEND = 'sqlite3'
-DOIT_VERBOSITY = 2
 
-# Configuration stuff!
-with open('.databases.json', 'r') as fp:
-    DATABASES = json.load(fp)
-with open('.config.json', 'r') as fp:
-    CONFIG = json.load(fp)
+def handle_databases(args):
 
-def run_tasks(tasks, args, config={'verbosity': 2}):
+    # TODO: Check that directory exists
+    db_dir = get_database_dir(args)
+    print('DB_DIR', db_dir, file=sys.stderr)
+
+    databases, tasks = databases.get_database_tasks(db_dir,
+                                                    args.busco_group,
+                                                    args.full)
+    if args.install:
+        databases.run_install_databases(db_dir, tasks)
+    else:
+        databases.run_install_databases(db_dir, tasks, ['list'])
+
+
+def handle_dependencies(args):
     
-    if type(tasks) is not list:
-        raise TypeError('tasks must be a list')
+    dep_dir = dependencies.get_dependency_dir()
+    print('DEP_DIR', dep_dir, file=sys.stderr)
+    try:
+        os.makedirs(dep_dir)
+    except OSError:
+        # Already exists
+        pass
+
+    paths, tasks = dependencies.get_dependency_tasks()
    
-    class Loader(TaskLoader):
-        @staticmethod
-        def load_tasks(cmd, opt_values, pos_args):
-            return tasks, config
-   
-    DoitMain(Loader()).run(args)
+    if args.debug:
+        print_tasks(tasks)
 
-def handle_databases():
-    pass
+    if args.install:
+        dependencies.run_install_dependencies(tasks)
+    else:
+        dependencies.run_install_dependencies(tasks, ['list'])
 
-def handle_dependencies():
-    pass
 
-def handle_annotate():
-    pass
+def handle_annotate(args):
+
+    transcriptome = args.transcriptome
+    out_dir = args.output_dir
+    if out_dir is None:
+        out_dir = transcriptome + '.dammit'
+    out_dir = os.path.abspath(out_dir)
+
+    try:
+        os.mkdir(out_dir)
+    except OSError:
+        # Already exists, carry on
+        pass
+
+    prog_paths, _ = dependencies.get_install_dependencies_tasks()
+
+    db_dir = get_database_dir(args)
+    databases, _ = databases.get_database_tasks(db_dir, 
+                                                args.busco_group,
+                                                args.full)
+
+    tasks = annotate.get_annotate_tasks(transcriptome, out_dir,
+                                        prog_paths, databases)
+
+    if args.debug:
+        print_tasks(tasks)
+
+    annotate.run_annotate_tasks(transcriptome, out_dir, tasks)
 
 def main():
     parser = argparse.ArgumentParser()
@@ -71,82 +115,12 @@ def main():
 
     args, doit_args = parser.parse_known_args()
 
-
     # Print out the infos~
-    print(CONFIG['meta']['description'], file=sys.stderr)
-    print(', '.join(CONFIG['meta']['authors']), CONFIG['meta']['date'], 
+    print(common.CONFIG['meta']['description'], file=sys.stderr)
+    print(', '.join(common.CONFIG['meta']['authors']), common.CONFIG['meta']['date'], 
           file=sys.stderr)
 
-    # By default, we store databases in the home directory
-    db_dir = args.database_dir
-    if db_dir is None:
-        db_dir = os.path.join(os.environ['HOME'], 
-                              config['settings']['db_dir'])
-    db_dir = os.path.abspath(db_dir)
-    print('DB_DIR', db_dir, file=sys.stderr)
-
-    transcriptome = args.transcriptome
-    out_dir = args.output_dir
-    if out_dir is None:
-        out_dir = transcriptome + '.dammit'
-    out_dir = os.path.abspath(out_dir)
-
-    try:
-        os.mkdir(out_dir)
-    except OSError:
-        # Already exists, carry on
-        pass
-
-    # Main task list
-    TASKS = []
-
-    '''
-    Set up all the databases. First, run prep(...) to get all the
-    dammit databases. Then, prep the user supplied databases in
-    the output directory.
-    '''
-
-    DAMMIT_DATABASES = prep(resources, config, db_dir, args, cmd='run')
-
-    USER_DATABASES = []
-    if args.user_databases:
-        for db in args.databases:
-            db_name = os.path.join(out_dir, db + '.db')
-            TASKS.append(
-                get_blast_format_task(db, db_name, 'prot')
-            )
-            USER_DATABASES.append(db_name)
-
-    '''
-    Set up doit's config for the actual analysis tasks.
-    We'll put the doit database for these tasks into the output
-    directory so that we don't end up scattering them around the
-    filesystem, or worse, with one master db containing dependency
-    metadata from every analysis ever run by the user!
-    '''
-
-    doit_config = {
-                    'backend': 'sqlite3',
-                    'verbosity': 2,
-                    'dep_file': os.path.join(out_dir, '.' +
-                                             os.path.basename(transcriptome) +
-                                             '.doit.db')
-                  }
-
-    '''
-    Calculate assembly information. First it runs some basic stats like N50 and
-    number of contigs, and uses the HyperLogLog counter from khmer to
-    estimate unique k-mers for checking redundancy. Then it runs BUSCO to
-    assess completeness. These tasks are grouped under the 'assess' task.
-    '''
-
-    assess_tasks = []
-    assess_tasks.append(
-        get_transcriptome_stats_task(transcriptome, out_dir)
-    )
-    
-    TASKS.extend(assess_tasks)
-    TASKS.append(get_group_task('assess', assess_tasks))
+    args.func(args)
 
     '''
     BLAST
@@ -187,16 +161,7 @@ def main():
     '''
     BUSCO
     '''
-    busco_cfg = config['settings']['busco']
-    for fn in [assembly_fn, resources_df.ix['petMar2_cdna'].filename]:
-        for db in ['metazoa', 'vertebrata']:
-            output_dir = '.'.join([fn, db, busco_cfg['output_suffix']])
-            busco_tasks.append(busco_task(fn, output_dir, 
-                               os.path.join(busco_cfg['db_dir'], db), 
-                               'trans', busco_cfg))
 
-    tasks.extend(busco_tasks)
-    tasks.append(group_task('busco', [t.name for t in busco_tasks]))
     '''
     infernal and Rfam
     '''
@@ -216,11 +181,6 @@ def main():
     tasks.append(ann_task)
     '''
     
-    if args.debug:
-        print_tasks(TASKS)
 
-    if doit_args:
-        run_tasks(TASKS, doit_args, config=doit_config)
-
-
-main()
+if __name__ == '__main__':
+    main()
