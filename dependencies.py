@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 from __future__ import print_function
 
+import os
 from platform import system
-from os.path import exists
 import sys
 
-from tasks import *
+from tasks import get_download_and_untar_task
 
 def which(program):
     '''Checks whether the given program (or program path) is valid and
@@ -38,38 +38,26 @@ def which(program):
     return None
 
 def get_dammit_dir(config):
-    return os.path.join(os.eviron['HOME'],
+    return os.path.join(os.environ['HOME'],
                         config['settings']['dammit_dir'])
 
-
-def check_dependencies(paths):
-    '''Check that the given paths exist.
-
-    
-    '''
-    for key, filename in paths:
-        if not exists(filename):
-            raise RuntimeError(
-                '*** Failed to confirm path for {key}: {filename}. '\
-                'Has the config file been modified?')
-
+def get_dependency_dir(config):
+    return os.path.join(get_dammit_dir(config), config['settings']['dep_dir'])
 
 def get_dependencies_tasks(config):
-    '''Generate tasks for installing the dependencies.
+    '''Check for dependencies and generate tasks for them if missing.
 
-    These tasks download the dependencies and unpack them. Unlike the database
+    These tasks check for each dependency on the system PATH, and generate a
+    task to download and unpack them if they're missing. Unlike the database
     tasks, these do not have the option of being put anywhere but in
-    $HOME/.dammit/dependencies. The current binary dependencies included with
-    dammit are:
+    $HOME/.dammit/dependencies. The current binary dependencencies which dammit
+    will download when missing are:
 
         * BUSCO v1.1b
         * HMMER 3.1b2
         * Infernal 1.1.1
         * BLAST+ 2.2.31
         * TransDecoder 2.0.1
-
-    This function also detects the operating system and selects the correct
-    paths accordingly.
 
     Args:
         config (dict): The config dictionary.
@@ -80,7 +68,7 @@ def get_dependencies_tasks(config):
 
     '''
 
-    dep_dir = os.path.join(get_dammit_dir(), config['settings']['dep_dir'])
+    dep_dir = get_dependency_dir(config)
 
     # This fails hard on Windows. For shame.
     # It also might fail hard on some linux distros, so probably should
@@ -90,22 +78,89 @@ def get_dependencies_tasks(config):
     tasks = []
     paths = {}
 
-    tasks.append(
-        get_download_and_untar_task(config['settings']['dep_url'],
-                                    dep_dir,
-                                    label='dependencies')
-    )
+    # Striping the .tar.gz
+    strip_ext = lambda s: s[:-7]
 
-    try:
-        paths['HMMER'] = config['settings']['hmmer']['path'][cur_platform]
-        paths['INFERNAL'] = config['settings']['infernal']['path'][cur_platform]
-        paths['BUSCO'] = config['settings']['busco']['path']
-        paths['TRANSDECODER'] = config['settings']['transdecoder']['path']
-        paths['BLAST'] = 
-    except KeyError as e:
-        raise RuntimeError(
-            'Something went wrong accessing the config dictionary --'\
-            ' has it been modified?')
+    # Check for hmmer
+    hmmscan = which('hmmscan')
+    hmmpress = which('hmmpress')
+    if hmmscan is None or hmmpress is None:
+        url = config['settings']['hmmer']['url'][cur_platform]
+        tasks.append(
+            get_download_and_untar_task(url,
+                                        dep_dir,
+                                        label='hmmer')
+        )
+        hmmer_dir = strip_ext(os.path.basename(url))
+        paths['hmmer'] = os.path.join(dep_dir, hmmer_dir)
+
+    # Check for infernal
+    cmscan = which('cmscan')
+    cmpress = which('cmpress')
+    if cmscan is None or cmpress is None:
+        url = config['settings']['infernal']['url'][cur_platform]
+        tasks.append(
+            get_download_and_untar_task(url,
+                                        dep_dir,
+                                        label='infernal')
+        )
+        infernal_dir = strip_ext(os.path.basename(url))
+        paths['infernal'] = os.path.join(dep_dir, infernal_dir)
+
+    blastn = which('blastn')
+    blastx = which('blastx')
+    tblastn = which('tblastn')
+    makeblastdb = which('makeblastdb')
+    if blastn is None or blastx is None \
+        or tblastn is None or makeblastdb is None:
+
+        url = config['settings']['blast']['url'][cur_platform]
+        tasks.append(
+            get_download_and_untar_task(url,
+                                        dep_dir,
+                                        label='blast')
+        )
+        blast_dir = strip_ext(os.path.basename(url))
+        paths['blast'] = os.path.join(dep_dir, blast_dir)
+
+    # Check for BUSCO
+    busco = which('BUSCO_v1.1b1.py')
+    if busco is None:
+        url = config['settings']['busco']['url']
+        tasks.append(
+            get_download_and_untar_task(url,
+                                        dep_dir,
+                                        label='busco')
+        )
+        busco_dir = strip_ext(os.path.basename(url))
+        paths['busco'] = os.path.join(dep_dir, busco_dir)
+
+    longorfs = which('TransDecoder.LongOrfs')
+    predict = which('TransDecoder.Predict')
+    if longorfs is None or predict is None:
+        url = config['settings']['busco']['url']
+        tasks.append(
+            get_download_and_untar_task(url,
+                                        dep_dir,
+                                        label='transdecoder')
+        )
+        transdecoder_dir = strip_ext(os.path.basename(url))
+        paths['transdecoder'] = os.path.join(dep_dir, transdecoder_dir)
 
     return paths, tasks
 
+
+def run_install_dependecies(config, tasks, args=['run']):
+    '''
+    This set of tasks keeps its own doit db in the db folder to share
+    them between all runs.
+    '''
+    
+    dep_dir = dependencies.get_dependency_dir(config)
+    doit_config = {
+                    'backend': DB_BACKEND,
+                    'verbosity': DOIT_VERBOSITY,
+                    'dep_file': os.path.join(dep_dir, 'dependencies.doit.db')
+                  }
+
+    run_tasks(tasks, args, config=doit_config)
