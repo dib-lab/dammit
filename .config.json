@@ -7,7 +7,7 @@
 
     "settings": {
 		"dammit_dir": ".dammit",
-		"dep_dir": "depencies",
+		"dep_dir": "dependencies",
         "db_dir": "databases",
         
         "blast": {
