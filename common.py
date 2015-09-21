@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 from __future__ import print_function
 
+import json
+
 from doit.cmd_base import TaskLoader
 from doit.doit_cmd import DoitMain
 
