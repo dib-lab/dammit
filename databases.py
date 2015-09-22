@@ -1,14 +1,17 @@
 #!/usr/bin/enb python
 from __future__ import print_function
 
+import os
+
 import common
 from tasks import get_download_and_gunzip_task, \
                   get_hmmpress_task, \
                   get_cmpress_task, \
-                  get_blast_format_task
+                  get_blast_format_task, \
+                  get_download_and_untar_task
 
 
-def get_database_tasks(db_dir, busco_db, full):
+def get_database_tasks(db_dir, prog_paths, busco_db, full):
     '''Generate tasks for installing the bundled databases. 
     
     These tasks download the databases, unpack them, and format them for use.
@@ -45,18 +48,22 @@ def get_database_tasks(db_dir, busco_db, full):
     tasks.append(
         get_download_and_gunzip_task(common.DATABASES['pfam']['url'], PFAM)
     )
+    hmmer_dir = prog_paths.get('hmmer', '')
     tasks.append(
-        get_hmmpress_task(PFAM)
+        get_hmmpress_task(PFAM, common.CONFIG['settings']['hmmer'],
+                          hmmer_dir=hmmer_dir)
     )
     databases['PFAM'] = os.path.abspath(PFAM)
 
     # Get Rfam and prepare it for use with Infernal
     RFAM = os.path.join(db_dir, common.DATABASES['rfam']['filename'])
+    infernal_dir = prog_paths.get('infernal', '')
     tasks.append(
         get_download_and_gunzip_task(common.DATABASES['rfam']['url'], RFAM)
     )
     tasks.append(
-        get_cmpress_task(RFAM)
+        get_cmpress_task(RFAM, common.CONFIG['settings']['infernal'],
+                         infernal_dir=infernal_dir)
     )
     databases['RFAM'] = os.path.abspath(RFAM)
 
@@ -65,9 +72,11 @@ def get_database_tasks(db_dir, busco_db, full):
     tasks.append(
         get_download_and_gunzip_task(common.DATABASES['orthodb']['url'], ORTHODB)
     )
+    blast_dir = prog_paths.get('blast', '')
     tasks.append(
         get_blast_format_task(ORTHODB, ORTHODB + '.db', 
-                              common.DATABASES['orthodb']['db_type'])
+                              common.DATABASES['orthodb']['db_type'],
+                              blast_dir=blast_dir)
     )
     ORTHODB += '.db'
     databases['ORTHODB'] = os.path.abspath(ORTHODB)
@@ -91,14 +100,15 @@ def get_database_tasks(db_dir, busco_db, full):
         )
         tasks.append(
             get_blast_format_task(UNIREF, UNIREF + '.db',
-                                  common.DATABASES['uniref90']['db_type'])
+                                  common.DATABASES['uniref90']['db_type'],
+                                  blast_dir=blast_dir)
         )
         UNIREF += '.db'
         databases['UNIREF'] = os.path.abspath(UNIREF)
 
     return databases, tasks
 
-def run_install_databases(db_dir, tasks, args=['run']):
+def run_database_tasks(db_dir, tasks, args=['run']):
     
     doit_config = {
                     'backend': common.DOIT_BACKEND,
