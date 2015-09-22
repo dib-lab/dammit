@@ -90,25 +90,54 @@ def handle_annotate(args):
 
 def main():
     parser = argparse.ArgumentParser()
-   
-    parser.add_argument('--database-dir', default=None)
+    # Debug can be used with all subcommands
     parser.add_argument('--debug', action='store_true', default=False)
-    parser.add_argument('--full', action='store_true', default=False,
-                        help='Do full annotation with uniref90')
-    
+    # Add subcommand parsers
     subparsers = parser.add_subparsers()
     
+    '''
+    `dammit databases` subcommand. This will run tasks to check for and
+    install the databases. By default, only check their status; with
+    `--install`, download and/or prepare them as well.
+    '''
     databases_parser = subparsers.add_parser('databases')
+    databases_parser.add_argument('--database-dir', default=None)
     databases_parser.add_argument('--install', action='store_true',
                                   default=False)
+    databases_parser.add_argument('--full', action='store_true', default=False,
+                        help='Do full annotation with uniref90')
+    databases_parser.add_argument('--busco-group', default='metazoa')
     databases_parser.set_defaults(func=handle_databases)
 
+    '''
+    `dammit dependencies` subcommand. Checks for necessary executables
+    on the system path and downloads them to the dammit folder if not present.
+    Like the databases subcommand, takes an `install` option, which will put
+    dependencies in the $HOME/.dammit/dependencies directory and give absolute
+    paths to the task creators.
+    '''
     dependencies_parser = subparsers.add_parser('dependencies')
     dependencies_parser.add_argument('--install', action='store_true',
                                      default=False)
     dependencies_parser.set_defaults(func=handle_dependencies)
 
+    '''
+    `dammit annotate` subcommand, which drives the primary program. The
+    `--database-dir` and `--full` flags are the same as in the `databases`
+    subcommand. `-o/--output-dir` specifies the directory where the results will
+    be stored, and also the working directory where all annotate tasks will be
+    executed. `--busco-group` specifies the BUSCO database to use; this must be
+    one of BUSCOs builtins. `--n_threads` specifies the number of threads for
+    each individual program to use (when applicable). `--user-databases` is an
+    optional list of protein databases to run additional homology searches
+    against and pull annotation information from; dammit can only take what it
+    finds from these, so uninformative fasta headers will yield uninformative
+    results. Finally, `transcriptome` is the transcriptome assembly to annotate.
+    '''
     annotate_parser = subparsers.add_parser('annotate')
+    annotate_parser.add_argument('--database-dir', default=None)
+    annotate_parser.add_argument('--full', action='store_true', default=False,
+                        help='Do full annotation with uniref90')
     annotate_parser.add_argument('-o', '--output-dir', default=None)
     annotate_parser.add_argument('--busco-group', default='metazoa')
     annotate_parser.add_argument('--n_threads', type=int, default=1)
@@ -116,7 +145,8 @@ def main():
     annotate_parser.add_argument('transcriptome')
     annotate_parser.set_defaults(func=handle_annotate)
 
-    args, doit_args = parser.parse_known_args()
+    #args, doit_args = parser.parse_known_args()
+    args = parser.parse_args()
 
     # Print out the infos~
     print(common.CONFIG['meta']['description'], file=sys.stderr)
