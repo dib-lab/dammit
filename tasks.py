@@ -147,10 +147,11 @@ def get_create_folder_task(folder):
             'clean': [clean_targets] }
 
 @create_task_object
-def get_blast_format_task(db_fn, db_out_fn, db_type):
+def get_blast_format_task(db_fn, db_out_fn, db_type, blast_dir=''):
     assert db_type in ['nucl', 'prot']
 
-    cmd = 'makeblastdb -in {db_fn} -dbtype {db_type} -out {db_out_fn}'.format(**locals())
+    exc = os.path.join(blast_dir, 'makeblastdb')
+    cmd = '{exc} -in {db_fn} -dbtype {db_type} -out {db_out_fn}'.format(**locals())
 
     target_fn = ''
     if db_type == 'nucl':
@@ -167,7 +168,7 @@ def get_blast_format_task(db_fn, db_out_fn, db_type):
             'file_dep': [db_fn],
             'clean': [clean_targets, 'rm -f {target_fn}.*'.format(**locals())] }
 
-def get_blast_task(query, db, prog, out_fn, n_threads, blast_dir, blast_cfg):
+def get_blast_task(query, db, prog, out_fn, n_threads, blast_cfg, blast_dir=''):
     assert prog in ['blastp', 'blastx', 'blastn', 'tblastn', 'tblastx']
     name = 'blast:' + os.path.basename(out_fn)
 
@@ -186,7 +187,7 @@ def get_blast_task(query, db, prog, out_fn, n_threads, blast_dir, blast_cfg):
             'clean': [clean_targets]}
 
 @create_task_object
-def link_file_task(src, dst=''):
+def get_link_file_task(src, dst=''):
     ''' Soft-link file to the current directory
     '''
     cmd = 'ln -fs {src} {dst}'.format(src=src, dst=dst)
@@ -272,6 +273,7 @@ def get_samtools_sort_task(bam_fn):
             'targets': [bam_fn + '.sorted.bam'],
             'file_dep': [bam_fn],
             'clean': [clean_targets] }
+
 @create_task_object
 def get_cat_task(file_list, target_fn):
 
@@ -285,30 +287,28 @@ def get_cat_task(file_list, target_fn):
             'clean': [clean_targets]}
 
 @create_task_object
-def get_busco_task(input_filename, output_dir, busco_db_dir, input_type,
-                   n_threads, busco_dir, busco_cfg):
+def get_busco_task(input_filename, output_name, busco_db_dir, input_type,
+                   n_threads, busco_cfg, busco_dir=''):
     
     name = 'busco:' + os.path.basename(input_filename) + '-' + os.path.basename(busco_db_dir)
 
     assert input_type in ['genome', 'OGS', 'trans']
     exc = os.path.join(busco_dir, 'BUSCO_v1.1b1.py')
+    # BUSCO chokes on file paths as output names
+    output_name = os.path.basename(output_name)
 
-    cmd = 'python3 {exc} -in {in_fn} -o {out_dir} -l {db_dir} '\
-            '-m {in_type} -c {n_threads}'.format(busco_path=busco_path, 
-            in_fn=input_filename, out_dir=output_dir, db_dir=busco_db_dir, 
-            in_type=input_type, n_threads=n_threads)
+    cmd = 'python3 {exc} -in {input_filename} -o {output_name} -l {busco_db_dir} '\
+            '-m {input_type} -c {n_threads}'.format(**locals())
 
     return {'name': name,
             'title': title_with_actions,
             'actions': [cmd],
-            'targets': ['run_' + output_dir, 
-                        os.path.join('run_' + output_dir, 'short_summary_' + output_dir.rstrip('/'))],
             'file_dep': [input_filename],
             'uptodate': [run_once],
-            'clean': [(clean_folder, ['run_' + output_dir])]}
+            'clean': [(clean_folder, ['run_' + output_name])]}
 
 @create_task_object
-def get_cmpress_task(db_filename, infernal_dir, infernal_cfg):
+def get_cmpress_task(db_filename, infernal_cfg, infernal_dir=''):
 
     exc = os.path.join(infernal_dir, 'cmpress')
     cmd = '{exc} {db_filename}'.format(**locals())
@@ -322,7 +322,7 @@ def get_cmpress_task(db_filename, infernal_dir, infernal_cfg):
 
 @create_task_object
 def get_cmscan_task(input_filename, output_filename, db_filename, 
-                    n_threads, infernal_dir, infernal_cfg):
+                    n_threads, infernal_cfg, infernal_dir=''):
     
     name = 'cmscan:' + os.path.basename(input_filename) + '.x.' + \
            os.path.basename(db_filename)
@@ -339,7 +339,7 @@ def get_cmscan_task(input_filename, output_filename, db_filename,
             'clean': [clean_targets]}
 
 @create_task_object
-def get_hmmpress_task(db_filename, hmmer_dir, hmmer_cfg):
+def get_hmmpress_task(db_filename, hmmer_cfg, hmmer_dir=''):
     
     name = 'hmmpress:' + os.path.basename(db_filename)
     exc = os.path.join(hmmer_dir, 'hmmpress')
@@ -354,7 +354,7 @@ def get_hmmpress_task(db_filename, hmmer_dir, hmmer_cfg):
 
 @create_task_object
 def get_hmmscan_task(input_filename, output_filename, db_filename, 
-                     n_threads, hmmer_dir, hmmer_cfg):
+                     n_threads, hmmer_cfg, hmmer_dir=''):
 
     name = 'hmmscan:' + os.path.basename(input_filename) + '.x.' + \
                 os.path.basename(db_filename)
@@ -371,7 +371,8 @@ def get_hmmscan_task(input_filename, output_filename, db_filename,
             'clean': [clean_targets]}
 
 @create_task_object
-def get_transdecoder_orf_task(input_filename, transdecoder_dir, transdecoder_cfg):
+def get_transdecoder_orf_task(input_filename, transdecoder_cfg,
+                              transdecoder_dir=''):
 
     name = 'TransDecoder.LongOrfs:' + os.path.basename(input_filename)
 
@@ -389,7 +390,7 @@ def get_transdecoder_orf_task(input_filename, transdecoder_dir, transdecoder_cfg
 # TransDecoder.Predict -t lamp10.fasta --retain_pfam_hits lamp10.fasta.pfam-A.out
 @create_task_object
 def get_transdecoder_predict_task(input_filename, db_filename, n_threads, 
-                                  transdecoder_dir, transdecoder_cfg,):
+                                  transdecoder_cfg, transdecoder_dir=''):
 
     name = 'TransDecoder.Predict:' + os.path.basename(input_filename)
 
@@ -406,10 +407,9 @@ def get_transdecoder_predict_task(input_filename, db_filename, n_threads,
             'clean': [clean_targets, (clean_folder, [input_filename + '.transdecoder_dir'])]}
 
 @create_task_object
-def get_transcriptome_stats_task(transcriptome, out_dir):
+def get_transcriptome_stats_task(transcriptome, output_fn):
 
     name = 'transcriptome_stats:' + os.path.basename(transcriptome)
-    target = os.path.join(out_dir, transcriptome + '.stats')
     K = 25
     
     def parse(fn):
@@ -460,12 +460,13 @@ def get_transcriptome_stats_task(transcriptome, out_dir):
                  '25_mers_unique': uniq_kmers,
                  'redundancy': redundancy}
         
-        with open(target, 'wb') as fp:
+        with open(output_fn, 'wb') as fp:
             json.dump(stats, fp, indent=4)
 
     return {'name': name,
             'title': title_with_actions,
             'actions': [(cmd, [])],
             'file_dep': [transcriptome],
-            'targets': [target],
+            'targets': [output_fn],
             'clean': [clean_targets]}
+
