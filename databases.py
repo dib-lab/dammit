@@ -116,6 +116,6 @@ def run_database_tasks(db_dir, tasks, args=['run']):
                     'dep_file': os.path.join(db_dir, 'databases.doit.db')
                   }
 
-    run_tasks(tasks, args, config=doit_config)
+    common.run_tasks(tasks, args, config=doit_config)
 
 

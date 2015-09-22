@@ -26,13 +26,15 @@ def handle_databases(args):
     db_dir = get_database_dir(args)
     print('DB_DIR', db_dir, file=sys.stderr)
 
+    path_dict, _ = dependencies.get_dependency_tasks()
     database_dict, tasks = databases.get_database_tasks(db_dir,
-                                                    args.busco_group,
-                                                    args.full)
+                                                        path_dict,
+                                                        args.busco_group,
+                                                        args.full)
     if args.install:
         databases.run_database_tasks(db_dir, tasks)
     else:
-        databases.run_database_task(db_dir, tasks, ['list'])
+        databases.run_database_tasks(db_dir, tasks, ['list'])
 
 
 def handle_dependencies(args):
