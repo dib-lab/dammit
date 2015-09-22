@@ -149,7 +149,7 @@ def get_dependency_tasks():
     return paths, tasks
 
 
-def run_install_dependencies(tasks, args=['run']):
+def run_dependency_tasks(tasks, args=['run']):
     '''
     This set of tasks keeps its own doit db in the db folder to share
     them between all runs.
