@@ -31,6 +31,10 @@ def handle_databases(args):
                                                         path_dict,
                                                         args.busco_group,
                                                         args.full)
+    
+    if args.debug:
+        print_tasks(tasks)
+    
     if args.install:
         databases.run_database_tasks(db_dir, tasks)
     else:
@@ -182,16 +186,7 @@ def main():
     TransDecoder and hmmscan
     '''
     '''
-    tdc_tasks = []
-    dbfn = resources_df.ix['pfamA'].filename
-    tdc_tasks.append(transdecoder_orf_task(assembly_fn, config['pipeline']['transdecoder']))
-    pep_fn = os.path.join(assembly_fn+'.transdecoder_dir', 'longest_orfs.pep')
-    tdc_tasks.append(hmmscan_task(pep_fn, assembly_fn + '.pfam-A.out', dbfn, 
-                                  config['pipeline']['hmmscan']))
-    tdc_tasks.append(transdecoder_predict_task(assembly_fn, assembly_fn + '.pfam-A.out',
-                     config['pipeline']['transdecoder']))
-    tasks.extend(tdc_tasks)
-    tasks.append(group_task('transdecoder', [t.name for t in tdc_tasks]))
+ 
     '''
     '''
     BUSCO
@@ -207,13 +202,6 @@ def main():
                                                 cmscan_cfg['db_dir'],
                                                 label='rfam'))
 
-
-    ann_task = aggregate_annotations_task(assembly_fn, blast_targets, 
-                                          assembly_fn+'.transdecoder.gff3',
-                                          assembly_fn+'.pfam-A.out', sample_df,
-                                          assembly_fn+'.eXpress.tpm.tsv',
-                                          assembly_fn+'.annotations.h5')
-    tasks.append(ann_task)
     '''
     
 

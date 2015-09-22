@@ -360,14 +360,15 @@ def get_hmmscan_task(input_filename, output_filename, db_filename,
                 os.path.basename(db_filename)
     
     exc = os.path.join(hmmer_dir, 'hmmscan')
-    cmd = '{exc} --cpu {n_threads} --domtblout {output_filename} \
-          {db_filename} {input_filename}'.format(**locals())
+    stat = output_filename + '.out'
+    cmd = '{exc} --cpu {n_threads} --domtblout {output_filename}'\
+          ' -o {stat} {db_filename} {input_filename}'.format(**locals())
 
-    return {'name': label,
+    return {'name': name,
             'title': title_with_actions,
             'actions': [cmd],
             'file_dep': [input_filename, db_filename, db_filename+'.h3p'],
-            'targets': [output_filename],
+            'targets': [output_filename, stat],
             'clean': [clean_targets]}
 
 @create_task_object
@@ -380,7 +381,7 @@ def get_transdecoder_orf_task(input_filename, transdecoder_cfg,
     exc = os.path.join(transdecoder_dir, 'TransDecoder.LongOrfs')
     cmd = '{exc} -t {input_filename} -m {min_prot_len}'.format(**locals())
 
-    return {'name': label,
+    return {'name': name,
             'title': title_with_actions,
             'actions': [cmd],
             'file_dep': [input_filename],
@@ -399,7 +400,7 @@ def get_transdecoder_predict_task(input_filename, db_filename, n_threads,
     cmd = '{exc} -t {input_filename} --retain_pfam_hits {db_filename} \
             --retain_long_orfs {orf_cutoff} --cpu {n_threads}'.format(**locals())
     
-    return {'name': label,
+    return {'name': name,
             'title': title_with_actions,
             'actions': [cmd],
             'file_dep': [input_filename, input_filename + '.transdecoder_dir/longest_orfs.pep', db_filename],

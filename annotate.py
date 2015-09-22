@@ -10,7 +10,10 @@ from tasks import get_blast_format_task, \
                   get_transcriptome_stats_task, \
                   get_busco_task, \
                   get_group_task, \
-                  get_link_file_task
+                  get_link_file_task, \
+                  get_transdecoder_predict_task, \
+                  get_transdecoder_orf_task, \
+                  get_hmmscan_task
 
 def get_annotate_tasks(transcriptome, prog_paths, database_dict, 
                        n_threads=1, user_databases=[]):
@@ -42,16 +45,65 @@ def get_annotate_tasks(transcriptome, prog_paths, database_dict,
                                      os.path.basename(transcriptome + '.stats'))
     )
 
+    '''
+    BUSCO assesses completeness using a series of curated databases of core
+    conserved genes.
+    '''
     busco_cfg = common.CONFIG['settings']['busco']
     busco_output_name = '{0}.busco.results'.format(transcriptome)
+    busco_dir = prog_paths.get('busco', '')
     assess_tasks.append(
         get_busco_task(transcriptome, busco_output_name, database_dict['BUSCO'],
                        'trans', n_threads, busco_cfg,
-                       busco_dir=prog_paths['busco'])
+                       busco_dir=busco_dir)
     )
 
+    # Collect the stats and BUSCO tasks under an "assess" group for convenience
     tasks.extend(assess_tasks)
     tasks.append(get_group_task('assess', assess_tasks))
+
+    '''
+    Run TransDecoder. TransDecoder first finds long ORFs with
+    TransDecoder.LongOrfs, which are output as a FASTA file of protein
+    sequences. We can then use these sequences to search against Pfam-A for
+    conserved domains. TransDecoder.Predict uses the Pfam results to train its
+    model for prediction of gene features.
+    '''
+
+    annotate_tasks = []
+
+    transdecoder_output_dir = transcriptome + '.transdecoder_dir'
+    transdecoder_dir = prog_paths.get('transdecoder', '')
+    orf_cfg = common.CONFIG['settings']['transdecoder']['longorfs']
+    annotate_tasks.append(
+        get_transdecoder_orf_task(transcriptome, 
+                                  orf_cfg,
+                                  transdecoder_dir=transdecoder_dir)
+    )
+    orf_results = os.path.join(transdecoder_output_dir,
+                               'longest_orfs.pep')
+
+    hmmer_dir = prog_paths.get('hmmer', '')
+    pfam_results = transcriptome + '.pfam-A.out'
+    annotate_tasks.append(
+        get_hmmscan_task(orf_results, pfam_results,
+                     database_dict['PFAM'], n_threads, 
+                     common.CONFIG['settings']['hmmer']['hmmscan'],
+                     hmmer_dir=hmmer_dir)
+    )
+
+    predict_cfg = common.CONFIG['settings']['transdecoder']['predict']
+    annotate_tasks.append(
+        get_transdecoder_predict_task(transcriptome, 
+                                      pfam_results,
+                                      n_threads,
+                                      predict_cfg,
+                                      transdecoder_dir=transdecoder_dir)
+    )
+    
+    protein_prediction_results = transcriptome + '.transdecoder.pep'
+
+    tasks.extend(annotate_tasks)
 
     return tasks
 
