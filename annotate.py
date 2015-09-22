@@ -6,20 +6,29 @@ from platform import system
 import sys
 
 import common
-from tasks import get_blast_format_task
+from tasks import get_blast_format_task, \
+                  get_transcriptome_stats_task, \
+                  get_busco_task, \
+                  get_group_task, \
+                  get_link_file_task
 
-def get_annotate_tasks(transcriptome, output_dir, prog_paths, databases):
+def get_annotate_tasks(transcriptome, prog_paths, database_dict, 
+                       n_threads=1, user_databases=[]):
 
     tasks = []
 
-    user_databases = []
-    if args.user_databases:
-        for db in args.databases:
-            db_name = os.path.join(out_dir, db + '.db')
+    user_database_dict = {}
+    if user_databases:
+        for db in user_databases:
+            db_path = db + '.db'
             tasks.append(
-                get_blast_format_task(db, db_name, 'prot')
+                get_blast_format_task(db, db_path, 'prot')
             )
-            user_databases.append(db_name)
+            user_databases[os.path.basename(db)] = db_path
+
+    tasks.append(
+            get_link_file_task(os.path.abspath(transcriptome))
+    )
 
     '''
     Calculate assembly information. First it runs some basic stats like N50 and
@@ -29,20 +38,20 @@ def get_annotate_tasks(transcriptome, output_dir, prog_paths, databases):
     '''
     assess_tasks = []
     assess_tasks.append(
-        get_transcriptome_stats_task(transcriptome, out_dir)
+        get_transcriptome_stats_task(transcriptome, 
+                                     os.path.basename(transcriptome + '.stats'))
     )
 
     busco_cfg = common.CONFIG['settings']['busco']
-    busco_dir = os.path.join(output_dir,
-                             '{0}.busco.results'.format(transcriptome))
+    busco_output_name = '{0}.busco.results'.format(transcriptome)
     assess_tasks.append(
-        busco_task(transcriptome, busco_dir, databases['BUSCO'], 
-                   'trans', busco_cfg)
+        get_busco_task(transcriptome, busco_output_name, database_dict['BUSCO'],
+                       'trans', n_threads, busco_cfg,
+                       busco_dir=prog_paths['busco'])
     )
 
     tasks.extend(assess_tasks)
     tasks.append(get_group_task('assess', assess_tasks))
-
 
     return tasks
 
@@ -62,4 +71,14 @@ def run_annotate_tasks(transcriptome, output_dir, tasks, args=['run']):
                                              os.path.basename(transcriptome) +
                                              '.doit.db')
                   }
-    run_tasks(tasks, args, config=doit_config)
+
+    cwd = os.getcwd()
+    try:
+        if not os.path.exists(output_dir):
+            os.makedirs(output_dir)
+        os.chdir(output_dir)
+
+        common.run_tasks(tasks, args, config=doit_config)
+    finally:
+        os.chdir(cwd)
+
