@@ -328,13 +328,13 @@ def get_cmscan_task(input_filename, output_filename, db_filename,
            os.path.basename(db_filename)
     
     exc = os.path.join(infernal_dir, 'cmscan')
-    cmd = '{exc} --cpu {n_threads} --cut_ga --rfam --nohmmonly --tblout {output_filename}.tbl'\
+    cmd = '{exc} --cpu {n_threads} --cut_ga --rfam --nohmmonly --tblout {output_filename}'\
           ' {db_filename} {input_filename} > {output_filename}.cmscan'.format(**locals())
 
     return {'name': name,
             'title': title_with_actions,
             'actions': [cmd],
-            'file_dep': [input_filename, db_filename, db_filename + 'i3p'],
+            'file_dep': [input_filename, db_filename, db_filename + '.i1p'],
             'targets': [output_filename + '.tbl', output_filename + '.cmscan'],
             'clean': [clean_targets]}
 
@@ -403,9 +403,12 @@ def get_transdecoder_predict_task(input_filename, db_filename, n_threads,
     return {'name': name,
             'title': title_with_actions,
             'actions': [cmd],
-            'file_dep': [input_filename, input_filename + '.transdecoder_dir/longest_orfs.pep', db_filename],
-            'targets': [input_filename + ext for ext in ['.bed', '.cds', '.pep', '.gff3', '.mRNA']],
-            'clean': [clean_targets, (clean_folder, [input_filename + '.transdecoder_dir'])]}
+            'file_dep': [input_filename, 
+                         input_filename + '.transdecoder_dir/longest_orfs.pep', db_filename],
+            'targets': [input_filename + '.transdecoder' + ext \
+                        for ext in ['.bed', '.cds', '.pep', '.gff3', '.mRNA']],
+            'clean': [clean_targets, 
+                     (clean_folder, [input_filename + '.transdecoder_dir'])]}
 
 @create_task_object
 def get_transcriptome_stats_task(transcriptome, output_fn):
