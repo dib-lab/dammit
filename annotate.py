@@ -13,7 +13,8 @@ from tasks import get_blast_format_task, \
                   get_link_file_task, \
                   get_transdecoder_predict_task, \
                   get_transdecoder_orf_task, \
-                  get_hmmscan_task
+                  get_hmmscan_task, \
+                  get_cmscan_task
 
 def get_annotate_tasks(transcriptome, prog_paths, database_dict, 
                        n_threads=1, user_databases=[]):
@@ -84,7 +85,7 @@ def get_annotate_tasks(transcriptome, prog_paths, database_dict,
                                'longest_orfs.pep')
 
     hmmer_dir = prog_paths.get('hmmer', '')
-    pfam_results = transcriptome + '.pfam-A.out'
+    pfam_results = transcriptome + '.pfam-A.tbl'
     annotate_tasks.append(
         get_hmmscan_task(orf_results, pfam_results,
                      database_dict['PFAM'], n_threads, 
@@ -102,6 +103,19 @@ def get_annotate_tasks(transcriptome, prog_paths, database_dict,
     )
     
     protein_prediction_results = transcriptome + '.transdecoder.pep'
+
+
+    cmscan_cfg = common.CONFIG['settings']['infernal']['cmscan']
+    infernal_dir = prog_paths.get('infernal', '')
+    rfam_results = transcriptome + '.rfam.tbl'
+    annotate_tasks.append(
+        get_cmscan_task(transcriptome, rfam_results,
+                     database_dict['RFAM'], n_threads, 
+                     cmscan_cfg, infernal_dir=infernal_dir)
+    )
+
+
+
 
     tasks.extend(annotate_tasks)
 

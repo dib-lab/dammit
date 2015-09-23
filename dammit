@@ -161,49 +161,5 @@ def main():
 
     args.func(args)
 
-    '''
-    BLAST
-    '''
-    '''
-    blast_iters = []
-    for fn in resources_df[resources_df.meta_type == 'assembly'].filename:
-
-        blast_iters.extend([blast_task(row, config, fn) \
-                    for _, row in resources_df[(resources_df.meta_type == 'fasta_database') &
-                                               (resources_df.meta_type != 'assembly')].iterrows()])
-
-    blast_iters.extend([blast_task(row, config, resources_df.ix['petMar2_cdna'].filename) \
-                    for _, row in resources_df[(resources_df.meta_type == 'fasta_database') &
-                                               (resources_df.filename != 'petMar2.cdna.fa')].iterrows()])
-
-    blast_tasks = []
-    for tskiter in blast_iters:
-        blast_tasks.extend([dict_to_task(tsk) for tsk in tskiter])
-    tasks.extend(blast_tasks)
-    tasks.append(group_task('blast', [t.name for t in blast_tasks]))
-    '''
-    '''
-    TransDecoder and hmmscan
-    '''
-    '''
- 
-    '''
-    '''
-    BUSCO
-    '''
-
-    '''
-    infernal and Rfam
-    '''
-    '''
-    cmscan_cfg = config['pipeline']['cmscan']
-    cmscan_tasks = []
-    cmscan_tasks.append(download_and_untar_task(resources_df.ix['rfam'].url,
-                                                cmscan_cfg['db_dir'],
-                                                label='rfam'))
-
-    '''
-    
-
 if __name__ == '__main__':
     main()
