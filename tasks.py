@@ -168,6 +168,7 @@ def get_blast_format_task(db_fn, db_out_fn, db_type, blast_dir=''):
             'file_dep': [db_fn],
             'clean': [clean_targets, 'rm -f {target_fn}.*'.format(**locals())] }
 
+@create_task_object
 def get_blast_task(query, db, prog, out_fn, n_threads, blast_cfg, blast_dir=''):
     assert prog in ['blastp', 'blastx', 'blastn', 'tblastn', 'tblastx']
     name = 'blast:' + os.path.basename(out_fn)
@@ -177,7 +178,7 @@ def get_blast_task(query, db, prog, out_fn, n_threads, blast_cfg, blast_dir=''):
     exc = os.path.join(blast_dir, prog)
 
     cmd = '{exc} -query {query} -db {db} -num_threads {n_threads} '\
-          '-evalue {evalue} -outfmt 6 {params} -o {out_fn}'.format(**locals())
+          '-evalue {evalue} -outfmt 6 {params} -out {out_fn}'.format(**locals())
 
     return {'name': name,
             'title': title_with_actions,
@@ -376,7 +377,7 @@ def get_cmscan_task(input_filename, output_filename, db_filename,
             'title': title_with_actions,
             'actions': [cmd],
             'file_dep': [input_filename, db_filename, db_filename + '.i1p'],
-            'targets': [output_filename + '.tbl', output_filename + '.cmscan'],
+            'targets': [output_filename, output_filename + '.cmscan'],
             'clean': [clean_targets]}
 
 @create_task_object
@@ -461,13 +462,17 @@ def get_transcriptome_stats_task(transcriptome, output_fn):
         hll = HLLCounter(.01, K)
         lens = []
         names = []
+        gc_len = 0
         for contig in ReadParser(fn):
             lens.append(len(contig.sequence))
             names.append(contig.name)
             hll.consume_string(contig.sequence)
+            gc_len += contig.sequence.count('C')
+            gc_len += contig.sequence.count('G')
         S = pd.Series(lens, index=names)
         S.sort()
-        return S, hll.estimate_cardinality()
+        gc_perc = float(gc_len) / S.sum()
+        return S, hll.estimate_cardinality(), gc_perc
 
     def calc_NX(lens, X):
         N = lens.sum()
@@ -485,7 +490,7 @@ def get_transcriptome_stats_task(transcriptome, output_fn):
         return NXlen, NXpos
 
     def cmd():
-        lens, uniq_kmers = parse(transcriptome)
+        lens, uniq_kmers, gc_perc = parse(transcriptome)
         
         exp_kmers = (lens - (K+1)).sum()
         redundancy = float(exp_kmers - uniq_kmers) / exp_kmers
@@ -503,7 +508,8 @@ def get_transcriptome_stats_task(transcriptome, output_fn):
                  'N50pos': N50pos,
                  '25_mers': exp_kmers,
                  '25_mers_unique': uniq_kmers,
-                 'redundancy': redundancy}
+                 'redundancy': redundancy,
+                 'GCperc': gc_perc}
         
         with open(output_fn, 'wb') as fp:
             json.dump(stats, fp, indent=4)
