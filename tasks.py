@@ -216,7 +216,7 @@ def get_lastal_task(query, db, out_fn, prot, n_threads, lastal_cfg,
     exc = os.path.join(last_dir, 'lastal')
     params = lastal_cfg['params']
     if prot:
-        params += ' -F' + lastal_cfg['frameshift']
+        params += ' -F' + str(lastal_cfg['frameshift'])
     cmd = '{exc} {params} {db} {query} > {out_fn}'.format(**locals())
 
     name = 'lastal:' + os.path.join(out_fn)

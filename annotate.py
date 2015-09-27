@@ -15,7 +15,8 @@ from tasks import get_blast_format_task, \
                   get_transdecoder_predict_task, \
                   get_transdecoder_orf_task, \
                   get_hmmscan_task, \
-                  get_cmscan_task
+                  get_cmscan_task, \
+                  get_lastal_task
 
 def get_annotate_tasks(transcriptome, prog_paths, database_dict, 
                        n_threads=1, user_databases=[]):
