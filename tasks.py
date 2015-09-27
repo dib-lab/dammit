@@ -187,6 +187,47 @@ def get_blast_task(query, db, prog, out_fn, n_threads, blast_cfg, blast_dir=''):
             'clean': [clean_targets]}
 
 @create_task_object
+def get_lastdb_task(db_fn, db_out_prefix, lastdb_cfg,  
+                    prot=True, last_dir=''):
+    
+    exc = os.path.join(last_dir, 'lastdb')
+    params = lastdb_cfg['params']
+    if prot:
+        params += ' -p'
+
+    cmd = '{exc} {params} {db_out_prefix} {db_fn}'.format(**locals())
+
+    name = 'lastdb:' + os.path.basename(db_out_prefix)
+
+    return {'name': name,
+            'title': title_with_actions,
+            'actions': [cmd],
+            'targets': [db_out_prefix + ext \
+                        for ext in \
+                        ['.des', '.sds', '.ssp', '.tis', '.prj']],
+            'file_dep': [db_fn],
+            'clean': [clean_targets]}
+
+@create_task_object
+def get_lastal_task(query, db, out_fn, prot, n_threads, lastal_cfg,
+                    last_dir=''):
+
+    exc = os.path.join(last_dir, 'lastal')
+    params = lastal_cfg['params']
+    if prot:
+        params += ' -F' + lastal_cfg['frameshift']
+    cmd = '{exc} {params} {db} {query} > {out_fn}'.format(**locals())
+
+    name = 'lastal:' + os.path.join(out_fn)
+
+    return {'name': name,
+            'title': title_with_actions,
+            'actions': [cmd],
+            'targets': [out_fn],
+            'file_dep': [db + '.sds'],
+            'clean': [clean_targets]}
+
+@create_task_object
 def get_link_file_task(src, dst=''):
     ''' Soft-link file to the current directory
     '''
