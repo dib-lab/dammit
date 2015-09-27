@@ -94,47 +94,6 @@ def get_download_and_untar_task(url, target_dir, label):
             'uptodate': [True]}
 
 @create_task_object
-def get_uniprot_query_task(query, target_fn, fmt='fasta'):
-
-    def func():
-        u = UniProt()
-        res = u.search(query, frmt=fmt)
-        with open(target_fn, 'wb') as fp:
-            fp.write(res)
-
-    name = 'uniprot_query:' + query
-
-    return {'name': name,
-            'title': title_with_actions,
-            'actions': [(func, [])],
-            'targets': [target_fn],
-            'clean': [clean_targets],
-            'uptodate': [run_once] }
-
-@create_task_object
-def get_truncate_fasta_header_task(fasta_fn, length=500):
-    
-    def func():
-        tmp_fn = fasta_fn + '.tmp'
-        with open(tmp_fn, 'wb') as fp:
-            for r in screed.open(fasta_fn):
-                try:
-                    name = r.name.split()[0]
-                except IndexError:
-                    name = r.name[:length]
-                fp.write('>{}\n{}\n'.format(name, r.sequence))
-
-        shutil.move(tmp_fn, fasta_fn)
-    
-    name = 'truncate_fasta_header:' + os.path.basename(fasta_fn)
-
-    return {'name': name,
-            'title': title_with_actions,
-            'actions': [(func, [])],
-            'file_dep': [fasta_fn],
-            'uptodate': [run_once]}
-
-@create_task_object
 def get_create_folder_task(folder):
 
     name = 'create_folder:{folder}'.format(**locals())
@@ -240,81 +199,6 @@ def get_link_file_task(src, dst=''):
             'targets': [os.path.basename(src) if not dst else dst],
             'uptodate': [run_once],
             'clean': [clean_targets]}
-
-@create_task_object
-def get_bowtie2_build_task(input_fn, db_basename, bowtie2_cfg):
-
-    extra_args = bowtie2_cfg['extra_args']
-    cmd = 'bowtie2-build {extra_args} {input_fn} {db_basename}'.format(**locals())
-    
-    targets = [db_basename+ext for ext in \
-                ['.1.bt2', '.2.bt2', '.3.bt2', '.4.bt2', '.rev.1.bt2', '.rev.2.bt2']]
-    targets.append(db_basename)
-
-    name = 'bowtie2_build:' + os.path.basename(db_basename)
-    return {'title': title_with_actions,
-            'name': db_basename,
-            'actions': [cmd, 'touch {db_basename}'.format(**locals())],
-            'targets': targets,
-            'file_dep': [input_fn],
-            'clean': [clean_targets] }
-
-@create_task_object
-def get_bowtie2_align_task(db_basename, target_fn, bowtie2_cfg, n_threads, left_fn='', right_fn='', singleton_fn='',
-                        read_fmt='-q', samtools_convert=True,
-                        encoding='phred33'):
-
-    assert read_fmt in ['-q', '-f']
-    assert encoding in ['phred33', 'phred64']
-    encoding = '--' + encoding
-    if (left_fn or right_fn):
-        assert (left_fn and right_fn)
-    extra_args = bowtie2_cfg['extra_args']
-    cmd = 'bowtie2 -p {n_threads} {extra_args} {encoding} {read_fmt} -x {db_basename} '.format(**locals())
-    
-    file_dep = [db_basename]
-    targets = []
-
-    name = 'bowtie2_align:' + ''.join('+' + os.path.basename(fn) if fn \
-                                      else os.path.basename(fn) \
-                                      for fn in [left_fn, right_fn, singleton_fn, db_basename])
-
-    if left_fn:
-        file_dep.extend([left_fn, right_fn])
-        left_fn = '-1 ' + left_fn
-        right_fn = '-2 ' + right_fn
-    if singleton_fn:
-        file_dep.append(singleton_fn)
-        singleton_fn = '-U ' + singleton_fn
-    if samtools_convert:
-        targets.append(target_fn + '.bam')
-        target_fn = ' | samtools view -Sb - > {target_fn}.bam'.format(**locals())
-    else:
-        targets.append(target_fn)
-        target_fn = '-S ' + target_fn
-
-    cmd = cmd + '{left_fn} {right_fn} {singleton_fn} {target_fn}'.format(**locals())
-
-    return {'title': title_with_actions,
-            'name': name,
-            'actions': [cmd],
-            'targets': targets,
-            'file_dep': file_dep,
-            'clean': [clean_targets] }
-
-@create_task_object
-def get_samtools_sort_task(bam_fn):
-    
-    cmd = 'samtools sort -n {bam_fn} {bam_fn}.sorted'.format(**locals())
-
-    name = 'samtools_sort:' + os.path.basename(bam_fn)
-
-    return {'name': name,
-            'title': title_with_actions,
-            'actions': [cmd],
-            'targets': [bam_fn + '.sorted.bam'],
-            'file_dep': [bam_fn],
-            'clean': [clean_targets] }
 
 @create_task_object
 def get_cat_task(file_list, target_fn):
