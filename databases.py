@@ -8,7 +8,8 @@ from tasks import get_download_and_gunzip_task, \
                   get_hmmpress_task, \
                   get_cmpress_task, \
                   get_blast_format_task, \
-                  get_download_and_untar_task
+                  get_download_and_untar_task, \
+                  get_lastdb_task
 
 
 def get_database_tasks(db_dir, prog_paths, busco_db, full):
@@ -72,11 +73,18 @@ def get_database_tasks(db_dir, prog_paths, busco_db, full):
     tasks.append(
         get_download_and_gunzip_task(common.DATABASES['orthodb']['url'], ORTHODB)
     )
+    '''
     blast_dir = prog_paths.get('blast', '')
     tasks.append(
         get_blast_format_task(ORTHODB, ORTHODB + '.db', 
                               common.DATABASES['orthodb']['db_type'],
                               blast_dir=blast_dir)
+    )'''
+    last_dir = prog_paths.get('last', '')
+    lastdb_cfg = common.CONFIG['settings']['last']['lastdb']
+    tasks.append(
+        get_lastdb_task(ORTHODB, ORTHODB + '.db', lastdb_cfg,
+                        prot=True, last_dir=last_dir)
     )
     ORTHODB += '.db'
     databases['ORTHODB'] = os.path.abspath(ORTHODB)
