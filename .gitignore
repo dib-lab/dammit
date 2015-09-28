@@ -6,3 +6,4 @@
 *.fasta
 *.fasta.gz
 *.dammit
+deps/
