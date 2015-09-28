@@ -5,11 +5,11 @@ import argparse
 import sys
 import os
 
-import common
-import annotate
-import databases
-import dependencies
-from tasks import print_tasks
+from dammit import common
+from dammit import annotate
+from dammit import databases
+from dammit import dependencies
+from dammit.tasks import print_tasks
 
 def get_database_dir(args):
     # By default, we store databases in the home directory

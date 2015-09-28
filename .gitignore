@@ -7,3 +7,6 @@
 *.fasta.gz
 *.dammit
 deps/
+build/
+dist/
+dammit.egg-info/
