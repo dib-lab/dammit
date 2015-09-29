@@ -337,6 +337,34 @@ def get_transdecoder_predict_task(input_filename, db_filename, n_threads,
                      (clean_folder, [input_filename + '.transdecoder_dir'])]}
 
 @create_task_object
+def get_gff3_report_task(transcriptome, results_dict):
+
+    name = 'dammit-report:'.format(os.path.basename(transcriptome))
+    file_dep = [results_dict['pfam'], results_dict['rfam']]
+    targets = [fn + '.gff3' for fn in file_dep]
+
+    def pfam_gff3():
+        fn = results_dict['pfam']
+        with open(fn + '.gff3', 'a') as fp:
+            for group in parsers.hmmscan_to_df_iter(fn):
+                gff_group = gff.hmmscan_to_gff3_df(group, 'hmmscan', 'Pfam')
+                gff.write_gff3_df(gff_group, fp)
+
+    def rfam_gff3():
+        fn = results_dict['rfam']
+        with open(fn + '.gff3', 'a') as fp:
+            for group in parsers.cmscan_to_df_iter(fn):
+                gff_group = gff.cmscan_to_gff3_df(group, 'cmscan', 'Rfam')
+                gff.write_gff3_df(gff_group, fp)
+
+    return {'name': name,
+            'title': title_with_actions,
+            'actions': [(pfam_gff3, []), (rfam_gff3, [])],
+            'file_dep': file_dep,
+            'targets': targets,
+            'clean': [clean_targets]}
+
+@create_task_object
 def get_transcriptome_stats_task(transcriptome, output_fn):
 
     name = 'transcriptome_stats:' + os.path.basename(transcriptome)
@@ -404,4 +432,5 @@ def get_transcriptome_stats_task(transcriptome, output_fn):
             'file_dep': [transcriptome],
             'targets': [output_fn],
             'clean': [clean_targets]}
+
 
