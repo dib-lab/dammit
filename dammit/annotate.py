@@ -162,7 +162,7 @@ def get_annotate_tasks(transcriptome, prog_paths, database_dict,
 
     tasks.extend(annotate_tasks)
 
-    return tasks
+    return results, tasks
 
 def run_annotate_tasks(transcriptome, output_dir, tasks, args=['run']):
     '''
