@@ -8,7 +8,7 @@ from os import listdir as os_listdir
 scripts = [path_join('bin', script) for script in os_listdir('bin')]
 
 setup(name='dammit',
-        version='0.1',
+        version='0.0.1-alpha',
         description='dammit!',
         url='https://github.com/camillescott/dammit',
         author='Camille Scott',
