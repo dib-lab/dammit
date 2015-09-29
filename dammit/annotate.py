@@ -87,14 +87,17 @@ def get_annotate_tasks(transcriptome, prog_paths, database_dict,
                                   orf_cfg,
                                   transdecoder_dir=transdecoder_dir)
     )
-    orf_results = os.path.join(transdecoder_output_dir,
+    orf_pep = os.path.join(transdecoder_output_dir,
                                'longest_orfs.pep')
-    results['ORFs'] = orf_results
+    orf_gff3 = os.path.join(transdecoder_output_dir,
+                            'longest_orfs.gff3')
+    results['ORFs_pep'] = orf_pep
+    results['ORFs_gff3'] = orf_gff3
 
     hmmer_dir = prog_paths.get('hmmer', '')
     pfam_results = transcriptome + '.pfam-A.tbl'
     annotate_tasks.append(
-        get_hmmscan_task(orf_results, pfam_results,
+        get_hmmscan_task(orf_pep, pfam_results,
                      database_dict['PFAM'], n_threads, 
                      common.CONFIG['settings']['hmmer']['hmmscan'],
                      hmmer_dir=hmmer_dir)
@@ -109,8 +112,10 @@ def get_annotate_tasks(transcriptome, prog_paths, database_dict,
                                       predict_cfg,
                                       transdecoder_dir=transdecoder_dir)
     )
-    protein_prediction_results = transcriptome + '.transdecoder.pep'
-    results['prot_predictions'] = protein_prediction_results
+    protein_prediction_pep = transcriptome + '.transdecoder.pep'
+    protein_prediction_gff3 = transcriptome + '.transdecoder.gff3'
+    results['prot_predictions_pep'] = protein_prediction_pep
+    results['prot_predictions_gff3'] = protein_prediction_gff3
 
 
     cmscan_cfg = common.CONFIG['settings']['infernal']['cmscan']
