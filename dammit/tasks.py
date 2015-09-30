@@ -20,7 +20,7 @@ import pandas as pd
 from khmer import HLLCounter, ReadParser
 
 from . import parsers
-from . import gff
+import gff
 
 def print_tasks(tasks):
     for task in tasks:

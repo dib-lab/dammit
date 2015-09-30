@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import csv
+from itertools import count
 import pandas as pd
 
 gff3_cols = [('seqid', str),
@@ -13,13 +14,7 @@ gff3_cols = [('seqid', str),
              ('phase', str),
              ('attributes', str)]
 
-def next_id():
-    id_n = 0
-    while(True):
-        yield id_n
-        id_n += 1
-
-ID_GEN = next_id()
+ID_GEN = count()
 
 def write_gff3_df(df, fp):
 
@@ -40,7 +35,7 @@ def maf_to_gff3_df(maf_df, tag, database=''):
 
     def build_attr(row):
         data = []
-        data.append('ID=homology:{0}'.format(tag, ID_GEN.next()))
+        data.append('ID=homology:{0}'.format(next(ID_GEN)))
         data.append('Name={0}:{1}'.format(row.s_name, tag))
         data.append('Target={0} {1} {2} {3}'.format(row.s_name, row.s_start,
                                                  row.s_start + row.s_aln_len,
@@ -51,8 +46,40 @@ def maf_to_gff3_df(maf_df, tag, database=''):
         return ';'.join(data)
 
     gff3_df['attributes'] = maf_df.apply(build_attr, axis=1)
-    del maf_df['idx']
     
+    return gff3_df
+
+def blast_to_gff3_df(blast_df, prog, RBH=False, database=''):
+
+    assert prog in ['BLASTX', 'TBLASTN', 'BLASTP']
+
+    gff3_df = pd.DataFrame()
+    gff3_df['seqid'] = blast_df['qseqid']
+    gff3_df['source'] = [prog] * len(blast_df)
+
+    ftype = 'protein_match'
+    if prog in ['BLASTX', 'TBLASTN']:
+        ftype = 'translated_nucleotide_match'
+    gff3_df['type'] = [ftype] * len(blast_df)
+
+    gff3_df['start'] = blast_df['qstart'] + 1
+    gff3_df['end'] = blast_df['qend']
+    gff3_df['score'] = blast_df['evalue']
+    gff3_df['strand'] = blast_df['qstrand']
+    gff3_df['phase'] = ['.'] * len(blast_df)
+
+    def build_attr(row):
+        data = []
+        data.append('ID=homology:{0}'.format(next(ID_GEN)))
+        data.append('Name={0}:{1}'.format(row.sseqid, tag))
+        data.append('Target={0} {1} {2} {3}'.format(row.sseqid, row.sstart,
+                                                    row.send, row.sstrand))
+        if database:
+            data.append('database={0}'.format(database))
+
+        return ';'.join(data)
+
+    gff3_df['attributes'] = blast_df.apply(build_attr, axis=1)
     return gff3_df
 
 def hmmscan_to_gff3_df(hmmscan_df, tag, database=''):
@@ -60,7 +87,7 @@ def hmmscan_to_gff3_df(hmmscan_df, tag, database=''):
     gff3_df = pd.DataFrame()
     gff3_df['seqid'] = hmmscan_df['query_name']
     gff3_df['source'] = ['HMMER'] * len(hmmscan_df)
-    gff3_df['type'] = ['translated_nucleotide_match'] * len(hmmscan_df)
+    gff3_df['type'] = ['protein_hmm_match'] * len(hmmscan_df)
 
     # This is kludgy and quite wrong
     gff3_df['start'] = hmmscan_df['env_coord_from']
@@ -73,7 +100,7 @@ def hmmscan_to_gff3_df(hmmscan_df, tag, database=''):
     
     def build_attr(row):
         data = []
-        data.append('ID=homology:{0}'.format(ID_GEN.next()))
+        data.append('ID=homology:{0}'.format(next(ID_GEN)))
         data.append('Name={0}:{1}'.format(row.target_name, tag))
         data.append('Target={0} {1} {2} +'.format(row.target_name,
                                                     row.hmm_coord_from,
@@ -109,7 +136,7 @@ def cmscan_to_gff3_df(cmscan_df, tag, database=''):
 
     def build_attr(row):
         data = []
-        data.append('ID=homology:{0}'.format(ID_GEN.next()))
+        data.append('ID=homology:{0}'.format(next(ID_GEN)))
         data.append('Name={0}:{1}'.format(row.target_name, tag))
         data.append('Target={0} {1} {2} +'.format(row.target_name,
                                                     row.mdl_from,
