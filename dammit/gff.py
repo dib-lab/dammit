@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import csv
 import pandas as pd
 
 gff3_cols = [('seqid', str),
@@ -7,7 +8,7 @@ gff3_cols = [('seqid', str),
              ('type', str),
              ('start', int),
              ('end', int),
-             ('score', float)
+             ('score', float),
              ('strand', str),
              ('phase', str),
              ('attributes', str)]
@@ -15,7 +16,7 @@ gff3_cols = [('seqid', str),
 def write_gff3_df(df, fp):
 
     df.to_csv(fp, sep='\t', na_rep='.', columns=[k for k, v in gff3_cols],
-              index=False, 
+              index=False, header=False, quoting=csv.QUOTE_NONE)
 
 def maf_to_gff3_df(maf_df, tag, database=''):
 

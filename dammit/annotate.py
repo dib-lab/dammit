@@ -5,8 +5,9 @@ import os
 from platform import system
 import sys
 
-import common
-from tasks import get_blast_format_task, \
+from . import common
+from .report import get_report_tasks
+from .tasks import get_blast_format_task, \
                   get_blast_task, \
                   get_transcriptome_stats_task, \
                   get_busco_task, \
@@ -166,6 +167,9 @@ def get_annotate_tasks(transcriptome, prog_paths, database_dict,
 
 
     tasks.extend(annotate_tasks)
+
+    tasks.extend(get_report_tasks(transcriptome, results, n_threads=n_threads))
+
 
     return results, tasks
 

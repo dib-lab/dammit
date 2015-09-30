@@ -19,6 +19,9 @@ import pandas as pd
 #import screed
 from khmer import HLLCounter, ReadParser
 
+from . import parsers
+from . import gff
+
 def print_tasks(tasks):
     for task in tasks:
         print('-----\n', task)
@@ -342,7 +345,7 @@ def get_gff3_report_task(transcriptome, results_dict):
     name = 'dammit-report:'.format(os.path.basename(transcriptome))
     file_dep = [results_dict['pfam'], results_dict['rfam']]
     targets = [fn + '.gff3' for fn in file_dep]
-
+    
     def pfam_gff3():
         fn = results_dict['pfam']
         with open(fn + '.gff3', 'a') as fp:
