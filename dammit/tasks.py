@@ -343,26 +343,36 @@ def get_transdecoder_predict_task(input_filename, db_filename, n_threads,
 def get_gff3_report_task(transcriptome, results_dict):
 
     name = 'dammit-report:'.format(os.path.basename(transcriptome))
-    file_dep = [results_dict['pfam'], results_dict['rfam']]
+    file_dep = [results_dict['pfam'], results_dict['rfam'],
+                results_dict['orthodb']]
     targets = [fn + '.gff3' for fn in file_dep]
     
     def pfam_gff3():
         fn = results_dict['pfam']
         with open(fn + '.gff3', 'a') as fp:
             for group in parsers.hmmscan_to_df_iter(fn):
-                gff_group = gff.hmmscan_to_gff3_df(group, 'hmmscan', 'Pfam')
+                gff_group = gff.hmmscan_to_gff3_df(group, 'dammit.hmmscan', 'Pfam')
                 gff.write_gff3_df(gff_group, fp)
 
     def rfam_gff3():
         fn = results_dict['rfam']
         with open(fn + '.gff3', 'a') as fp:
             for group in parsers.cmscan_to_df_iter(fn):
-                gff_group = gff.cmscan_to_gff3_df(group, 'cmscan', 'Rfam')
+                gff_group = gff.cmscan_to_gff3_df(group, 'dammit.cmscan', 'Rfam')
                 gff.write_gff3_df(gff_group, fp)
+
+    def orthodb_gff3():
+        fn = results_dict['orthodb']
+        with open(fn + '.gff3', 'a') as fp:
+            for group in parsers.maf_to_df_iter(fn):
+                gff_group = gff.maf_to_gff3_df(group, 'dammit.last', 'OrthoDB')
+                gff.write_gff3_df(gff_group, fp)
+    
 
     return {'name': name,
             'title': title_with_actions,
-            'actions': [(pfam_gff3, []), (rfam_gff3, [])],
+            'actions': [(pfam_gff3, []), (rfam_gff3, []),
+                        (orthodb_gff3, [])],
             'file_dep': file_dep,
             'targets': targets,
             'clean': [clean_targets]}
