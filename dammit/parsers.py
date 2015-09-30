@@ -159,6 +159,14 @@ def hmmscan_to_df_iter(fn, chunksize=10000):
     def split_query(item):
         q, _, _ = item.rpartition('|')
         return q
+
+    def build_df(data):
+        df = pd.DataFrame(data, columns=[k for k, _ in hmmscan_cols])
+        convert_dtypes(df, dict(hmmscan_cols))
+        df['full_query_name'] = df.query_name
+        df['query_name'] = df.query_name.apply(split_query)
+        return df
+
     data = []
     with open(fn) as fp:
         for n, ln in enumerate(fp):
@@ -169,16 +177,19 @@ def hmmscan_to_df_iter(fn, chunksize=10000):
             data.append(tokens[:len(hmmscan_cols)-1] + \
                         [' '.join(tokens[len(hmmscan_cols)-1:])])
             if len(data) >= chunksize:
-                df = pd.DataFrame(data, columns=[k for k, _ in hmmscan_cols])
-                convert_dtypes(df, dict(hmmscan_cols))
-                df['full_query_name'] = df.query_name
-                df['query_name'] = df.query_name.apply(split_query)
-                yield df
+                yield build_df(data)
                 data = []
 
+    if data:
+        yield build_df(data)
 
 def cmscan_to_df_iter(fn, chunksize=10000):
     
+    def build_df(data):
+        df = pd.DataFrame(data, columns=[k for k, _ in cmscan_cols])
+        convert_dtypes(df, dict(cmscan_cols))
+        return df
+
     data = []
     with open(fn) as fp:
         for ln in fp:
@@ -190,12 +201,19 @@ def cmscan_to_df_iter(fn, chunksize=10000):
                         [' '.join(tokens[len(cmscan_cols)-1:])])
 
             if len(data) >= chunksize:
-                df = pd.DataFrame(data, columns=[k for k, _ in cmscan_cols])
-                convert_dtypes(df, dict(cmscan_cols))
-                yield df
+                yield build_df(data)
                 data = []
 
+    if data:
+        yield build_df(data)
+
 def gff3_transdecoder_to_df_iter(fn, chunksize=10000):
+
+    def build_df(data):
+        df = pd.DataFrame(data, columns=[k for k, _ in gff3_transdecoder_cols])
+        convert_dtype(df, dict(gff3_transdecoder_cols))
+        return df
+    
     data = []
     with open(fn) as fp:
         for ln in fp:
@@ -209,13 +227,17 @@ def gff3_transdecoder_to_df_iter(fn, chunksize=10000):
                 print tokens
                 break
             if len(data) >= chunksize:
-                df = pd.DataFrame(data, columns=[k for k, _ in gff3_transdecoder_cols])
-                convert_dtype(df, dict(gff3_transdecoder_cols))
-                yield df
+                yield build_df(data)
                 data = []
+
+    if data:
+        yield build_df(data)
 
 def maf_to_df_iter(fn, chunksize=10000):
     
+    def build_df(data):
+        return pd.DataFrame(data)
+
     data = []
     with open(fn) as fp:
         while (True):
@@ -254,6 +276,9 @@ def maf_to_df_iter(fn, chunksize=10000):
 
                 data.append(cur_aln)
                 if len(data) >= chunksize:
-                    yield pd.DataFrame(data)
+                    yield build_df(data)
                     data = []
+
+    if data:
+        yield build_df(data)
     
