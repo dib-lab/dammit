@@ -43,11 +43,6 @@ def get_database_tasks(db_dir, prog_paths, busco_db, full):
 
     '''
 
-    try:
-        os.mkdir(db_dir)
-    except OSError:
-        pass
-
     tasks = []
     databases = {}
 

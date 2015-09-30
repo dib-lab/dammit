@@ -2,8 +2,9 @@
 from __future__ import print_function
 
 import argparse
-import sys
+import logging
 import os
+import sys
 
 from dammit import common
 from dammit import annotate
@@ -11,12 +12,21 @@ from dammit import databases
 from dammit import dependencies
 from dammit.tasks import print_tasks
 
+logger = logging.getLogger('dammit')
 
 def handle_databases(args):
 
+    common.print_header('submodule: databases', level=1)
+    logger.debug('databases')
+
     # TODO: Check that directory exists
     db_dir = databases.get_database_dir(args)
-    print('DB_DIR', db_dir, file=sys.stderr)
+    logger.info('database dir: {0}'.format(db_dir))
+
+    try:
+        os.mkdir(db_dir)
+    except OSError:
+        logger.debug('database dir already exists')
 
     path_dict, _ = dependencies.get_dependency_tasks()
     database_dict, tasks = databases.get_database_tasks(db_dir,
@@ -24,8 +34,7 @@ def handle_databases(args):
                                                         args.busco_group,
                                                         args.full)
     
-    if args.debug:
-        print_tasks(tasks)
+    print_tasks(tasks, logger=logger)
     
     if args.install:
         databases.run_database_tasks(db_dir, tasks)
@@ -36,7 +45,7 @@ def handle_databases(args):
 def handle_dependencies(args):
 
     dep_dir = dependencies.get_dependency_dir()
-    print('DEP_DIR', dep_dir, file=sys.stderr)
+
     try:
         os.makedirs(dep_dir)
     except OSError:
@@ -147,9 +156,10 @@ def main():
     args = parser.parse_args()
 
     # Print out the infos~
-    print(common.CONFIG['meta']['description'], file=sys.stderr)
-    print(', '.join(common.CONFIG['meta']['authors']), common.CONFIG['meta']['date'], 
-          file=sys.stderr)
+    meta = '{0}\n{1} {2}'.format(common.CONFIG['meta']['description'],
+                                 ', '.join(common.CONFIG['meta']['authors']),
+                                 common.CONFIG['meta']['date'])
+    common.print_header(meta, 0)
 
     args.func(args)
 
