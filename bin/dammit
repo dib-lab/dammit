@@ -85,7 +85,7 @@ def handle_annotate(args):
               'Paths: {prog_paths}\n'\
               'Databases: {db_dict}'.format(**locals()))
 
-    tasks = annotate.get_annotate_tasks(transcriptome,
+    results, tasks = annotate.get_annotate_tasks(transcriptome,
                                         prog_paths, 
                                         db_dict)
 
