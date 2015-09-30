@@ -11,19 +11,11 @@ from dammit import databases
 from dammit import dependencies
 from dammit.tasks import print_tasks
 
-def get_database_dir(args):
-    # By default, we store databases in the home directory
-    db_dir = args.database_dir
-    if db_dir is None:
-        db_dir = os.path.join(os.environ['HOME'], 
-                              common.CONFIG['settings']['db_dir'])
-    return os.path.abspath(db_dir)
-
 
 def handle_databases(args):
 
     # TODO: Check that directory exists
-    db_dir = get_database_dir(args)
+    db_dir = databases.get_database_dir(args)
     print('DB_DIR', db_dir, file=sys.stderr)
 
     path_dict, _ = dependencies.get_dependency_tasks()
@@ -42,7 +34,7 @@ def handle_databases(args):
 
 
 def handle_dependencies(args):
-    
+
     dep_dir = dependencies.get_dependency_dir()
     print('DEP_DIR', dep_dir, file=sys.stderr)
     try:

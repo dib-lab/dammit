@@ -11,6 +11,13 @@ from tasks import get_download_and_gunzip_task, \
                   get_download_and_untar_task, \
                   get_lastdb_task
 
+def get_database_dir(args):
+    # By default, we store databases in the home directory
+    db_dir = args.database_dir
+    if db_dir is None:
+        db_dir = os.path.join(common.get_dammit_dir(), 
+                              common.CONFIG['settings']['db_dir'])
+    return os.path.abspath(db_dir)
 
 def get_database_tasks(db_dir, prog_paths, busco_db, full):
     '''Generate tasks for installing the bundled databases. 

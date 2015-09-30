@@ -2,6 +2,7 @@
 from __future__ import print_function
 
 import json
+import os
 
 from doit.cmd_base import TaskLoader
 from doit.doit_cmd import DoitMain
@@ -14,6 +15,11 @@ with open('.databases.json', 'r') as fp:
     DATABASES = json.load(fp)
 with open('.config.json', 'r') as fp:
     CONFIG = json.load(fp)
+
+
+def get_dammit_dir():
+    return os.path.join(os.environ['HOME'],
+                        CONFIG['settings']['dammit_dir'])
 
 def run_tasks(tasks, args, config={'verbosity': 2}):
     

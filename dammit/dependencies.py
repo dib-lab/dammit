@@ -38,12 +38,9 @@ def which(program):
 
     return None
 
-def get_dammit_dir():
-    return os.path.join(os.environ['HOME'],
-                        common.CONFIG['settings']['dammit_dir'])
 
 def get_dependency_dir():
-    return os.path.join(get_dammit_dir(), \
+    return os.path.join(common.get_dammit_dir(), \
                         common.CONFIG['settings']['dep_dir'])
 
 def get_dependency_tasks():
