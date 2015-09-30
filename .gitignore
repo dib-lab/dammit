@@ -9,4 +9,6 @@
 deps/
 build/
 dist/
+distribute-*.tar.gz
+distribute-*.egg
 dammit.egg-info/
