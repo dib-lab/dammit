@@ -13,6 +13,14 @@ gff3_cols = [('seqid', str),
              ('phase', str),
              ('attributes', str)]
 
+def next_id():
+    id_n = 0
+    while(True):
+        yield id_n
+        id_n += 1
+
+ID_GEN = next_id()
+
 def write_gff3_df(df, fp):
 
     df.to_csv(fp, sep='\t', na_rep='.', columns=[k for k, v in gff3_cols],
@@ -23,18 +31,16 @@ def maf_to_gff3_df(maf_df, tag, database=''):
     gff3_df = pd.DataFrame()
     gff3_df['seqid'] = maf_df['q_name']
     gff3_df['source'] = ['LAST'] * len(maf_df)
-    gff3_df['type'] = ['nucleotide_to_protein_match'] * len(maf_df)
+    gff3_df['type'] = ['translated_nucleotide_match'] * len(maf_df)
     gff3_df['start'] = maf_df['q_start'] + 1
     gff3_df['end'] = maf_df['q_start'] + maf_df['q_aln_len'] + 1
     gff3_df['score'] = maf_df['E']
     gff3_df['strand'] = maf_df['q_strand']
     gff3_df['phase'] = ['.'] * len(maf_df)
 
-    maf_df['idx'] = range(len(maf_df))
-
     def build_attr(row):
         data = []
-        data.append('ID={0}:homology:{1}'.format(tag, row.idx))
+        data.append('ID=homology:{0}'.format(tag, ID_GEN.next()))
         data.append('Name={0}:{1}'.format(row.s_name, tag))
         data.append('Target={0} {1} {2} {3}'.format(row.s_name, row.s_start,
                                                  row.s_start + row.s_aln_len,
@@ -65,11 +71,9 @@ def hmmscan_to_gff3_df(hmmscan_df, tag, database=''):
     gff3_df['strand'] = ['.'] * len(hmmscan_df)
     gff3_df['phase'] = ['.'] * len(hmmscan_df)
     
-    hmmscan_df['idx'] = range(len(hmmscan_df))
-    
     def build_attr(row):
         data = []
-        data.append('ID={0}:homology:{1}'.format(tag, row.idx))
+        data.append('ID=homology:{0}'.format(ID_GEN.next()))
         data.append('Name={0}:{1}'.format(row.target_name, tag))
         data.append('Target={0} {1} {2} +'.format(row.target_name,
                                                     row.hmm_coord_from,
@@ -82,7 +86,6 @@ def hmmscan_to_gff3_df(hmmscan_df, tag, database=''):
         return ';'.join(data)
 
     gff3_df['attributes'] = hmmscan_df.apply(build_attr, axis=1)
-    del hmmscan_df['idx']
 
     return gff3_df
 
@@ -104,10 +107,9 @@ def cmscan_to_gff3_df(cmscan_df, tag, database=''):
     gff3_df['strand'] = cmscan_df['strand']
     gff3_df['phase'] = ['.'] * len(cmscan_df)
 
-    cmscan_df['idx'] = range(len(cmscan_df))
     def build_attr(row):
         data = []
-        data.append('ID={0}:homology:{1}'.format(tag, row.idx))
+        data.append('ID=homology:{0}'.format(ID_GEN.next()))
         data.append('Name={0}:{1}'.format(row.target_name, tag))
         data.append('Target={0} {1} {2} +'.format(row.target_name,
                                                     row.mdl_from,
@@ -122,7 +124,6 @@ def cmscan_to_gff3_df(cmscan_df, tag, database=''):
         return ';'.join(data)
 
     gff3_df['attributes'] = cmscan_df.apply(build_attr, axis=1)
-    del cmscan_df['idx']
 
     return gff3_df
 
