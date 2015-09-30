@@ -137,7 +137,7 @@ def get_dependency_tasks():
     longorfs = which('TransDecoder.LongOrfs')
     predict = which('TransDecoder.Predict')
     if longorfs is None or predict is None:
-        url = common.CONFIG['settings']['busco']['url']
+        url = common.CONFIG['settings']['transdecoder']['url']
         tasks.append(
             get_download_and_untar_task(url,
                                         dep_dir,
