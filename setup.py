@@ -26,7 +26,7 @@ cmdclass = {}
 
 def main():
     setup(  name = 'dammit',
-            version = '0.0.3-alpha',
+            version = '0.0.4-alpha',
             description = 'dammit!',
             url = 'https://github.com/camillescott/dammit',
             author = 'Camille Scott',
@@ -36,7 +36,7 @@ def main():
             packages = ['dammit'],
             scripts = glob('bin/*'),
             ext_modules = get_extension_modules(),
-            install_requires = ['khmer', 'nose>=1.0', 'doit', 'pandas', 'cython'],
+            install_requires = ['khmer', 'nose>=1.0', 'doit', 'pandas'],
             include_package_data = True,
             zip_safe = False,
             cmdclass = cmdclass  )
