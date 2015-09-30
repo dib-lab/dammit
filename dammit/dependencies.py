@@ -146,6 +146,18 @@ def get_dependency_tasks():
         transdecoder_dir = strip_ext(os.path.basename(url))
         paths['transdecoder'] = os.path.join(dep_dir, transdecoder_dir)
 
+    lastdb = which('lastdb')
+    lastal = which('lastal')
+    if lastdb is None or lastal is None:
+        url = common.CONFIG['settings']['last']['url'][cur_platform]
+        tasks.append(
+            get_download_and_untar_task(url,
+                                        dep_dir,
+                                        label='last')
+        )
+        last_dir = strip_ext(os.path.basename(url))
+        paths['last'] = os.path.join(dep_dir, last_dir)
+
     return paths, tasks
 
 
