@@ -340,41 +340,81 @@ def get_transdecoder_predict_task(input_filename, db_filename, n_threads,
                      (clean_folder, [input_filename + '.transdecoder_dir'])]}
 
 @create_task_object
-def get_gff3_report_task(transcriptome, results_dict):
+def get_maf_gff3_task(input_filename, output_filename, database):
 
-    name = 'dammit-report:'.format(os.path.basename(transcriptome))
-    file_dep = [results_dict['pfam'], results_dict['rfam'],
-                results_dict['orthodb']]
-    targets = [fn + '.gff3' for fn in file_dep]
-    
-    def pfam_gff3():
-        fn = results_dict['pfam']
-        with open(fn + '.gff3', 'a') as fp:
-            for group in parsers.hmmscan_to_df_iter(fn):
-                gff_group = gff.hmmscan_to_gff3_df(group, 'dammit.hmmscan', 'Pfam')
-                gff.write_gff3_df(gff_group, fp)
+    name = 'maf-gff3:' + os.path.basename(output_filename)
 
-    def rfam_gff3():
-        fn = results_dict['rfam']
-        with open(fn + '.gff3', 'a') as fp:
-            for group in parsers.cmscan_to_df_iter(fn):
-                gff_group = gff.cmscan_to_gff3_df(group, 'dammit.cmscan', 'Rfam')
+    def cmd():
+        with open(output_filename, 'a') as fp:
+            for group in parsers.maf_to_df_iter(input_filename):
+                gff_group = gff.maf_to_gff3_df(group, 'dammit.last', 
+                                               database)
                 gff.write_gff3_df(gff_group, fp)
-
-    def orthodb_gff3():
-        fn = results_dict['orthodb']
-        with open(fn + '.gff3', 'a') as fp:
-            for group in parsers.maf_to_df_iter(fn):
-                gff_group = gff.maf_to_gff3_df(group, 'dammit.last', 'OrthoDB')
-                gff.write_gff3_df(gff_group, fp)
-    
 
     return {'name': name,
             'title': title_with_actions,
-            'actions': [(pfam_gff3, []), (rfam_gff3, []),
-                        (orthodb_gff3, [])],
-            'file_dep': file_dep,
-            'targets': targets,
+            'actions': ['rm -f {0}'.format(output_filename),
+                        cmd],
+            'file_dep': [input_filename],
+            'targets': [output_filename],
+            'clean': [clean_targets]}
+
+@create_task_object
+def get_hmmscan_gff3_task(input_filename, output_filename, database):
+
+    name = 'hmmscan-gff3:' + os.path.basename(output_filename)
+
+    def cmd():
+        with open(output_filename, 'a') as fp:
+            for group in parsers.hmmscan_to_df_iter(input_filename):
+                gff_group = gff.hmmscan_to_gff3_df(group, 'dammit.hmmscan',
+                                                   database)
+                gff.write_gff3_df(gff_group, fp)
+
+    return {'name': name,
+            'title': title_with_actions,
+            'actions': ['rm -f {0}'.format(output_filename),
+                        cmd],
+            'file_dep': [input_filename],
+            'targets': [output_filename],
+            'clean': [clean_targets]}
+
+
+@create_task_object
+def get_cmscan_gff3_task(input_filename, output_filename, database):
+
+    name = 'cmscan-gff3:' + os.path.basename(output_filename)
+
+    def cmd():
+        with open(output_filename, 'a') as fp:
+            for group in parsers.cmscan_to_df_iter(input_filename):
+                gff_group = gff.cmscan_to_gff3_df(group, 'dammit.cmscan',
+                                                  database)
+                gff.write_gff3_df(gff_group, fp)
+
+    return {'name': name,
+            'title': title_with_actions,
+            'actions': ['rm -f {0}'.format(output_filename),
+                        cmd],
+            'file_dep': [input_filename],
+            'targets': [output_filename],
+            'clean': [clean_targets]}
+
+
+
+@create_task_object
+def get_gff3_merge_task(gff3_filenames, output_filename):
+
+    name = 'gff3-merge:'.format(os.path.basename(output_filename))
+
+    merge_cmd = 'cat {0} | sort > {1}'.format(' '.join(gff3_filenames),
+                                              output_filename)
+
+    return {'name': name,
+            'title': title_with_actions,
+            'actions': [merge_cmd],
+            'file_dep': gff3_filenames,
+            'targets': [output_filename],
             'clean': [clean_targets]}
 
 @create_task_object

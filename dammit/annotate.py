@@ -168,8 +168,9 @@ def get_annotate_tasks(transcriptome, prog_paths, database_dict,
 
     tasks.extend(annotate_tasks)
 
-    tasks.extend(get_report_tasks(transcriptome, results, n_threads=n_threads))
-
+    outputs, report_tasks = get_report_tasks(transcriptome, results,
+                                             n_threads=n_threads)
+    tasks.extend(report_tasks)
 
     return results, tasks
 
