@@ -3,18 +3,20 @@ import csv
 import sys
 import pandas as pd
 
-outfmt6 = [('qseqid', str), 
-           ('sseqid', str), 
-           ('pident', float), 
-           ('length', int), 
-           ('mismatch', int), 
-           ('gapopen', int),
-           ('qstart', int), 
-           ('qend', int), 
-           ('sstart', int), 
-           ('send', int), 
-           ('evalue', float), 
-           ('bitscore', float)]
+from blast import remap_blast_coords_df as remap_blast
+
+blast_cols = [('qseqid', str), 
+              ('sseqid', str), 
+              ('pident', float), 
+              ('length', int), 
+              ('mismatch', int), 
+              ('gapopen', int),
+              ('qstart', int), 
+              ('qend', int), 
+              ('sstart', int), 
+              ('send', int), 
+              ('evalue', float), 
+              ('bitscore', float)]
 
 
 
@@ -71,12 +73,14 @@ def convert_dtypes(df, dtypes):
     for c in df.columns:
         df[c] = df[c].astype(dtypes[c])
 
-def blast_to_df_iter(fn, delimiter='\t', chunksize=10000):
+def blast_to_df_iter(fn, delimiter='\t', chunksize=10000, remap=False):
 
     for group in  pd.read_table(fn, header=None, skipinitialspace=True,
-                                names=[k for k, _ in outfmt6],
+                                names=[k for k, _ in blast_cols],
                                 delimiter=delimiter):
-        convert_dtypes(group, dict(outfmt6))
+        convert_dtypes(group, dict(blast_cols))
+        if remap:
+            remap_blast(group)
         yield group
 
 def parse_busco(fn):
