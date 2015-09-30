@@ -13,10 +13,7 @@ import sys
 from doit.tools import run_once, create_folder, title_with_actions, LongRunning
 from doit.task import clean_targets, dict_to_task
 
-from bioservices import UniProt
-import jinja2
 import pandas as pd
-#import screed
 from khmer import HLLCounter, ReadParser
 
 from . import parsers
