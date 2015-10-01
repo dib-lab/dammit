@@ -19,18 +19,25 @@ def handle_databases(args):
     common.print_header('submodule: databases', level=1)
     logger.debug('databases')
 
+    common.print_header('Checking dependencies', level=2)
+    missing = dependencies.check()
+    if missing:
+        logger.error('* Install dependencies to continue; exiting')
+    
+    dependency_dict, _, _ = dependencies.get_tasks()
+
     # TODO: Check that directory exists
     db_dir = databases.get_database_dir(args)
-    logger.info('database dir: {0}'.format(db_dir))
+    common.print_header('Checking databases', level=2)
+    logger.debug('database dir: {0}'.format(db_dir))
 
     try:
         os.mkdir(db_dir)
     except OSError:
         logger.debug('database dir already exists')
 
-    path_dict, _ = dependencies.get_dependency_tasks()
     database_dict, tasks = databases.get_database_tasks(db_dir,
-                                                        path_dict,
+                                                        dependency_dict,
                                                         args.busco_group,
                                                         args.full)
     
@@ -56,28 +63,15 @@ def handle_dependencies(args):
     dammit_deps, system_deps, dep_tasks = dependencies.get_tasks()
    
     print_tasks(dep_tasks.values(), logger=logger)
-    _, dammit_dep_status = dependencies.check(dep_tasks)
-
-    missing = []
-    for ((key, system_status), (_, dammit_status)) in zip(system_deps.items(),
-                                                          dammit_dep_status.items()):
-        if system_status == dammit_status and not system_status:
-            missing.append(key)
-        elif dammit_status:
-            logger.info('{0} found [previously installed by dammit]'.format(key))
-        else:
-            logger.info('{0} found [installed on system PATH]'.format(key))
-
-    if missing:
-        logger.info('* {0} missing'.format(', '.join(missing)))
-        if args.install:
-            logger.info('will attempt to install them')
+    missing = dependencies.check()
+    
+    if args.install:
+        if missing:
+            logger.info('* will attempt to install dependencies')
             dependencies.run_dependency_tasks(tasks)
         else:
-            logger.info('to get them, run: dammit dependencies --install')
+            common.print_header('nothing to install', level=2)
 
-    else:
-        logger.info('* all dependencies satisfied!')
 
 def handle_annotate(args):
 

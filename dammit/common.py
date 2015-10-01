@@ -12,6 +12,7 @@ from doit.doit_cmd import DoitMain
 
 CUR_TIME = time.strftime('%Y-%m-%d-%H%M')
 
+DOIT_BACKEND = 'sqlite3'
 DOIT_VERBOSITY = 2
 
 # Configuration stuff!
@@ -44,17 +45,17 @@ def print_header(msg, level):
     '''
     if level == 0:
         symbol = '='
-        N = 40
+        print(symbol * 40, file=sys.stderr)
+        print(msg, file=sys.stderr)
+        print(symbol * 40, '\n', file=sys.stderr)
     elif level == 1:
         symbol = '~'
-        N = 30
+        print(symbol * 30, file=sys.stderr)
+        print(msg, file=sys.stderr)
+        print(symbol * 30, '\n', file=sys.stderr)
     else:
-        symbol = '-'
-        N = 20
-
-    print(symbol * N, file=sys.stderr)
-    print(msg, file=sys.stderr)
-    print(symbol * N, '\n', file=sys.stderr)
+        symbol = '---'
+        print('\n', symbol, msg, '\n', file=sys.stderr)
 
 log_dir = os.path.join(get_dammit_dir(), 'log')
 try:

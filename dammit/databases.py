@@ -51,7 +51,7 @@ def get_database_tasks(db_dir, prog_paths, busco_db, full):
     tasks.append(
         get_download_and_gunzip_task(common.DATABASES['pfam']['url'], PFAM)
     )
-    hmmer_dir = prog_paths.get('hmmer', '')
+    hmmer_dir = prog_paths.get('HMMER', '')
     tasks.append(
         get_hmmpress_task(PFAM, common.CONFIG['settings']['hmmer'],
                           hmmer_dir=hmmer_dir)
@@ -60,7 +60,7 @@ def get_database_tasks(db_dir, prog_paths, busco_db, full):
 
     # Get Rfam and prepare it for use with Infernal
     RFAM = os.path.join(db_dir, common.DATABASES['rfam']['filename'])
-    infernal_dir = prog_paths.get('infernal', '')
+    infernal_dir = prog_paths.get('Infernal', '')
     tasks.append(
         get_download_and_gunzip_task(common.DATABASES['rfam']['url'], RFAM)
     )
@@ -75,14 +75,10 @@ def get_database_tasks(db_dir, prog_paths, busco_db, full):
     tasks.append(
         get_download_and_gunzip_task(common.DATABASES['orthodb']['url'], ORTHODB)
     )
-    '''
-    blast_dir = prog_paths.get('blast', '')
-    tasks.append(
-        get_blast_format_task(ORTHODB, ORTHODB + '.db', 
-                              common.DATABASES['orthodb']['db_type'],
-                              blast_dir=blast_dir)
-    )'''
-    last_dir = prog_paths.get('last', '')
+
+    blast_dir = prog_paths.get('BLAST+', '')
+
+    last_dir = prog_paths.get('LAST', '')
     lastdb_cfg = common.CONFIG['settings']['last']['lastdb']
     tasks.append(
         get_lastdb_task(ORTHODB, ORTHODB + '.db', lastdb_cfg,

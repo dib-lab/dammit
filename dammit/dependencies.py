@@ -191,6 +191,7 @@ def get_doit_config():
     
     dep_dir = get_dir()
     doit_config = {
+                    'backend': common.DOIT_BACKEND,
                     'verbosity': common.DOIT_VERBOSITY,
                     'dep_file': os.path.join(dep_dir, 'dependencies.doit.db')
                   }
@@ -207,7 +208,7 @@ def run_tasks(tasks, args=['run']):
     doit_config = get_doit_config()
     common.run_tasks(tasks, args, config=doit_config)
 
-def check(tasks):
+def check():
 
     dammit_deps, system_deps, dep_tasks = get_tasks()
 
@@ -222,5 +223,22 @@ def check(tasks):
         else:
             dammit_dep_status[key] = True
 
-    return system_deps, dammit_dep_status
+    missing = []
+    for ((key, system_status), (_, dammit_status)) in zip(system_deps.items(),
+                                                          dammit_dep_status.items()):
+        if system_status == dammit_status and not system_status:
+            missing.append(key)
+        elif dammit_status:
+            logger.info('{0} found [previously installed by dammit]'.format(key))
+        else:
+            logger.info('{0} found [installed on system PATH]'.format(key))
+
+    if missing:
+        logger.info('* {0} missing'.format(', '.join(missing)))
+        common.print_header('to get dependencies, run: dammit dependencies --install',
+                            level=2)
+    else:
+        logger.info('* all dependencies satisfied!')
+
+    return missing
 
