@@ -44,24 +44,40 @@ def handle_databases(args):
 
 def handle_dependencies(args):
 
-    dep_dir = dependencies.get_dependency_dir()
+    common.print_header('submodule: dependencies', level=1)
+    logger.debug('dependencies')
 
+    dep_dir = dependencies.get_dir()
     try:
         os.makedirs(dep_dir)
     except OSError:
-        # Already exists
-        pass
+        logger.debug('dependency dir already exists')
 
-    path_dict, tasks = dependencies.get_dependency_tasks()
+    dammit_deps, system_deps, dep_tasks = dependencies.get_tasks()
    
-    if args.debug:
-        print_tasks(tasks)
+    print_tasks(dep_tasks.values(), logger=logger)
+    _, dammit_dep_status = dependencies.check(dep_tasks)
 
-    if args.install:
-        dependencies.run_dependency_tasks(tasks)
+    missing = []
+    for ((key, system_status), (_, dammit_status)) in zip(system_deps.items(),
+                                                          dammit_dep_status.items()):
+        if system_status == dammit_status and not system_status:
+            missing.append(key)
+        elif dammit_status:
+            logger.info('{0} found [previously installed by dammit]'.format(key))
+        else:
+            logger.info('{0} found [installed on system PATH]'.format(key))
+
+    if missing:
+        logger.info('* {0} missing'.format(', '.join(missing)))
+        if args.install:
+            logger.info('will attempt to install them')
+            dependencies.run_dependency_tasks(tasks)
+        else:
+            logger.info('to get them, run: dammit dependencies --install')
+
     else:
-        dependencies.run_dependency_tasks(tasks, ['list'])
-
+        logger.info('* all dependencies satisfied!')
 
 def handle_annotate(args):
 
@@ -90,8 +106,7 @@ def handle_annotate(args):
                                         prog_paths, 
                                         db_dict)
 
-    if args.debug:
-        print_tasks(tasks)
+    print_tasks(tasks, logger=logger)
 
     annotate.run_annotate_tasks(transcriptome, out_dir, tasks)
 

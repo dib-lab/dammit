@@ -11,7 +11,7 @@ from doit.cmd_base import TaskLoader
 from doit.doit_cmd import DoitMain
 
 CUR_TIME = time.strftime('%Y-%m-%d-%H%M')
-DOIT_BACKEND = 'sqlite3'
+
 DOIT_VERBOSITY = 2
 
 # Configuration stuff!
@@ -61,14 +61,14 @@ try:
     os.makedirs(log_dir)
 except OSError:
     pass
-log_file = os.path.join(log_dir, '{0}-dammit.log'.format(CUR_TIME))
+log_file = os.path.join(log_dir, 'dammit-all.log')
 
 logging.basicConfig(level=logging.DEBUG,
                     format='%(asctime)s %(name)s:%(funcName)s:%(lineno)d '\
-                           '[%(levelname)s] \n%(message)s',
+                           '[%(levelname)s] \n%(message)s\n-----',
                     datefmt='%m-%d %H:%M:%S',
                     filename=log_file,
-                    filemode='w')
+                    filemode='a')
 
 console = logging.StreamHandler(sys.stderr)
 console.setLevel(logging.INFO)
@@ -76,4 +76,4 @@ formatter = logging.Formatter('\t%(message)-12s [%(name)s:%(levelname)s]')
 console.setFormatter(formatter)
 logging.getLogger('').addHandler(console)
 
-
+logging.getLogger('').debug('*** dammit! begin ***')
