@@ -3,6 +3,7 @@ from __future__ import print_function
 
 from itertools import izip
 import json
+import logging
 import os
 import pprint
 import re
@@ -19,10 +20,15 @@ from khmer import HLLCounter, ReadParser
 from . import parsers
 import gff
 
-def print_tasks(tasks):
+def task_str(task):
+    return pprint.pformat(task.__dict__)
+
+def print_tasks(tasks, logger=None, level=logging.DEBUG):
     for task in tasks:
-        print('-----\n', task)
-        pprint.pprint(task.__dict__)
+        if logger:
+            logger.log(level, task_str(task))
+        else:
+            print(task, file=sys.stderr)
 
 def clean_folder(target):
     try:

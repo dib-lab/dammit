@@ -1,6 +1,7 @@
 #!/usr/bin/enb python
 from __future__ import print_function
 
+import logging
 import os
 
 import common
@@ -11,8 +12,17 @@ from tasks import get_download_and_gunzip_task, \
                   get_download_and_untar_task, \
                   get_lastdb_task
 
+logger = logging.getLogger(__name__)
 
-def get_database_tasks(db_dir, prog_paths, busco_db, full):
+def get_dir(args):
+    # By default, we store databases in the home directory
+    db_dir = args.database_dir
+    if db_dir is None:
+        db_dir = os.path.join(common.get_dammit_dir(), 
+                              common.CONFIG['settings']['db_dir'])
+    return os.path.abspath(db_dir)
+
+def get_tasks(db_dir, prog_paths, busco_db, full):
     '''Generate tasks for installing the bundled databases. 
     
     These tasks download the databases, unpack them, and format them for use.
@@ -36,11 +46,6 @@ def get_database_tasks(db_dir, prog_paths, busco_db, full):
 
     '''
 
-    try:
-        os.mkdir(db_dir)
-    except OSError:
-        pass
-
     tasks = []
     databases = {}
 
@@ -49,7 +54,7 @@ def get_database_tasks(db_dir, prog_paths, busco_db, full):
     tasks.append(
         get_download_and_gunzip_task(common.DATABASES['pfam']['url'], PFAM)
     )
-    hmmer_dir = prog_paths.get('hmmer', '')
+    hmmer_dir = prog_paths.get('HMMER', '')
     tasks.append(
         get_hmmpress_task(PFAM, common.CONFIG['settings']['hmmer'],
                           hmmer_dir=hmmer_dir)
@@ -58,7 +63,7 @@ def get_database_tasks(db_dir, prog_paths, busco_db, full):
 
     # Get Rfam and prepare it for use with Infernal
     RFAM = os.path.join(db_dir, common.DATABASES['rfam']['filename'])
-    infernal_dir = prog_paths.get('infernal', '')
+    infernal_dir = prog_paths.get('Infernal', '')
     tasks.append(
         get_download_and_gunzip_task(common.DATABASES['rfam']['url'], RFAM)
     )
@@ -73,14 +78,10 @@ def get_database_tasks(db_dir, prog_paths, busco_db, full):
     tasks.append(
         get_download_and_gunzip_task(common.DATABASES['orthodb']['url'], ORTHODB)
     )
-    '''
-    blast_dir = prog_paths.get('blast', '')
-    tasks.append(
-        get_blast_format_task(ORTHODB, ORTHODB + '.db', 
-                              common.DATABASES['orthodb']['db_type'],
-                              blast_dir=blast_dir)
-    )'''
-    last_dir = prog_paths.get('last', '')
+
+    blast_dir = prog_paths.get('BLAST+', '')
+
+    last_dir = prog_paths.get('LAST', '')
     lastdb_cfg = common.CONFIG['settings']['last']['lastdb']
     tasks.append(
         get_lastdb_task(ORTHODB, ORTHODB + '.db', lastdb_cfg,
@@ -116,14 +117,18 @@ def get_database_tasks(db_dir, prog_paths, busco_db, full):
 
     return databases, tasks
 
-def run_database_tasks(db_dir, tasks, args=['run']):
-    
+def get_doit_config(db_dir):
+
     doit_config = {
                     'backend': common.DOIT_BACKEND,
                     'verbosity': common.DOIT_VERBOSITY,
                     'dep_file': os.path.join(db_dir, 'databases.doit.db')
                   }
+    return doit_config
 
+def run_tasks(db_dir, tasks, args=['run']):
+    
+    doit_config = get_doit_config()
     common.run_tasks(tasks, args, config=doit_config)
 
 

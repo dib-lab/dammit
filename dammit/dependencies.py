@@ -1,12 +1,17 @@
 #!/usr/bin/env python
 from __future__ import print_function
 
+import logging
 import os
 from platform import system
 import sys
 
+from doit.dependency import Dependency, SqliteDB
+
 import common
 from tasks import get_download_and_untar_task
+
+logger = logging.getLogger(__name__)
 
 def which(program):
     '''Checks whether the given program (or program path) is valid and
@@ -38,15 +43,63 @@ def which(program):
 
     return None
 
-def get_dammit_dir():
-    return os.path.join(os.environ['HOME'],
-                        common.CONFIG['settings']['dammit_dir'])
+def check_system():
+    
+    deps = {}
 
-def get_dependency_dir():
-    return os.path.join(get_dammit_dir(), \
+    hmmscan = which('hmmscan')
+    hmmpress = which('hmmpress')
+    if hmmscan is None or hmmpress is None:
+        deps['HMMER'] = False
+    else:
+        deps['HMMER'] = True
+
+    cmscan = which('cmscan')
+    cmpress = which('cmpress')
+    if cmscan is None or cmpress is None:
+        deps['Infernal'] = False
+    else:
+        deps['Infernal'] = True
+
+    blastn = which('blastn')
+    blastx = which('blastx')
+    tblastn = which('tblastn')
+    makeblastdb = which('makeblastdb')
+    if blastn is None or blastx is None \
+        or tblastn is None or makeblastdb is None:
+
+        deps['BLAST+'] = False
+    else:
+        deps['BLAST+'] = True
+
+    busco = which('BUSCO_v1.1b1.py')
+    if busco is None:
+        deps['BUSCO'] = False
+    else:
+        deps['BUSCO'] = True
+
+
+    longorfs = which('TransDecoder.LongOrfs')
+    predict = which('TransDecoder.Predict')
+    if longorfs is None or predict is None:
+        deps['TransDecoder'] = False
+    else:
+        deps['TransDecoder'] = True
+
+    lastdb = which('lastdb')
+    lastal = which('lastal')
+    if lastdb is None or lastal is None:
+        deps['LAST'] = False
+    else:
+        deps['LAST'] = True
+
+    return deps
+
+def get_dir():
+    return os.path.join(common.get_dammit_dir(), \
                         common.CONFIG['settings']['dep_dir'])
 
-def get_dependency_tasks():
+def get_tasks():
     '''Check for dependencies and generate tasks for them if missing.
 
     These tasks check for each dependency on the system PATH, and generate a
@@ -67,99 +120,125 @@ def get_dependency_tasks():
 
     '''
 
-    dep_dir = get_dependency_dir()
+    dep_dir = get_dir()
 
     # This fails hard on Windows. For shame.
     # It also might fail hard on some linux distros, so probably should
     # actually looked at more closely.
     cur_platform = 'macosx' if system() == 'Darwin' else 'linux'
     
-    tasks = []
-    paths = {}
+    system_deps = check_system()
+    dammit_deps = {}
+    tasks = {}
 
     # Striping the .tar.gz
     strip_ext = lambda s: s[:-7]
 
     # Check for hmmer
-    hmmscan = which('hmmscan')
-    hmmpress = which('hmmpress')
-    if hmmscan is None or hmmpress is None:
+    if not system_deps['HMMER']:
         url = common.CONFIG['settings']['hmmer']['url'][cur_platform]
-        tasks.append(
-            get_download_and_untar_task(url,
-                                        dep_dir,
-                                        label='hmmer')
-        )
+        tasks['HMMER'] = get_download_and_untar_task(url,
+                                                     dep_dir,
+                                                     label='hmmer')
         hmmer_dir = strip_ext(os.path.basename(url))
-        paths['hmmer'] = os.path.join(dep_dir, hmmer_dir)
+        dammit_deps['HMMER'] = os.path.join(dep_dir, hmmer_dir)
 
     # Check for infernal
-    cmscan = which('cmscan')
-    cmpress = which('cmpress')
-    if cmscan is None or cmpress is None:
+    if not system_deps['Infernal']:
         url = common.CONFIG['settings']['infernal']['url'][cur_platform]
-        tasks.append(
-            get_download_and_untar_task(url,
-                                        dep_dir,
-                                        label='infernal')
-        )
+        tasks['Infernal'] = get_download_and_untar_task(url,
+                                                        dep_dir,
+                                                        label='infernal')
         infernal_dir = strip_ext(os.path.basename(url))
-        paths['infernal'] = os.path.join(dep_dir, infernal_dir)
+        dammit_deps['Infernal'] = os.path.join(dep_dir, infernal_dir)
 
-    blastn = which('blastn')
-    blastx = which('blastx')
-    tblastn = which('tblastn')
-    makeblastdb = which('makeblastdb')
-    if blastn is None or blastx is None \
-        or tblastn is None or makeblastdb is None:
-
+    if not system_deps['BLAST+']:
         url = common.CONFIG['settings']['blast']['url'][cur_platform]
-        tasks.append(
-            get_download_and_untar_task(url,
-                                        dep_dir,
-                                        label='blast')
-        )
+        tasks['BLAST+'] = get_download_and_untar_task(url,
+                                                      dep_dir,
+                                                      label='blast')
         blast_dir = strip_ext(os.path.basename(url))
-        paths['blast'] = os.path.join(dep_dir, blast_dir)
+        dammit_deps['BLAST+'] = os.path.join(dep_dir, blast_dir)
 
     # Check for BUSCO
-    busco = which('BUSCO_v1.1b1.py')
-    if busco is None:
+    if not system_deps['BUSCO']:
         url = common.CONFIG['settings']['busco']['url']
-        tasks.append(
-            get_download_and_untar_task(url,
-                                        dep_dir,
-                                        label='busco')
-        )
+        tasks['BUSCO'] = get_download_and_untar_task(url,
+                                                     dep_dir,
+                                                     label='busco')
         busco_dir = strip_ext(os.path.basename(url))
-        paths['busco'] = os.path.join(dep_dir, busco_dir)
+        dammit_deps['BUSCO'] = os.path.join(dep_dir, busco_dir)
 
-    longorfs = which('TransDecoder.LongOrfs')
-    predict = which('TransDecoder.Predict')
-    if longorfs is None or predict is None:
-        url = common.CONFIG['settings']['busco']['url']
-        tasks.append(
-            get_download_and_untar_task(url,
-                                        dep_dir,
-                                        label='transdecoder')
-        )
+    if not system_deps['TransDecoder']:
+        url = common.CONFIG['settings']['transdecoder']['url']
+        tasks['TransDecoder'] = get_download_and_untar_task(url,
+                                                            dep_dir,
+                                                            label='transdecoder')
         transdecoder_dir = strip_ext(os.path.basename(url))
-        paths['transdecoder'] = os.path.join(dep_dir, transdecoder_dir)
+        dammit_deps['TransDecoder'] = os.path.join(dep_dir, transdecoder_dir)
 
-    return paths, tasks
+    if not system_deps['LAST']:
+        url = common.CONFIG['settings']['last']['url'][cur_platform]
+        tasks['LAST'] = get_download_and_untar_task(url,
+                                                    dep_dir,
+                                                    label='last')
+        last_dir = strip_ext(os.path.basename(url))
+        dammit_deps['LAST'] = os.path.join(dep_dir, last_dir)
 
+    return dammit_deps, system_deps, tasks
 
-def run_dependency_tasks(tasks, args=['run']):
-    '''
-    This set of tasks keeps its own doit db in the db folder to share
-    them between all runs.
-    '''
+def get_doit_config():
     
-    dep_dir = get_dependency_dir()
+    dep_dir = get_dir()
     doit_config = {
                     'backend': common.DOIT_BACKEND,
                     'verbosity': common.DOIT_VERBOSITY,
                     'dep_file': os.path.join(dep_dir, 'dependencies.doit.db')
                   }
 
+    return doit_config
+
+
+def run_tasks(tasks, args=['run']):
+    '''
+    This set of tasks keeps its own doit db in the db folder to share
+    them between all runs.
+    '''
+
+    doit_config = get_doit_config()
     common.run_tasks(tasks, args, config=doit_config)
+
+def check():
+
+    dammit_deps, system_deps, dep_tasks = get_tasks()
+
+    dammit_dep_status = {}
+
+    doit_config = get_doit_config()
+    dep_manager = Dependency(SqliteDB, doit_config['dep_file'])
+    for key, task in dep_tasks.iteritems():
+        status = dep_manager.get_status(task, dep_tasks)
+        if status != 'up-to-date':
+            dammit_dep_status[key] = False
+        else:
+            dammit_dep_status[key] = True
+
+    missing = []
+    for ((key, system_status), (_, dammit_status)) in zip(system_deps.items(),
+                                                          dammit_dep_status.items()):
+        if system_status == dammit_status and not system_status:
+            missing.append(key)
+        elif dammit_status:
+            logger.info('{0} found [previously installed by dammit]'.format(key))
+        else:
+            logger.info('{0} found [installed on system PATH]'.format(key))
+
+    if missing:
+        logger.info('* {0} missing'.format(', '.join(missing)))
+        common.print_header('to get dependencies, run: dammit dependencies --install',
+                            level=2)
+    else:
+        logger.info('* all dependencies satisfied!')
+
+    return missing
+

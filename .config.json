@@ -21,7 +21,8 @@
 
         "last": {
             "url": {
-                "linux": "http://edhar.genomecenter.ucdavis.edu/~camille/dammit/last-linux.tar.gz"
+                "linux": "http://edhar.genomecenter.ucdavis.edu/~camille/dammit/last-linux.tar.gz",
+                "macosx": "http://edhar.genomecenter.ucdavis.edu/~camille/dammit/last-macosx.tar.gz"
             },
             "lastal": {
                 "params": "",
