@@ -4,4 +4,4 @@ include LICENSE
 include distribute_setup.py
 recursive-include dammit *.h
 recursive-include dammit *.c
-recursive-inclide dammit *.pyx
+recursive-include dammit *.pyx
