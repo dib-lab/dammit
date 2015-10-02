@@ -170,7 +170,7 @@ def get_tasks():
         dammit_deps['BUSCO'] = os.path.join(dep_dir, busco_dir)
 
     if not system_deps['TransDecoder']:
-        url = common.CONFIG['settings']['transdecoder']['url']
+        url = common.CONFIG['settings']['transdecoder']['url'][cur_platform]
         tasks['TransDecoder'] = get_download_and_untar_task(url,
                                                             dep_dir,
                                                             label='transdecoder')
@@ -191,6 +191,7 @@ def get_doit_config():
     
     dep_dir = get_dir()
     doit_config = {
+                    'reporter': common.LogReporter(logger),
                     'backend': common.DOIT_BACKEND,
                     'verbosity': common.DOIT_VERBOSITY,
                     'dep_file': os.path.join(dep_dir, 'dependencies.doit.db')
