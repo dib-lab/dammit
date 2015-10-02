@@ -14,7 +14,7 @@ from doit.doit_cmd import DoitMain
 CUR_TIME = time.strftime('%Y-%m-%d-%H%M')
 
 DOIT_BACKEND = 'sqlite3'
-DOIT_VERBOSITY = 0
+DOIT_VERBOSITY = 2
 
 # Configuration stuff!
 with open('.databases.json', 'r') as fp:
