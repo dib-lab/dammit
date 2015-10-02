@@ -234,7 +234,7 @@ def check():
             logger.info('{0} found [installed on system PATH]'.format(key))
 
     if missing:
-        logger.info('* {0} missing'.format(', '.join(missing)))
+        logger.warning('* {0} missing'.format(', '.join(missing)))
         common.print_header('to get dependencies, run: dammit dependencies --install',
                             level=2)
     else:

@@ -12,7 +12,7 @@ from dammit import databases
 from dammit import dependencies
 from dammit.tasks import print_tasks
 
-logger = logging.getLogger('dammit')
+logger = logging.getLogger(__name__)
 
 def handle_databases(args):
 
@@ -23,31 +23,31 @@ def handle_databases(args):
     missing = dependencies.check()
     if missing:
         logger.error('* Install dependencies to continue; exiting')
+        return 1
     
     dependency_dict, _, _ = dependencies.get_tasks()
 
-    # TODO: Check that directory exists
-    db_dir = databases.get_database_dir(args)
-    common.print_header('Checking databases', level=2)
+    db_dir = databases.get_dir(args)
+    common.print_header('Checking databases (dir: {0})'.format(db_dir), level=2)
     logger.debug('database dir: {0}'.format(db_dir))
-
     try:
         os.mkdir(db_dir)
     except OSError:
         logger.debug('database dir already exists')
 
-    database_dict, tasks = databases.get_database_tasks(db_dir,
-                                                        dependency_dict,
-                                                        args.busco_group,
-                                                        args.full)
-    
+    database_dict, tasks = databases.get_tasks(db_dir,
+                                               dependency_dict,
+                                               args.busco_group,
+                                               args.full)
     print_tasks(tasks, logger=logger)
+    missing = databases.check(tasks, db_dir)
     
     if args.install:
-        databases.run_database_tasks(db_dir, tasks)
-    else:
-        databases.run_database_tasks(db_dir, tasks, ['list'])
-
+        if missing:
+            logger.info('* will attempt to install databases')
+            databases.run_tasks(db_dir, tasks)
+        else:
+            common.print_header('nothing to install', level=2)
 
 def handle_dependencies(args):
 
@@ -75,34 +75,50 @@ def handle_dependencies(args):
 
 def handle_annotate(args):
 
+    common.print_header('submodule: annotate', level=1)
+    logger.debug('annotate')
+
     transcriptome = args.transcriptome
     out_dir = args.output_dir
     if out_dir is None:
         out_dir = transcriptome + '.dammit'
     out_dir = os.path.abspath(out_dir)
 
+    common.print_header('Checking dependencies', level=2)
+    missing = dependencies.check()
+    if missing:
+        logger.error('Install dependencies to continue; exiting')
+        return 1
+    prog_paths, _, _ = dependencies.get_tasks()
 
-    prog_paths, _ = dependencies.get_dependency_tasks()
+    db_dir = databases.get_dir(args)
+    common.print_header('Checking databases (dir: {0})'.format(db_dir), level=2)
+    logger.debug('database dir: {0}'.format(db_dir))
+    try:
+        os.mkdir(db_dir)
+    except OSError:
+        logger.debug('database dir already exists')
 
-    db_dir = get_database_dir(args)
-    db_dict, _ = databases.get_database_tasks(db_dir, 
-                                              prog_paths,
-                                              args.busco_group,
-                                              args.full)
+    database_dict, tasks = databases.get_tasks(db_dir,
+                                               prog_paths,
+                                               args.busco_group,
+                                               args.full)
+    print_tasks(tasks, logger=logger)
+    missing = databases.check(tasks, db_dir)
+    if missing:
+        logger.error('Install databases to continue; exiting')
+        return 1
 
-    if args.debug:
-        print('Transcriptome: {transcriptome}\n'\
-              'Output Dir: {out_dir}\n'\
-              'Paths: {prog_paths}\n'\
-              'Databases: {db_dict}'.format(**locals()))
-
-    results, tasks = annotate.get_annotate_tasks(transcriptome,
+    results, tasks = annotate.get_tasks(transcriptome,
                                         prog_paths, 
-                                        db_dict)
+                                        database_dict)
 
+    common.print_header('Running annotate!', level=2)
+    logger.info('Transcriptome file: {0}'.format(transcriptome))
+    logger.info('Output directory: {0}'.format(out_dir))
     print_tasks(tasks, logger=logger)
 
-    annotate.run_annotate_tasks(transcriptome, out_dir, tasks)
+    annotate.run_tasks(transcriptome, out_dir, tasks)
 
 def main():
     parser = argparse.ArgumentParser()

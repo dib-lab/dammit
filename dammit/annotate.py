@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 from __future__ import print_function
 
+import logging
 import os
 from platform import system
 import sys
@@ -19,7 +20,9 @@ from .tasks import get_blast_format_task, \
                   get_cmscan_task, \
                   get_lastal_task
 
-def get_annotate_tasks(transcriptome, prog_paths, database_dict, 
+logger = logging.getLogger(__name__)
+
+def get_tasks(transcriptome, prog_paths, database_dict, 
                        n_threads=1, user_databases=[]):
 
     tasks = []
@@ -57,7 +60,7 @@ def get_annotate_tasks(transcriptome, prog_paths, database_dict,
     '''
     busco_cfg = common.CONFIG['settings']['busco']
     busco_output_name = '{0}.busco.results'.format(transcriptome)
-    busco_dir = prog_paths.get('busco', '')
+    busco_dir = prog_paths.get('BUSCO', '')
     assess_tasks.append(
         get_busco_task(transcriptome, busco_output_name, database_dict['BUSCO'],
                        'trans', n_threads, busco_cfg,
@@ -81,7 +84,7 @@ def get_annotate_tasks(transcriptome, prog_paths, database_dict,
     annotate_tasks = []
 
     transdecoder_output_dir = transcriptome + '.transdecoder_dir'
-    transdecoder_dir = prog_paths.get('transdecoder', '')
+    transdecoder_dir = prog_paths.get('TransDecoder', '')
     orf_cfg = common.CONFIG['settings']['transdecoder']['longorfs']
     annotate_tasks.append(
         get_transdecoder_orf_task(transcriptome, 
@@ -95,7 +98,7 @@ def get_annotate_tasks(transcriptome, prog_paths, database_dict,
     results['ORFs_pep'] = orf_pep
     results['ORFs_gff3'] = orf_gff3
 
-    hmmer_dir = prog_paths.get('hmmer', '')
+    hmmer_dir = prog_paths.get('HMMER', '')
     pfam_results = transcriptome + '.pfam-A.tbl'
     annotate_tasks.append(
         get_hmmscan_task(orf_pep, pfam_results,
@@ -120,7 +123,7 @@ def get_annotate_tasks(transcriptome, prog_paths, database_dict,
 
 
     cmscan_cfg = common.CONFIG['settings']['infernal']['cmscan']
-    infernal_dir = prog_paths.get('infernal', '')
+    infernal_dir = prog_paths.get('Infernal', '')
     rfam_results = transcriptome + '.rfam.tbl'
     annotate_tasks.append(
         get_cmscan_task(transcriptome, rfam_results,
@@ -133,14 +136,14 @@ def get_annotate_tasks(transcriptome, prog_paths, database_dict,
     Build the BLAST+ database for the transcriptome, which we'll need
     for doing RBH searches
     '''
-    blast_dir = prog_paths.get('blast','')
+    blast_dir = prog_paths.get('BLAST+','')
     blast_cfg = common.CONFIG['settings']['blast']
     annotate_tasks.append(
         get_blast_format_task(transcriptome, transcriptome + '.db', 
                                'nucl', blast_dir=blast_dir)
     )
     
-    last_dir = prog_paths.get('last', '')
+    last_dir = prog_paths.get('LAST', '')
     lastal_cfg = common.CONFIG['settings']['last']['lastal']
     orthodb_fn = database_dict['ORTHODB']
     tr_x_orthodb_fn = '{0}.x.orthodb.maf'.format(transcriptome)
@@ -174,7 +177,19 @@ def get_annotate_tasks(transcriptome, prog_paths, database_dict,
 
     return results, tasks
 
-def run_annotate_tasks(transcriptome, output_dir, tasks, args=['run']):
+def get_doit_config(output_dir, transcriptome):
+
+    doit_config = {
+                    'reporter': common.LogReporter(logger),
+                    'backend': common.DOIT_BACKEND,
+                    'verbosity': common.DOIT_VERBOSITY,
+                    'dep_file': os.path.join(output_dir, '.' +
+                                             os.path.basename(transcriptome) +
+                                             '.doit.db')
+                  }
+    return doit_config
+
+def run_tasks(transcriptome, output_dir, tasks, args=['run']):
     '''
     Set up doit's config for the actual analysis tasks.
     We'll put the doit database for these tasks into the output
@@ -183,21 +198,18 @@ def run_annotate_tasks(transcriptome, output_dir, tasks, args=['run']):
     metadata from every analysis ever run by the user!
     '''
 
-    doit_config = {
-                    'backend': common.DOIT_BACKEND,
-                    'verbosity': common.DOIT_VERBOSITY,
-                    'dep_file': os.path.join(output_dir, '.' +
-                                             os.path.basename(transcriptome) +
-                                             '.doit.db')
-                  }
+    doit_config = get_doit_config(output_dir, transcriptome)
 
     cwd = os.getcwd()
+    logger.debug('cwd: {0}'.format(cwd))
     try:
         if not os.path.exists(output_dir):
+            logger.debug('makedirs: {0}'.format(output_dir))
             os.makedirs(output_dir)
         os.chdir(output_dir)
 
         common.run_tasks(tasks, args, config=doit_config)
     finally:
+        logger.debug('chdir: {0}'.format(cwd))
         os.chdir(cwd)
 

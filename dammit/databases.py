@@ -4,6 +4,8 @@ from __future__ import print_function
 import logging
 import os
 
+from doit.dependency import Dependency, SqliteDB
+
 import common
 from tasks import get_download_and_gunzip_task, \
                   get_hmmpress_task, \
@@ -120,6 +122,7 @@ def get_tasks(db_dir, prog_paths, busco_db, full):
 def get_doit_config(db_dir):
 
     doit_config = {
+                    'reporter': common.LogReporter(logger),
                     'backend': common.DOIT_BACKEND,
                     'verbosity': common.DOIT_VERBOSITY,
                     'dep_file': os.path.join(db_dir, 'databases.doit.db')
@@ -128,7 +131,27 @@ def get_doit_config(db_dir):
 
 def run_tasks(db_dir, tasks, args=['run']):
     
-    doit_config = get_doit_config()
+    doit_config = get_doit_config(db_dir)
     common.run_tasks(tasks, args, config=doit_config)
 
+def check(tasks, db_dir):
 
+    doit_config = get_doit_config(db_dir)
+    dep_manager = Dependency(SqliteDB, doit_config['dep_file'])
+    missing = False
+    for task in tasks:
+        status = dep_manager.get_status(task, tasks)
+        if status != 'up-to-date':
+            missing = True
+            logger.warning('{0} not ready'.format(task.name))
+        else:
+            logger.info('{0} ready!'.format(task.name))
+
+    if missing:
+        logger.warning('* database prep incomplete')
+        common.print_header('to prepare databases, run: dammit databases'\
+                            ' --install', level=2)
+    else:
+        logger.info('* all databases prepared!')
+
+    return missing
