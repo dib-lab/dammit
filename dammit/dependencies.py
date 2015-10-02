@@ -217,12 +217,16 @@ def check():
 
     doit_config = get_doit_config()
     dep_manager = Dependency(SqliteDB, doit_config['dep_file'])
-    for key, task in dep_tasks.iteritems():
-        status = dep_manager.get_status(task, dep_tasks)
-        if status != 'up-to-date':
+    for key in system_deps:
+        try:
+            status = dep_manager.get_status(dep_tasks[key], dep_tasks)
+        except KeyError:
             dammit_dep_status[key] = False
         else:
-            dammit_dep_status[key] = True
+            if status != 'up-to-date':
+                dammit_dep_status[key] = False
+            else:
+                dammit_dep_status[key] = True
 
     missing = []
     for ((key, system_status), (_, dammit_status)) in zip(system_deps.items(),

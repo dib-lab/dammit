@@ -148,7 +148,7 @@ class LogReporter(object):
     def skip_uptodate(self, task):
         """skipped up-to-date task"""
         if task.name[0] != '_':
-            self.write("[x] %s" % task.name)
+            self.write("[x] %s" % task.name, level=logging.INFO)
 
     def skip_ignore(self, task):
         """skipped ignored task"""

@@ -408,7 +408,7 @@ def get_cmscan_gff3_task(input_filename, output_filename, database):
 @create_task_object
 def get_gff3_merge_task(gff3_filenames, output_filename):
 
-    name = 'gff3-merge:'.format(os.path.basename(output_filename))
+    name = 'gff3-merge:{0}'.format(os.path.basename(output_filename))
 
     merge_cmd = 'cat {0} | sort > {1}'.format(' '.join(gff3_filenames),
                                               output_filename)
