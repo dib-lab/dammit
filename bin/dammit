@@ -68,7 +68,7 @@ def handle_dependencies(args):
     if args.install:
         if missing:
             logger.info('* will attempt to install dependencies')
-            dependencies.run_dependency_tasks(tasks)
+            dependencies.run_tasks(dep_tasks.values())
         else:
             common.print_header('nothing to install', level=2)
 
