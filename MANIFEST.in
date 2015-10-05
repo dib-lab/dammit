@@ -2,6 +2,7 @@ include README.md
 include setup.cfg
 include LICENSE
 include distribute_setup.py
+recursive-include dammit .*.json
 recursive-include dammit *.h
 recursive-include dammit *.c
 recursive-include dammit *.pyx

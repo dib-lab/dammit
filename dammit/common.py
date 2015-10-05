@@ -17,9 +17,10 @@ DOIT_BACKEND = 'sqlite3'
 DOIT_VERBOSITY = 2
 
 # Configuration stuff!
-with open('.databases.json', 'r') as fp:
+rel_path = os.path.dirname(__file__)
+with open(os.path.join(rel_path, '.databases.json'), 'r') as fp:
     DATABASES = json.load(fp)
-with open('.config.json', 'r') as fp:
+with open(os.path.join(rel_path, '.config.json'), 'r') as fp:
     CONFIG = json.load(fp)
 
 def get_dammit_dir():
