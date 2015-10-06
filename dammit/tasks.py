@@ -336,11 +336,43 @@ def get_transdecoder_predict_task(input_filename, db_filename, n_threads,
             'title': title_with_actions,
             'actions': [cmd],
             'file_dep': [input_filename, 
-                         input_filename + '.transdecoder_dir/longest_orfs.pep', db_filename],
+                         input_filename + '.transdecoder_dir/longest_orfs.pep',
+                         db_filename],
             'targets': [input_filename + '.transdecoder' + ext \
                         for ext in ['.bed', '.cds', '.pep', '.gff3', '.mRNA']],
             'clean': [clean_targets, 
                      (clean_folder, [input_filename + '.transdecoder_dir'])]}
+
+@create_task_object
+def get_best_orthodb_hits_task(input_filename, genes_filename,
+                               target_taxid, output_filename):
+
+    name = 'orthodb-best-hits:' + os.path.basename(input_filename)
+
+    def cmd():
+        genes = pd.read_table(genes_filename)
+        def fix_level(level_str):
+            level, _, _ = level_str.partition(':')
+            return level
+        genes['odb8_level'] = genes['odb8_level'].apply(fix_level)
+
+        results = []
+        for group in parsers.maf_to_df_iter(input_filename):
+            merged = pd.merge(group, genes, left_on='s_name',
+                              right_on='protein_id', how='inner')
+            merged = taxonomy.get_closest_per_ortho(merged, target_taxid)
+            results.append(merged)
+        results_df = pd.concat(results)
+        results_df = taxonomy.get_closest_per_ortho(results_df, target_taxid)
+
+        results_df.to_csv(output_filename, delimter='\t')
+
+    return {'name': name,
+            'title': title_with_actions,
+            'actions': [cmd],
+            'file_dep': [input_filename, genes_filename],
+            'tagets': [output_filename],
+            'clean': [clean_targets]}
 
 @create_task_object
 def get_maf_gff3_task(input_filename, output_filename, database):

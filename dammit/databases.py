@@ -92,6 +92,14 @@ def get_tasks(db_dir, prog_paths, busco_db, full):
     ORTHODB += '.db'
     databases['ORTHODB'] = os.path.abspath(ORTHODB)
 
+    ORTHODB_GENES = os.path.join(db_dir,
+                                 common.DATABASES['orthodb_genes']['filename'])
+    tasks.append(
+        get_download_and_gunzip_task(common.DATABASES['orthodb_genes']['url'],
+                                     ORTHODB_GENES)
+    )
+    databases['ORTHODB_GENES'] = os.path.abspath(ORTHODB_GENES)
+
     # A little confusing. First, we get the top-level BUSCO path:
     BUSCO = os.path.join(db_dir, 'buscodb')
     tasks.append(

@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import csv
 import sys
+import numpy as np
 import pandas as pd
 
 from blast import remap_blast_coords_df as remap_blast
@@ -238,19 +239,49 @@ def gff3_transdecoder_to_df_iter(fn, chunksize=10000):
         yield build_df(data)
 
 def maf_to_df_iter(fn, chunksize=10000):
-    
-    def build_df(data):
-        return pd.DataFrame(data)
+    '''Iterator yielding DataFrames of length chunksize holding MAF alignments.
+
+    An extra column is added for bitscore, using the equation described here:
+        http://last.cbrc.jp/doc/last-evalues.html
+
+    Args:
+        fn (str): Path to the MAF alignment file.
+        chunksize (int): Alignments to parse per iteration.
+    Yields:
+        DataFrame: Pandas DataFrame with the alignments.
+    '''
+
+    def fix_sname(name):
+        new, _, _ = name.partition(',')
+        return new
+
+    def build_df(data, LAMBDA, K):
+        df = pd.DataFrame(data)
+        df['s_name'] = df['s_name'].apply(fix_sname)
+        setattr(df, 'LAMBDA', LAMBDA)
+        setattr(df, 'K', K)
+        df['bitscore'] = (LAMBDA * df['score'] - np.log(K)) / np.log(2)
+        return df
 
     data = []
+    LAMBDA = None
+    K = None
     with open(fn) as fp:
         while (True):
             try:
                 line = fp.next().strip()
             except StopIteration:
                 break
-            if not line or line.startswith('#'):
+            if not line:
                 continue
+            if line.startswith('#'):
+                if 'lambda' in line:
+                    meta = line.strip(' #').split()
+                    meta = {k:v for k, _, v in map(lambda x: x.partition('='), meta)}
+                    LAMBDA = float(meta['lambda'])
+                    K = float(meta['K'])
+                else:
+                    continue
             if line.startswith('a'):
                 cur_aln = {}
 
@@ -280,9 +311,9 @@ def maf_to_df_iter(fn, chunksize=10000):
 
                 data.append(cur_aln)
                 if len(data) >= chunksize:
-                    yield build_df(data)
+                    yield build_df(data, LAMBDA, K)
                     data = []
 
     if data:
-        yield build_df(data)
+        yield build_df(data, LAMBDA, K)
     
