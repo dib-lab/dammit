@@ -93,6 +93,12 @@ def check_system():
     else:
         deps['LAST'] = True
 
+    crb_blast = which('crb-bliast')
+    if crb_blast is None:
+        deps['crb-blast'] = False
+    else:
+        deps['crb-blast'] = True
+
     return deps
 
 def get_dir():

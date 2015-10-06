@@ -18,6 +18,7 @@ import pandas as pd
 from khmer import HLLCounter, ReadParser
 
 from . import parsers
+from . import taxonomy
 import gff
 
 def task_str(task):
@@ -150,6 +151,23 @@ def get_blast_task(query, db, prog, out_fn, n_threads, blast_cfg, blast_dir=''):
             'actions': [cmd],
             'targets': [out_fn],
             'file_dep': [db],
+            'clean': [clean_targets]}
+
+@create_task_object
+def get_crb_blast_task(query, target, output, crb_blast_cfg,
+                       crb_blast_dir='', n_threads=1):
+
+    name = 'crb-blast:{0}.x.{1}'.format(query, target)
+    exc = os.path.join(crb_blast_dir, 'crb-blast')
+    evalue = crb_blast_cfg['evalue']
+    cmd = '{exc} --query {query} --target {target} --output {output} '\
+          '--evalue {evalue} --threads {n_threads}'.format(**locals())
+
+    return {'name': name,
+            'title': title_with_actions,
+            'actions': [cmd],
+            'targets': [output],
+            'file_dep': [query, target],
             'clean': [clean_targets]}
 
 @create_task_object
@@ -371,7 +389,7 @@ def get_best_orthodb_hits_task(input_filename, genes_filename,
             'title': title_with_actions,
             'actions': [cmd],
             'file_dep': [input_filename, genes_filename],
-            'tagets': [output_filename],
+            'targets': [output_filename],
             'clean': [clean_targets]}
 
 @create_task_object

@@ -111,7 +111,9 @@ def handle_annotate(args):
 
     results, tasks = annotate.get_tasks(transcriptome,
                                         prog_paths, 
-                                        database_dict)
+                                        database_dict,
+                                        args.transcriptome_taxid,
+                                        n_threads=args.n_threads)
 
     common.print_header('Running annotate!', level=2)
     logger.info('Transcriptome file: {0}'.format(transcriptome))
@@ -172,6 +174,8 @@ def main():
                         help='Do full annotation with uniref90')
     annotate_parser.add_argument('-o', '--output-dir', default=None)
     annotate_parser.add_argument('--busco-group', default='metazoa')
+    annotate_parser.add_argument('-x', '--transcriptome-taxid', type=int,
+                                 required=True)
     annotate_parser.add_argument('--n_threads', type=int, default=1)
     annotate_parser.add_argument('--user-databases', nargs='+')
     annotate_parser.add_argument('transcriptome')

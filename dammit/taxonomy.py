@@ -49,14 +49,14 @@ def get_closest_per_ortho(df, target):
         closest_subset.sort('bitscore', inplace=True)
         try:
             return closest_subset.iloc[0]
-        except:
+        except IndexError as e:
             print group
             print dist, closest
-            raise RuntimeError('Index thing')
+            raise
 
     top_per_prot = df.groupby(['q_name', 'odb8_prot_id']).apply(best)
     top_per_query = df.groupby('q_name').apply(best)
 
-    return top_per_query
+    return top_per_query.reset_index()
 
 

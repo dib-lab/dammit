@@ -8,19 +8,29 @@ from . import common
 from .tasks import get_maf_gff3_task, \
                    get_hmmscan_gff3_task, \
                    get_cmscan_gff3_task, \
-                   get_gff3_merge_task
+                   get_gff3_merge_task, \
+                   get_best_orthodb_hits_task
 
-def get_report_tasks(transcriptome, results_dict, n_threads=1):
+def get_report_tasks(transcriptome, results_dict, databases, taxid, n_threads=1):
 
     tasks = []
     outputs = []
 
-    orthodb_gff3 = results_dict['orthodb'] + '.gff3'
+    '''
+    orthodb_best = results_dict['orthodb'] + '.closest'
     tasks.append(
-        get_maf_gff3_task(results_dict['orthodb'],
+        get_best_orthodb_hits_task(results_dict['orthodb'],
+                                   databases['ORTHODB_GENES'],
+                                   taxid, orthodb_best)
+    )
+
+    orthodb_gff3 = orthodb_best + '.gff3'
+    tasks.append(
+        get_maf_gff3_task(orthodb_best,
                           orthodb_gff3, 'OrthoDB')
     )
     outputs.append(orthodb_gff3)
+    '''
 
     pfam_gff3 = results_dict['pfam'] + '.gff3'
     tasks.append(

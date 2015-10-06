@@ -23,7 +23,7 @@ from .tasks import get_blast_format_task, \
 logger = logging.getLogger(__name__)
 
 def get_tasks(transcriptome, prog_paths, database_dict, 
-                       n_threads=1, user_databases=[]):
+              taxid, n_threads=1, user_databases=[]):
 
     tasks = []
     results = {}
@@ -172,6 +172,8 @@ def get_tasks(transcriptome, prog_paths, database_dict,
     tasks.extend(annotate_tasks)
 
     outputs, report_tasks = get_report_tasks(transcriptome, results,
+                                             database_dict,
+                                             taxid,
                                              n_threads=n_threads)
     tasks.extend(report_tasks)
 
