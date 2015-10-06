@@ -43,7 +43,7 @@ def which(program):
 
     return None
 
-def check_system():
+def check_system_path():
     
     deps = {}
 
@@ -93,7 +93,7 @@ def check_system():
     else:
         deps['LAST'] = True
 
-    crb_blast = which('crb-bliast')
+    crb_blast = which('crb-blast')
     if crb_blast is None:
         deps['crb-blast'] = False
     else:
@@ -101,155 +101,27 @@ def check_system():
 
     return deps
 
-def get_dir():
-    return os.path.join(common.get_dammit_dir(), \
-                        common.CONFIG['settings']['dep_dir'])
 
-def get_tasks():
-    '''Check for dependencies and generate tasks for them if missing.
+def do_check():
 
-    These tasks check for each dependency on the system PATH, and generate a
-    task to download and unpack them if they're missing. Unlike the database
-    tasks, these do not have the option of being put anywhere but in
-    $HOME/.dammit/dependencies. The current binary dependencencies which dammit
-    will download when missing are:
+    common.print_header('Checking PATH for dependencies', level=2)
 
-        * BUSCO v1.1b
-        * HMMER 3.1b2
-        * Infernal 1.1.1
-        * BLAST+ 2.2.31
-        * TransDecoder 2.0.1
-
-    Returns:
-    dict: A dictionary of the final binary paths.
-    list: The doit tasks.
-
-    '''
-
-    dep_dir = get_dir()
-
-    # This fails hard on Windows. For shame.
-    # It also might fail hard on some linux distros, so probably should
-    # actually looked at more closely.
-    cur_platform = 'macosx' if system() == 'Darwin' else 'linux'
+    system_deps = check_system_path()
     
-    system_deps = check_system()
-    dammit_deps = {}
-    tasks = {}
-
-    # Striping the .tar.gz
-    strip_ext = lambda s: s[:-7]
-
-    # Check for hmmer
-    if not system_deps['HMMER']:
-        url = common.CONFIG['settings']['hmmer']['url'][cur_platform]
-        tasks['HMMER'] = get_download_and_untar_task(url,
-                                                     dep_dir,
-                                                     label='hmmer')
-        hmmer_dir = strip_ext(os.path.basename(url))
-        dammit_deps['HMMER'] = os.path.join(dep_dir, hmmer_dir)
-
-    # Check for infernal
-    if not system_deps['Infernal']:
-        url = common.CONFIG['settings']['infernal']['url'][cur_platform]
-        tasks['Infernal'] = get_download_and_untar_task(url,
-                                                        dep_dir,
-                                                        label='infernal')
-        infernal_dir = strip_ext(os.path.basename(url))
-        dammit_deps['Infernal'] = os.path.join(dep_dir, infernal_dir)
-
-    if not system_deps['BLAST+']:
-        url = common.CONFIG['settings']['blast']['url'][cur_platform]
-        tasks['BLAST+'] = get_download_and_untar_task(url,
-                                                      dep_dir,
-                                                      label='blast')
-        blast_dir = strip_ext(os.path.basename(url))
-        dammit_deps['BLAST+'] = os.path.join(dep_dir, blast_dir)
-
-    # Check for BUSCO
-    if not system_deps['BUSCO']:
-        url = common.CONFIG['settings']['busco']['url']
-        tasks['BUSCO'] = get_download_and_untar_task(url,
-                                                     dep_dir,
-                                                     label='busco')
-        busco_dir = strip_ext(os.path.basename(url))
-        dammit_deps['BUSCO'] = os.path.join(dep_dir, busco_dir)
-
-    if not system_deps['TransDecoder']:
-        url = common.CONFIG['settings']['transdecoder']['url'][cur_platform]
-        tasks['TransDecoder'] = get_download_and_untar_task(url,
-                                                            dep_dir,
-                                                            label='transdecoder')
-        transdecoder_dir = strip_ext(os.path.basename(url))
-        dammit_deps['TransDecoder'] = os.path.join(dep_dir, transdecoder_dir)
-
-    if not system_deps['LAST']:
-        url = common.CONFIG['settings']['last']['url'][cur_platform]
-        tasks['LAST'] = get_download_and_untar_task(url,
-                                                    dep_dir,
-                                                    label='last')
-        last_dir = strip_ext(os.path.basename(url))
-        dammit_deps['LAST'] = os.path.join(dep_dir, last_dir)
-
-    return dammit_deps, system_deps, tasks
-
-def get_doit_config():
-    
-    dep_dir = get_dir()
-    doit_config = {
-                    'reporter': common.LogReporter(logger),
-                    'backend': common.DOIT_BACKEND,
-                    'verbosity': common.DOIT_VERBOSITY,
-                    'dep_file': os.path.join(dep_dir, 'dependencies.doit.db')
-                  }
-
-    return doit_config
-
-
-def run_tasks(tasks, args=['run']):
-    '''
-    This set of tasks keeps its own doit db in the db folder to share
-    them between all runs.
-    '''
-
-    doit_config = get_doit_config()
-    common.run_tasks(tasks, args, config=doit_config)
-
-def check():
-
-    dammit_deps, system_deps, dep_tasks = get_tasks()
-
-    dammit_dep_status = {}
-
-    doit_config = get_doit_config()
-    dep_manager = Dependency(SqliteDB, doit_config['dep_file'])
-    for key in system_deps:
-        try:
-            status = dep_manager.get_status(dep_tasks[key], dep_tasks)
-        except KeyError:
-            dammit_dep_status[key] = False
-        else:
-            if status != 'up-to-date':
-                dammit_dep_status[key] = False
-            else:
-                dammit_dep_status[key] = True
-
     missing = []
-    for ((key, system_status), (_, dammit_status)) in zip(system_deps.items(),
-                                                          dammit_dep_status.items()):
-        if system_status == dammit_status and not system_status:
+    for key, status in system_deps.iteritems():
+        if status is False:
             missing.append(key)
-        elif dammit_status:
-            logger.info('{0} found [previously installed by dammit]'.format(key))
+            logger.warning('[ ] {0}'.format(key))
         else:
-            logger.info('{0} found [installed on system PATH]'.format(key))
+            logger.info('[x] {0}'.format(key))
+
+    common.print_header('Dependency results', level=2)
 
     if missing:
-        logger.warning('* {0} missing'.format(', '.join(missing)))
-        common.print_header('to get dependencies, run: dammit dependencies --install',
-                            level=2)
+        logger.warning('{0} missing'.format(', '.join(missing)))
     else:
-        logger.info('* all dependencies satisfied!')
+        logger.info('All dependencies satisfied!')
 
     return missing
 
