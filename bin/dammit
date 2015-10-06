@@ -59,31 +59,21 @@ def handle_annotate(args):
         out_dir = transcriptome + '.dammit'
     out_dir = os.path.abspath(out_dir)
 
-    missing = dependencies.do_check()
-    if missing:
+    missing_deps = dependencies.do_check()
+    if missing_deps:
         logger.error('Install dependencies to continue; exiting')
         return 1
-
-
+    
     db_dir = databases.get_dir(args)
-    common.print_header('Checking databases (dir: {0})'.format(db_dir), level=2)
     logger.debug('database dir: {0}'.format(db_dir))
-    try:
-        os.mkdir(db_dir)
-    except OSError:
-        logger.debug('database dir already exists')
+    database_dict, _, missing_dbs = databases.do_check(db_dir,
+                                                           args)
 
-    database_dict, tasks = databases.get_tasks(db_dir,
-                                               args.busco_group,
-                                               args.full)
-    print_tasks(tasks, logger=logger)
-    missing = databases.check(tasks, db_dir)
-    if missing:
+    if missing_dbs:
         logger.error('Install databases to continue; exiting')
         return 1
 
     results, tasks = annotate.get_tasks(transcriptome,
-                                        prog_paths, 
                                         database_dict,
                                         args.transcriptome_taxid,
                                         n_threads=args.n_threads)

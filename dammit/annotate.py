@@ -22,7 +22,7 @@ from .tasks import get_blast_format_task, \
 
 logger = logging.getLogger(__name__)
 
-def get_tasks(transcriptome, prog_paths, database_dict, 
+def get_tasks(transcriptome, database_dict, 
               taxid, n_threads=1, user_databases=[]):
 
     tasks = []
@@ -60,11 +60,9 @@ def get_tasks(transcriptome, prog_paths, database_dict,
     '''
     busco_cfg = common.CONFIG['settings']['busco']
     busco_output_name = '{0}.busco.results'.format(transcriptome)
-    busco_dir = prog_paths.get('BUSCO', '')
     assess_tasks.append(
         get_busco_task(transcriptome, busco_output_name, database_dict['BUSCO'],
-                       'trans', n_threads, busco_cfg,
-                       busco_dir=busco_dir)
+                       'trans', n_threads, busco_cfg)
     )
     results['busco'] = os.path.join('run_' + busco_output_name, 
                                     'short_summary_' + busco_output_name)
@@ -84,12 +82,10 @@ def get_tasks(transcriptome, prog_paths, database_dict,
     annotate_tasks = []
 
     transdecoder_output_dir = transcriptome + '.transdecoder_dir'
-    transdecoder_dir = prog_paths.get('TransDecoder', '')
     orf_cfg = common.CONFIG['settings']['transdecoder']['longorfs']
     annotate_tasks.append(
         get_transdecoder_orf_task(transcriptome, 
-                                  orf_cfg,
-                                  transdecoder_dir=transdecoder_dir)
+                                  orf_cfg)
     )
     orf_pep = os.path.join(transdecoder_output_dir,
                                'longest_orfs.pep')
@@ -98,13 +94,11 @@ def get_tasks(transcriptome, prog_paths, database_dict,
     results['ORFs_pep'] = orf_pep
     results['ORFs_gff3'] = orf_gff3
 
-    hmmer_dir = prog_paths.get('HMMER', '')
     pfam_results = transcriptome + '.pfam-A.tbl'
     annotate_tasks.append(
         get_hmmscan_task(orf_pep, pfam_results,
                      database_dict['PFAM'], n_threads, 
-                     common.CONFIG['settings']['hmmer']['hmmscan'],
-                     hmmer_dir=hmmer_dir)
+                     common.CONFIG['settings']['hmmer']['hmmscan'])
     )
     results['pfam'] = pfam_results
 
@@ -113,8 +107,7 @@ def get_tasks(transcriptome, prog_paths, database_dict,
         get_transdecoder_predict_task(transcriptome, 
                                       pfam_results,
                                       n_threads,
-                                      predict_cfg,
-                                      transdecoder_dir=transdecoder_dir)
+                                      predict_cfg)
     )
     protein_prediction_pep = transcriptome + '.transdecoder.pep'
     protein_prediction_gff3 = transcriptome + '.transdecoder.gff3'
@@ -123,12 +116,11 @@ def get_tasks(transcriptome, prog_paths, database_dict,
 
 
     cmscan_cfg = common.CONFIG['settings']['infernal']['cmscan']
-    infernal_dir = prog_paths.get('Infernal', '')
     rfam_results = transcriptome + '.rfam.tbl'
     annotate_tasks.append(
         get_cmscan_task(transcriptome, rfam_results,
                      database_dict['RFAM'], n_threads, 
-                     cmscan_cfg, infernal_dir=infernal_dir)
+                     cmscan_cfg)
     )
     results['rfam'] = rfam_results
 
@@ -136,20 +128,17 @@ def get_tasks(transcriptome, prog_paths, database_dict,
     Build the BLAST+ database for the transcriptome, which we'll need
     for doing RBH searches
     '''
-    blast_dir = prog_paths.get('BLAST+','')
     blast_cfg = common.CONFIG['settings']['blast']
     annotate_tasks.append(
-        get_blast_format_task(transcriptome, transcriptome + '.db', 
-                               'nucl', blast_dir=blast_dir)
+        get_blast_format_task(transcriptome, transcriptome + '.db', 'nucl')
     )
     
-    last_dir = prog_paths.get('LAST', '')
     lastal_cfg = common.CONFIG['settings']['last']['lastal']
     orthodb_fn = database_dict['ORTHODB']
     tr_x_orthodb_fn = '{0}.x.orthodb.maf'.format(transcriptome)
     annotate_tasks.append(
         get_lastal_task(transcriptome, orthodb_fn, tr_x_orthodb_fn, True,
-                       n_threads, lastal_cfg, last_dir=last_dir)
+                       n_threads, lastal_cfg)
     )
     results['orthodb'] = tr_x_orthodb_fn
  
