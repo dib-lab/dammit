@@ -24,7 +24,7 @@ def get_dir(args):
                               common.CONFIG['settings']['db_dir'])
     return os.path.abspath(db_dir)
 
-def get_tasks(db_dir, prog_paths, busco_db, full):
+def get_tasks(db_dir, args):
     '''Generate tasks for installing the bundled databases. 
     
     These tasks download the databases, unpack them, and format them for use.
@@ -56,22 +56,18 @@ def get_tasks(db_dir, prog_paths, busco_db, full):
     tasks.append(
         get_download_and_gunzip_task(common.DATABASES['pfam']['url'], PFAM)
     )
-    hmmer_dir = prog_paths.get('HMMER', '')
     tasks.append(
-        get_hmmpress_task(PFAM, common.CONFIG['settings']['hmmer'],
-                          hmmer_dir=hmmer_dir)
+        get_hmmpress_task(PFAM, common.CONFIG['settings']['hmmer'])
     )
     databases['PFAM'] = os.path.abspath(PFAM)
 
     # Get Rfam and prepare it for use with Infernal
     RFAM = os.path.join(db_dir, common.DATABASES['rfam']['filename'])
-    infernal_dir = prog_paths.get('Infernal', '')
     tasks.append(
         get_download_and_gunzip_task(common.DATABASES['rfam']['url'], RFAM)
     )
     tasks.append(
-        get_cmpress_task(RFAM, common.CONFIG['settings']['infernal'],
-                         infernal_dir=infernal_dir)
+        get_cmpress_task(RFAM, common.CONFIG['settings']['infernal'])
     )
     databases['RFAM'] = os.path.abspath(RFAM)
 
@@ -81,13 +77,9 @@ def get_tasks(db_dir, prog_paths, busco_db, full):
         get_download_and_gunzip_task(common.DATABASES['orthodb']['url'], ORTHODB)
     )
 
-    blast_dir = prog_paths.get('BLAST+', '')
-
-    last_dir = prog_paths.get('LAST', '')
     lastdb_cfg = common.CONFIG['settings']['last']['lastdb']
     tasks.append(
-        get_lastdb_task(ORTHODB, ORTHODB + '.db', lastdb_cfg,
-                        prot=True, last_dir=last_dir)
+        get_lastdb_task(ORTHODB, ORTHODB + '.db', lastdb_cfg, prot=True)
     )
     ORTHODB += '.db'
     databases['ORTHODB'] = os.path.abspath(ORTHODB)
@@ -104,23 +96,22 @@ def get_tasks(db_dir, prog_paths, busco_db, full):
     BUSCO = os.path.join(db_dir, 'buscodb')
     tasks.append(
         # That top-level path is given to the download task:
-        get_download_and_untar_task(common.DATABASES['busco'][busco_db]['url'], 
+        get_download_and_untar_task(common.DATABASES['busco'][args.busco_group]['url'], 
                                     BUSCO,
-                                    label=busco_db)
+                                    label=args.busco_group)
     )
     # The untarred arhive has a folder named after the group:
-    databases['BUSCO'] = os.path.abspath(os.path.join(BUSCO, busco_db))
+    databases['BUSCO'] = os.path.abspath(os.path.join(BUSCO, args.busco_group))
 
     # Get uniref90 if the user specifies
-    if full:
+    if args.full:
         UNIREF = os.path.join(common.DATABASES['uniref90']['filename'])
         tasks.append(
             get_download_and_gunzip_task(common.DATABASES['uniref90']['url'], UNIREF)
         )
         tasks.append(
             get_blast_format_task(UNIREF, UNIREF + '.db',
-                                  common.DATABASES['uniref90']['db_type'],
-                                  blast_dir=blast_dir)
+                                  common.DATABASES['uniref90']['db_type'])
         )
         UNIREF += '.db'
         databases['UNIREF'] = os.path.abspath(UNIREF)
@@ -142,7 +133,12 @@ def run_tasks(db_dir, tasks, args=['run']):
     doit_config = get_doit_config(db_dir)
     common.run_tasks(tasks, args, config=doit_config)
 
-def check(tasks, db_dir):
+def do_check(db_dir, args):
+
+    common.print_header('Checking for database prep (dir: {0})'.format(db_dir),
+                        level=2)
+
+    databases, tasks = get_tasks(db_dir, args)
 
     doit_config = get_doit_config(db_dir)
     dep_manager = Dependency(SqliteDB, doit_config['dep_file'])
@@ -151,15 +147,17 @@ def check(tasks, db_dir):
         status = dep_manager.get_status(task, tasks)
         if status != 'up-to-date':
             missing = True
-            logger.warning('{0} not ready'.format(task.name))
+            logger.warning('[ ] {0}'.format(task.name))
         else:
-            logger.info('{0} ready!'.format(task.name))
+            logger.info('[x] {0}'.format(task.name))
+
+    common.print_header('Database results', level=2)
 
     if missing:
-        logger.warning('* database prep incomplete')
+        logger.warning('Database prep incomplete')
         common.print_header('to prepare databases, run: dammit databases'\
                             ' --install', level=2)
     else:
-        logger.info('* all databases prepared!')
+        logger.info('All databases prepared!')
 
-    return missing
+    return databases, tasks, missing
