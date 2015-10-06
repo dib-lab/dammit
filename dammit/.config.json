@@ -67,8 +67,8 @@
 
         "transdecoder": {
 			"url": {
-                "linux": "http://edhar.genomecenter.ucdavis.edu/~camille/dammit/TransDecoder-2.0.1-macosx.tar.gz",
-                "macosx": "http://edhar.genomecenter.ucdavis.edu/~camille/dammit/TransDecoder-2.0.1-linux.tar.gz"
+                "linux": "http://edhar.genomecenter.ucdavis.edu/~camille/dammit/TransDecoder-2.0.1-linux.tar.gz",
+                "macosx": "http://edhar.genomecenter.ucdavis.edu/~camille/dammit/TransDecoder-2.0.1-macosx.tar.gz"
             },
 			"longorfs": {
 				"min_prot_len": 80
