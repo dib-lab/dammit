@@ -155,7 +155,7 @@ def get_blast_task(query, db, prog, out_fn, n_threads, blast_cfg, blast_dir=''):
 
 @create_task_object
 def get_crb_blast_task(query, target, output, crb_blast_cfg,
-                       crb_blast_dir='', n_threads=1):
+                       n_threads, crb_blast_dir=''):
 
     name = 'crb-blast:{0}.x.{1}'.format(query, target)
     exc = os.path.join(crb_blast_dir, 'crb-blast')
@@ -412,6 +412,28 @@ def get_maf_gff3_task(input_filename, output_filename, database):
             'targets': [output_filename],
             'clean': [clean_targets]}
 
+
+@create_task_object
+def get_crb_gff3_task(input_filename, output_filename, database):
+
+    name = 'crbb-gff3:' + os.path.basename(output_filename)
+
+    def cmd():
+        with open(output_filename, 'a') as fp:
+            for group in parsers.crb_to_df_iter(input_filename,
+                                                remap=True):
+                gff_group = gff.crb_to_gff3_df(group, 'dammit.crbb', database)
+                gff.write_gff3_df(gff_group, fp)
+
+    return {'name': name,
+            'title': title_with_actions,
+            'actions': ['rm -f {0}'.format(output_filename),
+                        cmd],
+            'file_dep': [input_filename],
+            'targets': [output_filename],
+            'clean': [clean_targets]}
+
+
 @create_task_object
 def get_hmmscan_gff3_task(input_filename, output_filename, database):
 
@@ -454,7 +476,6 @@ def get_cmscan_gff3_task(input_filename, output_filename, database):
             'clean': [clean_targets]}
 
 
-
 @create_task_object
 def get_gff3_merge_task(gff3_filenames, output_filename):
 
@@ -469,6 +490,7 @@ def get_gff3_merge_task(gff3_filenames, output_filename):
             'file_dep': gff3_filenames,
             'targets': [output_filename],
             'clean': [clean_targets]}
+
 
 @create_task_object
 def get_transcriptome_stats_task(transcriptome, output_fn):

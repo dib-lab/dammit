@@ -76,7 +76,8 @@ def handle_annotate(args):
     results, tasks = annotate.get_tasks(transcriptome,
                                         database_dict,
                                         args.transcriptome_taxid,
-                                        n_threads=args.n_threads)
+                                        n_threads=args.n_threads,
+                                        user_databases=args.user_databases)
 
     common.print_header('Running annotate!', level=2)
     logger.info('Transcriptome file: {0}'.format(transcriptome))

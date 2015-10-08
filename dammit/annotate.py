@@ -18,7 +18,8 @@ from .tasks import get_blast_format_task, \
                   get_transdecoder_orf_task, \
                   get_hmmscan_task, \
                   get_cmscan_task, \
-                  get_lastal_task
+                  get_lastal_task, \
+                  get_crb_blast_task
 
 logger = logging.getLogger(__name__)
 
@@ -27,15 +28,6 @@ def get_tasks(transcriptome, database_dict,
 
     tasks = []
     results = {}
-
-    user_database_dict = {}
-    if user_databases:
-        for db in user_databases:
-            db_path = db + '.db'
-            tasks.append(
-                get_blast_format_task(db, db_path, 'prot')
-            )
-            user_databases[os.path.basename(db)] = db_path
 
     tasks.append(
             get_link_file_task(os.path.abspath(transcriptome))
@@ -114,7 +106,11 @@ def get_tasks(transcriptome, database_dict,
     results['prot_predictions_pep'] = protein_prediction_pep
     results['prot_predictions_gff3'] = protein_prediction_gff3
 
-
+    '''
+    Run Infernal. Infernal uses covariance models to detect
+    RNA secondary structures. Here we use Rfam as our reference
+    database.
+    '''
     cmscan_cfg = common.CONFIG['settings']['infernal']['cmscan']
     rfam_results = transcriptome + '.rfam.tbl'
     annotate_tasks.append(
@@ -125,13 +121,9 @@ def get_tasks(transcriptome, database_dict,
     results['rfam'] = rfam_results
 
     '''
-    Build the BLAST+ database for the transcriptome, which we'll need
-    for doing RBH searches
+    Run LAST to get homologies with OrthoDB. We use LAST here because
+    it is much faster than BLAST+, and OrthoDB is pretty huge.
     '''
-    blast_cfg = common.CONFIG['settings']['blast']
-    annotate_tasks.append(
-        get_blast_format_task(transcriptome, transcriptome + '.db', 'nucl')
-    )
     
     lastal_cfg = common.CONFIG['settings']['last']['lastal']
     orthodb_fn = database_dict['ORTHODB']
@@ -142,21 +134,21 @@ def get_tasks(transcriptome, database_dict,
     )
     results['orthodb'] = tr_x_orthodb_fn
  
+
+    '''
+    Run conditional recipricol best hits blast (CRBB) against the
+    user-supplied databases.
+    '''
     results['user'] = {}
-    for key, path in user_database_dict.iteritems():
-        tr_x_db = '{0}.x.{1}.tsv'.format(transcriptome, key)
-        db_x_tr = '{0}.x.{1}.tsv'.format(key, transcriptome)
+    crb_blast_cfg = common.CONFIG['settings']['crb-blast']
+    for path in user_databases:
+        key = os.path.basename(path)
+        fn = '{0}.x.{1}.crbb.tsv'.format(transcriptome, key)
         annotate_tasks.append(
-            get_blast_task(transcriptome, path, 'blastx', tr_x_db,
-                           n_threads, blast_cfg, blast_dir=blast_dir)
+            get_crb_blast_task(transcriptome, path, fn, 
+                               crb_blast_cfg, n_threads)
         )
-        annotate_tasks.append(
-            get_blast_task(path, transcriptome, 'tblastn', db_x_tr,
-                           n_threads, blast_cfg, blast_dir=blast_dir)
-        )
-        results['user'][key] = (tr_x_db, db_x_tr)
-
-
+        results['user'][key] = fn
 
     tasks.extend(annotate_tasks)
 

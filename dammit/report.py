@@ -9,7 +9,8 @@ from .tasks import get_maf_gff3_task, \
                    get_hmmscan_gff3_task, \
                    get_cmscan_gff3_task, \
                    get_gff3_merge_task, \
-                   get_best_orthodb_hits_task
+                   get_best_orthodb_hits_task, \
+                   get_crb_gff3_task
 
 def get_report_tasks(transcriptome, results_dict, databases, taxid, n_threads=1):
 
@@ -45,6 +46,13 @@ def get_report_tasks(transcriptome, results_dict, databases, taxid, n_threads=1)
                              rfam_gff3, 'Rfam')
     )
     outputs.append(rfam_gff3)
+
+    for db, fn in results_dict['user'].iteritems():
+        gff3_fn = fn + '.gff3'
+        tasks.append(
+            get_crb_gff3_task(fn, gff3_fn, db)
+        )
+        outputs.append(gff3_fn)
 
     merged_gff3 = transcriptome + '.dammit.gff3'
     tasks.append(

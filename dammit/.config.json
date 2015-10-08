@@ -33,6 +33,10 @@
             }
         },
 
+        "crb-blast": {
+            "evalue": 1e-5
+        },
+
         "busco": {
             "url": "http://edhar.genomecenter.ucdavis.edu/~camille/dammit/BUSCO_v1.1b1.tar.gz",
             "db_dir": "busco_db",

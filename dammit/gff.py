@@ -82,6 +82,34 @@ def blast_to_gff3_df(blast_df, prog, RBH=False, database=''):
     gff3_df['attributes'] = blast_df.apply(build_attr, axis=1)
     return gff3_df
 
+def crb_to_gff3_df(crb_df, tag, database=''):
+
+    gff3_df = pd.DataFrame()
+    gff3_df['seqid'] = crb_df['query']
+    gff3_df['source'] = ['crb-blast'] * len(crb_df)
+    gff3_df['type'] = ['translated_nucleotide_match'] * len(crb_df)
+    gff3_df['start'] = crb_df['qstart'] + 1
+    gff3_df['end'] = crb_df['qend']
+    gff3_df['score'] = crb_df['evalue']
+    gff3_df['strand'] = crb_df['qstrand']
+    gff3_df['phase'] = ['.'] * len(crb_df)
+
+    def build_attr(row):
+        data = []
+        data.append('ID=homology:{0}'.format(next(ID_GEN)))
+        data.append('Name={0}:{1}'.format(row.subject, tag))
+        data.append('Target={0} {1} {2} {3}'.format(row.subject, row.sstart,
+                                                    row.send, row.sstrand))
+
+        if database:
+            data.append('database={0}'.format(database))
+
+        return ';'.join(data)
+
+    gff3_df['attributes'] = crb_df.apply(build_attr, axis=1)
+    return gff3_df
+
+
 def hmmscan_to_gff3_df(hmmscan_df, tag, database=''):
     
     gff3_df = pd.DataFrame()

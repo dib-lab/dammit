@@ -70,19 +70,48 @@ gff3_transdecoder_cols = [('seqid', str),
                           ('end', int), 
                           ('strand', str)]
 
+crb_cols = [('query', str),
+            ('subject', str),
+            ('id', str),
+            ('aln_len', int),
+            ('evalue', float),
+            ('bitscore', float),
+            ('qrange', str),
+            ('srange', str),
+            ('qlen', int),
+            ('slen', int)]
+
+
 def convert_dtypes(df, dtypes):
     for c in df.columns:
         df[c] = df[c].astype(dtypes[c])
 
+
 def blast_to_df_iter(fn, delimiter='\t', chunksize=10000, remap=False):
 
-    for group in  pd.read_table(fn, header=None, skipinitialspace=True,
+    for group in pd.read_table(fn, header=None, skipinitialspace=True,
                                 names=[k for k, _ in blast_cols],
-                                delimiter=delimiter):
+                                delimiter=delimiter, chunksize=chunksize):
         convert_dtypes(group, dict(blast_cols))
         if remap:
             remap_blast(group)
         yield group
+
+
+def crb_to_df_iter(fn, chunksize=10000, remap=False):
+    
+    for group in pd.read_table(fn, header=None, names=[k for k, _ in crb_cols],
+                                delimiter='\t', chunksize=chunksize):
+        convert_dtypes(group, dict(crb_cols))
+        group['qstart'], _, group['qend'] = group.qrange.str.partition('..')
+        del group['qrange']
+        group['sstart'], _, group['send'] = group.srange.str.partition('..')
+        del group['srange']
+
+        if remap:
+            remap_blast(group)
+        yield group
+
 
 def parse_busco(fn):
     res = {}
@@ -157,7 +186,6 @@ def gtf_to_df(filename):
     gtf_df.end = gtf_df.end + 1
 
     return gtf_df
-
 
 def hmmscan_to_df_iter(fn, chunksize=10000):
     
