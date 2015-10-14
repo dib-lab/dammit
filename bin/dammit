@@ -139,7 +139,7 @@ def main():
     annotate_parser.add_argument('-x', '--transcriptome-taxid', type=int,
                                  required=True)
     annotate_parser.add_argument('--n_threads', type=int, default=1)
-    annotate_parser.add_argument('--user-databases', nargs='+')
+    annotate_parser.add_argument('--user-databases', nargs='+', default=[])
     annotate_parser.add_argument('transcriptome')
     annotate_parser.set_defaults(func=handle_annotate)
 
