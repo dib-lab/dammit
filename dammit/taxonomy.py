@@ -1,4 +1,4 @@
-from ete2 import NCBITaxa
+#from ete2 import NCBITaxa
 ncbi = NCBITaxa()
 
 def get_closest(taxids, target):

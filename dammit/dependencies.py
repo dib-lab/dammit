@@ -49,6 +49,8 @@ def check_system_path():
 
     hmmscan = which('hmmscan')
     hmmpress = which('hmmpress')
+    logger.debug('hmmscan:' + hmmscan)
+    logger.debug('hmmpress:' + hmmpress)
     if hmmscan is None or hmmpress is None:
         deps['HMMER'] = False
     else:
@@ -56,23 +58,30 @@ def check_system_path():
 
     cmscan = which('cmscan')
     cmpress = which('cmpress')
+    logger.debug('cmscan:' + cmscan)
+    logger.debug('cmpress:' + cmpress)
     if cmscan is None or cmpress is None:
         deps['Infernal'] = False
     else:
         deps['Infernal'] = True
 
-    blastn = which('blastn')
+    blastp = which('blastp')
     blastx = which('blastx')
     tblastn = which('tblastn')
     makeblastdb = which('makeblastdb')
-    if blastn is None or blastx is None \
-        or tblastn is None or makeblastdb is None:
+    logger.debug('blastp:' + blastp)
+    logger.debug('blastx:' + blastx)
+    logger.debug('tblastn:' + tblastn)
+    logger.debug('makeblastdb:' + makeblastdb)
+    if (blastp is None) or (blastx is None) \
+        or (tblastn is None) or (makeblastdb is None):
 
         deps['BLAST+'] = False
     else:
         deps['BLAST+'] = True
 
     busco = which('BUSCO_v1.1b1.py')
+    logger.debug('BUSCO:' + busco)
     if busco is None:
         deps['BUSCO'] = False
     else:
@@ -81,6 +90,8 @@ def check_system_path():
 
     longorfs = which('TransDecoder.LongOrfs')
     predict = which('TransDecoder.Predict')
+    logger.debug('TransDecoder.LongOrfs:' + longorfs)
+    logger.debug('TransDecoder.Predict:' + predict)
     if longorfs is None or predict is None:
         deps['TransDecoder'] = False
     else:
@@ -88,12 +99,15 @@ def check_system_path():
 
     lastdb = which('lastdb')
     lastal = which('lastal')
+    logger.debug('lastal:' + lastal)
+    logger.debug('latsdb:' + lastdb)
     if lastdb is None or lastal is None:
         deps['LAST'] = False
     else:
         deps['LAST'] = True
 
     crb_blast = which('crb-blast')
+    logger.debug('crb-blast:' + crb_blast)
     if crb_blast is None:
         deps['crb-blast'] = False
     else:

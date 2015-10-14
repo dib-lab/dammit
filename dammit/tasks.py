@@ -18,7 +18,7 @@ import pandas as pd
 from khmer import HLLCounter, ReadParser
 
 from . import parsers
-from . import taxonomy
+#from . import taxonomy
 import gff
 
 def task_str(task):
@@ -360,7 +360,7 @@ def get_transdecoder_predict_task(input_filename, db_filename, n_threads,
                         for ext in ['.bed', '.cds', '.pep', '.gff3', '.mRNA']],
             'clean': [clean_targets, 
                      (clean_folder, [input_filename + '.transdecoder_dir'])]}
-
+'''
 @create_task_object
 def get_best_orthodb_hits_task(input_filename, genes_filename,
                                target_taxid, output_filename):
@@ -391,7 +391,7 @@ def get_best_orthodb_hits_task(input_filename, genes_filename,
             'file_dep': [input_filename, genes_filename],
             'targets': [output_filename],
             'clean': [clean_targets]}
-
+'''
 @create_task_object
 def get_maf_gff3_task(input_filename, output_filename, database):
 
