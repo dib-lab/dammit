@@ -8,40 +8,12 @@ import sys
 
 from doit.dependency import Dependency, SqliteDB
 
+from common import which
 import common
 from tasks import get_download_and_untar_task
 
 logger = logging.getLogger(__name__)
 
-def which(program):
-    '''Checks whether the given program (or program path) is valid and
-    executable.
-
-    NOTE: Sometimes copypasta is okay! This function came from stackoverflow:
-
-        http://stackoverflow.com/a/377028/5109965
-
-    Args:
-        program (str): Either a program name or full path to a program.
-
-    Returns:
-        Return the path to the executable or None if not found
-    '''
-    def is_exe(fpath):
-        return os.path.isfile(fpath) and os.access(fpath, os.X_OK)
-
-    fpath, fname = os.path.split(program)
-    if fpath:
-        if is_exe(program):
-            return program
-    else:
-        for path in os.environ["PATH"].split(os.pathsep):
-            path = path.strip('"')
-            exe_file = os.path.join(path, program)
-            if is_exe(exe_file):
-                return exe_file
-
-    return None
 
 def check_system_path():
     

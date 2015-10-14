@@ -27,6 +27,7 @@ def get_dammit_dir():
     return os.path.join(os.environ['HOME'],
                         CONFIG['settings']['dammit_dir'])
 
+
 def run_tasks(tasks, args, config={'verbosity': 2}):
     
     if type(tasks) is not list:
@@ -38,6 +39,38 @@ def run_tasks(tasks, args, config={'verbosity': 2}):
             return tasks, config
    
     DoitMain(Loader()).run(args)
+
+
+def which(program):
+    '''Checks whether the given program (or program path) is valid and
+    executable.
+
+    NOTE: Sometimes copypasta is okay! This function came from stackoverflow:
+
+        http://stackoverflow.com/a/377028/5109965
+
+    Args:
+        program (str): Either a program name or full path to a program.
+
+    Returns:
+        Return the path to the executable or None if not found
+    '''
+    def is_exe(fpath):
+        return os.path.isfile(fpath) and os.access(fpath, os.X_OK)
+
+    fpath, fname = os.path.split(program)
+    if fpath:
+        if is_exe(program):
+            return program
+    else:
+        for path in os.environ["PATH"].split(os.pathsep):
+            path = path.strip('"')
+            exe_file = os.path.join(path, program)
+            if is_exe(exe_file):
+                return exe_file
+
+    return None
+
 
 def print_header(msg, level):
     '''Standardize output headers for submodules.
@@ -58,6 +91,7 @@ def print_header(msg, level):
     else:
         symbol = '---'
         print('\n', symbol, msg, '\n', file=sys.stderr)
+
 
 class LogFormatter(logging.Formatter):
 
@@ -85,6 +119,7 @@ class LogFormatter(logging.Formatter):
             res = '\n'.join(wrapped)
 
         return res
+
 
 log_dir = os.path.join(get_dammit_dir(), 'log')
 try:

@@ -17,6 +17,7 @@ from doit.task import clean_targets, dict_to_task
 import pandas as pd
 from khmer import HLLCounter, ReadParser
 
+from common import which
 from . import parsers
 #from . import taxonomy
 import gff
@@ -113,10 +114,10 @@ def get_create_folder_task(folder):
             'clean': [clean_targets] }
 
 @create_task_object
-def get_blast_format_task(db_fn, db_out_fn, db_type, blast_dir=''):
+def get_blast_format_task(db_fn, db_out_fn, db_type):
     assert db_type in ['nucl', 'prot']
 
-    exc = os.path.join(blast_dir, 'makeblastdb')
+    exc = which('makeblastdb')
     cmd = '{exc} -in {db_fn} -dbtype {db_type} -out {db_out_fn}'.format(**locals())
 
     target_fn = ''
@@ -135,13 +136,13 @@ def get_blast_format_task(db_fn, db_out_fn, db_type, blast_dir=''):
             'clean': [clean_targets, 'rm -f {target_fn}.*'.format(**locals())] }
 
 @create_task_object
-def get_blast_task(query, db, prog, out_fn, n_threads, blast_cfg, blast_dir=''):
+def get_blast_task(query, db, prog, out_fn, n_threads, blast_cfg):
     assert prog in ['blastp', 'blastx', 'blastn', 'tblastn', 'tblastx']
     name = 'blast:' + os.path.basename(out_fn)
 
     params = blast_cfg['params']
     evalue = blast_cfg['evalue']
-    exc = os.path.join(blast_dir, prog)
+    exc = which(prog)
 
     cmd = '{exc} -query {query} -db {db} -num_threads {n_threads} '\
           '-evalue {evalue} -outfmt 6 {params} -out {out_fn}'.format(**locals())
@@ -155,10 +156,10 @@ def get_blast_task(query, db, prog, out_fn, n_threads, blast_cfg, blast_dir=''):
 
 @create_task_object
 def get_crb_blast_task(query, target, output, crb_blast_cfg,
-                       n_threads, crb_blast_dir=''):
+                       n_threads):
 
     name = 'crb-blast:{0}.x.{1}'.format(query, target)
-    exc = os.path.join(crb_blast_dir, 'crb-blast')
+    exc = which('crb-blast')
     evalue = crb_blast_cfg['evalue']
     cmd = '{exc} --query {query} --target {target} --output {output} '\
           '--evalue {evalue} --threads {n_threads}'.format(**locals())
@@ -171,10 +172,9 @@ def get_crb_blast_task(query, target, output, crb_blast_cfg,
             'clean': [clean_targets]}
 
 @create_task_object
-def get_lastdb_task(db_fn, db_out_prefix, lastdb_cfg,  
-                    prot=True, last_dir=''):
+def get_lastdb_task(db_fn, db_out_prefix, lastdb_cfg, prot=True):
     
-    exc = os.path.join(last_dir, 'lastdb')
+    exc = which('lastdb')
     params = lastdb_cfg['params']
     if prot:
         params += ' -p'
@@ -193,10 +193,9 @@ def get_lastdb_task(db_fn, db_out_prefix, lastdb_cfg,
             'clean': [clean_targets]}
 
 @create_task_object
-def get_lastal_task(query, db, out_fn, prot, n_threads, lastal_cfg,
-                    last_dir=''):
+def get_lastal_task(query, db, out_fn, prot, n_threads, lastal_cfg):
 
-    exc = os.path.join(last_dir, 'lastal')
+    exc = which('lastal')
     params = lastal_cfg['params']
     if prot:
         params += ' -F' + str(lastal_cfg['frameshift'])
@@ -238,12 +237,12 @@ def get_cat_task(file_list, target_fn):
 
 @create_task_object
 def get_busco_task(input_filename, output_name, busco_db_dir, input_type,
-                   n_threads, busco_cfg, busco_dir=''):
+                   n_threads, busco_cfg):
     
     name = 'busco:' + os.path.basename(input_filename) + '-' + os.path.basename(busco_db_dir)
 
     assert input_type in ['genome', 'OGS', 'trans']
-    exc = os.path.join(busco_dir, 'BUSCO_v1.1b1.py')
+    exc = which('BUSCO_v1.1b1.py')
     # BUSCO chokes on file paths as output names
     output_name = os.path.basename(output_name)
 
@@ -258,9 +257,9 @@ def get_busco_task(input_filename, output_name, busco_db_dir, input_type,
             'clean': [(clean_folder, ['run_' + output_name])]}
 
 @create_task_object
-def get_cmpress_task(db_filename, infernal_cfg, infernal_dir=''):
+def get_cmpress_task(db_filename, infernal_cfg):
 
-    exc = os.path.join(infernal_dir, 'cmpress')
+    exc = which('cmpress')
     cmd = '{exc} {db_filename}'.format(**locals())
 
     return {'name': 'cmpress:' + os.path.basename(db_filename),
@@ -272,12 +271,12 @@ def get_cmpress_task(db_filename, infernal_cfg, infernal_dir=''):
 
 @create_task_object
 def get_cmscan_task(input_filename, output_filename, db_filename, 
-                    n_threads, infernal_cfg, infernal_dir=''):
+                    n_threads, infernal_cfg):
     
     name = 'cmscan:' + os.path.basename(input_filename) + '.x.' + \
            os.path.basename(db_filename)
     
-    exc = os.path.join(infernal_dir, 'cmscan')
+    exc = which('cmscan')
     cmd = '{exc} --cpu {n_threads} --cut_ga --rfam --nohmmonly --tblout {output_filename}'\
           ' {db_filename} {input_filename} > {output_filename}.cmscan'.format(**locals())
 
@@ -289,10 +288,10 @@ def get_cmscan_task(input_filename, output_filename, db_filename,
             'clean': [clean_targets]}
 
 @create_task_object
-def get_hmmpress_task(db_filename, hmmer_cfg, hmmer_dir=''):
+def get_hmmpress_task(db_filename, hmmer_cfg):
     
     name = 'hmmpress:' + os.path.basename(db_filename)
-    exc = os.path.join(hmmer_dir, 'hmmpress')
+    exc = which('hmmpress')
     cmd = '{exc} {db_filename}'.format(**locals())
 
     return {'name': name,
@@ -304,12 +303,12 @@ def get_hmmpress_task(db_filename, hmmer_cfg, hmmer_dir=''):
 
 @create_task_object
 def get_hmmscan_task(input_filename, output_filename, db_filename, 
-                     n_threads, hmmer_cfg, hmmer_dir=''):
+                     n_threads, hmmer_cfg):
 
     name = 'hmmscan:' + os.path.basename(input_filename) + '.x.' + \
                 os.path.basename(db_filename)
     
-    exc = os.path.join(hmmer_dir, 'hmmscan')
+    exc = which('hmmscan')
     stat = output_filename + '.out'
     cmd = '{exc} --cpu {n_threads} --domtblout {output_filename}'\
           ' -o {stat} {db_filename} {input_filename}'.format(**locals())
@@ -322,13 +321,12 @@ def get_hmmscan_task(input_filename, output_filename, db_filename,
             'clean': [clean_targets]}
 
 @create_task_object
-def get_transdecoder_orf_task(input_filename, transdecoder_cfg,
-                              transdecoder_dir=''):
+def get_transdecoder_orf_task(input_filename, transdecoder_cfg):
 
     name = 'TransDecoder.LongOrfs:' + os.path.basename(input_filename)
 
     min_prot_len = transdecoder_cfg['min_prot_len']
-    exc = os.path.join(transdecoder_dir, 'TransDecoder.LongOrfs')
+    exc = which('TransDecoder.LongOrfs')
     cmd = '{exc} -t {input_filename} -m {min_prot_len}'.format(**locals())
 
     return {'name': name,
@@ -341,12 +339,12 @@ def get_transdecoder_orf_task(input_filename, transdecoder_cfg,
 # TransDecoder.Predict -t lamp10.fasta --retain_pfam_hits lamp10.fasta.pfam-A.out
 @create_task_object
 def get_transdecoder_predict_task(input_filename, db_filename, n_threads, 
-                                  transdecoder_cfg, transdecoder_dir=''):
+                                  transdecoder_cfg):
 
     name = 'TransDecoder.Predict:' + os.path.basename(input_filename)
 
     orf_cutoff = transdecoder_cfg['orf_cutoff']
-    exc = os.path.join(transdecoder_dir, 'TransDecoder.Predict')
+    exc = which('TransDecoder.Predict')
     cmd = '{exc} -t {input_filename} --retain_pfam_hits {db_filename} \
             --retain_long_orfs {orf_cutoff} --cpu {n_threads}'.format(**locals())
     
@@ -360,6 +358,8 @@ def get_transdecoder_predict_task(input_filename, db_filename, n_threads,
                         for ext in ['.bed', '.cds', '.pep', '.gff3', '.mRNA']],
             'clean': [clean_targets, 
                      (clean_folder, [input_filename + '.transdecoder_dir'])]}
+
+
 '''
 @create_task_object
 def get_best_orthodb_hits_task(input_filename, genes_filename,
@@ -392,6 +392,8 @@ def get_best_orthodb_hits_task(input_filename, genes_filename,
             'targets': [output_filename],
             'clean': [clean_targets]}
 '''
+
+
 @create_task_object
 def get_maf_gff3_task(input_filename, output_filename, database):
 
