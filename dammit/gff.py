@@ -14,7 +14,12 @@ gff3_cols = [('seqid', str),
              ('phase', str),
              ('attributes', str)]
 
+gff_version = '3.2.1'
+
 ID_GEN = count()
+
+def version_line():
+    return '##gff-version {v}'.format(v=gff_version)
 
 def write_gff3_df(df, fp):
 
