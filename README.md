@@ -1,6 +1,6 @@
 # dammit!
 
-![dammit](doc/Character_Building.png)
+<img align="left" src="doc/Character_Building.png">
 
 dammit! is a simple de novo transcriptome annotator. It was born out of the
 observation that annotation is mundane and annoying, all the pieces of the process
