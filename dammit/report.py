@@ -11,7 +11,7 @@ from .tasks import get_maf_gff3_task, \
                    get_gff3_merge_task, \
                    get_crb_gff3_task
 
-def get_report_tasks(transcriptome, results_dict, databases, taxid, n_threads=1):
+def get_report_tasks(transcriptome, results_dict, databases, n_threads=1):
 
     tasks = []
     outputs = []

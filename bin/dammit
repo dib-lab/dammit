@@ -67,7 +67,7 @@ def handle_annotate(args):
     db_dir = databases.get_dir(args)
     logger.debug('database dir: {0}'.format(db_dir))
     database_dict, _, missing_dbs = databases.do_check(db_dir,
-                                                           args)
+                                                       args)
 
     if missing_dbs:
         logger.error('Install databases to continue; exiting')
@@ -75,7 +75,6 @@ def handle_annotate(args):
 
     results, tasks = annotate.get_tasks(transcriptome,
                                         database_dict,
-                                        args.transcriptome_taxid,
                                         n_threads=args.n_threads,
                                         user_databases=args.user_databases)
 
@@ -136,11 +135,10 @@ def main():
                         help='Do full annotation with uniref90')
     annotate_parser.add_argument('-o', '--output-dir', default=None)
     annotate_parser.add_argument('--busco-group', default='metazoa')
-    annotate_parser.add_argument('-x', '--transcriptome-taxid', type=int,
-                                 required=True)
+    annotate_parser.add_argument('-x', '--transcriptome-taxid', type=int)
     annotate_parser.add_argument('--n_threads', type=int, default=1)
     annotate_parser.add_argument('--user-databases', nargs='+', default=[])
-    annotate_parser.add_argument('transcriptome')
+    annotate_parser.add_argument('-i', '--transcriptome', required=True)
     annotate_parser.set_defaults(func=handle_annotate)
 
     #args, doit_args = parser.parse_known_args()
