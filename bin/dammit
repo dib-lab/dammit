@@ -86,68 +86,144 @@ def handle_annotate(args):
     annotate.run_tasks(transcriptome, out_dir, tasks)
 
 def main():
-    parser = argparse.ArgumentParser()
-    # Debug can be used with all subcommands
-    parser.add_argument('--debug', action='store_true', default=False)
-    # Add subcommand parsers
-    subparsers = parser.add_subparsers()
-    
-    '''
-    `dammit databases` subcommand. This will run tasks to check for and
-    install the databases. By default, only check their status; with
-    `--install`, download and/or prepare them as well.
-    '''
-    databases_parser = subparsers.add_parser('databases')
-    databases_parser.add_argument('--database-dir', default=None)
-    databases_parser.add_argument('--install', action='store_true',
-                                  default=False)
-    databases_parser.add_argument('--full', action='store_true', default=False,
-                        help='Do full annotation with uniref90')
-    databases_parser.add_argument('--busco-group', default='metazoa')
-    databases_parser.set_defaults(func=handle_databases)
 
     '''
-    `dammit dependencies` subcommand. Checks for necessary executables
-    on the system path and downloads them to the dammit folder if not present.
-    Like the databases subcommand, takes an `install` option, which will put
-    dependencies in the $HOME/.dammit/dependencies directory and give absolute
-    paths to the task creators.
+    Build the main description string.
     '''
-    dependencies_parser = subparsers.add_parser('dependencies')
-    dependencies_parser.set_defaults(func=handle_dependencies)
-
-    '''
-    `dammit annotate` subcommand, which drives the primary program. The
-    `--database-dir` and `--full` flags are the same as in the `databases`
-    subcommand. `-o/--output-dir` specifies the directory where the results will
-    be stored, and also the working directory where all annotate tasks will be
-    executed. `--busco-group` specifies the BUSCO database to use; this must be
-    one of BUSCOs builtins. `--n_threads` specifies the number of threads for
-    each individual program to use (when applicable). `--user-databases` is an
-    optional list of protein databases to run additional homology searches
-    against and pull annotation information from; dammit can only take what it
-    finds from these, so uninformative fasta headers will yield uninformative
-    results. Finally, `transcriptome` is the transcriptome assembly to annotate.
-    '''
-    annotate_parser = subparsers.add_parser('annotate')
-    annotate_parser.add_argument('--database-dir', default=None)
-    annotate_parser.add_argument('--full', action='store_true', default=False,
-                        help='Do full annotation with uniref90')
-    annotate_parser.add_argument('-o', '--output-dir', default=None)
-    annotate_parser.add_argument('--busco-group', default='metazoa')
-    annotate_parser.add_argument('-x', '--transcriptome-taxid', type=int)
-    annotate_parser.add_argument('--n_threads', type=int, default=1)
-    annotate_parser.add_argument('--user-databases', nargs='+', default=[])
-    annotate_parser.add_argument('-i', '--transcriptome', required=True)
-    annotate_parser.set_defaults(func=handle_annotate)
-
-    #args, doit_args = parser.parse_known_args()
-    args = parser.parse_args()
-
-    # Print out the infos~
     meta = '{0}\n{1} {2}'.format(common.CONFIG['meta']['description'],
                                  ', '.join(common.CONFIG['meta']['authors']),
                                  common.CONFIG['meta']['date'])
+
+    '''
+    Build the main parser.
+    '''
+    parser = argparse.ArgumentParser(
+                 description=common.add_header(meta, 0),
+                 formatter_class=argparse.RawDescriptionHelpFormatter
+                 )
+
+    parser.add_argument('--debug', action='store_true', default=False)
+    subparsers = parser.add_subparsers(title='dammit subcommands')
+
+    def add_common_args(parser):
+        ''' Add shared options to a parser.
+
+        Shared options are added this way instead of to the main parser
+        because I'd rather they come after the subcommand name.
+
+        Args:
+            parser (object): The parser to which arguments will be added.
+        '''
+        parser.add_argument('--database-dir', 
+                            default=None, 
+                            help='Directory to store databases. Existing'\
+                                 ' databases will not be overwritten.'\
+                                 ' By default, the database directory is'\
+                                 ' $HOME/.dammit/databases.'
+                            )
+
+        parser.add_argument('--full', 
+                            action='store_true', 
+                            default=False,
+                            help='Do complete run with uniref90. By default'\
+                                 ' uniref90 is left out, as it is huge '\
+                                 ' and homology searches take a long'\
+                                 ' time.'
+                            )
+
+        parser.add_argument('--busco-group', 
+                            default='metazoa',
+                            choices=['metazoa', 'eukaryota', 'vertebrata',
+                                     'arthropoda'],
+                            help='Which BUSCO group to use. Depends on'\
+                                 ' the organism being annotated.'
+                            )
+
+    '''
+    Add the databases subcommand.
+    '''
+    desc = '''Check for databases and optionally download and prepare them 
+           for use. By default, only check their status.'''
+    databases_parser = subparsers.add_parser(
+                           'databases',
+                            description=desc,
+                            help=desc
+                            )
+
+    databases_parser.add_argument('--install', 
+                                  action='store_true',
+                                  default=False,
+                                  help='Install missing databases. Downloads'
+                                       ' and preps where necessary'
+                                  )
+
+    add_common_args(databases_parser)
+    databases_parser.set_defaults(func=handle_databases)
+
+    '''
+    Add the dependencies subcommand.
+    '''
+    desc = '''Checks for dependencies on system PATH. Unlike with the 
+           databases, dependencies are not downloaded when missing and must 
+           be installed by the user.'''
+    dependencies_parser = subparsers.add_parser(
+                              'dependencies',
+                              description=desc,
+                              help=desc
+                              )
+    dependencies_parser.set_defaults(func=handle_dependencies)
+
+    '''
+    Add the annotation subcommand.
+    '''
+    desc = '''The main annotation pipeline. Calculates assembly stats; 
+           runs BUSCO; runs LAST against OrthoDB (and optionally uniref90), 
+           HMMER against Pfam, Inferal against Rfam, and Conditional Reciprocal 
+           Best-hit Blast against user databases; and aggregates all results in 
+           a properly formatted GFF3 file.'''
+    annotate_parser = subparsers.add_parser(
+                          'annotate',
+                          usage='%(prog)s <transcriptome> [OPTIONS]',
+                          description=desc,
+                          help=desc
+                          )
+
+    annotate_parser.add_argument('transcriptome', 
+                                 help='FASTA file with the transcripts to be'\
+                                      ' annotated.'
+                                 )
+
+    annotate_parser.add_argument('-o', '--output-dir', 
+                                 default=None,
+                                 help='Output directory. By default this will'\
+                                      ' be the name of the transcriptome file'\
+                                      ' with `.dammit` appended'
+                                 )
+    annotate_parser.add_argument('-x', '--transcriptome-taxid', 
+                                 type=int,
+                                 help='Closest available NCBI taxonomy ID to'\
+                                      ' the organism being annotated. Can be'\
+                                      ' used to better select putative'\
+                                      ' orthologies'
+                                 )
+    annotate_parser.add_argument('--n_threads', 
+                                 type=int, 
+                                 default=1,
+                                 help='Number of threads to pass to programs'\
+                                      ' supporting multithreading'
+                                 )
+    annotate_parser.add_argument('--user-databases', 
+                                 nargs='+', 
+                                 default=[],
+                                 help='Optional additional protein databases. '\
+                                      ' These will be searched with CRB-blast.'
+                                 )
+
+    add_common_args(annotate_parser)
+    annotate_parser.set_defaults(func=handle_annotate)
+
+    args = parser.parse_args()
+
     common.print_header(meta, 0)
 
     args.func(args)

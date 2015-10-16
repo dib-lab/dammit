@@ -16,15 +16,6 @@ def get_report_tasks(transcriptome, results_dict, databases, n_threads=1):
     tasks = []
     outputs = []
 
-    '''
-    orthodb_best = results_dict['orthodb'] + '.closest'
-    tasks.append(
-        get_best_orthodb_hits_task(results_dict['orthodb'],
-                                   databases['ORTHODB_GENES'],
-                                   taxid, orthodb_best)
-    )
-    '''
-
     orthodb_gff3 = results_dict['orthodb'] + '.gff3'
     tasks.append(
         get_maf_gff3_task(results_dict['orthodb'],

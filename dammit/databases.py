@@ -38,7 +38,7 @@ def get_tasks(db_dir, args):
     User-supplied databases are downloaded separately.
 
     Args:
-        db_dir (str): Directory where the databases wille be stored.
+        db_dir (str): Directory where the databases will be stored.
         busco_db (str): The BUSCO group to use.
         full (bool): Whether to do a full run and get UNIREF90 as well.
 

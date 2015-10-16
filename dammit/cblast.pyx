@@ -1,7 +1,7 @@
 ''' Optimized functions for remapping BLAST coordinates.
 
 By default, BLAST outputs coordinates in 1-indexed fully open intervals.
-Most programming languages and other programs use 0-index, hafl-open intervals.
+Most programming languages and other programs use 0-index, half-open intervals.
 This remapping can take a fair amount of time in pure python; with the help of
 cython and numpy, it can be super fast.
 '''
