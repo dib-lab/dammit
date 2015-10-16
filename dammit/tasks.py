@@ -22,8 +22,10 @@ from . import parsers
 #from . import taxonomy
 import gff
 
+
 def task_str(task):
     return pprint.pformat(task.__dict__)
+
 
 def print_tasks(tasks, logger=None, level=logging.DEBUG):
     for task in tasks:
@@ -32,15 +34,18 @@ def print_tasks(tasks, logger=None, level=logging.DEBUG):
         else:
             print(task, file=sys.stderr)
 
+
 def clean_folder(target):
     try:
         rmtree(target)
     except OSError:
         pass
 
+
 seq_ext = re.compile(r'(.fasta)|(.fa)|(.fastq)|(.fq)')
 def strip_seq_extension(fn):
     return seq_ext.split(fn)[0]
+
 
 def create_task_object(task_dict_func):
     '''Wrapper to decorate functions returning pydoit
@@ -52,12 +57,14 @@ def create_task_object(task_dict_func):
         return dict_to_task(ret_dict)
     return d_to_t
 
+
 @create_task_object
 def get_group_task(group_name, tasks):
 
     return {'name': group_name,
             'actions': None,
             'task_dep': [t.name for t in tasks]}
+
 
 @create_task_object
 def get_download_task(url, target_fn, label='default'):
@@ -72,6 +79,7 @@ def get_download_task(url, target_fn, label='default'):
             'clean': [clean_targets],
             'uptodate': [True]}
 
+
 @create_task_object
 def get_download_and_gunzip_task(url, target_fn):
     cmd = 'curl {url} | gunzip -c > {target_fn}'.format(**locals())
@@ -84,6 +92,7 @@ def get_download_and_gunzip_task(url, target_fn):
             'targets': [target_fn],
             'clean': [clean_targets],
             'uptodate': [True]}
+
 
 @create_task_object
 def get_download_and_untar_task(url, target_dir, label):
@@ -101,6 +110,7 @@ def get_download_and_untar_task(url, target_dir, label):
             'clean': [(clean_folder, [target_dir])],
             'uptodate': [True]}
 
+
 @create_task_object
 def get_create_folder_task(folder):
 
@@ -113,47 +123,7 @@ def get_create_folder_task(folder):
             'uptodate': [run_once],
             'clean': [clean_targets] }
 
-@create_task_object
-def get_blast_format_task(db_fn, db_out_fn, db_type):
-    assert db_type in ['nucl', 'prot']
-
-    exc = which('makeblastdb')
-    cmd = '{exc} -in {db_fn} -dbtype {db_type} -out {db_out_fn}'.format(**locals())
-
-    target_fn = ''
-    if db_type == 'nucl':
-        target_fn = db_out_fn + '.nhr'
-    else:
-        target_fn = db_out_fn + '.phr'
-
-    name = 'makeblastdb:' + os.path.basename(db_fn)
-
-    return {'name': name,
-            'title': title_with_actions,
-            'actions': [LongRunning(cmd), 'touch '+db_out_fn],
-            'targets': [db_out_fn],
-            'file_dep': [db_fn],
-            'clean': [clean_targets, 'rm -f {target_fn}.*'.format(**locals())] }
-
-@create_task_object
-def get_blast_task(query, db, prog, out_fn, n_threads, blast_cfg):
-    assert prog in ['blastp', 'blastx', 'blastn', 'tblastn', 'tblastx']
-    name = 'blast:' + os.path.basename(out_fn)
-
-    params = blast_cfg['params']
-    evalue = blast_cfg['evalue']
-    exc = which(prog)
-
-    cmd = '{exc} -query {query} -db {db} -num_threads {n_threads} '\
-          '-evalue {evalue} -outfmt 6 {params} -out {out_fn}'.format(**locals())
-
-    return {'name': name,
-            'title': title_with_actions,
-            'actions': [cmd],
-            'targets': [out_fn],
-            'file_dep': [db],
-            'clean': [clean_targets]}
-
+    
 @create_task_object
 def get_crb_blast_task(query, target, output, crb_blast_cfg,
                        n_threads):
@@ -170,6 +140,7 @@ def get_crb_blast_task(query, target, output, crb_blast_cfg,
             'targets': [output],
             'file_dep': [query, target],
             'clean': [clean_targets]}
+
 
 @create_task_object
 def get_lastdb_task(db_fn, db_out_prefix, lastdb_cfg, prot=True):
@@ -192,6 +163,7 @@ def get_lastdb_task(db_fn, db_out_prefix, lastdb_cfg, prot=True):
             'file_dep': [db_fn],
             'clean': [clean_targets]}
 
+
 @create_task_object
 def get_lastal_task(query, db, out_fn, prot, n_threads, lastal_cfg):
 
@@ -210,6 +182,7 @@ def get_lastal_task(query, db, out_fn, prot, n_threads, lastal_cfg):
             'file_dep': [db + '.sds'],
             'clean': [clean_targets]}
 
+
 @create_task_object
 def get_link_file_task(src, dst=''):
     ''' Soft-link file to the current directory
@@ -223,6 +196,7 @@ def get_link_file_task(src, dst=''):
             'uptodate': [run_once],
             'clean': [clean_targets]}
 
+
 @create_task_object
 def get_cat_task(file_list, target_fn):
 
@@ -234,6 +208,7 @@ def get_cat_task(file_list, target_fn):
             'file_dep': file_list,
             'targets': [target_fn],
             'clean': [clean_targets]}
+
 
 @create_task_object
 def get_busco_task(input_filename, output_name, busco_db_dir, input_type,
@@ -256,6 +231,7 @@ def get_busco_task(input_filename, output_name, busco_db_dir, input_type,
             'uptodate': [run_once],
             'clean': [(clean_folder, ['run_' + output_name])]}
 
+
 @create_task_object
 def get_cmpress_task(db_filename, infernal_cfg):
 
@@ -268,6 +244,7 @@ def get_cmpress_task(db_filename, infernal_cfg):
             'targets': [db_filename + ext for ext in ['.i1f', '.i1i', '.i1m', '.i1p']],
             'file_dep': [db_filename],
             'clean': [clean_targets]}
+
 
 @create_task_object
 def get_cmscan_task(input_filename, output_filename, db_filename, 
@@ -287,6 +264,7 @@ def get_cmscan_task(input_filename, output_filename, db_filename,
             'targets': [output_filename, output_filename + '.cmscan'],
             'clean': [clean_targets]}
 
+
 @create_task_object
 def get_hmmpress_task(db_filename, hmmer_cfg):
     
@@ -300,6 +278,7 @@ def get_hmmpress_task(db_filename, hmmer_cfg):
             'targets': [db_filename + ext for ext in ['.h3f', '.h3i', '.h3m', '.h3p']],
             'file_dep': [db_filename],
             'clean': [clean_targets]}
+
 
 @create_task_object
 def get_hmmscan_task(input_filename, output_filename, db_filename, 
@@ -320,6 +299,7 @@ def get_hmmscan_task(input_filename, output_filename, db_filename,
             'targets': [output_filename, stat],
             'clean': [clean_targets]}
 
+
 @create_task_object
 def get_transdecoder_orf_task(input_filename, transdecoder_cfg):
 
@@ -335,6 +315,7 @@ def get_transdecoder_orf_task(input_filename, transdecoder_cfg):
             'file_dep': [input_filename],
             'targets': [input_filename + '.transdecoder_dir/longest_orfs.pep'],
             'clean': [(clean_folder, [input_filename + '.transdecoder_dir'])]}
+
 
 # TransDecoder.Predict -t lamp10.fasta --retain_pfam_hits lamp10.fasta.pfam-A.out
 @create_task_object
@@ -358,40 +339,6 @@ def get_transdecoder_predict_task(input_filename, db_filename, n_threads,
                         for ext in ['.bed', '.cds', '.pep', '.gff3', '.mRNA']],
             'clean': [clean_targets, 
                      (clean_folder, [input_filename + '.transdecoder_dir'])]}
-
-
-'''
-@create_task_object
-def get_best_orthodb_hits_task(input_filename, genes_filename,
-                               target_taxid, output_filename):
-
-    name = 'orthodb-best-hits:' + os.path.basename(input_filename)
-
-    def cmd():
-        genes = pd.read_table(genes_filename)
-        def fix_level(level_str):
-            level, _, _ = level_str.partition(':')
-            return level
-        genes['odb8_level'] = genes['odb8_level'].apply(fix_level)
-
-        results = []
-        for group in parsers.maf_to_df_iter(input_filename):
-            merged = pd.merge(group, genes, left_on='s_name',
-                              right_on='protein_id', how='inner')
-            merged = taxonomy.get_closest_per_ortho(merged, target_taxid)
-            results.append(merged)
-        results_df = pd.concat(results)
-        results_df = taxonomy.get_closest_per_ortho(results_df, target_taxid)
-
-        results_df.to_csv(output_filename, delimter='\t')
-
-    return {'name': name,
-            'title': title_with_actions,
-            'actions': [cmd],
-            'file_dep': [input_filename, genes_filename],
-            'targets': [output_filename],
-            'clean': [clean_targets]}
-'''
 
 
 @create_task_object
@@ -564,5 +511,3 @@ def get_transcriptome_stats_task(transcriptome, output_fn):
             'file_dep': [transcriptome],
             'targets': [output_fn],
             'clean': [clean_targets]}
-
-
