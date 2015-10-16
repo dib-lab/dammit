@@ -31,9 +31,9 @@ If you're on Ubuntu 15.10, you can also install TransDecoder through aptitude:
 
     sudo apt-get install transdecoder
 
-Otherwise, you'll need to install it manually following the instructions
-on their [website](https://transdecoder.github.io/). To install it in your home
-directory, execute these commands in your terminal:
+Otherwise, you'll need to install it [manually](https://transdecoder.github.io/). 
+To install it in your home directory, execute these commands in your 
+terminal:
 
     cd
     wget https://github.com/TransDecoder/TransDecoder/archive/2.0.1.tar.gz
