@@ -12,6 +12,8 @@ or rely on crappy non-free software.
 Science shouldn't suck for the sake of sucking, so dammit attempts
 to make this sucky part of the process suck a little less.
 
+<br><br>
+
 ## Installation
 
 Unfortunately, annotation necessarily relies on many software packages. I have
