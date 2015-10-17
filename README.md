@@ -137,4 +137,9 @@ improve performance, but for now, we're stuck with the NCBI's dinosaur. Also not
 information from the deflines in your databases will be used to construct the GFF3 file, so if your
 databases lack useful IDs, your annotations will too.
 
-## 
+## Example
+
+## Miscellany
+
+Calvin and Hobbes is (c) Bill Watterson. I believe the above excerpt qualifies as fair use, but if there are any objections,
+I will dejectedly take it down.
