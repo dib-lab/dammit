@@ -199,19 +199,14 @@ def main():
                                       ' be the name of the transcriptome file'\
                                       ' with `.dammit` appended'
                                  )
-    annotate_parser.add_argument('-x', '--transcriptome-taxid', 
-                                 type=int,
-                                 help='Closest available NCBI taxonomy ID to'\
-                                      ' the organism being annotated. Can be'\
-                                      ' used to better select putative'\
-                                      ' orthologies'
-                                 )
+
     annotate_parser.add_argument('--n_threads', 
                                  type=int, 
                                  default=1,
                                  help='Number of threads to pass to programs'\
                                       ' supporting multithreading'
                                  )
+
     annotate_parser.add_argument('--user-databases', 
                                  nargs='+', 
                                  default=[],

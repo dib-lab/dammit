@@ -23,6 +23,7 @@ with open(os.path.join(rel_path, '.databases.json'), 'r') as fp:
 with open(os.path.join(rel_path, '.config.json'), 'r') as fp:
     CONFIG = json.load(fp)
 
+
 def get_dammit_dir():
     return os.path.join(os.environ['HOME'],
                         CONFIG['settings']['dammit_dir'])
@@ -71,6 +72,7 @@ def which(program):
 
     return None
 
+
 def add_header(msg, level):
     s = ''
     if level == 0:
@@ -96,6 +98,7 @@ def print_header(msg, level):
     the user.
     '''
     print(add_header(msg, level), file=sys.stderr)
+
 
 class LogFormatter(logging.Formatter):
 
@@ -144,8 +147,8 @@ console.setLevel(logging.INFO)
 formatter = LogFormatter()
 console.setFormatter(formatter)
 logging.getLogger('').addHandler(console)
-
 logging.getLogger('').debug('*** dammit! begin ***')
+
 
 class LogReporter(object):
     """Log reporter. print results to the logger

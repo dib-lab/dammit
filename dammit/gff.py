@@ -21,10 +21,12 @@ ID_GEN = count()
 def version_line():
     return '##gff-version {v}'.format(v=gff_version)
 
+
 def write_gff3_df(df, fp):
 
     df.to_csv(fp, sep='\t', na_rep='.', columns=[k for k, v in gff3_cols],
               index=False, header=False, quoting=csv.QUOTE_NONE)
+
 
 def maf_to_gff3_df(maf_df, tag, database=''):
 
@@ -53,6 +55,7 @@ def maf_to_gff3_df(maf_df, tag, database=''):
     gff3_df['attributes'] = maf_df.apply(build_attr, axis=1)
     
     return gff3_df
+
 
 def blast_to_gff3_df(blast_df, prog, RBH=False, database=''):
 
@@ -86,6 +89,7 @@ def blast_to_gff3_df(blast_df, prog, RBH=False, database=''):
 
     gff3_df['attributes'] = blast_df.apply(build_attr, axis=1)
     return gff3_df
+
 
 def crb_to_gff3_df(crb_df, tag, database=''):
 
@@ -148,6 +152,7 @@ def hmmscan_to_gff3_df(hmmscan_df, tag, database=''):
     gff3_df['attributes'] = hmmscan_df.apply(build_attr, axis=1)
 
     return gff3_df
+
 
 def cmscan_to_gff3_df(cmscan_df, tag, database=''):
     
