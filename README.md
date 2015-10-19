@@ -1,10 +1,10 @@
 # dammit!
 
-<img align="left" src="doc/Character_Building.png">
+<img align="left" src="docs/_static/Character_Building.png">
 
 *"I love writing BLAST parsers!" -- no one, ever*
 
-dammit! is a simple de novo transcriptome annotator. It was born out of the
+dammit is a simple de novo transcriptome annotator. It was born out of the
 observation that: annotation is mundane and annoying; all the individual pieces
 of the process exist already; and, the existing solutions are overly complicated 
 or rely on crappy non-free software. 
@@ -85,16 +85,16 @@ Finally, let's install dammit!
 
 ### Dependencies
 
-dammit! has three components. The first, `dependencies`, checks whether you have the dependencies installed
+dammit has three components. The first, `dependencies`, checks whether you have the dependencies installed
 correctly and warns you if not. It is run with:
 
     dammit dependencies
 
 ### Databases
 
-Next is the `databases` command. By default, dammit! looks for databases in
+Next is the `databases` command. By default, dammit looks for databases in
 `$HOME/.dammit/databases` and will install there if missing. If you have some of the databases
-already, you can inform dammit! with the `--database-dir` flag. So, to check for databases:
+already, you can inform dammit with the `--database-dir` flag. So, to check for databases:
 
     dammit databases
 
