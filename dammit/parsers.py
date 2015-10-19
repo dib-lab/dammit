@@ -19,8 +19,6 @@ blast_cols = [('qseqid', str),
               ('evalue', float), 
               ('bitscore', float)]
 
-
-
 hmmscan_cols = [('target_name', str), 
                 ('target_accession', str), 
                 ('tlen', int),
@@ -83,11 +81,28 @@ crb_cols = [('query', str),
 
 
 def convert_dtypes(df, dtypes):
+    '''Convert the columns of a DataFrame to the types specified
+    in the given dictionary, inplace.
+
+    Args:
+        df (DataFrame): The DataFrame to convert.
+        dtypes (dict): Dictionary mapping columns to types.
+    '''
+
     for c in df.columns:
         df[c] = df[c].astype(dtypes[c])
 
 
 def blast_to_df_iter(fn, delimiter='\t', chunksize=10000, remap=False):
+    '''Iterator of DataFrames of length chunksize parsed from an
+    NCBI BLAST+ `-outfmt6` file.
+
+    Args:
+        fn (str): The results file.
+        chunksize (int): Hits per iteration.
+    Yields:
+        DataFrame: Pandas DataFrme with the BLAST+ hits.
+    '''
 
     for group in pd.read_table(fn, header=None, skipinitialspace=True,
                                 names=[k for k, _ in blast_cols],
@@ -99,7 +114,16 @@ def blast_to_df_iter(fn, delimiter='\t', chunksize=10000, remap=False):
 
 
 def crb_to_df_iter(fn, chunksize=10000, remap=False):
-    
+    '''Iterator of DataFrames of length chunksize parsed from
+    the results from CRBB version crb-blast 0.6.6.
+
+    Args:
+        fn (str): The results file.
+        chunksize (int): Hits per iteration.
+    Yields:
+        DataFrame: Pandas DataFrame with the CRBB hits.
+    '''
+
     for group in pd.read_table(fn, header=None, names=[k for k, _ in crb_cols],
                                 delimiter='\t', chunksize=chunksize):
         convert_dtypes(group, dict(crb_cols))
@@ -114,6 +138,14 @@ def crb_to_df_iter(fn, chunksize=10000, remap=False):
 
 
 def parse_busco(fn):
+    '''Parse a single BUSCO summary file to a dictionary.
+
+    Args:
+        fn (str): The results file.
+    Returns:
+        dict: The parsed results.
+    '''
+
     res = {}
     with open(fn) as fp:
         for ln in fp:
@@ -137,6 +169,15 @@ def parse_busco(fn):
 
 
 def busco_to_df(fn_list, dbs=['metazoa', 'vertebrata']):
+    ''' Given a list of BUSCO results from different databases, produce
+    an appropriately multi-indexed DataFrame of the results.
+
+    Args:
+        fn_list (list): The BUSCO summary files.
+        dbs (list): The BUSCO databases used for these runs.
+    Returns:
+        DataFrame: The BUSCO results.
+    '''
 
     data = []
     for fn in fn_list:
@@ -152,43 +193,16 @@ def busco_to_df(fn_list, dbs=['metazoa', 'vertebrata']):
     return df
 
 
-def gtf_to_df(filename):
-
-    # Converter func for the nonstandard attributes column
-    def attr_col_func(col):
-        d = {}
-        for item in col.strip(';').split(';'):
-            pair = item.strip().split(' ')
-            d[pair[0]] = pair[1].strip('"')
-        return d
-
-    def strand_func(col):
-        if col =='+':
-            return 1
-        else:
-            return -1
-
-    names=['contig_id', 'source', 'feature', 'start', 'end',
-           'score', 'strand', 'frame', 'attributes']
-
-    # Read everything into a DataFrame
-    gtf_df = pd.read_table(filename, delimiter='\t', comment='#',
-                           header=False, names=names,
-                           converters={'attributes': attr_col_func, 'strand': strand_func})
-    
-    # Generate a new DataFrame from the attributes dicts, and merge it in
-    gtf_df = pd.merge(gtf_df,
-                      pd.DataFrame(list(gtf_df.attributes)),
-                      left_index=True, right_index=True)
-    del gtf_df['attributes']
-    
-    # Switch from [start, end] to [start, end)
-    gtf_df.end = gtf_df.end + 1
-
-    return gtf_df
-
 def hmmscan_to_df_iter(fn, chunksize=10000):
-    
+    '''Iterator over DataFrames of length chunksize from a given
+    hmmscan result file.
+
+    Args:
+        fn (str): Path to the hmmscan file.
+        chunksize (int): Hits per iteration.
+    Yields:
+        DataFrame: Pandas DataFrame with the hmmscan hits.
+    '''
     def split_query(item):
         q, _, _ = item.rpartition('|')
         return q
@@ -216,8 +230,18 @@ def hmmscan_to_df_iter(fn, chunksize=10000):
     if data:
         yield build_df(data)
 
+
 def cmscan_to_df_iter(fn, chunksize=10000):
-    
+    '''Iterator over DataFrames of length chunksize from a given
+    cmscan result file.
+
+    Args:
+        fn (str): Path to the cmscan file.
+        chunksize (int): Hits per iteration.
+    Yields:
+        DataFrame: Pandas DataFrame with the cmscan hits.
+    '''
+
     def build_df(data):
         df = pd.DataFrame(data, columns=[k for k, _ in cmscan_cols])
         convert_dtypes(df, dict(cmscan_cols))
@@ -240,7 +264,17 @@ def cmscan_to_df_iter(fn, chunksize=10000):
     if data:
         yield build_df(data)
 
+
 def gff3_transdecoder_to_df_iter(fn, chunksize=10000):
+    '''Iterator yeilding DataFrames of length chunksize
+    from a given TransDecoder GFF file.
+
+    Args:
+        fn (str): Path to the TransDecoder gff file.
+        chunksize (int): Rows per iteration.
+    Yields:
+        DataFrame: Pandas DataFrame with the predict gene features.
+    '''
 
     def build_df(data):
         df = pd.DataFrame(data, columns=[k for k, _ in gff3_transdecoder_cols])
@@ -265,6 +299,7 @@ def gff3_transdecoder_to_df_iter(fn, chunksize=10000):
 
     if data:
         yield build_df(data)
+
 
 def maf_to_df_iter(fn, chunksize=10000):
     '''Iterator yielding DataFrames of length chunksize holding MAF alignments.
