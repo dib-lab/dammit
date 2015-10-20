@@ -1,5 +1,8 @@
-install:
+deps:
 		pip install --requirement requirements.txt
+	
+install: deps
+		python setup.py install
 
 test:
 		python setup.py test
