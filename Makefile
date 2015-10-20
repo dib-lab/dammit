@@ -1,5 +1,5 @@
-all:
-		python setup.py install
+install:
+		pip install --requirement requirements.txt
 
 test:
 		python setup.py test
