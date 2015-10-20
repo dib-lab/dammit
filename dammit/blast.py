@@ -2,7 +2,7 @@
 #import pyximport
 import numpy
 #pyximport.install(setup_args={"include_dirs":numpy.get_include()}, reload_support=True)
-import cblast
+from . import cblast
 import csv
 import sys
 import pandas as pd

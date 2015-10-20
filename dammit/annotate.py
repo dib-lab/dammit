@@ -8,18 +8,16 @@ import sys
 
 from . import common
 from .report import get_report_tasks
-from .tasks import get_blast_format_task, \
-                  get_blast_task, \
-                  get_transcriptome_stats_task, \
-                  get_busco_task, \
-                  get_group_task, \
-                  get_link_file_task, \
-                  get_transdecoder_predict_task, \
-                  get_transdecoder_orf_task, \
-                  get_hmmscan_task, \
-                  get_cmscan_task, \
-                  get_lastal_task, \
-                  get_crb_blast_task
+from .tasks import get_transcriptome_stats_task, \
+                   get_busco_task, \
+                   get_group_task, \
+                   get_link_file_task, \
+                   get_transdecoder_predict_task, \
+                   get_transdecoder_orf_task, \
+                   get_hmmscan_task, \
+                   get_cmscan_task, \
+                   get_lastal_task, \
+                   get_crb_blast_task
 
 logger = logging.getLogger(__name__)
 

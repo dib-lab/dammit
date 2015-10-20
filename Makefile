@@ -1,3 +1,6 @@
+all:
+		install
+
 deps:
 		pip install --requirement requirements.txt
 	

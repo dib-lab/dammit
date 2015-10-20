@@ -10,7 +10,6 @@ import common
 from tasks import get_download_and_gunzip_task, \
                   get_hmmpress_task, \
                   get_cmpress_task, \
-                  get_blast_format_task, \
                   get_download_and_untar_task, \
                   get_lastdb_task
 

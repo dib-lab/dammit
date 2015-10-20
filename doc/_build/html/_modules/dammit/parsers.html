@@ -60,8 +60,6 @@
               <span class="p">(</span><span class="s">&#39;evalue&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span> 
               <span class="p">(</span><span class="s">&#39;bitscore&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">)]</span>
 
-
-
 <span class="n">hmmscan_cols</span> <span class="o">=</span> <span class="p">[(</span><span class="s">&#39;target_name&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">),</span> 
                 <span class="p">(</span><span class="s">&#39;target_accession&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">),</span> 
                 <span class="p">(</span><span class="s">&#39;tlen&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span>
@@ -124,11 +122,28 @@
 
 
 <div class="viewcode-block" id="convert_dtypes"><a class="viewcode-back" href="../../dammit.html#dammit.parsers.convert_dtypes">[docs]</a><span class="k">def</span> <span class="nf">convert_dtypes</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">dtypes</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Convert the columns of a DataFrame to the types specified</span>
+<span class="sd">    in the given dictionary, inplace.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        df (DataFrame): The DataFrame to convert.</span>
+<span class="sd">        dtypes (dict): Dictionary mapping columns to types.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
     <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
         <span class="n">df</span><span class="p">[</span><span class="n">c</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">c</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">dtypes</span><span class="p">[</span><span class="n">c</span><span class="p">])</span>
 
 </div>
 <div class="viewcode-block" id="blast_to_df_iter"><a class="viewcode-back" href="../../dammit.html#dammit.parsers.blast_to_df_iter">[docs]</a><span class="k">def</span> <span class="nf">blast_to_df_iter</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s">&#39;</span><span class="se">\t</span><span class="s">&#39;</span><span class="p">,</span> <span class="n">chunksize</span><span class="o">=</span><span class="mi">10000</span><span class="p">,</span> <span class="n">remap</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Iterator of DataFrames of length chunksize parsed from an</span>
+<span class="sd">    NCBI BLAST+ `-outfmt6` file.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        fn (str): The results file.</span>
+<span class="sd">        chunksize (int): Hits per iteration.</span>
+<span class="sd">    Yields:</span>
+<span class="sd">        DataFrame: Pandas DataFrme with the BLAST+ hits.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
 
     <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_table</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">skipinitialspace</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
                                 <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">blast_cols</span><span class="p">],</span>
@@ -140,7 +155,16 @@
 
 </div>
 <div class="viewcode-block" id="crb_to_df_iter"><a class="viewcode-back" href="../../dammit.html#dammit.parsers.crb_to_df_iter">[docs]</a><span class="k">def</span> <span class="nf">crb_to_df_iter</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">chunksize</span><span class="o">=</span><span class="mi">10000</span><span class="p">,</span> <span class="n">remap</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
-    
+    <span class="sd">&#39;&#39;&#39;Iterator of DataFrames of length chunksize parsed from</span>
+<span class="sd">    the results from CRBB version crb-blast 0.6.6.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        fn (str): The results file.</span>
+<span class="sd">        chunksize (int): Hits per iteration.</span>
+<span class="sd">    Yields:</span>
+<span class="sd">        DataFrame: Pandas DataFrame with the CRBB hits.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
     <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_table</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">crb_cols</span><span class="p">],</span>
                                 <span class="n">delimiter</span><span class="o">=</span><span class="s">&#39;</span><span class="se">\t</span><span class="s">&#39;</span><span class="p">,</span> <span class="n">chunksize</span><span class="o">=</span><span class="n">chunksize</span><span class="p">):</span>
         <span class="n">convert_dtypes</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="nb">dict</span><span class="p">(</span><span class="n">crb_cols</span><span class="p">))</span>
@@ -155,6 +179,14 @@
 
 </div>
 <div class="viewcode-block" id="parse_busco"><a class="viewcode-back" href="../../dammit.html#dammit.parsers.parse_busco">[docs]</a><span class="k">def</span> <span class="nf">parse_busco</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Parse a single BUSCO summary file to a dictionary.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        fn (str): The results file.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        dict: The parsed results.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
     <span class="n">res</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">ln</span> <span class="ow">in</span> <span class="n">fp</span><span class="p">:</span>
@@ -178,6 +210,15 @@
 
 </div>
 <div class="viewcode-block" id="busco_to_df"><a class="viewcode-back" href="../../dammit.html#dammit.parsers.busco_to_df">[docs]</a><span class="k">def</span> <span class="nf">busco_to_df</span><span class="p">(</span><span class="n">fn_list</span><span class="p">,</span> <span class="n">dbs</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;metazoa&#39;</span><span class="p">,</span> <span class="s">&#39;vertebrata&#39;</span><span class="p">]):</span>
+    <span class="sd">&#39;&#39;&#39; Given a list of BUSCO results from different databases, produce</span>
+<span class="sd">    an appropriately multi-indexed DataFrame of the results.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        fn_list (list): The BUSCO summary files.</span>
+<span class="sd">        dbs (list): The BUSCO databases used for these runs.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        DataFrame: The BUSCO results.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
 
     <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">fn</span> <span class="ow">in</span> <span class="n">fn_list</span><span class="p">:</span>
@@ -193,43 +234,16 @@
     <span class="k">return</span> <span class="n">df</span>
 
 </div>
-<div class="viewcode-block" id="gtf_to_df"><a class="viewcode-back" href="../../dammit.html#dammit.parsers.gtf_to_df">[docs]</a><span class="k">def</span> <span class="nf">gtf_to_df</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
-
-    <span class="c"># Converter func for the nonstandard attributes column</span>
-    <span class="k">def</span> <span class="nf">attr_col_func</span><span class="p">(</span><span class="n">col</span><span class="p">):</span>
-        <span class="n">d</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">col</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s">&#39;;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;;&#39;</span><span class="p">):</span>
-            <span class="n">pair</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39; &#39;</span><span class="p">)</span>
-            <span class="n">d</span><span class="p">[</span><span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s">&#39;&quot;&#39;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">d</span>
-
-    <span class="k">def</span> <span class="nf">strand_func</span><span class="p">(</span><span class="n">col</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">col</span> <span class="o">==</span><span class="s">&#39;+&#39;</span><span class="p">:</span>
-            <span class="k">return</span> <span class="mi">1</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="o">-</span><span class="mi">1</span>
-
-    <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;contig_id&#39;</span><span class="p">,</span> <span class="s">&#39;source&#39;</span><span class="p">,</span> <span class="s">&#39;feature&#39;</span><span class="p">,</span> <span class="s">&#39;start&#39;</span><span class="p">,</span> <span class="s">&#39;end&#39;</span><span class="p">,</span>
-           <span class="s">&#39;score&#39;</span><span class="p">,</span> <span class="s">&#39;strand&#39;</span><span class="p">,</span> <span class="s">&#39;frame&#39;</span><span class="p">,</span> <span class="s">&#39;attributes&#39;</span><span class="p">]</span>
-
-    <span class="c"># Read everything into a DataFrame</span>
-    <span class="n">gtf_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_table</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s">&#39;</span><span class="se">\t</span><span class="s">&#39;</span><span class="p">,</span> <span class="n">comment</span><span class="o">=</span><span class="s">&#39;#&#39;</span><span class="p">,</span>
-                           <span class="n">header</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="n">names</span><span class="p">,</span>
-                           <span class="n">converters</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;attributes&#39;</span><span class="p">:</span> <span class="n">attr_col_func</span><span class="p">,</span> <span class="s">&#39;strand&#39;</span><span class="p">:</span> <span class="n">strand_func</span><span class="p">})</span>
-    
-    <span class="c"># Generate a new DataFrame from the attributes dicts, and merge it in</span>
-    <span class="n">gtf_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">gtf_df</span><span class="p">,</span>
-                      <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">gtf_df</span><span class="o">.</span><span class="n">attributes</span><span class="p">)),</span>
-                      <span class="n">left_index</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">right_index</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-    <span class="k">del</span> <span class="n">gtf_df</span><span class="p">[</span><span class="s">&#39;attributes&#39;</span><span class="p">]</span>
-    
-    <span class="c"># Switch from [start, end] to [start, end)</span>
-    <span class="n">gtf_df</span><span class="o">.</span><span class="n">end</span> <span class="o">=</span> <span class="n">gtf_df</span><span class="o">.</span><span class="n">end</span> <span class="o">+</span> <span class="mi">1</span>
-
-    <span class="k">return</span> <span class="n">gtf_df</span>
-</div>
 <div class="viewcode-block" id="hmmscan_to_df_iter"><a class="viewcode-back" href="../../dammit.html#dammit.parsers.hmmscan_to_df_iter">[docs]</a><span class="k">def</span> <span class="nf">hmmscan_to_df_iter</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">chunksize</span><span class="o">=</span><span class="mi">10000</span><span class="p">):</span>
-    
+    <span class="sd">&#39;&#39;&#39;Iterator over DataFrames of length chunksize from a given</span>
+<span class="sd">    hmmscan result file.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        fn (str): Path to the hmmscan file.</span>
+<span class="sd">        chunksize (int): Hits per iteration.</span>
+<span class="sd">    Yields:</span>
+<span class="sd">        DataFrame: Pandas DataFrame with the hmmscan hits.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">def</span> <span class="nf">split_query</span><span class="p">(</span><span class="n">item</span><span class="p">):</span>
         <span class="n">q</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">rpartition</span><span class="p">(</span><span class="s">&#39;|&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">q</span>
@@ -256,9 +270,19 @@
 
     <span class="k">if</span> <span class="n">data</span><span class="p">:</span>
         <span class="k">yield</span> <span class="n">build_df</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
 </div>
 <div class="viewcode-block" id="cmscan_to_df_iter"><a class="viewcode-back" href="../../dammit.html#dammit.parsers.cmscan_to_df_iter">[docs]</a><span class="k">def</span> <span class="nf">cmscan_to_df_iter</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">chunksize</span><span class="o">=</span><span class="mi">10000</span><span class="p">):</span>
-    
+    <span class="sd">&#39;&#39;&#39;Iterator over DataFrames of length chunksize from a given</span>
+<span class="sd">    cmscan result file.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        fn (str): Path to the cmscan file.</span>
+<span class="sd">        chunksize (int): Hits per iteration.</span>
+<span class="sd">    Yields:</span>
+<span class="sd">        DataFrame: Pandas DataFrame with the cmscan hits.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
     <span class="k">def</span> <span class="nf">build_df</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
         <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">cmscan_cols</span><span class="p">])</span>
         <span class="n">convert_dtypes</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="nb">dict</span><span class="p">(</span><span class="n">cmscan_cols</span><span class="p">))</span>
@@ -280,8 +304,18 @@
 
     <span class="k">if</span> <span class="n">data</span><span class="p">:</span>
         <span class="k">yield</span> <span class="n">build_df</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
 </div>
 <div class="viewcode-block" id="gff3_transdecoder_to_df_iter"><a class="viewcode-back" href="../../dammit.html#dammit.parsers.gff3_transdecoder_to_df_iter">[docs]</a><span class="k">def</span> <span class="nf">gff3_transdecoder_to_df_iter</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">chunksize</span><span class="o">=</span><span class="mi">10000</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Iterator yeilding DataFrames of length chunksize</span>
+<span class="sd">    from a given TransDecoder GFF file.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        fn (str): Path to the TransDecoder gff file.</span>
+<span class="sd">        chunksize (int): Rows per iteration.</span>
+<span class="sd">    Yields:</span>
+<span class="sd">        DataFrame: Pandas DataFrame with the predict gene features.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
 
     <span class="k">def</span> <span class="nf">build_df</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
         <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">gff3_transdecoder_cols</span><span class="p">])</span>
@@ -306,6 +340,7 @@
 
     <span class="k">if</span> <span class="n">data</span><span class="p">:</span>
         <span class="k">yield</span> <span class="n">build_df</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
 </div>
 <div class="viewcode-block" id="maf_to_df_iter"><a class="viewcode-back" href="../../dammit.html#dammit.parsers.maf_to_df_iter">[docs]</a><span class="k">def</span> <span class="nf">maf_to_df_iter</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">chunksize</span><span class="o">=</span><span class="mi">10000</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Iterator yielding DataFrames of length chunksize holding MAF alignments.</span>
