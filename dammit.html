@@ -93,7 +93,23 @@ cython and numpy, it can be super fast.</p>
 <dl class="function">
 <dt id="dammit.cblast.fix_blast_coords">
 <code class="descclassname">dammit.cblast.</code><code class="descname">fix_blast_coords</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dammit.cblast.fix_blast_coords" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Fix BLAST coordinates of many hits.</p>
+<p>Expects each column of attributes separately as numpy arrays.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>sstart</strong> (<em>ndarray</em>) &#8211; The subject start coordinates.</li>
+<li><strong>send</strong> (<em>ndarray</em>) &#8211; The subject end coordinates.</li>
+<li><strong>qstart</strong> (<em>ndarray</em>) &#8211; The query start coordinates.</li>
+<li><strong>qend</strong> (<em>ndarray</em>) &#8211; The query end coordinates.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 </div>
 <div class="section" id="module-dammit.common">
@@ -357,42 +373,156 @@ list: A list of the doit tasks.</p>
 <dl class="function">
 <dt id="dammit.parsers.blast_to_df_iter">
 <code class="descclassname">dammit.parsers.</code><code class="descname">blast_to_df_iter</code><span class="sig-paren">(</span><em>fn</em>, <em>delimiter='\t'</em>, <em>chunksize=10000</em>, <em>remap=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/parsers.html#blast_to_df_iter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.parsers.blast_to_df_iter" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Iterator of DataFrames of length chunksize parsed from an
+NCBI BLAST+ <cite>-outfmt6</cite> file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>fn</strong> (<em>str</em>) &#8211; The results file.</li>
+<li><strong>chunksize</strong> (<em>int</em>) &#8211; Hits per iteration.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Yields:</th><td class="field-body"><p class="first last"><em>DataFrame</em> &#8211; Pandas DataFrme with the BLAST+ hits.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="dammit.parsers.busco_to_df">
 <code class="descclassname">dammit.parsers.</code><code class="descname">busco_to_df</code><span class="sig-paren">(</span><em>fn_list, dbs=['metazoa', 'vertebrata']</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/parsers.html#busco_to_df"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.parsers.busco_to_df" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Given a list of BUSCO results from different databases, produce
+an appropriately multi-indexed DataFrame of the results.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>fn_list</strong> (<em>list</em>) &#8211; The BUSCO summary files.</li>
+<li><strong>dbs</strong> (<em>list</em>) &#8211; The BUSCO databases used for these runs.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The BUSCO results.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">DataFrame</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="dammit.parsers.cmscan_to_df_iter">
 <code class="descclassname">dammit.parsers.</code><code class="descname">cmscan_to_df_iter</code><span class="sig-paren">(</span><em>fn</em>, <em>chunksize=10000</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/parsers.html#cmscan_to_df_iter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.parsers.cmscan_to_df_iter" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Iterator over DataFrames of length chunksize from a given
+cmscan result file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>fn</strong> (<em>str</em>) &#8211; Path to the cmscan file.</li>
+<li><strong>chunksize</strong> (<em>int</em>) &#8211; Hits per iteration.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Yields:</th><td class="field-body"><p class="first last"><em>DataFrame</em> &#8211; Pandas DataFrame with the cmscan hits.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="dammit.parsers.convert_dtypes">
 <code class="descclassname">dammit.parsers.</code><code class="descname">convert_dtypes</code><span class="sig-paren">(</span><em>df</em>, <em>dtypes</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/parsers.html#convert_dtypes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.parsers.convert_dtypes" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Convert the columns of a DataFrame to the types specified
+in the given dictionary, inplace.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>df</strong> (<em>DataFrame</em>) &#8211; The DataFrame to convert.</li>
+<li><strong>dtypes</strong> (<em>dict</em>) &#8211; Dictionary mapping columns to types.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="dammit.parsers.crb_to_df_iter">
 <code class="descclassname">dammit.parsers.</code><code class="descname">crb_to_df_iter</code><span class="sig-paren">(</span><em>fn</em>, <em>chunksize=10000</em>, <em>remap=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/parsers.html#crb_to_df_iter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.parsers.crb_to_df_iter" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Iterator of DataFrames of length chunksize parsed from
+the results from CRBB version crb-blast 0.6.6.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>fn</strong> (<em>str</em>) &#8211; The results file.</li>
+<li><strong>chunksize</strong> (<em>int</em>) &#8211; Hits per iteration.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Yields:</th><td class="field-body"><p class="first last"><em>DataFrame</em> &#8211; Pandas DataFrame with the CRBB hits.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="dammit.parsers.gff3_transdecoder_to_df_iter">
 <code class="descclassname">dammit.parsers.</code><code class="descname">gff3_transdecoder_to_df_iter</code><span class="sig-paren">(</span><em>fn</em>, <em>chunksize=10000</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/parsers.html#gff3_transdecoder_to_df_iter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.parsers.gff3_transdecoder_to_df_iter" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="dammit.parsers.gtf_to_df">
-<code class="descclassname">dammit.parsers.</code><code class="descname">gtf_to_df</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/parsers.html#gtf_to_df"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.parsers.gtf_to_df" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Iterator yeilding DataFrames of length chunksize
+from a given TransDecoder GFF file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>fn</strong> (<em>str</em>) &#8211; Path to the TransDecoder gff file.</li>
+<li><strong>chunksize</strong> (<em>int</em>) &#8211; Rows per iteration.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Yields:</th><td class="field-body"><p class="first last"><em>DataFrame</em> &#8211; Pandas DataFrame with the predict gene features.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="dammit.parsers.hmmscan_to_df_iter">
 <code class="descclassname">dammit.parsers.</code><code class="descname">hmmscan_to_df_iter</code><span class="sig-paren">(</span><em>fn</em>, <em>chunksize=10000</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/parsers.html#hmmscan_to_df_iter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.parsers.hmmscan_to_df_iter" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Iterator over DataFrames of length chunksize from a given
+hmmscan result file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>fn</strong> (<em>str</em>) &#8211; Path to the hmmscan file.</li>
+<li><strong>chunksize</strong> (<em>int</em>) &#8211; Hits per iteration.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Yields:</th><td class="field-body"><p class="first last"><em>DataFrame</em> &#8211; Pandas DataFrame with the hmmscan hits.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="dammit.parsers.maf_to_df_iter">
@@ -422,7 +552,20 @@ list: A list of the doit tasks.</p>
 <dl class="function">
 <dt id="dammit.parsers.parse_busco">
 <code class="descclassname">dammit.parsers.</code><code class="descname">parse_busco</code><span class="sig-paren">(</span><em>fn</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/parsers.html#parse_busco"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.parsers.parse_busco" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Parse a single BUSCO summary file to a dictionary.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fn</strong> (<em>str</em>) &#8211; The results file.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The parsed results.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">dict</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 </div>
 <div class="section" id="module-dammit.report">
@@ -447,16 +590,6 @@ list: A list of the doit tasks.</p>
 Task dictionaries and have them return pydoit Task
 objects</p>
 </dd></dl>
-
-<dl class="function">
-<dt id="dammit.tasks.get_blast_format_task">
-<code class="descclassname">dammit.tasks.</code><code class="descname">get_blast_format_task</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/tasks.html#get_blast_format_task"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.tasks.get_blast_format_task" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="dammit.tasks.get_blast_task">
-<code class="descclassname">dammit.tasks.</code><code class="descname">get_blast_task</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/tasks.html#get_blast_task"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.tasks.get_blast_task" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
 
 <dl class="function">
 <dt id="dammit.tasks.get_busco_task">
