@@ -1,0 +1,672 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>dammit package &mdash; dammit 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="dammit 1.0 documentation" href="index.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+
+  </head>
+  <body role="document">  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="dammit-package">
+<h1>dammit package<a class="headerlink" href="#dammit-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-dammit.annotate">
+<span id="dammit-annotate-module"></span><h2>dammit.annotate module<a class="headerlink" href="#module-dammit.annotate" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="dammit.annotate.get_doit_config">
+<code class="descclassname">dammit.annotate.</code><code class="descname">get_doit_config</code><span class="sig-paren">(</span><em>output_dir</em>, <em>transcriptome</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/annotate.html#get_doit_config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.annotate.get_doit_config" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="dammit.annotate.get_tasks">
+<code class="descclassname">dammit.annotate.</code><code class="descname">get_tasks</code><span class="sig-paren">(</span><em>transcriptome</em>, <em>database_dict</em>, <em>n_threads=1</em>, <em>user_databases=[]</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/annotate.html#get_tasks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.annotate.get_tasks" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="dammit.annotate.run_tasks">
+<code class="descclassname">dammit.annotate.</code><code class="descname">run_tasks</code><span class="sig-paren">(</span><em>transcriptome, output_dir, tasks, args=['run']</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/annotate.html#run_tasks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.annotate.run_tasks" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set up doit&#8217;s config for the actual analysis tasks.
+We&#8217;ll put the doit database for these tasks into the output
+directory so that we don&#8217;t end up scattering them around the
+filesystem, or worse, with one master db containing dependency
+metadata from every analysis ever run by the user!</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-dammit.blast">
+<span id="dammit-blast-module"></span><h2>dammit.blast module<a class="headerlink" href="#module-dammit.blast" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="dammit.blast.best_hits">
+<code class="descclassname">dammit.blast.</code><code class="descname">best_hits</code><span class="sig-paren">(</span><em>df</em>, <em>comp_col='evalue'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/blast.html#best_hits"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.blast.best_hits" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="dammit.blast.get_orthologies">
+<code class="descclassname">dammit.blast.</code><code class="descname">get_orthologies</code><span class="sig-paren">(</span><em>A</em>, <em>B</em>, <em>idx</em>, <em>comp_col='evalue'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/blast.html#get_orthologies"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.blast.get_orthologies" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="dammit.blast.remap_blast_coords_df">
+<code class="descclassname">dammit.blast.</code><code class="descname">remap_blast_coords_df</code><span class="sig-paren">(</span><em>df</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/blast.html#remap_blast_coords_df"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.blast.remap_blast_coords_df" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-dammit.cblast">
+<span id="dammit-cblast-module"></span><h2>dammit.cblast module<a class="headerlink" href="#module-dammit.cblast" title="Permalink to this headline">¶</a></h2>
+<p>Optimized functions for remapping BLAST coordinates.</p>
+<p>By default, BLAST outputs coordinates in 1-indexed fully open intervals.
+Most programming languages and other programs use 0-index, half-open intervals.
+This remapping can take a fair amount of time in pure python; with the help of
+cython and numpy, it can be super fast.</p>
+<dl class="function">
+<dt id="dammit.cblast.fix_blast_coords">
+<code class="descclassname">dammit.cblast.</code><code class="descname">fix_blast_coords</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dammit.cblast.fix_blast_coords" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-dammit.common">
+<span id="dammit-common-module"></span><h2>dammit.common module<a class="headerlink" href="#module-dammit.common" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="dammit.common.LogFormatter">
+<em class="property">class </em><code class="descclassname">dammit.common.</code><code class="descname">LogFormatter</code><span class="sig-paren">(</span><em>width=70</em>, <em>padding=10</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/common.html#LogFormatter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.common.LogFormatter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">logging.Formatter</span></code></p>
+<dl class="method">
+<dt id="dammit.common.LogFormatter.do_wrap">
+<code class="descname">do_wrap</code><span class="sig-paren">(</span><em>msg</em>, <em>pad</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/common.html#LogFormatter.do_wrap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.common.LogFormatter.do_wrap" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="dammit.common.LogFormatter.format">
+<code class="descname">format</code><span class="sig-paren">(</span><em>record</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/common.html#LogFormatter.format"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.common.LogFormatter.format" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="dammit.common.LogReporter">
+<em class="property">class </em><code class="descclassname">dammit.common.</code><code class="descname">LogReporter</code><span class="sig-paren">(</span><em>logger</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/common.html#LogReporter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.common.LogReporter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Log reporter. print results to the logger</p>
+<dl class="method">
+<dt id="dammit.common.LogReporter.add_failure">
+<code class="descname">add_failure</code><span class="sig-paren">(</span><em>task</em>, <em>exception</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/common.html#LogReporter.add_failure"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.common.LogReporter.add_failure" title="Permalink to this definition">¶</a></dt>
+<dd><p>called when excution finishes with a failure</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="dammit.common.LogReporter.add_success">
+<code class="descname">add_success</code><span class="sig-paren">(</span><em>task</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/common.html#LogReporter.add_success"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.common.LogReporter.add_success" title="Permalink to this definition">¶</a></dt>
+<dd><p>called when excution finishes successfuly</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="dammit.common.LogReporter.cleanup_error">
+<code class="descname">cleanup_error</code><span class="sig-paren">(</span><em>exception</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/common.html#LogReporter.cleanup_error"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.common.LogReporter.cleanup_error" title="Permalink to this definition">¶</a></dt>
+<dd><p>error during cleanup</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="dammit.common.LogReporter.complete_run">
+<code class="descname">complete_run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/common.html#LogReporter.complete_run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.common.LogReporter.complete_run" title="Permalink to this definition">¶</a></dt>
+<dd><p>called when finshed running all tasks</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="dammit.common.LogReporter.desc">
+<code class="descname">desc</code><em class="property"> = 'console output'</em><a class="headerlink" href="#dammit.common.LogReporter.desc" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="dammit.common.LogReporter.execute_task">
+<code class="descname">execute_task</code><span class="sig-paren">(</span><em>task</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/common.html#LogReporter.execute_task"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.common.LogReporter.execute_task" title="Permalink to this definition">¶</a></dt>
+<dd><p>called when excution starts</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="dammit.common.LogReporter.get_status">
+<code class="descname">get_status</code><span class="sig-paren">(</span><em>task</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/common.html#LogReporter.get_status"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.common.LogReporter.get_status" title="Permalink to this definition">¶</a></dt>
+<dd><p>called when task is selected (check if up-to-date)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="dammit.common.LogReporter.initialize">
+<code class="descname">initialize</code><span class="sig-paren">(</span><em>tasks</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/common.html#LogReporter.initialize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.common.LogReporter.initialize" title="Permalink to this definition">¶</a></dt>
+<dd><p>called just after tasks have benn loaded before execution starts</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="dammit.common.LogReporter.runtime_error">
+<code class="descname">runtime_error</code><span class="sig-paren">(</span><em>msg</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/common.html#LogReporter.runtime_error"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.common.LogReporter.runtime_error" title="Permalink to this definition">¶</a></dt>
+<dd><p>error from doit (not from a task execution)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="dammit.common.LogReporter.skip_ignore">
+<code class="descname">skip_ignore</code><span class="sig-paren">(</span><em>task</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/common.html#LogReporter.skip_ignore"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.common.LogReporter.skip_ignore" title="Permalink to this definition">¶</a></dt>
+<dd><p>skipped ignored task</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="dammit.common.LogReporter.skip_uptodate">
+<code class="descname">skip_uptodate</code><span class="sig-paren">(</span><em>task</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/common.html#LogReporter.skip_uptodate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.common.LogReporter.skip_uptodate" title="Permalink to this definition">¶</a></dt>
+<dd><p>skipped up-to-date task</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="dammit.common.LogReporter.teardown_task">
+<code class="descname">teardown_task</code><span class="sig-paren">(</span><em>task</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/common.html#LogReporter.teardown_task"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.common.LogReporter.teardown_task" title="Permalink to this definition">¶</a></dt>
+<dd><p>called when starts the execution of teardown action</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="dammit.common.LogReporter.write">
+<code class="descname">write</code><span class="sig-paren">(</span><em>text</em>, <em>level=10</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/common.html#LogReporter.write"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.common.LogReporter.write" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="dammit.common.add_header">
+<code class="descclassname">dammit.common.</code><code class="descname">add_header</code><span class="sig-paren">(</span><em>msg</em>, <em>level</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/common.html#add_header"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.common.add_header" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="dammit.common.get_dammit_dir">
+<code class="descclassname">dammit.common.</code><code class="descname">get_dammit_dir</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/common.html#get_dammit_dir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.common.get_dammit_dir" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="dammit.common.print_header">
+<code class="descclassname">dammit.common.</code><code class="descname">print_header</code><span class="sig-paren">(</span><em>msg</em>, <em>level</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/common.html#print_header"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.common.print_header" title="Permalink to this definition">¶</a></dt>
+<dd><p>Standardize output headers for submodules.</p>
+<p>This doesn&#8217;t need to be logged, but it&#8217;s nice for
+the user.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="dammit.common.run_tasks">
+<code class="descclassname">dammit.common.</code><code class="descname">run_tasks</code><span class="sig-paren">(</span><em>tasks</em>, <em>args</em>, <em>config={'verbosity': 2}</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/common.html#run_tasks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.common.run_tasks" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="dammit.common.which">
+<code class="descclassname">dammit.common.</code><code class="descname">which</code><span class="sig-paren">(</span><em>program</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/common.html#which"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.common.which" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks whether the given program (or program path) is valid and
+executable.</p>
+<p>NOTE: Sometimes copypasta is okay! This function came from stackoverflow:</p>
+<blockquote>
+<div><a class="reference external" href="http://stackoverflow.com/a/377028/5109965">http://stackoverflow.com/a/377028/5109965</a></div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>program</strong> (<em>str</em>) &#8211; Either a program name or full path to a program.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Return the path to the executable or None if not found</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-dammit.databases">
+<span id="dammit-databases-module"></span><h2>dammit.databases module<a class="headerlink" href="#module-dammit.databases" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="dammit.databases.do_check">
+<code class="descclassname">dammit.databases.</code><code class="descname">do_check</code><span class="sig-paren">(</span><em>db_dir</em>, <em>args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/databases.html#do_check"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.databases.do_check" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="dammit.databases.get_dir">
+<code class="descclassname">dammit.databases.</code><code class="descname">get_dir</code><span class="sig-paren">(</span><em>args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/databases.html#get_dir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.databases.get_dir" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="dammit.databases.get_doit_config">
+<code class="descclassname">dammit.databases.</code><code class="descname">get_doit_config</code><span class="sig-paren">(</span><em>db_dir</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/databases.html#get_doit_config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.databases.get_doit_config" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="dammit.databases.get_tasks">
+<code class="descclassname">dammit.databases.</code><code class="descname">get_tasks</code><span class="sig-paren">(</span><em>db_dir</em>, <em>args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/databases.html#get_tasks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.databases.get_tasks" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate tasks for installing the bundled databases.</p>
+<p>These tasks download the databases, unpack them, and format them for use.
+Current bundled databases are:</p>
+<blockquote>
+<div><ul class="simple">
+<li>Pfam-A (protein domans)</li>
+<li>Rfam (RNA models)</li>
+<li>OrthoDB8 (conserved ortholog groups)</li>
+<li>uniref90 (protiens, if &#8211;full selected)</li>
+</ul>
+</div></blockquote>
+<p>User-supplied databases are downloaded separately.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>db_dir</strong> (<em>str</em>) &#8211; Directory where the databases will be stored.</li>
+<li><strong>busco_db</strong> (<em>str</em>) &#8211; The BUSCO group to use.</li>
+<li><strong>full</strong> (<em>bool</em>) &#8211; Whether to do a full run and get UNIREF90 as well.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A dictionary of the final database paths.
+list: A list of the doit tasks.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">dict</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="dammit.databases.run_tasks">
+<code class="descclassname">dammit.databases.</code><code class="descname">run_tasks</code><span class="sig-paren">(</span><em>db_dir, tasks, args=['run']</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/databases.html#run_tasks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.databases.run_tasks" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-dammit.dependencies">
+<span id="dammit-dependencies-module"></span><h2>dammit.dependencies module<a class="headerlink" href="#module-dammit.dependencies" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="dammit.dependencies.check_system_path">
+<code class="descclassname">dammit.dependencies.</code><code class="descname">check_system_path</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/dependencies.html#check_system_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.dependencies.check_system_path" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="dammit.dependencies.do_check">
+<code class="descclassname">dammit.dependencies.</code><code class="descname">do_check</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/dependencies.html#do_check"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.dependencies.do_check" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-dammit.gff">
+<span id="dammit-gff-module"></span><h2>dammit.gff module<a class="headerlink" href="#module-dammit.gff" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="dammit.gff.blast_to_gff3_df">
+<code class="descclassname">dammit.gff.</code><code class="descname">blast_to_gff3_df</code><span class="sig-paren">(</span><em>blast_df</em>, <em>prog</em>, <em>RBH=False</em>, <em>database=''</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/gff.html#blast_to_gff3_df"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.gff.blast_to_gff3_df" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="dammit.gff.cmscan_to_gff3_df">
+<code class="descclassname">dammit.gff.</code><code class="descname">cmscan_to_gff3_df</code><span class="sig-paren">(</span><em>cmscan_df</em>, <em>tag</em>, <em>database=''</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/gff.html#cmscan_to_gff3_df"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.gff.cmscan_to_gff3_df" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="dammit.gff.crb_to_gff3_df">
+<code class="descclassname">dammit.gff.</code><code class="descname">crb_to_gff3_df</code><span class="sig-paren">(</span><em>crb_df</em>, <em>tag</em>, <em>database=''</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/gff.html#crb_to_gff3_df"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.gff.crb_to_gff3_df" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="dammit.gff.hmmscan_to_gff3_df">
+<code class="descclassname">dammit.gff.</code><code class="descname">hmmscan_to_gff3_df</code><span class="sig-paren">(</span><em>hmmscan_df</em>, <em>tag</em>, <em>database=''</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/gff.html#hmmscan_to_gff3_df"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.gff.hmmscan_to_gff3_df" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="dammit.gff.maf_to_gff3_df">
+<code class="descclassname">dammit.gff.</code><code class="descname">maf_to_gff3_df</code><span class="sig-paren">(</span><em>maf_df</em>, <em>tag</em>, <em>database=''</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/gff.html#maf_to_gff3_df"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.gff.maf_to_gff3_df" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="dammit.gff.version_line">
+<code class="descclassname">dammit.gff.</code><code class="descname">version_line</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/gff.html#version_line"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.gff.version_line" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="dammit.gff.write_gff3_df">
+<code class="descclassname">dammit.gff.</code><code class="descname">write_gff3_df</code><span class="sig-paren">(</span><em>df</em>, <em>fp</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/gff.html#write_gff3_df"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.gff.write_gff3_df" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-dammit.parsers">
+<span id="dammit-parsers-module"></span><h2>dammit.parsers module<a class="headerlink" href="#module-dammit.parsers" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="dammit.parsers.blast_to_df_iter">
+<code class="descclassname">dammit.parsers.</code><code class="descname">blast_to_df_iter</code><span class="sig-paren">(</span><em>fn</em>, <em>delimiter='\t'</em>, <em>chunksize=10000</em>, <em>remap=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/parsers.html#blast_to_df_iter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.parsers.blast_to_df_iter" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="dammit.parsers.busco_to_df">
+<code class="descclassname">dammit.parsers.</code><code class="descname">busco_to_df</code><span class="sig-paren">(</span><em>fn_list, dbs=['metazoa', 'vertebrata']</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/parsers.html#busco_to_df"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.parsers.busco_to_df" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="dammit.parsers.cmscan_to_df_iter">
+<code class="descclassname">dammit.parsers.</code><code class="descname">cmscan_to_df_iter</code><span class="sig-paren">(</span><em>fn</em>, <em>chunksize=10000</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/parsers.html#cmscan_to_df_iter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.parsers.cmscan_to_df_iter" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="dammit.parsers.convert_dtypes">
+<code class="descclassname">dammit.parsers.</code><code class="descname">convert_dtypes</code><span class="sig-paren">(</span><em>df</em>, <em>dtypes</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/parsers.html#convert_dtypes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.parsers.convert_dtypes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="dammit.parsers.crb_to_df_iter">
+<code class="descclassname">dammit.parsers.</code><code class="descname">crb_to_df_iter</code><span class="sig-paren">(</span><em>fn</em>, <em>chunksize=10000</em>, <em>remap=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/parsers.html#crb_to_df_iter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.parsers.crb_to_df_iter" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="dammit.parsers.gff3_transdecoder_to_df_iter">
+<code class="descclassname">dammit.parsers.</code><code class="descname">gff3_transdecoder_to_df_iter</code><span class="sig-paren">(</span><em>fn</em>, <em>chunksize=10000</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/parsers.html#gff3_transdecoder_to_df_iter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.parsers.gff3_transdecoder_to_df_iter" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="dammit.parsers.gtf_to_df">
+<code class="descclassname">dammit.parsers.</code><code class="descname">gtf_to_df</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/parsers.html#gtf_to_df"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.parsers.gtf_to_df" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="dammit.parsers.hmmscan_to_df_iter">
+<code class="descclassname">dammit.parsers.</code><code class="descname">hmmscan_to_df_iter</code><span class="sig-paren">(</span><em>fn</em>, <em>chunksize=10000</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/parsers.html#hmmscan_to_df_iter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.parsers.hmmscan_to_df_iter" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="dammit.parsers.maf_to_df_iter">
+<code class="descclassname">dammit.parsers.</code><code class="descname">maf_to_df_iter</code><span class="sig-paren">(</span><em>fn</em>, <em>chunksize=10000</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/parsers.html#maf_to_df_iter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.parsers.maf_to_df_iter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Iterator yielding DataFrames of length chunksize holding MAF alignments.</p>
+<dl class="docutils">
+<dt>An extra column is added for bitscore, using the equation described here:</dt>
+<dd><a class="reference external" href="http://last.cbrc.jp/doc/last-evalues.html">http://last.cbrc.jp/doc/last-evalues.html</a></dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>fn</strong> (<em>str</em>) &#8211; Path to the MAF alignment file.</li>
+<li><strong>chunksize</strong> (<em>int</em>) &#8211; Alignments to parse per iteration.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Yields:</th><td class="field-body"><p class="first last"><em>DataFrame</em> &#8211; Pandas DataFrame with the alignments.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="dammit.parsers.parse_busco">
+<code class="descclassname">dammit.parsers.</code><code class="descname">parse_busco</code><span class="sig-paren">(</span><em>fn</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/parsers.html#parse_busco"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.parsers.parse_busco" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-dammit.report">
+<span id="dammit-report-module"></span><h2>dammit.report module<a class="headerlink" href="#module-dammit.report" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="dammit.report.get_report_tasks">
+<code class="descclassname">dammit.report.</code><code class="descname">get_report_tasks</code><span class="sig-paren">(</span><em>transcriptome</em>, <em>results_dict</em>, <em>databases</em>, <em>n_threads=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/report.html#get_report_tasks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.report.get_report_tasks" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-dammit.tasks">
+<span id="dammit-tasks-module"></span><h2>dammit.tasks module<a class="headerlink" href="#module-dammit.tasks" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="dammit.tasks.clean_folder">
+<code class="descclassname">dammit.tasks.</code><code class="descname">clean_folder</code><span class="sig-paren">(</span><em>target</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/tasks.html#clean_folder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.tasks.clean_folder" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="dammit.tasks.create_task_object">
+<code class="descclassname">dammit.tasks.</code><code class="descname">create_task_object</code><span class="sig-paren">(</span><em>task_dict_func</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/tasks.html#create_task_object"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.tasks.create_task_object" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper to decorate functions returning pydoit
+Task dictionaries and have them return pydoit Task
+objects</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="dammit.tasks.get_blast_format_task">
+<code class="descclassname">dammit.tasks.</code><code class="descname">get_blast_format_task</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/tasks.html#get_blast_format_task"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.tasks.get_blast_format_task" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="dammit.tasks.get_blast_task">
+<code class="descclassname">dammit.tasks.</code><code class="descname">get_blast_task</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/tasks.html#get_blast_task"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.tasks.get_blast_task" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="dammit.tasks.get_busco_task">
+<code class="descclassname">dammit.tasks.</code><code class="descname">get_busco_task</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/tasks.html#get_busco_task"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.tasks.get_busco_task" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="dammit.tasks.get_cat_task">
+<code class="descclassname">dammit.tasks.</code><code class="descname">get_cat_task</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/tasks.html#get_cat_task"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.tasks.get_cat_task" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="dammit.tasks.get_cmpress_task">
+<code class="descclassname">dammit.tasks.</code><code class="descname">get_cmpress_task</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/tasks.html#get_cmpress_task"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.tasks.get_cmpress_task" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="dammit.tasks.get_cmscan_gff3_task">
+<code class="descclassname">dammit.tasks.</code><code class="descname">get_cmscan_gff3_task</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/tasks.html#get_cmscan_gff3_task"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.tasks.get_cmscan_gff3_task" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="dammit.tasks.get_cmscan_task">
+<code class="descclassname">dammit.tasks.</code><code class="descname">get_cmscan_task</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/tasks.html#get_cmscan_task"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.tasks.get_cmscan_task" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="dammit.tasks.get_crb_blast_task">
+<code class="descclassname">dammit.tasks.</code><code class="descname">get_crb_blast_task</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/tasks.html#get_crb_blast_task"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.tasks.get_crb_blast_task" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="dammit.tasks.get_crb_gff3_task">
+<code class="descclassname">dammit.tasks.</code><code class="descname">get_crb_gff3_task</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/tasks.html#get_crb_gff3_task"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.tasks.get_crb_gff3_task" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="dammit.tasks.get_create_folder_task">
+<code class="descclassname">dammit.tasks.</code><code class="descname">get_create_folder_task</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/tasks.html#get_create_folder_task"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.tasks.get_create_folder_task" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="dammit.tasks.get_download_and_gunzip_task">
+<code class="descclassname">dammit.tasks.</code><code class="descname">get_download_and_gunzip_task</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/tasks.html#get_download_and_gunzip_task"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.tasks.get_download_and_gunzip_task" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="dammit.tasks.get_download_and_untar_task">
+<code class="descclassname">dammit.tasks.</code><code class="descname">get_download_and_untar_task</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/tasks.html#get_download_and_untar_task"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.tasks.get_download_and_untar_task" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="dammit.tasks.get_download_task">
+<code class="descclassname">dammit.tasks.</code><code class="descname">get_download_task</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/tasks.html#get_download_task"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.tasks.get_download_task" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="dammit.tasks.get_gff3_merge_task">
+<code class="descclassname">dammit.tasks.</code><code class="descname">get_gff3_merge_task</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/tasks.html#get_gff3_merge_task"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.tasks.get_gff3_merge_task" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="dammit.tasks.get_group_task">
+<code class="descclassname">dammit.tasks.</code><code class="descname">get_group_task</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/tasks.html#get_group_task"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.tasks.get_group_task" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="dammit.tasks.get_hmmpress_task">
+<code class="descclassname">dammit.tasks.</code><code class="descname">get_hmmpress_task</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/tasks.html#get_hmmpress_task"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.tasks.get_hmmpress_task" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="dammit.tasks.get_hmmscan_gff3_task">
+<code class="descclassname">dammit.tasks.</code><code class="descname">get_hmmscan_gff3_task</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/tasks.html#get_hmmscan_gff3_task"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.tasks.get_hmmscan_gff3_task" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="dammit.tasks.get_hmmscan_task">
+<code class="descclassname">dammit.tasks.</code><code class="descname">get_hmmscan_task</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/tasks.html#get_hmmscan_task"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.tasks.get_hmmscan_task" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="dammit.tasks.get_lastal_task">
+<code class="descclassname">dammit.tasks.</code><code class="descname">get_lastal_task</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/tasks.html#get_lastal_task"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.tasks.get_lastal_task" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="dammit.tasks.get_lastdb_task">
+<code class="descclassname">dammit.tasks.</code><code class="descname">get_lastdb_task</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/tasks.html#get_lastdb_task"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.tasks.get_lastdb_task" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="dammit.tasks.get_link_file_task">
+<code class="descclassname">dammit.tasks.</code><code class="descname">get_link_file_task</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/tasks.html#get_link_file_task"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.tasks.get_link_file_task" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="dammit.tasks.get_maf_gff3_task">
+<code class="descclassname">dammit.tasks.</code><code class="descname">get_maf_gff3_task</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/tasks.html#get_maf_gff3_task"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.tasks.get_maf_gff3_task" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="dammit.tasks.get_transcriptome_stats_task">
+<code class="descclassname">dammit.tasks.</code><code class="descname">get_transcriptome_stats_task</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/tasks.html#get_transcriptome_stats_task"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.tasks.get_transcriptome_stats_task" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="dammit.tasks.get_transdecoder_orf_task">
+<code class="descclassname">dammit.tasks.</code><code class="descname">get_transdecoder_orf_task</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/tasks.html#get_transdecoder_orf_task"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.tasks.get_transdecoder_orf_task" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="dammit.tasks.get_transdecoder_predict_task">
+<code class="descclassname">dammit.tasks.</code><code class="descname">get_transdecoder_predict_task</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/tasks.html#get_transdecoder_predict_task"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.tasks.get_transdecoder_predict_task" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="dammit.tasks.print_tasks">
+<code class="descclassname">dammit.tasks.</code><code class="descname">print_tasks</code><span class="sig-paren">(</span><em>tasks</em>, <em>logger=None</em>, <em>level=10</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/tasks.html#print_tasks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.tasks.print_tasks" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="dammit.tasks.strip_seq_extension">
+<code class="descclassname">dammit.tasks.</code><code class="descname">strip_seq_extension</code><span class="sig-paren">(</span><em>fn</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/tasks.html#strip_seq_extension"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.tasks.strip_seq_extension" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="dammit.tasks.task_str">
+<code class="descclassname">dammit.tasks.</code><code class="descname">task_str</code><span class="sig-paren">(</span><em>task</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/tasks.html#task_str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.tasks.task_str" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="dammit-taxonomy-module">
+<h2>dammit.taxonomy module<a class="headerlink" href="#dammit-taxonomy-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-dammit">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-dammit" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">dammit package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-dammit.annotate">dammit.annotate module</a></li>
+<li><a class="reference internal" href="#module-dammit.blast">dammit.blast module</a></li>
+<li><a class="reference internal" href="#module-dammit.cblast">dammit.cblast module</a></li>
+<li><a class="reference internal" href="#module-dammit.common">dammit.common module</a></li>
+<li><a class="reference internal" href="#module-dammit.databases">dammit.databases module</a></li>
+<li><a class="reference internal" href="#module-dammit.dependencies">dammit.dependencies module</a></li>
+<li><a class="reference internal" href="#module-dammit.gff">dammit.gff module</a></li>
+<li><a class="reference internal" href="#module-dammit.parsers">dammit.parsers module</a></li>
+<li><a class="reference internal" href="#module-dammit.report">dammit.report module</a></li>
+<li><a class="reference internal" href="#module-dammit.tasks">dammit.tasks module</a></li>
+<li><a class="reference internal" href="#dammit-taxonomy-module">dammit.taxonomy module</a></li>
+<li><a class="reference internal" href="#module-dammit">Module contents</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/dammit.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2015, Camille Scott.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.6</a>
+      
+      |
+      <a href="_sources/dammit.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
