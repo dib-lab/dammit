@@ -50,7 +50,7 @@ def get_extension_modules():
     else:
         ext = '.c'
 
-    extensions.append( Extension( "dammit.cblast", [ "dammit/cblast.pyx" ],
+    extensions.append( Extension( "dammit.cblast", [ "dammit/cblast" + ext],
                                   include_dirs=['.'] + [numpy.get_include()] ) )
     return extensions     
 
