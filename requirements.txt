@@ -1,4 +1,5 @@
 screed>=0.9
+setuptools>=0.6.35
 pandas>=0.16.2
 khmer>=2.0
 doit>=0.28.0

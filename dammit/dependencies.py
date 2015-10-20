@@ -3,7 +3,6 @@ from __future__ import print_function
 
 import logging
 import os
-from platform import system
 import sys
 
 from doit.dependency import Dependency, SqliteDB

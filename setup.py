@@ -36,7 +36,11 @@ def main():
             packages = ['dammit'],
             scripts = glob('bin/*'),
             ext_modules = get_extension_modules(),
-            install_requires = ['khmer', 'nose>=1.0', 'doit', 'pandas'],
+            install_requires = ['khmer', 
+                                'nose', 
+                                'doit', 
+                                'pandas',
+                                'screed'],
             include_package_data = True,
             zip_safe = False,
             cmdclass = cmdclass  )
