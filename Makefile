@@ -1,17 +1,19 @@
 all:
 		install
 
-deps:
+deps: FORCE
 		pip install --requirement requirements.txt
 	
 install: deps
 		python setup.py install
 
-test:
+test: FORCE
 		python setup.py test
 
-publish:
+publish: FORCE
 		python setup.py sdist upload
 
-clean:
+clean: FORCE
 	rm -rf build/ *.pyc dammit/*.pyc dammit/*.egg-info dammit/*.so dammit/*.c *.egg-info
+
+FORCE:
