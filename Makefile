@@ -16,9 +16,10 @@ publish: FORCE
 gh-pages:
 		cd doc; make clean html
 		touch doc/_build/html/.nojekyll
-		git subtree push --prefix doc/_build/html origin gh-pages
 		git add doc/
-		git ci -m "Generated gh-pages for `git log master -1 --pretty=short --abbrev-commit`" && git push origin gh-pages ; git checkout master
+		git commit -m "Generated gh-pages for `git log master -1 --pretty=short --abbrev-commit`"
+		git subtree push --prefix doc/_build/html origin gh-pages
+
 
 clean: FORCE
 	rm -rf build/ *.pyc dammit/*.pyc dammit/*.egg-info dammit/*.so dammit/*.c *.egg-info
