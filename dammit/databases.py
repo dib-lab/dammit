@@ -125,6 +125,7 @@ def get_doit_config(db_dir):
                     'verbosity': common.DOIT_VERBOSITY,
                     'dep_file': os.path.join(db_dir, 'databases.doit.db')
                   }
+    logger.debug('doit_config:{0}'.format(doit_config))
     return doit_config
 
 def run_tasks(db_dir, tasks, args=['run']):
@@ -144,7 +145,8 @@ def do_check(db_dir, args):
     missing = False
     for task in tasks:
         status = dep_manager.get_status(task, tasks)
-        if status != 'up-to-date':
+        logger.debug('{0}:{1}'.format(task.name, status.status))
+        if status.status != 'up-to-date':
             missing = True
             logger.warning('[ ] {0}'.format(task.name))
         else:
