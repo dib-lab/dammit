@@ -1,4 +1,7 @@
-Dendencies
+Installation
+============
+
+Dependencies
 ----------
 
 Unfortunately, annotation necessarily relies on many software packages. I have
