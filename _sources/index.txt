@@ -3,8 +3,8 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-dammit! a simple de novo transcriptome annotator
-================================================
+dammit!
+=======
 
 dammit is a simple de novo transcriptome annotator. It was born out of the
 observations that annotation is mundane and annoying, all the individual pieces
@@ -32,6 +32,9 @@ Contents:
 
 .. toctree::
    :maxdepth: 2
+
+    installing
+    tutorial
 
 
 
