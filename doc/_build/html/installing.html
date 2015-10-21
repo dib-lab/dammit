@@ -25,6 +25,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="top" title="dammit 1.0 documentation" href="index.html" />
+    <link rel="next" title="Tutorial" href="tutorial.html" />
     <link rel="prev" title="dammit!" href="index.html" />
    
   
@@ -40,6 +41,22 @@
             
   <div class="section" id="installation">
 <h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="id1">
+<h2>Installation<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<p>dammit itself is quite easy to install. Just run:</p>
+<div class="highlight-python"><div class="highlight"><pre>pip install dammit
+</pre></div>
+</div>
+<p>Generally I recommend trying to maintain some sort of environment structure.
+This can be done with <a class="reference external" href="https://virtualenv.pypa.io/en/latest/userguide.html#usage">virtualenv</a>
+or <a class="reference external" href="http://conda.pydata.org/docs/using/envs.html">anaconda</a> environments.</p>
+<p>However, unless you have all the dependencies installed already, it won&#8217;t work
+yet! You can check if they are by running:</p>
+<div class="highlight-python"><div class="highlight"><pre>dammit dependencies
+</pre></div>
+</div>
+<p>Which will report which ones are missing.</p>
+</div>
 <div class="section" id="dependencies">
 <h2>Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h2>
 <p>Unfortunately, annotation necessarily relies on many software packages. I have
@@ -47,8 +64,8 @@ worked hard to make dammit rely only on software which is accessible <em>and</em
 to continue to be so. Most of the dependencies are available in either Ubuntu PPAs
 or PyPI, and if not, are trivial to install manually. If the goal is to make annotation
 suck less, then installing the necessary software should suck less too.</p>
-<p>This guide will assume you&#8217;re on a Ubuntu system. However, the dependencies should
-all run on any flavor of GNU/Linux and on OSX.</p>
+<p>Most of this guide will assume you&#8217;re on a Ubuntu system. However, the dependencies
+should all run on any flavor of GNU/Linux and on OSX.</p>
 <p>First, let&#8217;s get packages from the Ubuntu PPAs:</p>
 <div class="highlight-python"><div class="highlight"><pre>sudo apt-get install hmmer infernal ncbi-blast+ last-align
 </pre></div>
@@ -57,7 +74,7 @@ all run on any flavor of GNU/Linux and on OSX.</p>
 <div class="highlight-python"><div class="highlight"><pre>sudo apt-get install transdecoder
 </pre></div>
 </div>
-<p>Otherwise, you&#8217;ll need to install it [manually](<a class="reference external" href="https://transdecoder.github.io/">https://transdecoder.github.io/</a>).
+<p>Otherwise, you&#8217;ll need to install it <a class="reference external" href="https://transdecoder.github.io/">manually</a>.
 To install it in your home directory, execute these commands in your
 terminal:</p>
 <div class="highlight-python"><div class="highlight"><pre>cd
@@ -77,14 +94,14 @@ keep it installed, append it to your bash profile. For GNU/Linux:</p>
 </div>
 <p>Next, we need to install Conditional Reciprocal Best-hits Blast (CRBB). The
 algorithm is described in
-[Aubry et al.](<a class="reference external" href="http://journals.plos.org/plosgenetics/article?id=10.1371/journal.pgen.1004365">http://journals.plos.org/plosgenetics/article?id=10.1371/journal.pgen.1004365</a>),</p>
+<a class="reference external" href="http://journals.plos.org/plosgenetics/article?id=10.1371/journal.pgen.1004365">Aubry et al.</a>,</p>
 <blockquote>
 <div><p>and is implemented in ruby. Assuming you have ruby, it can be installed with:</p>
 <div class="highlight-python"><div class="highlight"><pre>sudo gem install crb-blast
 </pre></div>
 </div>
 </div></blockquote>
-<p>dammit also runs BUSCO to assess completeness. To install it, run thee following
+<p>dammit also runs BUSCO to assess completeness. To install it, run the following
 commands:</p>
 <div class="highlight-python"><div class="highlight"><pre>cd
 wget http://busco.ezlab.org/files/BUSCO_v1.1b1.tar.gz
@@ -101,16 +118,11 @@ export PATH=$PATH:$HOME/BUSCO_v1.1b1
 </pre></div>
 </div>
 <p>for OSX.</p>
-</div>
-<div class="section" id="id1">
-<h2>Installation<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
-<p>dammit itself is quite easy to install. Just run:</p>
-<div class="highlight-python"><div class="highlight"><pre>pip install dammit
+<p>When you&#8217;re done, run the check again to make sure everything was installed
+correctly:</p>
+<div class="highlight-python"><div class="highlight"><pre>dammit dependencies
 </pre></div>
 </div>
-<p>Generally I recommend trying to maintain some sort of environment structure.
-This can be done with [virtualenv](<a class="reference external" href="https://virtualenv.pypa.io/en/latest/userguide.html#usage">https://virtualenv.pypa.io/en/latest/userguide.html#usage</a>)
-or [anaconda](<a class="reference external" href="http://conda.pydata.org/docs/using/envs.html">http://conda.pydata.org/docs/using/envs.html</a>) environments.</p>
 </div>
 </div>
 
@@ -123,8 +135,8 @@ or [anaconda](<a class="reference external" href="http://conda.pydata.org/docs/u
   <h3><a href="index.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Installation</a><ul>
-<li><a class="reference internal" href="#dependencies">Dependencies</a></li>
 <li><a class="reference internal" href="#id1">Installation</a></li>
+<li><a class="reference internal" href="#dependencies">Dependencies</a></li>
 </ul>
 </li>
 </ul>
@@ -133,6 +145,7 @@ or [anaconda](<a class="reference external" href="http://conda.pydata.org/docs/u
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
       <li>Previous: <a href="index.html" title="previous chapter">dammit!</a></li>
+      <li>Next: <a href="tutorial.html" title="next chapter">Tutorial</a></li>
   </ul></li>
 </ul>
 </div>
