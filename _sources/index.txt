@@ -44,8 +44,8 @@ Contents:
 
     installing
     tutorial
-    advanced-databases
-
+    usage
+    databases
 
 
 Indices and tables
