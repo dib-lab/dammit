@@ -48,8 +48,9 @@ This page has more complete usage information and a better breakdown of the func
 <h2>Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h2>
 <p>dammit has three components. The first, <cite>dependencies</cite>, checks whether you have the dependencies installed
 correctly and warns you if not. It is run with:</p>
-<blockquote>
-<div>dammit dependencies</div></blockquote>
+<div class="highlight-python"><div class="highlight"><pre>dammit dependencies
+</pre></div>
+</div>
 <p>There isn&#8217;t much to this command; either you have the dependencies or you don&#8217;t. If you don&#8217;t,
 there are instructions for getting them on the <a class="reference external" href="installation.html">installation</a> page.</p>
 </div>
@@ -61,16 +62,18 @@ external data; the documentation can be found <a class="reference external" href
 <div class="section" id="annotation">
 <h2>Annotation<a class="headerlink" href="#annotation" title="Permalink to this headline">¶</a></h2>
 <p>The <cite>annotate</cite> command runs the BUSCO assessment, assembly stats, and homology searches,
-aggregates the results, and outputs a GFF3 file and annotation report. It takes the <cite>&#8211;full</cite>,
-<cite>&#8211;database-dir</cite>, and <cite>&#8211;busco-group</cite> options in the same manner as the <cite>databases</cite> command.
+aggregates the results, and outputs a GFF3 file and annotation report. It takes the <code class="docutils literal"><span class="pre">--full</span></code>,
+<code class="docutils literal"><span class="pre">--database-dir</span></code>, and <code class="docutils literal"><span class="pre">--busco-group</span></code> options in the same manner as the <cite>databases</cite> command.
 Additionally, it can specify an optional output directory, the number of threads to use with
 threaded subprograms like HMMER, and a list of user-supplied protein databases in FASTA format. A
 simple invocation with the default databases would look like:</p>
-<blockquote>
-<div>dammit annotate &lt;transcriptome.fasta&gt;</div></blockquote>
+<div class="highlight-python"><div class="highlight"><pre>dammit annotate &lt;transcriptome.fasta&gt;
+</pre></div>
+</div>
 <p>While a more complex invocation might look like:</p>
-<blockquote>
-<div>dammit annotate &lt;transcriptome.fasta&gt; &#8211;database-dir /path/to/dbs &#8211;busco-group vertebrata</div></blockquote>
+<div class="highlight-python"><div class="highlight"><pre>dammit annotate &lt;transcriptome.fasta&gt; --database-dir /path/to/dbs --busco-group vertebrata
+</pre></div>
+</div>
 <p>&#8211;n_threads 4 &#8211;user-databases whale.pep.fasta dolphin.pep.fasta</p>
 <p>User databases will be searched with CRBB; this runs <cite>blastx</cite>, so if you supply ridiculously huge
 databases, it <em>will</em> take a long time. Future versions will likely use LAST for all searches to

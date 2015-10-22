@@ -75,7 +75,7 @@ it first:</p>
 you can follow the directions in the <a class="reference external" href="advanced-databases.html">advanced databases guide</a>.</p>
 <p>While the initial download takes a while, once its done, you won&#8217;t need to do it again &#8211;
 dammit keeps track of the database state and won&#8217;t repeat work its already completed,
-even if you accidentally rerun with the <cite>&#8211;install</cite> flag.</p>
+even if you accidentally rerun with the <code class="docutils literal"><span class="pre">--install</span></code> flag.</p>
 </div>
 <div class="section" id="annotation">
 <h2>Annotation<a class="headerlink" href="#annotation" title="Permalink to this headline">¶</a></h2>
@@ -83,7 +83,7 @@ even if you accidentally rerun with the <cite>&#8211;install</cite> flag.</p>
 this is a toy example, seeing as these proteins came from the same set of
 transcripts as we&#8217;re annotating, but they illustrate the usage nicely enough.
 We&#8217;ll also specify a non-default BUSCO group. You can replace the argument to
-<cite>&#8211;n_threads</cite> with however many cores are available on your system in order to
+<code class="docutils literal"><span class="pre">--n_threads</span></code> with however many cores are available on your system in order to
 speed it up.:</p>
 <div class="highlight-python"><div class="highlight"><pre>dammit annotate cdna_nointrons_utrs.fa --user-databases pep.fa --busco-group eukaryota --n_threads 1
 </pre></div>

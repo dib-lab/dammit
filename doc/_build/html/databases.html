@@ -43,10 +43,10 @@
 <h1>Databases<a class="headerlink" href="#databases" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="basic-usage">
 <h2>Basic Usage<a class="headerlink" href="#basic-usage" title="Permalink to this headline">¶</a></h2>
-<p>dammit handles databases under the <cite>dammit databases</cite> subcommand. By default,
+<p>dammit handles databases under the <code class="docutils literal"><span class="pre">dammit</span> <span class="pre">databases</span></code> subcommand. By default,
 dammit looks for databases in <cite>$HOME/.dammit/databases</cite> and will install them
 there if missing. If you have some of the databases already, you can inform dammit
-with the <cite>&#8211;database-dir</cite> flag.</p>
+with the <code class="docutils literal"><span class="pre">--database-dir</span></code> flag.</p>
 <p>To check for databases in the default location:</p>
 <div class="highlight-python"><div class="highlight"><pre>dammit databases
 </pre></div>
@@ -100,7 +100,7 @@ use depends on your particular organism. Currently available databases are:</p>
 <li>Eukaryota</li>
 </ol>
 <p>dammit uses the metazoa database by default, but different databases can be used with
-the <cite>&#8211;busco-group</cite> parameter.</p>
+the <code class="docutils literal"><span class="pre">--busco-group</span></code> parameter.</p>
 </div></blockquote>
 </li>
 <li><p class="first"><a class="reference external" href="http://www.uniprot.org/help/uniref">uniref90</a></p>
@@ -108,7 +108,7 @@ the <cite>&#8211;busco-group</cite> parameter.</p>
 <div><p>uniref is a curated collection of most known proteins, clustered at a 90% similarity
 threshold. This database is comprehensive, and thus quite enormous. dammit does not
 include it by default due to its size, but it can be installed and used with the
-<cite>&#8211;full</cite> flag.</p>
+<code class="docutils literal"><span class="pre">--full</span></code> flag.</p>
 </div></blockquote>
 </li>
 </ol>
@@ -125,8 +125,8 @@ scenarios you might run in to.</p>
 <ol class="arabic">
 <li><p class="first">You already have the databases, and they&#8217;re all in one place and properly named.</p>
 <blockquote>
-<div><p>Excellent! This is the easiest. You can make use of dammit&#8217;s <cite>&#8211;database-dir</cite>
-flag to tell it where to look. When running with <cite>&#8211;install</cite>, it will find
+<div><p>Excellent! This is the easiest. You can make use of dammit&#8217;s <code class="docutils literal"><span class="pre">--database-dir</span></code>
+flag to tell it where to look. When running with <code class="docutils literal"><span class="pre">--install</span></code>, it will find
 the existing files and prep them if necessary.:</p>
 <div class="highlight-python"><div class="highlight"><pre>dammit databases --database-dir &lt;my_database_dir&gt; --install
 </pre></div>
@@ -152,7 +152,7 @@ ln -s all-the-models.hmm.h3m Pfam-A.hmm.h3m
 ln -s all-the-models.hmm.h3p Pfam-A.hmm.h3p
 </pre></div>
 </div>
-<p>For a complete listing of the expected names, just run the <cite>databases</cite> command:</p>
+<p>For a complete listing of the expected names, just run the <code class="docutils literal"><span class="pre">databases</span></code> command:</p>
 <div class="highlight-python"><div class="highlight"><pre>dammit databases
 </pre></div>
 </div>
@@ -161,7 +161,7 @@ ln -s all-the-models.hmm.h3p Pfam-A.hmm.h3p
 <li><p class="first">You have the databases, but they&#8217;re scattered to the virtual winds.</p>
 <blockquote>
 <div><p>The fix here is similar to the above. This time, however, we&#8217;ll soft link
-all the databases to one location. If you&#8217;ve run <cite>dammit databases</cite>, a
+all the databases to one location. If you&#8217;ve run <code class="docutils literal"><span class="pre">dammit</span> <span class="pre">databases</span></code>, a
 new directory will have been created at <cite>$HOME/.dammit/databases</cite>. This is
 where they are stored by default, so we might as well use it! For example:</p>
 <div class="highlight-python"><div class="highlight"><pre>cd $HOME/.dammit/databases
