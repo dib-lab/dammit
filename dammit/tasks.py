@@ -160,6 +160,7 @@ def get_lastdb_task(db_fn, db_out_prefix, lastdb_cfg, prot=True):
             'targets': [db_out_prefix + ext \
                         for ext in \
                         ['.des', '.sds', '.ssp', '.tis', '.prj']],
+            'uptodate': [True],
             'file_dep': [db_fn],
             'clean': [clean_targets]}
 
@@ -243,6 +244,7 @@ def get_cmpress_task(db_filename, infernal_cfg):
             'actions': [cmd],
             'targets': [db_filename + ext for ext in ['.i1f', '.i1i', '.i1m', '.i1p']],
             'file_dep': [db_filename],
+            'uptodate': [True],
             'clean': [clean_targets]}
 
 
@@ -277,6 +279,7 @@ def get_hmmpress_task(db_filename, hmmer_cfg):
             'actions': [cmd],
             'targets': [db_filename + ext for ext in ['.h3f', '.h3i', '.h3m', '.h3p']],
             'file_dep': [db_filename],
+            'uptodate': [True],
             'clean': [clean_targets]}
 
 
