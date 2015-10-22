@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>&lt;no title&gt; &mdash; dammit 1.0 documentation</title>
+    <title>Usage &mdash; dammit 1.0 documentation</title>
     
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -40,20 +40,26 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <p># Usage</p>
+  <div class="section" id="usage">
+<h1>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h1>
 <p>If you&#8217;re looking for a quick start, head over to the <a class="reference external" href="tutorial.html">tutorial</a>.
 This page has more complete usage information and a better breakdown of the functionality.</p>
-<p>## Dependencies</p>
+<div class="section" id="dependencies">
+<h2>Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h2>
 <p>dammit has three components. The first, <cite>dependencies</cite>, checks whether you have the dependencies installed
 correctly and warns you if not. It is run with:</p>
 <blockquote>
 <div>dammit dependencies</div></blockquote>
 <p>There isn&#8217;t much to this command; either you have the dependencies or you don&#8217;t. If you don&#8217;t,
 there are instructions for getting them on the <a class="reference external" href="installation.html">installation</a> page.</p>
-<p>## Databases</p>
+</div>
+<div class="section" id="databases">
+<h2>Databases<a class="headerlink" href="#databases" title="Permalink to this headline">¶</a></h2>
 <p>The next component is the <cite>databases</cite> subcommand. This handles all of dammit&#8217;s
 external data; the documentation can be found <a class="reference external" href="databases.html">here</a>.</p>
-<p>## Annotation</p>
+</div>
+<div class="section" id="annotation">
+<h2>Annotation<a class="headerlink" href="#annotation" title="Permalink to this headline">¶</a></h2>
 <p>The <cite>annotate</cite> command runs the BUSCO assessment, assembly stats, and homology searches,
 aggregates the results, and outputs a GFF3 file and annotation report. It takes the <cite>&#8211;full</cite>,
 <cite>&#8211;database-dir</cite>, and <cite>&#8211;busco-group</cite> options in the same manner as the <cite>databases</cite> command.
@@ -71,13 +77,25 @@ databases, it <em>will</em> take a long time. Future versions will likely use LA
 improve performance, but for now, we&#8217;re stuck with the NCBI&#8217;s dinosaur. Also note that the
 information from the deflines in your databases will be used to construct the GFF3 file, so if your
 databases lack useful IDs, your annotations will too.</p>
+</div>
+</div>
 
 
           </div>
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper"><div class="relations">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Usage</a><ul>
+<li><a class="reference internal" href="#dependencies">Dependencies</a></li>
+<li><a class="reference internal" href="#databases">Databases</a></li>
+<li><a class="reference internal" href="#annotation">Annotation</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
