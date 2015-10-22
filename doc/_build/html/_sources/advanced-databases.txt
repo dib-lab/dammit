@@ -9,7 +9,7 @@ scenarios you might run in to.
 
     Excellent! This is the easiest. You can make use of dammit's `--database-dir`
     flag to tell it where to look. When running with `--install`, it will find
-    the existing files 
+    the existing files and prep them if necessary.::
 
         dammit databases --database-dir <my_database_dir> --install
 
