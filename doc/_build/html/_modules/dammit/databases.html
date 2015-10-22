@@ -166,6 +166,7 @@
                     <span class="s">&#39;verbosity&#39;</span><span class="p">:</span> <span class="n">common</span><span class="o">.</span><span class="n">DOIT_VERBOSITY</span><span class="p">,</span>
                     <span class="s">&#39;dep_file&#39;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">db_dir</span><span class="p">,</span> <span class="s">&#39;databases.doit.db&#39;</span><span class="p">)</span>
                   <span class="p">}</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;doit_config:{0}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">doit_config</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">doit_config</span>
 </div>
 <div class="viewcode-block" id="run_tasks"><a class="viewcode-back" href="../../dammit.html#dammit.databases.run_tasks">[docs]</a><span class="k">def</span> <span class="nf">run_tasks</span><span class="p">(</span><span class="n">db_dir</span><span class="p">,</span> <span class="n">tasks</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;run&#39;</span><span class="p">]):</span>
@@ -185,7 +186,8 @@
     <span class="n">missing</span> <span class="o">=</span> <span class="bp">False</span>
     <span class="k">for</span> <span class="n">task</span> <span class="ow">in</span> <span class="n">tasks</span><span class="p">:</span>
         <span class="n">status</span> <span class="o">=</span> <span class="n">dep_manager</span><span class="o">.</span><span class="n">get_status</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">tasks</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">status</span> <span class="o">!=</span> <span class="s">&#39;up-to-date&#39;</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;{0}:{1}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">status</span><span class="o">.</span><span class="n">status</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">status</span><span class="o">.</span><span class="n">status</span> <span class="o">!=</span> <span class="s">&#39;up-to-date&#39;</span><span class="p">:</span>
             <span class="n">missing</span> <span class="o">=</span> <span class="bp">True</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s">&#39;[ ] {0}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
