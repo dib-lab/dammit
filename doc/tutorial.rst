@@ -37,7 +37,7 @@ you can follow the directions in the `advanced databases guide <advanced-databas
 
 While the initial download takes a while, once its done, you won't need to do it again --
 dammit keeps track of the database state and won't repeat work its already completed,
-even if you accidentally rerun with the `--install` flag. 
+even if you accidentally rerun with the ``--install`` flag. 
 
 Annotation
 ----------
@@ -46,7 +46,7 @@ Now we'll do a simple run of the annotator. We'll use `pep.fa` as a user databas
 this is a toy example, seeing as these proteins came from the same set of
 transcripts as we're annotating, but they illustrate the usage nicely enough.
 We'll also specify a non-default BUSCO group. You can replace the argument to
-`--n_threads` with however many cores are available on your system in order to
+``--n_threads`` with however many cores are available on your system in order to
 speed it up.::
 
     dammit annotate cdna_nointrons_utrs.fa --user-databases pep.fa --busco-group eukaryota --n_threads 1

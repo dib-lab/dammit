@@ -4,10 +4,10 @@ Databases
 Basic Usage
 ------------
 
-dammit handles databases under the `dammit databases` subcommand. By default, 
+dammit handles databases under the ``dammit databases`` subcommand. By default, 
 dammit looks for databases in `$HOME/.dammit/databases` and will install them 
 there if missing. If you have some of the databases already, you can inform dammit 
-with the `--database-dir` flag.
+with the ``--database-dir`` flag.
 
 To check for databases in the default location::
 
@@ -60,14 +60,14 @@ dammit uses the following databases:
     #. Eukaryota
    
     dammit uses the metazoa database by default, but different databases can be used with
-    the `--busco-group` parameter.
+    the ``--busco-group`` parameter.
 
 #. `uniref90 <http://www.uniprot.org/help/uniref>`__
     
     uniref is a curated collection of most known proteins, clustered at a 90% similarity
     threshold. This database is comprehensive, and thus quite enormous. dammit does not
     include it by default due to its size, but it can be installed and used with the
-    `--full` flag.
+    ``--full`` flag.
 
 A command using all of these potential options and databases might look like::
 
@@ -83,8 +83,8 @@ scenarios you might run in to.
 
 #. You already have the databases, and they're all in one place and properly named.
 
-    Excellent! This is the easiest. You can make use of dammit's `--database-dir`
-    flag to tell it where to look. When running with `--install`, it will find
+    Excellent! This is the easiest. You can make use of dammit's ``--database-dir``
+    flag to tell it where to look. When running with ``--install``, it will find
     the existing files and prep them if necessary.::
 
         dammit databases --database-dir <my_database_dir> --install
@@ -108,14 +108,14 @@ scenarios you might run in to.
         ln -s all-the-models.hmm.h3m Pfam-A.hmm.h3m
         ln -s all-the-models.hmm.h3p Pfam-A.hmm.h3p
 
-    For a complete listing of the expected names, just run the `databases` command::
+    For a complete listing of the expected names, just run the ``databases`` command::
 
         dammit databases
 
 #. You have the databases, but they're scattered to the virtual winds.
 
     The fix here is similar to the above. This time, however, we'll soft link
-    all the databases to one location. If you've run `dammit databases`, a
+    all the databases to one location. If you've run ``dammit databases``, a
     new directory will have been created at `$HOME/.dammit/databases`. This is
     where they are stored by default, so we might as well use it! For example::
 
