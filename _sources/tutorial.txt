@@ -31,7 +31,7 @@ it first::
     dammit databases --install
 
 Alternatively, if you happen to have downloaded many of these databases before,
-you can follow the directions at :ref:`advanced-databases`.
+you can follow the directions in the `advanced databases guide <advanced-databases.html>`__.
 
 While the initial download takes a while, once its done, you won't need to do it again --
 dammit keeps track of the database state and won't repeat work its already completed,
