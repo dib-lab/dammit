@@ -1,0 +1,157 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Advanced Database Handling &mdash; dammit 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="dammit 1.0 documentation" href="index.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+
+  </head>
+  <body role="document">  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="advanced-database-handling">
+<h1>Advanced Database Handling<a class="headerlink" href="#advanced-database-handling" title="Permalink to this headline">¶</a></h1>
+<p>Several of these databases are quite large. Understandably, you probably don&#8217;t
+want to download or prepare them again if you already have. There are a few
+scenarios you might run in to.</p>
+<ol class="arabic">
+<li><p class="first">You already have the databases, and they&#8217;re all in one place and properly named.</p>
+<blockquote>
+<div><p>Excellent! This is the easiest. You can make use of dammit&#8217;s <cite>&#8211;database-dir</cite>
+flag to tell it where to look. When running with <cite>&#8211;install</cite>, it will find
+the existing files</p>
+<blockquote>
+<div><p>dammit databases &#8211;database-dir &lt;my_database_dir&gt; &#8211;install</p>
+</div></blockquote>
+</div></blockquote>
+</li>
+<li><p class="first">Same as above, but they have different names.</p>
+<blockquote>
+<div><p>dammit expects the databases to be &#8220;properly&#8221; named &#8211; that is, named the
+same as their original forms. If your databases aren&#8217;t named the same,
+you&#8217;ll need to fix them. But that&#8217;s okay! We can just soft link them.
+Let&#8217;s say you have Pfam-A already, but for some reason its named
+<cite>all-the-models.hmm</cite>. You can link them to the proper name like so:</p>
+<div class="highlight-python"><div class="highlight"><pre>cd &lt;my_database_dir&gt;
+ln -s all-the-models.hmm Pfam-A.hmm
+</pre></div>
+</div>
+<p>If you already formatted it with <cite>hmmpress</cite>, you can avoid repeating that
+step as well:</p>
+<div class="highlight-python"><div class="highlight"><pre>ln -s all-the-models.hmm.h3f Pfam-A.hmm.h3f
+ln -s all-the-models.hmm.h3i Pfam-A.hmm.h3i
+ln -s all-the-models.hmm.h3m Pfam-A.hmm.h3m
+ln -s all-the-models.hmm.h3p Pfam-A.hmm.h3p
+</pre></div>
+</div>
+<p>For a complete listing of the expected names, just run the <cite>databases</cite> command:</p>
+<div class="highlight-python"><div class="highlight"><pre>dammit databases
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p class="first">You have the databases, but they&#8217;re scattered to the virtual winds.</p>
+<blockquote>
+<div><p>The fix here is similar to the above. This time, however, we&#8217;ll soft link
+all the databases to one location. If you&#8217;ve run <cite>dammit databases</cite>, a
+new directory will have been created at <cite>$HOME/.dammit/databases</cite>. This is
+where they are stored by default, so we might as well use it! For example:</p>
+<div class="highlight-python"><div class="highlight"><pre>cd $HOME/.dammit/databases
+ln -s /path/to/all-the-models.hmm Pfam-A.hmm
+</pre></div>
+</div>
+<p>And repeat for all the databases. Now, in the future, you will be
+able to run dammit without the <cite>&#8211;database-dir</cite> flag.</p>
+</div></blockquote>
+</li>
+</ol>
+<p>Alternatively, if this all seems like too much of a hassle and you have lots
+of hard drive space, you can just say &#8220;to hell with it!&#8221; and reinstall
+everything with:</p>
+<div class="highlight-python"><div class="highlight"><pre>dammit databases --install
+</pre></div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/advanced-databases.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2015, Camille Scott.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.6</a>
+      
+      |
+      <a href="_sources/advanced-databases.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
