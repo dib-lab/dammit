@@ -8,7 +8,7 @@ Dependencies
 -------------
 
 dammit has three components. The first, `dependencies`, checks whether you have the dependencies installed
-correctly and warns you if not. It is run with:
+correctly and warns you if not. It is run with::
 
     dammit dependencies
 
@@ -25,15 +25,15 @@ Annotation
 ----------
 
 The `annotate` command runs the BUSCO assessment, assembly stats, and homology searches,
-aggregates the results, and outputs a GFF3 file and annotation report. It takes the `--full`,
-`--database-dir`, and `--busco-group` options in the same manner as the `databases` command.
+aggregates the results, and outputs a GFF3 file and annotation report. It takes the ``--full``,
+``--database-dir``, and ``--busco-group`` options in the same manner as the `databases` command.
 Additionally, it can specify an optional output directory, the number of threads to use with
 threaded subprograms like HMMER, and a list of user-supplied protein databases in FASTA format. A
-simple invocation with the default databases would look like:
+simple invocation with the default databases would look like::
 
     dammit annotate <transcriptome.fasta>
 
-While a more complex invocation might look like:
+While a more complex invocation might look like::
 
     dammit annotate <transcriptome.fasta> --database-dir /path/to/dbs --busco-group vertebrata
 --n_threads 4 --user-databases whale.pep.fasta dolphin.pep.fasta
