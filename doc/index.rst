@@ -35,6 +35,7 @@ Contents:
 
     installing
     tutorial
+    advanced-databases
 
 
 
