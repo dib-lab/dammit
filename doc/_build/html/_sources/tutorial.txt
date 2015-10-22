@@ -23,12 +23,14 @@ Decompress the file with gunzip::
 Databases
 ---------
 
-If you're just starting, you probably haven't downloaded the databases yet.
+If you're just starting, you probably haven't downloaded the databases yet. Here
+we'll install the main databases, as well as the `eukaryota` BUSCO database for
+our yeast dataset.
 This could take a while, so consider walking away and getting yourself a cup of
 coffee. If you installed dammit into a virtual environment, be sure to activate
 it first::
 
-    dammit databases --install
+    dammit databases --install --busco-group eukaryota
 
 Alternatively, if you happen to have downloaded many of these databases before,
 you can follow the directions in the `advanced databases guide <advanced-databases.html>`__.

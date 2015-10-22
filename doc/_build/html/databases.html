@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Advanced Database Handling &mdash; dammit 1.0 documentation</title>
+    <title>Databases &mdash; dammit 1.0 documentation</title>
     
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -26,7 +26,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="top" title="dammit 1.0 documentation" href="index.html" />
-    <link rel="prev" title="Tutorial" href="tutorial.html" />
+    <link rel="prev" title="&lt;no title&gt;" href="usage.html" />
    
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
@@ -39,8 +39,86 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="advanced-database-handling">
-<h1>Advanced Database Handling<a class="headerlink" href="#advanced-database-handling" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="databases">
+<h1>Databases<a class="headerlink" href="#databases" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="basic-usage">
+<h2>Basic Usage<a class="headerlink" href="#basic-usage" title="Permalink to this headline">¶</a></h2>
+<p>dammit handles databases under the <cite>dammit databases</cite> subcommand. By default,
+dammit looks for databases in <cite>$HOME/.dammit/databases</cite> and will install them
+there if missing. If you have some of the databases already, you can inform dammit
+with the <cite>&#8211;database-dir</cite> flag.</p>
+<p>To check for databases in the default location:</p>
+<div class="highlight-python"><div class="highlight"><pre>dammit databases
+</pre></div>
+</div>
+<p>To check for them in a custom location:</p>
+<div class="highlight-python"><div class="highlight"><pre>dammit databases --database-dir /path/to/databases
+</pre></div>
+</div>
+<p>To download and install them into the default directory:</p>
+<div class="highlight-python"><div class="highlight"><pre>dammit databases --install
+</pre></div>
+</div>
+<p>For more details, check out the <span class="xref std std-ref">Advanced-Database-Handling</span> section.</p>
+</div>
+<div class="section" id="about">
+<h2>About<a class="headerlink" href="#about" title="Permalink to this headline">¶</a></h2>
+<p>dammit uses the following databases:</p>
+<ol class="arabic">
+<li><p class="first"><a class="reference external" href="http://pfam.xfam.org/">Pfam-A</a></p>
+<blockquote>
+<div><p>Pfam-A is a collection of protein domain profiles for use with profile hidden markov
+model programs like <a href="#id1"><span class="problematic" id="id2">`hmmer &lt;&gt;`__</span></a>. These searches are quite fast and very sensitive,
+and the Pfam database is very well curated. Pfam is used during TransDecoder&#8217;s ORF
+finding and for annotation assignment.</p>
+</div></blockquote>
+</li>
+<li><p class="first"><a class="reference external" href="http://rfam.xfam.org/">Rfam</a></p>
+<blockquote>
+<div><p>Rfam is a collection of RNA covariance models for use with programs like <a href="#id1"><span class="problematic" id="id3">`Infernal &lt;&gt;`__</span></a>.
+Covariance models describe RNA secondary structure, and Rfam is a curated database
+of non-coding RNAs.</p>
+</div></blockquote>
+</li>
+<li><p class="first"><a class="reference external" href="http://orthodb.org/">OrthoDB</a></p>
+<blockquote>
+<div><p>OrthoDB is a curated database of orthologous genes. It attempts to classify
+proteins from all major groups of eukaryotes and trace them back to their ancestral
+ortholog.</p>
+</div></blockquote>
+</li>
+<li><p class="first"><a class="reference external" href="http://busco.ezlab.org/">BUSCO</a></p>
+<blockquote>
+<div><p>BUSCO databases are collections of &#8220;core&#8221; genes for major domains of life. They
+are used with an accompanying BUSCO program which assesses the completeness of a genome,
+transcriptome, or list of genes. There are multiple BUSCO databases, and which one you
+use depends on your particular organism. Currently available databases are:</p>
+<ol class="arabic simple">
+<li>Metazoa</li>
+<li>Vertebrata</li>
+<li>Arthropoda</li>
+<li>Eukaryota</li>
+</ol>
+<p>dammit uses the metazoa database by default, but different databases can be used with
+the <cite>&#8211;busco-group</cite> parameter.</p>
+</div></blockquote>
+</li>
+<li><p class="first"><a class="reference external" href="http://www.uniprot.org/help/uniref">uniref90</a></p>
+<blockquote>
+<div><p>uniref is a curated collection of most known proteins, clustered at a 90% similarity
+threshold. This database is comprehensive, and thus quite enormous. dammit does not
+include it by default due to its size, but it can be installed and used with the
+<cite>&#8211;full</cite> flag.</p>
+</div></blockquote>
+</li>
+</ol>
+<p>A command using all of these potential options and databases might look like:</p>
+<div class="highlight-python"><div class="highlight"><pre>dammit databases --install --database-dir /path/to/dbs --full --busco-group arthropoda
+</pre></div>
+</div>
+</div>
+<div class="section" id="advanced-database-handling">
+<h2>Advanced Database Handling<a class="headerlink" href="#advanced-database-handling" title="Permalink to this headline">¶</a></h2>
 <p>Several of these databases are quite large. Understandably, you probably don&#8217;t
 want to download or prepare them again if you already have. There are a few
 scenarios you might run in to.</p>
@@ -102,24 +180,35 @@ everything with:</p>
 </pre></div>
 </div>
 </div>
+</div>
 
 
           </div>
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper"><div class="relations">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Databases</a><ul>
+<li><a class="reference internal" href="#basic-usage">Basic Usage</a></li>
+<li><a class="reference internal" href="#about">About</a></li>
+<li><a class="reference internal" href="#advanced-database-handling">Advanced Database Handling</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="tutorial.html" title="previous chapter">Tutorial</a></li>
+      <li>Previous: <a href="usage.html" title="previous chapter">&lt;no title&gt;</a></li>
   </ul></li>
 </ul>
 </div>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
-      <li><a href="_sources/advanced-databases.txt"
+      <li><a href="_sources/databases.txt"
             rel="nofollow">Show Source</a></li>
     </ul>
    </div>
@@ -148,7 +237,7 @@ everything with:</p>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.6</a>
       
       |
-      <a href="_sources/advanced-databases.txt"
+      <a href="_sources/databases.txt"
           rel="nofollow">Page source</a>
     </div>
 
