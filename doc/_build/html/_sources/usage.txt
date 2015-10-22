@@ -1,9 +1,11 @@
-# Usage
+Usage
+=====
 
 If you're looking for a quick start, head over to the `tutorial <tutorial.html>`__.
 This page has more complete usage information and a better breakdown of the functionality.
 
-## Dependencies
+Dependencies
+-------------
 
 dammit has three components. The first, `dependencies`, checks whether you have the dependencies installed
 correctly and warns you if not. It is run with:
@@ -13,12 +15,14 @@ correctly and warns you if not. It is run with:
 There isn't much to this command; either you have the dependencies or you don't. If you don't,
 there are instructions for getting them on the `installation <installation.html>`__ page.
 
-## Databases
+Databases
+---------
 
 The next component is the `databases` subcommand. This handles all of dammit's
 external data; the documentation can be found `here <databases.html>`__.
 
-## Annotation
+Annotation
+----------
 
 The `annotate` command runs the BUSCO assessment, assembly stats, and homology searches,
 aggregates the results, and outputs a GFF3 file and annotation report. It takes the `--full`,
