@@ -6,10 +6,19 @@
 dammit!
 =======
 
+
 dammit is a simple de novo transcriptome annotator. It was born out of the
 observations that annotation is mundane and annoying, all the individual pieces
 of the process exist already, and the existing solutions are overly complicated 
 or rely on crappy non-free software. 
+
+
+.. figure:: _static/Character_Building.png
+    :align: right
+    :figwidth: image
+    :alt: "Keep at it, it builds character!" -- Calvin's Dad
+
+    *Your PI, wistfully thinking back on Perl 4*
 
 Science shouldn't suck for the sake of sucking, so dammit attempts
 to make this sucky part of the process suck a little less.
