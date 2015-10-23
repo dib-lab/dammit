@@ -143,6 +143,10 @@ def get_tasks(transcriptome, database_dict,
     crb_blast_cfg = common.CONFIG['settings']['crb-blast']
     for path in user_databases:
         key = os.path.basename(path)
+        tasks.append(
+            get_sanitize_fasta_task(path,
+                                    key)
+        )
         fn = '{0}.x.{1}.crbb.tsv'.format(transcriptome, key)
         annotate_tasks.append(
             get_crb_blast_task(transcriptome, path, fn, 
