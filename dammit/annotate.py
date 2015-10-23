@@ -144,12 +144,12 @@ def get_tasks(transcriptome, database_dict,
     for path in user_databases:
         key = os.path.basename(path)
         tasks.append(
-            get_sanitize_fasta_task(path,
+            get_sanitize_fasta_task(os.path.abspath(path),
                                     key)
         )
         fn = '{0}.x.{1}.crbb.tsv'.format(transcriptome, key)
         annotate_tasks.append(
-            get_crb_blast_task(transcriptome, path, fn, 
+            get_crb_blast_task(transcriptome, key, fn, 
                                crb_blast_cfg, n_threads)
         )
         results['user'][key] = fn
