@@ -123,6 +123,26 @@ def get_create_folder_task(folder):
             'uptodate': [run_once],
             'clean': [clean_targets] }
 
+
+@create_task_object
+def get_sanitize_fasta_task(input_fn, output_fn):
+
+    import re
+    name = 'sanitize_fasta:{0}'.format(os.path.basename(input_fn))
+
+    def fix():
+        bad = r'["`/|=]+'
+        with open(output_fn, 'wb') as fp:
+            for record in ReadParser(input_fn):
+                header = re.sub(bad, r'_', record.name)
+                fp.write('>{0}\n{1}\n'.format(header, record.sequence))
+
+    return {'name': name,
+            'title': title_with_actions,
+            'actions': [fix],
+            'file_dep': [input_fn],
+            'clean': [clean_targets]}
+
     
 @create_task_object
 def get_crb_blast_task(query, target, output, crb_blast_cfg,

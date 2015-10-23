@@ -17,7 +17,8 @@ from .tasks import get_transcriptome_stats_task, \
                    get_hmmscan_task, \
                    get_cmscan_task, \
                    get_lastal_task, \
-                   get_crb_blast_task
+                   get_crb_blast_task, \
+                   get_sanitize_fasta_task
 
 logger = logging.getLogger(__name__)
 
@@ -28,7 +29,8 @@ def get_tasks(transcriptome, database_dict,
     results = {}
 
     tasks.append(
-            get_link_file_task(os.path.abspath(transcriptome))
+            get_sanitize_fasta_task(os.path.abspath(transcriptome),
+                                    os.path.basename(transcriptome))
     )
 
     '''
