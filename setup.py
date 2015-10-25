@@ -37,6 +37,7 @@ def main():
             author_email = 'camille.scott.w@gmail.com',
             license = 'BSD',
             test_suite = 'nose.collector',
+            tests_require = ['nose'],
             packages = ['dammit'],
             scripts = glob('bin/*'),
             ext_modules = get_extension_modules(),
@@ -44,7 +45,7 @@ def main():
                                 'nose', 
                                 'doit', 
                                 'pandas',
-                                'screed'],
+                                'nose-capturestderr'],
             include_package_data = True,
             zip_safe = False,
             cmdclass = cmdclass  )

@@ -29,77 +29,6 @@ def get_dammit_dir():
                         CONFIG['settings']['dammit_dir'])
 
 
-def run_tasks(tasks, args, config={'verbosity': 2}):
-    
-    if type(tasks) is not list:
-        raise TypeError('tasks must be a list')
-   
-    class Loader(TaskLoader):
-        @staticmethod
-        def load_tasks(cmd, opt_values, pos_args):
-            return tasks, config
-   
-    DoitMain(Loader()).run(args)
-
-
-def which(program):
-    '''Checks whether the given program (or program path) is valid and
-    executable.
-
-    NOTE: Sometimes copypasta is okay! This function came from stackoverflow:
-
-        http://stackoverflow.com/a/377028/5109965
-
-    Args:
-        program (str): Either a program name or full path to a program.
-
-    Returns:
-        Return the path to the executable or None if not found
-    '''
-    def is_exe(fpath):
-        return os.path.isfile(fpath) and os.access(fpath, os.X_OK)
-
-    fpath, fname = os.path.split(program)
-    if fpath:
-        if is_exe(program):
-            return program
-    else:
-        for path in os.environ["PATH"].split(os.pathsep):
-            path = path.strip('"')
-            exe_file = os.path.join(path, program)
-            if is_exe(exe_file):
-                return exe_file
-
-    return None
-
-
-def add_header(msg, level):
-    s = ''
-    if level == 0:
-        symbol = '='
-        return '{0}\n{1}\n{2}\n'.format(symbol * 40,
-                                      msg,
-                                      symbol * 40)
-    elif level == 1:
-        symbol = '~'
-        return '{0}\n{1}\n{2}'.format(symbol * 30,
-                                      msg,
-                                      symbol * 30)
-    else:
-        symbol = '---'
-        return '\n{0} {1}\n'.format(symbol,
-                                    msg)
-
-
-def print_header(msg, level):
-    '''Standardize output headers for submodules.
-
-    This doesn't need to be logged, but it's nice for
-    the user.
-    '''
-    print(add_header(msg, level), file=sys.stderr)
-
-
 class LogFormatter(logging.Formatter):
 
     def __init__(self, width=70, padding=10):
@@ -148,6 +77,79 @@ formatter = LogFormatter()
 console.setFormatter(formatter)
 logging.getLogger('').addHandler(console)
 logging.getLogger('').debug('*** dammit! begin ***')
+logger = logging.getLogger(__name__)
+
+
+def run_tasks(tasks, args, config={'verbosity': 2}):
+    
+    if type(tasks) is not list:
+        raise TypeError('tasks must be a list')
+   
+    class Loader(TaskLoader):
+        @staticmethod
+        def load_tasks(cmd, opt_values, pos_args):
+            return tasks, config
+   
+    DoitMain(Loader()).run(args)
+
+
+def which(program):
+    '''Checks whether the given program (or program path) is valid and
+    executable.
+
+    NOTE: Sometimes copypasta is okay! This function came from stackoverflow:
+
+        http://stackoverflow.com/a/377028/5109965
+
+    Args:
+        program (str): Either a program name or full path to a program.
+
+    Returns:
+        Return the path to the executable or None if not found
+    '''
+    def is_exe(fpath):
+        return os.path.isfile(fpath) and os.access(fpath, os.X_OK)
+
+    fpath, fname = os.path.split(program)
+    if fpath:
+        if is_exe(program):
+            return program
+    else:
+        logger.debug('PATH:' + os.environ['PATH'])
+        for path in os.environ["PATH"].split(os.pathsep):
+            path = path.strip('"')
+            exe_file = os.path.join(path, program)
+            if is_exe(exe_file):
+                return exe_file
+
+    return None
+
+
+def add_header(msg, level):
+    s = ''
+    if level == 0:
+        symbol = '='
+        return '{0}\n{1}\n{2}\n'.format(symbol * 40,
+                                      msg,
+                                      symbol * 40)
+    elif level == 1:
+        symbol = '~'
+        return '{0}\n{1}\n{2}'.format(symbol * 30,
+                                      msg,
+                                      symbol * 30)
+    else:
+        symbol = '---'
+        return '\n{0} {1}\n'.format(symbol,
+                                    msg)
+
+
+def print_header(msg, level):
+    '''Standardize output headers for submodules.
+
+    This doesn't need to be logged, but it's nice for
+    the user.
+    '''
+    print(add_header(msg, level), file=sys.stderr)
 
 
 class LogReporter(object):
