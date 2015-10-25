@@ -14,8 +14,7 @@ to make this sucky part of the process suck a little less.
 
 <br><br>
 
-
-## Example
+[![Build Status](https://drone.io/github.com/camillescott/dammit/status.png)](https://drone.io/github.com/camillescott/dammit/latest)
 
 ## Miscellany
 
