@@ -37,6 +37,8 @@ Details
 :GitHub: https://github.com/camillescott/dammit
 :License: BSD
 
+.. image:: https://drone.io/github.com/camillescott/dammit/status.png
+
 Contents:
 
 .. toctree::
