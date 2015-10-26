@@ -130,7 +130,7 @@
 
 </div>
 <div class="viewcode-block" id="do_check"><a class="viewcode-back" href="../../dammit.html#dammit.dependencies.do_check">[docs]</a><span class="k">def</span> <span class="nf">do_check</span><span class="p">():</span>
-
+    <span class="k">print</span><span class="p">(</span><span class="s">&#39;do_check:&#39;</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s">&#39;PATH&#39;</span><span class="p">])</span>
     <span class="n">common</span><span class="o">.</span><span class="n">print_header</span><span class="p">(</span><span class="s">&#39;Checking PATH for dependencies&#39;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 
     <span class="n">system_deps</span> <span class="o">=</span> <span class="n">check_system_path</span><span class="p">()</span>

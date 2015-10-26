@@ -59,7 +59,8 @@
                    <span class="n">get_hmmscan_task</span><span class="p">,</span> \
                    <span class="n">get_cmscan_task</span><span class="p">,</span> \
                    <span class="n">get_lastal_task</span><span class="p">,</span> \
-                   <span class="n">get_crb_blast_task</span>
+                   <span class="n">get_crb_blast_task</span><span class="p">,</span> \
+                   <span class="n">get_sanitize_fasta_task</span>
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
 
@@ -70,7 +71,8 @@
     <span class="n">results</span> <span class="o">=</span> <span class="p">{}</span>
 
     <span class="n">tasks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-            <span class="n">get_link_file_task</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">transcriptome</span><span class="p">))</span>
+            <span class="n">get_sanitize_fasta_task</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">transcriptome</span><span class="p">),</span>
+                                    <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">transcriptome</span><span class="p">))</span>
     <span class="p">)</span>
 
     <span class="sd">&#39;&#39;&#39;</span>
@@ -183,9 +185,13 @@
     <span class="n">crb_blast_cfg</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">CONFIG</span><span class="p">[</span><span class="s">&#39;settings&#39;</span><span class="p">][</span><span class="s">&#39;crb-blast&#39;</span><span class="p">]</span>
     <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">user_databases</span><span class="p">:</span>
         <span class="n">key</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="n">tasks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="n">get_sanitize_fasta_task</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">path</span><span class="p">),</span>
+                                    <span class="n">key</span><span class="p">)</span>
+        <span class="p">)</span>
         <span class="n">fn</span> <span class="o">=</span> <span class="s">&#39;{0}.x.{1}.crbb.tsv&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">transcriptome</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
         <span class="n">annotate_tasks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-            <span class="n">get_crb_blast_task</span><span class="p">(</span><span class="n">transcriptome</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">fn</span><span class="p">,</span> 
+            <span class="n">get_crb_blast_task</span><span class="p">(</span><span class="n">transcriptome</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">fn</span><span class="p">,</span> 
                                <span class="n">crb_blast_cfg</span><span class="p">,</span> <span class="n">n_threads</span><span class="p">)</span>
         <span class="p">)</span>
         <span class="n">results</span><span class="p">[</span><span class="s">&#39;user&#39;</span><span class="p">][</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">fn</span>
