@@ -5,8 +5,13 @@ Installation
 ------------
 
 dammit itself is quite easy to install. Just run::
-
+    
     pip install dammit
+
+If you get an error about using an outdated version of setuptools, you'll need to
+update that first::
+
+    pip install -U setuptools
 
 Generally I recommend trying to maintain some sort of environment structure.
 This can be done with `virtualenv <https://virtualenv.pypa.io/en/latest/userguide.html#usage>`__
@@ -33,7 +38,10 @@ should all run on any flavor of GNU/Linux and on OSX.
 
 First, let's get packages from the Ubuntu PPAs::
 
-    sudo apt-get install hmmer infernal ncbi-blast+ last-align
+    sudo apt-get update
+    sudo apt-get install python-pip python-dev python-numpy git ruby hmmer \
+        infernal ncbi-blast+ last-align liburi-escape-xs-perl emboss liburi-perl
+    
 
 If you're on Ubuntu 15.10, you can also install TransDecoder through aptitude::
 
@@ -46,6 +54,7 @@ terminal::
     cd
     wget https://github.com/TransDecoder/TransDecoder/archive/2.0.1.tar.gz
     tar -xvzf 2.0.1.tar.gz
+    cd TransDecoder-2.0.1; make
     export PATH=$PATH:$HOME/TransDecoder-2.0.1
 
 The above commands will only install it for the current session; to

@@ -45,24 +45,30 @@
 </div>
 <div class="section" id="module-dammit.annotate">
 <span id="dammit-annotate-module"></span><h2>dammit.annotate module<a class="headerlink" href="#module-dammit.annotate" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
-<dt id="dammit.annotate.get_doit_config">
-<code class="descclassname">dammit.annotate.</code><code class="descname">get_doit_config</code><span class="sig-paren">(</span><em>output_dir</em>, <em>transcriptome</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/annotate.html#get_doit_config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.annotate.get_doit_config" title="Permalink to this definition">¶</a></dt>
+<dl class="class">
+<dt id="dammit.annotate.AnnotateHandler">
+<em class="property">class </em><code class="descclassname">dammit.annotate.</code><code class="descname">AnnotateHandler</code><span class="sig-paren">(</span><em>args</em>, <em>database_dict</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/annotate.html#AnnotateHandler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.annotate.AnnotateHandler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="dammit.annotate.AnnotateHandler.get_tasks">
+<code class="descname">get_tasks</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/annotate.html#AnnotateHandler.get_tasks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.annotate.AnnotateHandler.get_tasks" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="function">
-<dt id="dammit.annotate.get_tasks">
-<code class="descclassname">dammit.annotate.</code><code class="descname">get_tasks</code><span class="sig-paren">(</span><em>transcriptome</em>, <em>database_dict</em>, <em>n_threads=1</em>, <em>user_databases=[]</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/annotate.html#get_tasks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.annotate.get_tasks" title="Permalink to this definition">¶</a></dt>
+<dl class="method">
+<dt id="dammit.annotate.AnnotateHandler.handle">
+<code class="descname">handle</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/annotate.html#AnnotateHandler.handle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.annotate.AnnotateHandler.handle" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="function">
-<dt id="dammit.annotate.run_tasks">
-<code class="descclassname">dammit.annotate.</code><code class="descname">run_tasks</code><span class="sig-paren">(</span><em>transcriptome, output_dir, tasks, args=['run']</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/annotate.html#run_tasks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.annotate.run_tasks" title="Permalink to this definition">¶</a></dt>
+<dl class="method">
+<dt id="dammit.annotate.AnnotateHandler.run_tasks">
+<code class="descname">run_tasks</code><span class="sig-paren">(</span><em>doit_args=['run']</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/annotate.html#AnnotateHandler.run_tasks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.annotate.AnnotateHandler.run_tasks" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set up doit&#8217;s config for the actual analysis tasks.
 We&#8217;ll put the doit database for these tasks into the output
 directory so that we don&#8217;t end up scattering them around the
 filesystem, or worse, with one master db containing dependency
 metadata from every analysis ever run by the user!</p>
+</dd></dl>
+
 </dd></dl>
 
 </div>
@@ -260,24 +266,23 @@ executable.</p>
 </div>
 <div class="section" id="module-dammit.databases">
 <span id="dammit-databases-module"></span><h2>dammit.databases module<a class="headerlink" href="#module-dammit.databases" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
-<dt id="dammit.databases.do_check">
-<code class="descclassname">dammit.databases.</code><code class="descname">do_check</code><span class="sig-paren">(</span><em>db_dir</em>, <em>args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/databases.html#do_check"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.databases.do_check" title="Permalink to this definition">¶</a></dt>
+<dl class="class">
+<dt id="dammit.databases.DatabaseHandler">
+<em class="property">class </em><code class="descclassname">dammit.databases.</code><code class="descname">DatabaseHandler</code><span class="sig-paren">(</span><em>args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/databases.html#DatabaseHandler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.databases.DatabaseHandler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="dammit.databases.DatabaseHandler.check">
+<code class="descname">check</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/databases.html#DatabaseHandler.check"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.databases.DatabaseHandler.check" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="function">
-<dt id="dammit.databases.get_dir">
-<code class="descclassname">dammit.databases.</code><code class="descname">get_dir</code><span class="sig-paren">(</span><em>args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/databases.html#get_dir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.databases.get_dir" title="Permalink to this definition">¶</a></dt>
+<dl class="method">
+<dt id="dammit.databases.DatabaseHandler.check_or_fail">
+<code class="descname">check_or_fail</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/databases.html#DatabaseHandler.check_or_fail"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.databases.DatabaseHandler.check_or_fail" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="function">
-<dt id="dammit.databases.get_doit_config">
-<code class="descclassname">dammit.databases.</code><code class="descname">get_doit_config</code><span class="sig-paren">(</span><em>db_dir</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/databases.html#get_doit_config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.databases.get_doit_config" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="dammit.databases.get_tasks">
-<code class="descclassname">dammit.databases.</code><code class="descname">get_tasks</code><span class="sig-paren">(</span><em>db_dir</em>, <em>args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/databases.html#get_tasks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.databases.get_tasks" title="Permalink to this definition">¶</a></dt>
+<dl class="method">
+<dt id="dammit.databases.DatabaseHandler.get_tasks">
+<code class="descname">get_tasks</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/databases.html#DatabaseHandler.get_tasks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.databases.DatabaseHandler.get_tasks" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate tasks for installing the bundled databases.</p>
 <p>These tasks download the databases, unpack them, and format them for use.
 Current bundled databases are:</p>
@@ -295,7 +300,7 @@ Current bundled databases are:</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>db_dir</strong> (<em>str</em>) &#8211; Directory where the databases will be stored.</li>
+<li><strong>self.directory</strong> (<em>str</em>) &#8211; Directory where the databases will be stored.</li>
 <li><strong>busco_db</strong> (<em>str</em>) &#8211; The BUSCO group to use.</li>
 <li><strong>full</strong> (<em>bool</em>) &#8211; Whether to do a full run and get UNIREF90 as well.</li>
 </ul>
@@ -312,23 +317,36 @@ list: A list of the doit tasks.</p>
 </table>
 </dd></dl>
 
-<dl class="function">
-<dt id="dammit.databases.run_tasks">
-<code class="descclassname">dammit.databases.</code><code class="descname">run_tasks</code><span class="sig-paren">(</span><em>db_dir, tasks, args=['run']</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/databases.html#run_tasks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.databases.run_tasks" title="Permalink to this definition">¶</a></dt>
+<dl class="method">
+<dt id="dammit.databases.DatabaseHandler.handle">
+<code class="descname">handle</code><span class="sig-paren">(</span><em>doit_args=['run']</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/databases.html#DatabaseHandler.handle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.databases.DatabaseHandler.handle" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+</dd></dl>
 
 </div>
 <div class="section" id="module-dammit.dependencies">
 <span id="dammit-dependencies-module"></span><h2>dammit.dependencies module<a class="headerlink" href="#module-dammit.dependencies" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
-<dt id="dammit.dependencies.check_system_path">
-<code class="descclassname">dammit.dependencies.</code><code class="descname">check_system_path</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/dependencies.html#check_system_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.dependencies.check_system_path" title="Permalink to this definition">¶</a></dt>
+<dl class="class">
+<dt id="dammit.dependencies.DependencyHandler">
+<em class="property">class </em><code class="descclassname">dammit.dependencies.</code><code class="descname">DependencyHandler</code><span class="sig-paren">(</span><em>args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/dependencies.html#DependencyHandler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.dependencies.DependencyHandler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="dammit.dependencies.DependencyHandler.check_or_fail">
+<code class="descname">check_or_fail</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/dependencies.html#DependencyHandler.check_or_fail"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.dependencies.DependencyHandler.check_or_fail" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="function">
-<dt id="dammit.dependencies.do_check">
-<code class="descclassname">dammit.dependencies.</code><code class="descname">do_check</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/dependencies.html#do_check"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.dependencies.do_check" title="Permalink to this definition">¶</a></dt>
+<dl class="method">
+<dt id="dammit.dependencies.DependencyHandler.check_system_path">
+<code class="descname">check_system_path</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/dependencies.html#DependencyHandler.check_system_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.dependencies.DependencyHandler.check_system_path" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="method">
+<dt id="dammit.dependencies.DependencyHandler.handle">
+<code class="descname">handle</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/dependencies.html#DependencyHandler.handle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.dependencies.DependencyHandler.handle" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
 
 </div>
 <div class="section" id="module-dammit.gff">
