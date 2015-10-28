@@ -44,6 +44,8 @@ def get_report_tasks(transcriptome, results_dict, databases, n_threads=1):
         )
         outputs.append(gff3_fn)
 
+    outputs.append(results_dict['ORFs_gff3'])
+
     merged_gff3 = transcriptome + '.dammit.gff3'
     tasks.append(
         get_gff3_merge_task(outputs, merged_gff3)
