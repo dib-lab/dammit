@@ -1,7 +1,11 @@
 #!/usr/bin/env python
 from __future__ import print_function
 
-from itertools import izip
+try:
+    from itertools import izip
+except ImportError:
+    izip = zip
+
 import json
 import logging
 import os
@@ -17,10 +21,10 @@ from doit.task import clean_targets, dict_to_task
 import pandas as pd
 from khmer import HLLCounter, ReadParser
 
-from common import which
+from .common import which
 from . import parsers
 #from . import taxonomy
-import gff
+from . import gff
 
 
 def task_str(task):

@@ -103,7 +103,8 @@ def main():
                  )
 
     parser.add_argument('--debug', action='store_true', default=False)
-    subparsers = parser.add_subparsers(title='dammit subcommands')
+    subparsers = parser.add_subparsers(title='dammit subcommands', dest='help')
+    subparsers.required = True
 
     def add_common_args(parser):
         ''' Add shared options to a parser.

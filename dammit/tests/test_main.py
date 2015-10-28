@@ -61,7 +61,7 @@ class TestDependencies(TestCase):
 
         os.environ['PATH'] = ''
         deps = dependencies.check_system_path()
-        for name, stat in deps.iteritems():
+        for name, stat in deps.items():
             self.assertIn(name, names)
             self.assertFalse(stat)
 
@@ -73,10 +73,10 @@ class TestDependencies(TestCase):
             TestDependencies.add_execs_to_path(tempdir)
 
             deps = dependencies.check_system_path()
-            for name, stat in deps.iteritems():
+            for name, stat in deps.items():
                 self.assertIn(name, names)
                 self.assertTrue(stat, msg=name)
-    
+
     def test_do_check_nodeps(self):
         os.environ['PATH'] = ''
         missing = dependencies.do_check()
