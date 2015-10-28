@@ -48,6 +48,11 @@
 <div class="highlight-python"><div class="highlight"><pre>pip install dammit
 </pre></div>
 </div>
+<p>If you get an error about using an outdated version of setuptools, you&#8217;ll need to
+update that first:</p>
+<div class="highlight-python"><div class="highlight"><pre>pip install -U setuptools
+</pre></div>
+</div>
 <p>Generally I recommend trying to maintain some sort of environment structure.
 This can be done with <a class="reference external" href="https://virtualenv.pypa.io/en/latest/userguide.html#usage">virtualenv</a>
 or <a class="reference external" href="http://conda.pydata.org/docs/using/envs.html">anaconda</a> environments.</p>
@@ -68,7 +73,9 @@ suck less, then installing the necessary software should suck less too.</p>
 <p>Most of this guide will assume you&#8217;re on a Ubuntu system. However, the dependencies
 should all run on any flavor of GNU/Linux and on OSX.</p>
 <p>First, let&#8217;s get packages from the Ubuntu PPAs:</p>
-<div class="highlight-python"><div class="highlight"><pre>sudo apt-get install hmmer infernal ncbi-blast+ last-align
+<div class="highlight-python"><div class="highlight"><pre>sudo apt-get update
+sudo apt-get install python-pip python-dev python-numpy git ruby hmmer \
+    infernal ncbi-blast+ last-align liburi-escape-xs-perl emboss liburi-perl
 </pre></div>
 </div>
 <p>If you&#8217;re on Ubuntu 15.10, you can also install TransDecoder through aptitude:</p>
@@ -81,6 +88,7 @@ terminal:</p>
 <div class="highlight-python"><div class="highlight"><pre>cd
 wget https://github.com/TransDecoder/TransDecoder/archive/2.0.1.tar.gz
 tar -xvzf 2.0.1.tar.gz
+cd TransDecoder-2.0.1; make
 export PATH=$PATH:$HOME/TransDecoder-2.0.1
 </pre></div>
 </div>
