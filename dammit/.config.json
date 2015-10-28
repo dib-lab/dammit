@@ -11,25 +11,17 @@
         "db_dir": "databases",
         
         "blast": {
-            "url": {
-                "linux": "http://edhar.genomecenter.ucdavis.edu/~camille/dammit/ncbi-blast-2.2.31-linux.tar.gz",
-                "macosx": "http://edhar.genomecenter.ucdavis.edu/~camille/dammit/ncbi-blast-2.2.31-macosx.tar.gz"
-            },
             "evalue": 0.000001,
             "params": ""
         },
 
         "last": {
-            "url": {
-                "linux": "http://edhar.genomecenter.ucdavis.edu/~camille/dammit/last-linux.tar.gz",
-                "macosx": "http://edhar.genomecenter.ucdavis.edu/~camille/dammit/last-macosx.tar.gz"
-            },
             "lastal": {
                 "params": "",
                 "frameshift": 15
             },
             "lastdb": {
-                "params": ""
+                "params": "-w3"
             }
         },
 
@@ -38,17 +30,11 @@
         },
 
         "busco": {
-            "url": "http://edhar.genomecenter.ucdavis.edu/~camille/dammit/BUSCO_v1.1b1.tar.gz",
             "db_dir": "busco_db",
             "output_suffix": ".busco.results"
         },
 
 		"hmmer": {
-            "url": {
-                "macosx": "http://edhar.genomecenter.ucdavis.edu/~camille/dammit/hmmer-3.1b2-macosx.tar.gz",
-                "linux": "http://edhar.genomecenter.ucdavis.edu/~camille/dammit/hmmer-3.1b2-linux.tar.gz"
-            },
-            
 			"hmmscan": {
 			},
 
@@ -57,11 +43,6 @@
 		},
 
 		"infernal": {
-
-			"url": {
-				"linux": "http://edhar.genomecenter.ucdavis.edu/~camille/dammit/infernal-1.1.1-linux.tar.gz",
-				"macosx": "http://edhar.genomecenter.ucdavis.edu/~camille/dammit/infernal-1.1.1-macosx.tar.gz"
-			},
 			"cmscan": {
 			},
 
@@ -70,10 +51,6 @@
 		},
 
         "transdecoder": {
-			"url": {
-                "linux": "http://edhar.genomecenter.ucdavis.edu/~camille/dammit/TransDecoder-2.0.1-linux.tar.gz",
-                "macosx": "http://edhar.genomecenter.ucdavis.edu/~camille/dammit/TransDecoder-2.0.1-macosx.tar.gz"
-            },
 			"longorfs": {
 				"min_prot_len": 80
 			},
