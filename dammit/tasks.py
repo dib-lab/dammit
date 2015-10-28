@@ -342,15 +342,14 @@ def get_transdecoder_orf_task(input_filename, transdecoder_cfg):
 
 # TransDecoder.Predict -t lamp10.fasta --retain_pfam_hits lamp10.fasta.pfam-A.out
 @create_task_object
-def get_transdecoder_predict_task(input_filename, db_filename, n_threads, 
-                                  transdecoder_cfg):
+def get_transdecoder_predict_task(input_filename, db_filename, transdecoder_cfg):
 
     name = 'TransDecoder.Predict:' + os.path.basename(input_filename)
 
     orf_cutoff = transdecoder_cfg['orf_cutoff']
     exc = which('TransDecoder.Predict')
     cmd = '{exc} -t {input_filename} --retain_pfam_hits {db_filename} \
-            --retain_long_orfs {orf_cutoff} --cpu {n_threads}'.format(**locals())
+            --retain_long_orfs {orf_cutoff}'.format(**locals())
     
     return {'name': name,
             'title': title_with_actions,
