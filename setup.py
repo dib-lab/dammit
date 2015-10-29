@@ -9,14 +9,7 @@ except ImportError:
 else:
     use_cython = True
 
-# Automatically download setuptools if not available
-try:
-    from setuptools import *
-except ImportError:
-    from distribute_setup import use_setuptools
-    use_setuptools()
-finally:
-    from setuptools import *
+from setuptools import *
 
 from glob import glob
 
@@ -41,18 +34,19 @@ def main():
             packages = ['dammit'],
             scripts = glob('bin/*'),
             ext_modules = get_extension_modules(),
-            install_requires = ['khmer', 
-                                'nose', 
-                                'doit', 
+            install_requires = ['khmer',
+                                'nose',
+                                'doit',
                                 'pandas',
-                                'nose-capturestderr'],
+                                'nose-capturestderr',
+                                'setuptools'],
             include_package_data = True,
             zip_safe = False,
             cmdclass = cmdclass  )
 
 def get_extension_modules():
     extensions = []
-    
+
     if use_cython:
         ext = '.pyx'
         cmdclass.update({ 'build_ext': build_ext })

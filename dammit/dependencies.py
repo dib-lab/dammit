@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from __future__ import print_function
+from __future__ import print_function, absolute_import
 
 import logging
 import os
@@ -7,15 +7,15 @@ import sys
 
 from doit.dependency import Dependency, SqliteDB
 
-from common import which
-import common
-from tasks import get_download_and_untar_task
+from .common import which
+from . import common
+from .tasks import get_download_and_untar_task
 
 logger = logging.getLogger(__name__)
 
 
 def check_system_path():
-    
+
     deps = {}
 
     hmmscan = which('hmmscan')
@@ -92,9 +92,9 @@ def do_check():
     common.print_header('Checking PATH for dependencies', level=2)
 
     system_deps = check_system_path()
-    
+
     missing = []
-    for key, status in system_deps.iteritems():
+    for key, status in system_deps.items():
         if status is False:
             missing.append(key)
             logger.warning('[ ] {0}'.format(key))

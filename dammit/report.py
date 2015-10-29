@@ -37,7 +37,7 @@ def get_report_tasks(transcriptome, results_dict, databases, n_threads=1):
     )
     outputs.append(rfam_gff3)
 
-    for db, fn in results_dict['user'].iteritems():
+    for db, fn in results_dict['user'].items():
         gff3_fn = fn + '.gff3'
         tasks.append(
             get_crb_gff3_task(fn, gff3_fn, db)

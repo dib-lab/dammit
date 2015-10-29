@@ -1,10 +1,13 @@
 #!/usr/bin/env python
+
+from __future__ import absolute_import
+
 import csv
 import sys
 import numpy as np
 import pandas as pd
 
-from blast import remap_blast_coords_df as remap_blast
+from .blast import remap_blast_coords_df as remap_blast
 
 blast_cols = [('qseqid', str), 
               ('sseqid', str), 
@@ -290,8 +293,8 @@ def gff3_transdecoder_to_df_iter(fn, chunksize=10000):
             try:
                 data.append([tokens[0]] + tokens[2:5] + [tokens[6]])
             except IndexError as e:
-                print e
-                print tokens
+                print(e)
+                print(tokens)
                 break
             if len(data) >= chunksize:
                 yield build_df(data)

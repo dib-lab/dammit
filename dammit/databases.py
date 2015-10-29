@@ -1,13 +1,13 @@
 #!/usr/bin/enb python
-from __future__ import print_function
+from __future__ import print_function, absolute_import
 
 import logging
 import os
 
 from doit.dependency import Dependency, SqliteDB
 
-import common
-from tasks import get_download_and_gunzip_task, \
+from . import common
+from .tasks import get_download_and_gunzip_task, \
                   get_hmmpress_task, \
                   get_cmpress_task, \
                   get_download_and_untar_task, \
