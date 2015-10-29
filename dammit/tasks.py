@@ -168,7 +168,7 @@ def get_lastdb_task(db_fn, db_out_prefix, lastdb_cfg, prot=True):
     exc = which('lastdb')
     params = lastdb_cfg['params']
     if prot:
-        params += ' -p'
+        params += ' -p -w3'
 
     cmd = '{exc} {params} {db_out_prefix} {db_fn}'.format(**locals())
 
