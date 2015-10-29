@@ -98,7 +98,6 @@ def get_tasks(transcriptome, database_dict,
     annotate_tasks.append(
         get_transdecoder_predict_task(transcriptome, 
                                       pfam_results,
-                                      n_threads,
                                       predict_cfg)
     )
     protein_prediction_pep = transcriptome + '.transdecoder.pep'
