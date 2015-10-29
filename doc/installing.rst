@@ -79,6 +79,7 @@ commands::
     cd
     wget http://busco.ezlab.org/files/BUSCO_v1.1b1.tar.gz
     tar -xvzf BUSCO_v1.1b1.tar.gz
+    chmod +x BUSCO_v1.1b1/*.py
     export PATH=$PATH:$HOME/BUSCO_v1.1b1
 
 ...and once again, to install it permanently::
