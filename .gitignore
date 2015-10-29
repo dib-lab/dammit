@@ -13,3 +13,4 @@ distribute-*.tar.gz
 distribute-*.egg
 dammit.egg-info/
 *.so
+*~
