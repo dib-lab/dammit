@@ -41,6 +41,7 @@ class AnnotateHandler(object):
                         'reporter': common.LogReporter(logger),
                         'backend': common.DOIT_BACKEND,
                         'verbosity': common.DOIT_VERBOSITY,
+                        'continue': True,
                         'dep_file': os.path.join(self.directory, '.' +
                                                  os.path.basename(self.transcriptome) +
                                                  '.doit.db')

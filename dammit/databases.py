@@ -33,6 +33,7 @@ class DatabaseHandler(object):
                             'reporter': common.LogReporter(self.logger),
                             'backend': common.DOIT_BACKEND,
                             'verbosity': common.DOIT_VERBOSITY,
+                            'continue': True,
                             'dep_file': os.path.join(self.directory, 'databases.doit.db')
                            }
         self.logger.debug('doit_config:{0}'.format(self.doit_config))
