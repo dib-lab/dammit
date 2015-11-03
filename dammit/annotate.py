@@ -18,7 +18,8 @@ from .tasks import get_transcriptome_stats_task, \
                    get_cmscan_task, \
                    get_lastal_task, \
                    get_crb_blast_task, \
-                   get_sanitize_fasta_task
+                   get_sanitize_fasta_task, \
+                   print_tasks
 
 logger = logging.getLogger(__name__)
 
@@ -26,6 +27,8 @@ class AnnotateHandler(object):
 
     def __init__(self, args, database_dict):
         self.transcriptome = args.transcriptome
+        self.args = args
+        self.logger = logging.getLogger(self.__class__.__name__)
 
         if args.output_dir is None:
             out_dir = self.transcriptome + '.dammit'
@@ -109,7 +112,7 @@ class AnnotateHandler(object):
         busco_output_name = '{0}.busco.results'.format(self.transcriptome)
         assess_tasks.append(
             get_busco_task(self.transcriptome, busco_output_name, self.database_dict['BUSCO'],
-                           'trans', args.n_threads, busco_cfg)
+                           'trans', self.args.n_threads, busco_cfg)
         )
         results['busco'] = os.path.join('run_' + busco_output_name, 
                                         'short_summary_' + busco_output_name)
@@ -141,10 +144,10 @@ class AnnotateHandler(object):
         results['ORFs_pep'] = orf_pep
         results['ORFs_gff3'] = orf_gff3
 
-        pfam_results = transcriptome + '.pfam-A.tbl'
+        pfam_results = self.transcriptome + '.pfam-A.tbl'
         annotate_tasks.append(
             get_hmmscan_task(orf_pep, pfam_results,
-                         self.database_dict['PFAM'], args.n_threads, 
+                         self.database_dict['PFAM'], self.args.n_threads, 
                          common.CONFIG['settings']['hmmer']['hmmscan'])
         )
         results['pfam'] = pfam_results
@@ -153,7 +156,6 @@ class AnnotateHandler(object):
         annotate_tasks.append(
             get_transdecoder_predict_task(self.transcriptome, 
                                           pfam_results,
-                                          args.n_threads,
                                           predict_cfg)
         )
         protein_prediction_pep = self.transcriptome + '.transdecoder.pep'
@@ -170,7 +172,7 @@ class AnnotateHandler(object):
         rfam_results = self.transcriptome + '.rfam.tbl'
         annotate_tasks.append(
             get_cmscan_task(self.transcriptome, rfam_results,
-                         self.database_dict['RFAM'], args.n_threads, 
+                         self.database_dict['RFAM'], self.args.n_threads, 
                          cmscan_cfg)
         )
         results['rfam'] = rfam_results
@@ -185,7 +187,7 @@ class AnnotateHandler(object):
         tr_x_orthodb_fn = '{0}.x.orthodb.maf'.format(self.transcriptome)
         annotate_tasks.append(
             get_lastal_task(self.transcriptome, orthodb_fn, tr_x_orthodb_fn, True,
-                           args.n_threads, lastal_cfg)
+                           self.args.n_threads, lastal_cfg)
         )
         results['orthodb'] = tr_x_orthodb_fn
      
@@ -196,7 +198,7 @@ class AnnotateHandler(object):
         '''
         results['user'] = {}
         crb_blast_cfg = common.CONFIG['settings']['crb-blast']
-        for path in args.user_databases:
+        for path in self.args.user_databases:
             key = os.path.basename(path)
             tasks.append(
                 get_sanitize_fasta_task(os.path.abspath(path),
@@ -205,7 +207,7 @@ class AnnotateHandler(object):
             fn = '{0}.x.{1}.crbb.tsv'.format(self.transcriptome, key)
             annotate_tasks.append(
                 get_crb_blast_task(self.transcriptome, key, fn, 
-                                   crb_blast_cfg, args.n_threads)
+                                   crb_blast_cfg, self.args.n_threads)
             )
             results['user'][key] = fn
 
@@ -213,7 +215,7 @@ class AnnotateHandler(object):
 
         outputs, report_tasks = get_report_tasks(self.transcriptome, results,
                                                  self.database_dict,
-                                                 n_threads=args.n_threads)
+                                                 n_threads=self.args.n_threads)
         tasks.extend(report_tasks)
 
         return results, tasks

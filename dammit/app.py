@@ -157,7 +157,7 @@ class DammitApp(object):
     def handle_databases(self):
         common.print_header('submodule: databases', level=1)
 
-        dependencies.DependencyHandler(self.args).check_or_fail()
+        dependencies.DependencyHandler().check_or_fail()
 
         databases.DatabaseHandler(self.args).handle()
 
@@ -171,11 +171,11 @@ class DammitApp(object):
 
         common.print_header('submodule: annotate', level=1)
 
-        dependencies.DependencyHandler(self.args).check_or_fail()
+        dependencies.DependencyHandler().check_or_fail()
 
         db_handler = databases.DatabaseHandler(self.args)
         db_handler.check_or_fail()
 
-        annotate.AnnotateHandler(self.args, db_handler.database_dict).handle()
+        annotate.AnnotateHandler(self.args, db_handler.databases).handle()
 
 
