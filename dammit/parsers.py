@@ -374,6 +374,8 @@ def maf_to_df_iter(fn, chunksize=10000):
 
                 data.append(cur_aln)
                 if len(data) >= chunksize:
+                    if LAMBDA is None:
+                        raise Exception("old version of lastal; please update")
                     yield build_df(data, LAMBDA, K)
                     data = []
 
