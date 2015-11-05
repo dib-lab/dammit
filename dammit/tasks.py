@@ -179,7 +179,7 @@ def get_lastdb_task(db_fn, db_out_prefix, lastdb_cfg, prot=True):
             'actions': [cmd],
             'targets': [db_out_prefix + ext \
                         for ext in \
-                        ['.des', '.sds', '.ssp', '.tis', '.prj']],
+                        ['.bck', '.des', '.prj', '.sds', '.ssp', '.suf', '.tis']],
             'uptodate': [True],
             'file_dep': [db_fn],
             'clean': [clean_targets]}
