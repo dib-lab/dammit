@@ -3,7 +3,9 @@ from unittest import TestCase
 import os
 import stat
 
+from dammit.app import DammitApp
 from dammit import dependencies
+
 from utils import TemporaryDirectory
 
 names = ['TransDecoder',
@@ -29,6 +31,11 @@ execs = ['hmmscan',
          'lastdb',
          'crb-blast']
 
+class TestDammitApp(TestCase):
+
+    def test_main_module(self):
+        pass
+        
 
 class TestDependencies(TestCase):
 
@@ -60,7 +67,8 @@ class TestDependencies(TestCase):
         '''
 
         os.environ['PATH'] = ''
-        deps = dependencies.check_system_path()
+        handler = dependencies.DependencyHandler()
+        deps = handler.check_system_path()
         for name, stat in deps.iteritems():
             self.assertIn(name, names)
             self.assertFalse(stat)
@@ -68,26 +76,35 @@ class TestDependencies(TestCase):
     def test_check_system_path_alldeps(self):
         '''Test check_system_path when the dependencies are on the PATH.
         '''
-
+        handler = dependencies.DependencyHandler()
         with TemporaryDirectory() as tempdir:
             TestDependencies.add_execs_to_path(tempdir)
 
-            deps = dependencies.check_system_path()
+            deps = handler.check_system_path()
             for name, stat in deps.iteritems():
                 self.assertIn(name, names)
                 self.assertTrue(stat, msg=name)
     
-    def test_do_check_nodeps(self):
+    def test_handle_nodeps(self):
         os.environ['PATH'] = ''
-        missing = dependencies.do_check()
+        handler = dependencies.DependencyHandler()
+        missing = handler.handle()
         for name in missing:
             self.assertIn(name, names)
         self.assertEquals(set(missing) - set(names), set())
 
     def test_do_check_alldeps(self):
+        handler = dependencies.DependencyHandler()
         with TemporaryDirectory() as tempdir:
             TestDependencies.add_execs_to_path(tempdir)
-            missing = dependencies.do_check()
+            missing = handler.handle()
             self.assertEquals(missing, [])
 
+class TestDatabases(TestCase):
 
+    @classmethod
+    def setup_class(cls):
+        cls.db_dir = 'test_db_dir'
+
+
+            
