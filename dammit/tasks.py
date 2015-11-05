@@ -243,7 +243,7 @@ def get_busco_task(input_filename, output_name, busco_db_dir, input_type,
     output_name = os.path.basename(output_name)
 
     cmd = 'python3 {exc} -in {input_filename} -o {output_name} -l {busco_db_dir} '\
-            '-m {input_type} -c {n_threads}'.format(**locals())
+            '-m {input_type} -c {n_threads} -f'.format(**locals())
 
     return {'name': name,
             'title': title_with_actions,
