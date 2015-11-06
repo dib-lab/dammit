@@ -82,7 +82,7 @@ class gCRBB(object):
         
         return rbh_df
 
-    def format_training_pep_task(self):
+    def format_training_task(self):
         pass
 
     def format_database_pep_task(self):

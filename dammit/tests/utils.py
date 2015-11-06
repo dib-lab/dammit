@@ -1,7 +1,30 @@
-import warnings as _warnings
+#!/usr/bin/env python
+
 import os as _os
+import shutil
+import warnings as _warnings
 
 from tempfile import mkdtemp
+
+class TestData(filename):
+
+    def __init__(self, filename)
+        self.filepath = None
+        try:
+            self.filepath = resource_filename(
+                Requirement.parse("dammit"), "dammit/tests/test-data/" + filename)
+        except ResolutionError:
+            pass
+        if not self.filepath or not os.path.isfile(self.filepath):
+            self.filepath = os.path.join(os.path.dirname(__file__), 'test-data',
+                                    filename)
+    
+    def __enter__(self):
+        return self.filepath
+
+    def __exit__(self):
+        shutil.rmtree(self.filepath, ignore_errors=True)
+
 
 class TemporaryDirectory(object):
     """Create and return a temporary directory.  This has the same
@@ -84,3 +107,16 @@ class TemporaryDirectory(object):
             self._rmdir(path)
         except OSError:
             pass
+
+
+class Move(object):
+
+    def __init__(self, target):
+        self.target = target
+   
+    def __enter__(self):
+        self.cwd = os.getcwd()
+        os.chdir(self.target)
+
+    def __exit__(self):
+        os.chdir(self.cwd)
