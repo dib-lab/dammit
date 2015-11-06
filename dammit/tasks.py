@@ -168,7 +168,7 @@ def get_lastdb_task(db_fn, db_out_prefix, lastdb_cfg, prot=True):
     exc = which('lastdb')
     params = lastdb_cfg['params']
     if prot:
-        params += ' -p -w3'
+        params += ' -p'
 
     cmd = '{exc} {params} {db_out_prefix} {db_fn}'.format(**locals())
 
@@ -242,8 +242,8 @@ def get_busco_task(input_filename, output_name, busco_db_dir, input_type,
     # BUSCO chokes on file paths as output names
     output_name = os.path.basename(output_name)
 
-    cmd = 'python3 {exc} -in {input_filename} -o {output_name} -l {busco_db_dir} '\
-            '-m {input_type} -c {n_threads} -f'.format(**locals())
+    cmd = 'python3 {exc} -in {input_filename} -f -o {output_name} -l {busco_db_dir} '\
+            '-m {input_type} -c {n_threads}'.format(**locals())
 
     return {'name': name,
             'title': title_with_actions,
