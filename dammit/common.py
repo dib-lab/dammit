@@ -115,7 +115,6 @@ def which(program):
         if is_exe(program):
             return program
     else:
-        logger.debug('PATH:' + os.environ['PATH'])
         for path in os.environ["PATH"].split(os.pathsep):
             path = path.strip('"')
             exe_file = os.path.join(path, program)

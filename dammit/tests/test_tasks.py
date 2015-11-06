@@ -32,7 +32,7 @@ BATCH EFFECTS
 
 '''
 
-def check_status(task, dep_file='.doit.db.db'):
+def check_status(task, dep_file='.doit.db'):
     mgr = Dependency(DbmDB, os.path.abspath(dep_file))
     status = mgr.get_status(task, [task])
     return status
