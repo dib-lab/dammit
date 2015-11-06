@@ -1,29 +1,54 @@
 #!/usr/bin/env python
+from __future__ import print_function
 
 import os as _os
 import shutil
+import sys
 import warnings as _warnings
+from pkg_resources import Requirement, resource_filename, ResolutionError
 
 from tempfile import mkdtemp
 
-class TestData(filename):
+class TestData(object):
 
-    def __init__(self, filename)
+    def __init__(self, filename, dest_dir):
         self.filepath = None
         try:
-            self.filepath = resource_filename(
-                Requirement.parse("dammit"), "dammit/tests/test-data/" + filename)
+            self.filepath = resource_filename(Requirement.parse("dammit"), 
+                                              "dammit/tests/test-data/" + filename)
         except ResolutionError:
             pass
-        if not self.filepath or not os.path.isfile(self.filepath):
-            self.filepath = os.path.join(os.path.dirname(__file__), 'test-data',
-                                    filename)
+        if not self.filepath or not _os.path.isfile(self.filepath):
+            self.filepath = _os.path.join(_os.path.dirname(__file__), 
+                                          'test-data', filename)
+        shutil.copy(self.filepath, dest_dir)
+        self.filepath = _os.path.join(dest_dir, filename)
     
     def __enter__(self):
         return self.filepath
 
-    def __exit__(self):
-        shutil.rmtree(self.filepath, ignore_errors=True)
+    def __exit__(self, exc_type, exc_value, traceback):
+        _os.remove(self.filepath)
+        #if exc_type is not None:
+        #    return False
+
+
+class Move(object):
+
+    def __init__(self, target):
+        print('Move to', target, file=sys.stderr)
+        self.target = target
+   
+    def __enter__(self):
+        self.cwd = _os.getcwd()
+        print('cwd:', self.cwd, file=sys.stderr)
+        _os.chdir(self.target)
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        #if exc_type is not None:
+        #    print('Error in Move')
+        #    return False
+        _os.chdir(self.cwd)
 
 
 class TemporaryDirectory(object):
@@ -70,6 +95,8 @@ class TemporaryDirectory(object):
 
     def __exit__(self, exc, value, tb):
         self.cleanup()
+        if exc is not None:
+            return False
 
     def __del__(self):
         # Issue a ResourceWarning if implicit cleanup needed
@@ -107,16 +134,3 @@ class TemporaryDirectory(object):
             self._rmdir(path)
         except OSError:
             pass
-
-
-class Move(object):
-
-    def __init__(self, target):
-        self.target = target
-   
-    def __enter__(self):
-        self.cwd = os.getcwd()
-        os.chdir(self.target)
-
-    def __exit__(self):
-        os.chdir(self.cwd)
