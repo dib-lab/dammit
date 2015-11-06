@@ -69,7 +69,7 @@ For OSX::
 Next, we need to install Conditional Reciprocal Best-hits Blast (CRBB). The
 algorithm is described in
 `Aubry et al. <http://journals.plos.org/plosgenetics/article?id=10.1371/journal.pgen.1004365>`__,
- and is implemented in ruby. Assuming you have ruby, it can be installed with::
+and is implemented in ruby. Assuming you have ruby, it can be installed with::
 
     sudo gem install crb-blast
 
@@ -79,7 +79,7 @@ commands::
     cd
     wget http://busco.ezlab.org/files/BUSCO_v1.1b1.tar.gz
     tar -xvzf BUSCO_v1.1b1.tar.gz
-    chmod +x BUSCO_v1.1b1/BUSCO_v1.1b1.py
+    chmod +x BUSCO_v1.1b1/*.py
     export PATH=$PATH:$HOME/BUSCO_v1.1b1
 
 ...and once again, to install it permanently::
