@@ -31,6 +31,8 @@ execs = ['hmmscan',
          'lastdb',
          'crb-blast']
 
+PATH_BACKUP = os.environ['PATH']
+
 class TestDammitApp(TestCase):
 
     def test_main_module(self):
@@ -41,15 +43,13 @@ class TestDependencies(TestCase):
 
     @classmethod
     def setup_class(cls):
-        cls.PATH_BACKUP = os.environ['PATH']
-        print('Setup. PATH backup:', cls.PATH_BACKUP)
+        pass
+        #cls.PATH_BACKUP = os.environ['PATH']
+        #print('Setup. PATH backup:', cls.PATH_BACKUP)
 
-    def teardown(self):
-        '''Most of the functions need to modify PATH to test properly.
-        Make sure to fix it when we're done.
-        '''
-
-        os.environ['PATH'] = self.PATH_BACKUP
+    @classmethod
+    def teardown_class(cls):
+        os.environ['PATH'] = PATH_BACKUP
 
     @staticmethod
     def add_execs_to_path(tempdir):
