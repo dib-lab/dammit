@@ -62,7 +62,7 @@ class DatabaseHandler(object):
     def check_or_fail(self):
         missing = self.check()
         if missing:
-            self.logger.error('INstall databases to continue; exiting')
+            self.logger.error('Install databases to continue; exiting')
             sys.exit(1)
 
     def check(self):
