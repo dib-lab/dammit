@@ -7,6 +7,7 @@ from platform import system
 import sys
 
 from . import common
+from .log import LogReporter
 from .report import get_report_tasks
 from .tasks import get_transcriptome_stats_task, \
                    get_busco_task, \
@@ -38,7 +39,7 @@ class AnnotateHandler(object):
 
 
         self.doit_config = {
-                        'reporter': common.LogReporter(logger),
+                        'reporter': LogReporter(logger),
                         'backend': common.DOIT_BACKEND,
                         'verbosity': common.DOIT_VERBOSITY,
                         'continue': True,

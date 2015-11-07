@@ -10,13 +10,14 @@ from dammit import common
 from dammit import annotate
 from dammit import databases
 from dammit import dependencies
+from dammit import log
 from dammit.tasks import print_tasks
 
-logger = logging.getLogger(__name__)
 
 class DammitApp(object):
 
     def __init__(self, arg_src=sys.argv[1:]):
+        self.logger = logging.getLogger(self.__class__.__name__)
         self.meta = '{0}\n{1} {2}'.format(common.CONFIG['meta']['description'],
                                           ', '.join(common.CONFIG['meta']['authors']),
                                           common.CONFIG['meta']['date'])

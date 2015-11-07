@@ -6,6 +6,7 @@
 *.fasta
 *.fasta.gz
 *.dammit
+.eggs/
 deps/
 build/
 dist/

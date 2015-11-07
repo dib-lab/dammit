@@ -179,7 +179,6 @@ def get_lastdb_task(db_fn, db_out_prefix, lastdb_cfg, prot=True):
         prot (bool): True if a protein FASTA, False otherwise.
     Returns:
         dict: A pydoit task.
-
     '''
     
     exc = which('lastdb')

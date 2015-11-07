@@ -30,7 +30,7 @@ cmdclass = {}
 
 def main():
     setup(  name = 'dammit',
-            version = '0.0.6',
+            version = '0.0.7',
             description = 'dammit!',
             url = 'https://github.com/camillescott/dammit',
             author = 'Camille Scott',

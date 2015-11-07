@@ -3,16 +3,18 @@ from __future__ import print_function
 
 import logging
 import os
+import sys
 
 from doit.dependency import Dependency, SqliteDB
 
-import common
-from tasks import get_download_and_gunzip_task, \
-                  get_hmmpress_task, \
-                  get_cmpress_task, \
-                  get_download_and_untar_task, \
-                  get_lastdb_task, \
-                  print_tasks
+from . import common
+from .log import LogReporter
+from .tasks import get_download_and_gunzip_task, \
+                   get_hmmpress_task, \
+                   get_cmpress_task, \
+                   get_download_and_untar_task, \
+                   get_lastdb_task, \
+                   print_tasks
 
 
 class DatabaseHandler(object):
@@ -30,7 +32,7 @@ class DatabaseHandler(object):
         self.directory = os.path.abspath(directory)
 
         self.doit_config = {
-                            'reporter': common.LogReporter(self.logger),
+                            'reporter': LogReporter(self.logger),
                             'backend': common.DOIT_BACKEND,
                             'verbosity': common.DOIT_VERBOSITY,
                             'continue': True,

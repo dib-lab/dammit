@@ -7,9 +7,9 @@ import sys
 
 from doit.dependency import Dependency, SqliteDB
 
-from common import which
-import common
-from tasks import get_download_and_untar_task
+from .common import which
+from . import common
+from .tasks import get_download_and_untar_task
 
 
 class DependencyHandler(object):
