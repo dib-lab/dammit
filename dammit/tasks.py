@@ -202,11 +202,23 @@ def get_lastdb_task(db_fn, db_out_prefix, lastdb_cfg, prot=True):
 
 
 @create_task_object
-def get_lastal_task(query, db, out_fn, prot, n_threads, lastal_cfg):
+def get_lastal_task(query, db, out_fn, translate, n_threads, lastal_cfg):
+    '''Create a pydoit task to run lastal
+
+    Args:
+        query (str): The file with the query sequences.
+        db (str): The database file prefix.
+        out_fn (str): Destination file for alignments.
+        translate (bool): True if query is a nucleotide FASTA.
+        n_threads (int): Number of threads to run with.
+        lastal_cfg (dict): Config, must contain key params holding str.
+    Returns:
+        dict: A pydoit task.
+    '''
 
     exc = which('lastal')
     params = lastal_cfg['params']
-    if prot:
+    if translate:
         params += ' -F' + str(lastal_cfg['frameshift'])
     cmd = '{exc} {params} {db} {query} > {out_fn}'.format(**locals())
 
