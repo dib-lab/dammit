@@ -7,7 +7,7 @@ import sys
 from unittest import TestCase
 from doit.dependency import Dependency, DbmDB
 
-from utils import TemporaryDirectory, Move, TestData, touch
+from utils import TemporaryDirectory, Move, TestData, touch, TemporaryFile
 from dammit import common
 from dammit import tasks
 from dammit.common import run_tasks
@@ -43,7 +43,7 @@ class TestLASTTasks(TestCase):
     @classmethod
     def setup_class(cls):
         cls.lastdb_cfg = common.CONFIG['settings']['last']['lastdb']
-        cls.lastdb_cfg = common.CONFIG['settings']['last']['lastal']
+        cls.lastal_cfg = common.CONFIG['settings']['last']['lastal']
         cls.extensions = ['.bck', '.des', '.prj', '.sds', '.ssp', '.suf', '.tis']
 
     def test_lastdb_nucl_task(self):
@@ -96,3 +96,71 @@ class TestLASTTasks(TestCase):
 
                     self.assertEquals(status.status, 'up-to-date')
 
+    def test_lastal_nucl_x_prot_task(self):
+        with TemporaryDirectory() as td:
+            with Move(td):
+                with TestData('test-protein.fa', td) as prot, \
+                     TestData('test-transcript.fa', td) as tr, \
+                     TemporaryFile(td) as out:
+                        
+                    print(os.listdir(td), file=sys.stderr)
+                    db_task = tasks.get_lastdb_task(prot, prot, self.lastdb_cfg)
+                    aln_task = tasks.get_lastal_task(tr, prot, out, True, 1,
+                                                     self.lastal_cfg)
+                    run_tasks([db_task, aln_task], ['run'])
+
+                    aln = ''.join(open(out).readlines())
+                    print(aln, file=sys.stderr)
+
+                    self.assertIn('SPAC212_RecQ_type_DNA_helicase_PROTEIN', 
+                                  aln)
+                    self.assertIn('SPAC212_RecQ_type_DNA_helicase_TRANSCRIPT',
+                                  aln)
+                    self.assertIn('lambda', aln, 
+                                  msg='lambda missing, wrong LAST version?')
+                    
+
+    def test_lastal_nucl_x_prot_task(self):
+        with TemporaryDirectory() as td:
+            with Move(td):
+                with TestData('test-protein.fa', td) as prot, \
+                     TestData('test-transcript.fa', td) as tr, \
+                     TemporaryFile(td) as out:
+                        
+                    print(os.listdir(td), file=sys.stderr)
+                    db_task = tasks.get_lastdb_task(prot, prot, self.lastdb_cfg)
+                    aln_task = tasks.get_lastal_task(tr, prot, out, True, 1,
+                                                     self.lastal_cfg)
+                    run_tasks([db_task, aln_task], ['run'])
+
+                    aln = ''.join(open(out).readlines())
+                    print(aln, file=sys.stderr)
+
+                    self.assertIn('SPAC212_RecQ_type_DNA_helicase_PROTEIN', 
+                                  aln)
+                    self.assertIn('SPAC212_RecQ_type_DNA_helicase_TRANSCRIPT',
+                                  aln)
+                    self.assertIn('lambda', aln, 
+                                  msg='lambda missing, wrong LAST version?')
+
+    def test_lastal_prot_x_prot_task(self):
+        with TemporaryDirectory() as td:
+            with Move(td):
+                with TestData('test-protein.fa', td) as prot, \
+                     TemporaryFile(td) as out:
+                        
+                    print(os.listdir(td), file=sys.stderr)
+                    db_task = tasks.get_lastdb_task(prot, prot, self.lastdb_cfg)
+                    aln_task = tasks.get_lastal_task(prot, prot, out, False, 1,
+                                                     self.lastal_cfg)
+                    run_tasks([db_task, aln_task], ['run'])
+
+                    aln = ''.join(open(out).readlines())
+                    print(aln, file=sys.stderr)
+
+                    self.assertIn('SPAC212_RecQ_type_DNA_helicase_PROTEIN', 
+                                  aln)
+                    self.assertIn('EG2=0', aln)
+                    self.assertIn('E=0', aln)
+                    self.assertIn('lambda', aln, 
+                                  msg='lambda missing, wrong LAST version?')
