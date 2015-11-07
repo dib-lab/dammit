@@ -158,8 +158,9 @@ class TestLASTTasks(TestCase):
                     aln = ''.join(open(out).readlines())
                     print(aln, file=sys.stderr)
 
-                    self.assertIn('SPAC212_RecQ_type_DNA_helicase_PROTEIN', 
-                                  aln)
+                    self.assertEquals(
+                            aln.count('SPAC212_RecQ_type_DNA_helicase_PROTEIN'),
+                            2)
                     self.assertIn('EG2=0', aln)
                     self.assertIn('E=0', aln)
                     self.assertIn('lambda', aln, 
