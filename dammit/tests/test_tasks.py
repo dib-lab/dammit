@@ -7,7 +7,7 @@ import sys
 from unittest import TestCase
 from doit.dependency import Dependency, DbmDB
 
-from utils import TemporaryDirectory, Move, TestData
+from utils import TemporaryDirectory, Move, TestData, touch
 from dammit import common
 from dammit import tasks
 from dammit.common import run_tasks
@@ -44,9 +44,9 @@ class TestLASTTasks(TestCase):
     def setup_class(cls):
         cls.lastdb_cfg = common.CONFIG['settings']['last']['lastdb']
         cls.lastdb_cfg = common.CONFIG['settings']['last']['lastal']
+        cls.extensions = ['.bck', '.des', '.prj', '.sds', '.ssp', '.suf', '.tis']
 
     def test_lastdb_nucl_task(self):
-        status = None
         with TemporaryDirectory() as td:
             with Move(td):
                 with TestData('test-transcript.fa', td) as tf:
@@ -58,8 +58,41 @@ class TestLASTTasks(TestCase):
                     print('PATH:', os.environ['PATH'], file=sys.stderr)
 
                     
-                    for ext in ['.bck', '.des', '.prj', '.sds', 
-                                '.ssp', '.suf', '.tis']:
+                    for ext in self.extensions:
                         self.assertTrue(os.path.isfile(tf + ext))
 
                     self.assertEquals(status.status, 'up-to-date')
+
+    def test_lastdb_prot_task(self):
+        with TemporaryDirectory() as td:
+            with Move(td):
+                with TestData('test-protein.fa', td) as tf:
+                    task = tasks.get_lastdb_task(tf, tf, self.lastdb_cfg,
+                                                 prot=True)
+                    run_tasks([task], ['run'])
+                    status = check_status(task)
+                    print(os.listdir(td), file=sys.stderr)
+                    print('PATH:', os.environ['PATH'], file=sys.stderr)
+
+                    
+                    for ext in self.extensions:
+                        self.assertTrue(os.path.isfile(tf + ext))
+
+                    self.assertEquals(status.status, 'up-to-date')
+
+    def test_lastdb_existing_task(self):
+        with TemporaryDirectory() as td:
+            with Move(td):
+                with TestData('test-protein.fa', td) as tf:
+                    for ext in self.extensions:
+                        touch(tf + ext)
+
+                    task = tasks.get_lastdb_task(tf, tf, self.lastdb_cfg,
+                                                 prot=True)
+                    run_tasks([task], ['run'])
+                    print(os.listdir(td), file=sys.stderr)
+                    print(task, file=sys.stderr)
+                    status = check_status(task)
+
+                    self.assertEquals(status.status, 'up-to-date')
+

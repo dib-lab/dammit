@@ -3,11 +3,24 @@ from __future__ import print_function
 
 import os as _os
 import shutil
+import stat
 import sys
 import warnings as _warnings
 from pkg_resources import Requirement, resource_filename, ResolutionError
 
 from tempfile import mkdtemp
+
+
+def touch(filename):
+    '''Perform the equivalent of bash's touch on the file.
+
+    Args:
+        filename (str): File path to touch.
+    '''
+
+    open(filename, 'a').close()
+    _os.chmod(filename, stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
+
 
 class TestData(object):
 
