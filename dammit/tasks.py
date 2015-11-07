@@ -164,6 +164,23 @@ def get_crb_blast_task(query, target, output, crb_blast_cfg,
 
 @create_task_object
 def get_lastdb_task(db_fn, db_out_prefix, lastdb_cfg, prot=True):
+    '''Create a pydoit task to run lastdb.
+
+    WARNING: This does not define a file_dep, to make sure it doesn't
+    get executed when the dependency and targets already exist. This means
+    that if a task acquires the database, it MUST be defined before the
+    lastdb task.
+
+    Args:
+        db_fn (str): The FASTA file to format.
+        db_out_prefix (str): Prefix for the database files.
+        lastdb_cfg (dict): Config for the command. Shoud contain an entry
+        named "params" storing a str.
+        prot (bool): True if a protein FASTA, False otherwise.
+    Returns:
+        dict: A pydoit task.
+
+    '''
     
     exc = which('lastdb')
     params = lastdb_cfg['params']
@@ -181,7 +198,6 @@ def get_lastdb_task(db_fn, db_out_prefix, lastdb_cfg, prot=True):
                         for ext in \
                         ['.bck', '.des', '.prj', '.sds', '.ssp', '.suf', '.tis']],
             'uptodate': [True],
-            'file_dep': [db_fn],
             'clean': [clean_targets]}
 
 
