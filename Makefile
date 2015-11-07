@@ -1,5 +1,4 @@
-all:
-		install
+all: install
 
 deps: FORCE
 		pip install --requirement requirements.txt
