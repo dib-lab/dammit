@@ -189,6 +189,7 @@ def get_lastdb_task(db_fn, db_out_prefix, lastdb_cfg, prot=True):
     cmd = '{exc} {params} {db_out_prefix} {db_fn}'.format(**locals())
 
     name = 'lastdb:' + os.path.basename(db_out_prefix)
+    print(db_out_prefix, file=sys.stderr)
 
     return {'name': name,
             'title': title_with_actions,
@@ -290,7 +291,6 @@ def get_cmpress_task(db_filename, infernal_cfg):
             'title': title_with_actions,
             'actions': [cmd],
             'targets': [db_filename + ext for ext in ['.i1f', '.i1i', '.i1m', '.i1p']],
-            'file_dep': [db_filename],
             'uptodate': [True],
             'clean': [clean_targets]}
 
@@ -325,7 +325,6 @@ def get_hmmpress_task(db_filename, hmmer_cfg):
             'title': title_with_actions,
             'actions': [cmd],
             'targets': [db_filename + ext for ext in ['.h3f', '.h3i', '.h3m', '.h3p']],
-            'file_dep': [db_filename],
             'uptodate': [True],
             'clean': [clean_targets]}
 
