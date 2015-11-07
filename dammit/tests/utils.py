@@ -28,7 +28,7 @@ class TestData(object):
         self.filepath = None
         try:
             self.filepath = resource_filename(Requirement.parse("dammit"), 
-                                              "dammit/tests/test-data/" + filename)
+                                              "dammit/tests/test-data/"     + filename)
         except ResolutionError:
             pass
         if not self.filepath or not _os.path.isfile(self.filepath):
@@ -41,9 +41,29 @@ class TestData(object):
         return self.filepath
 
     def __exit__(self, exc_type, exc_value, traceback):
-        _os.remove(self.filepath)
-        #if exc_type is not None:
-        #    return False
+        try:
+            _os.remove(self.filepath)
+        except OSError:
+            pass
+        if exc_type:
+            return False
+
+
+class TemporaryFile(object):
+
+    def __init__(self, directory):
+        self.filepath = _os.path.join(directory, str(hash(self)))
+
+    def __enter__(self):
+        return self.filepath
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        try:
+            _os.remove(self.filepath)
+        except OSError:
+            pass
+        if exc_type:
+            return False
 
 
 class Move(object):
@@ -58,10 +78,9 @@ class Move(object):
         _os.chdir(self.target)
 
     def __exit__(self, exc_type, exc_value, traceback):
-        #if exc_type is not None:
-        #    print('Error in Move')
-        #    return False
         _os.chdir(self.cwd)
+        if exc_type:
+            return False
 
 
 class TemporaryDirectory(object):
