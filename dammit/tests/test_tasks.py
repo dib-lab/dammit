@@ -46,7 +46,7 @@ class TestLASTTasks(TestCase):
         cls.lastal_cfg = common.CONFIG['settings']['last']['lastal']
         cls.extensions = ['.bck', '.des', '.prj', '.sds', '.ssp', '.suf', '.tis']
 
-    def test_lastdb_nucl_task(self):
+    def test_lastdb_task_nucl(self):
         with TemporaryDirectory() as td:
             with Move(td):
                 with TestData('test-transcript.fa', td) as tf:
@@ -63,7 +63,7 @@ class TestLASTTasks(TestCase):
 
                     self.assertEquals(status.status, 'up-to-date')
 
-    def test_lastdb_prot_task(self):
+    def test_lastdb_task_prot(self):
         with TemporaryDirectory() as td:
             with Move(td):
                 with TestData('test-protein.fa', td) as tf:
@@ -80,7 +80,7 @@ class TestLASTTasks(TestCase):
 
                     self.assertEquals(status.status, 'up-to-date')
 
-    def test_lastdb_existing_task(self):
+    def test_lastdb_task_existing(self):
         with TemporaryDirectory() as td:
             with Move(td):
                 with TestData('test-protein.fa', td) as tf:
@@ -96,7 +96,7 @@ class TestLASTTasks(TestCase):
 
                     self.assertEquals(status.status, 'up-to-date')
 
-    def test_lastal_nucl_x_prot_task(self):
+    def test_lastal_task_nucl_x_prot(self):
         with TemporaryDirectory() as td:
             with Move(td):
                 with TestData('test-protein.fa', td) as prot, \
@@ -120,30 +120,7 @@ class TestLASTTasks(TestCase):
                                   msg='lambda missing, wrong LAST version?')
                     
 
-    def test_lastal_nucl_x_prot_task(self):
-        with TemporaryDirectory() as td:
-            with Move(td):
-                with TestData('test-protein.fa', td) as prot, \
-                     TestData('test-transcript.fa', td) as tr, \
-                     TemporaryFile(td) as out:
-                        
-                    print(os.listdir(td), file=sys.stderr)
-                    db_task = tasks.get_lastdb_task(prot, prot, self.lastdb_cfg)
-                    aln_task = tasks.get_lastal_task(tr, prot, out, True, 1,
-                                                     self.lastal_cfg)
-                    run_tasks([db_task, aln_task], ['run'])
-
-                    aln = ''.join(open(out).readlines())
-                    print(aln, file=sys.stderr)
-
-                    self.assertIn('SPAC212_RecQ_type_DNA_helicase_PROTEIN', 
-                                  aln)
-                    self.assertIn('SPAC212_RecQ_type_DNA_helicase_TRANSCRIPT',
-                                  aln)
-                    self.assertIn('lambda', aln, 
-                                  msg='lambda missing, wrong LAST version?')
-
-    def test_lastal_prot_x_prot_task(self):
+    def test_lastal_task_prot_x_prot(self):
         with TemporaryDirectory() as td:
             with Move(td):
                 with TestData('test-protein.fa', td) as prot, \
@@ -165,3 +142,21 @@ class TestLASTTasks(TestCase):
                     self.assertIn('E=0', aln)
                     self.assertIn('lambda', aln, 
                                   msg='lambda missing, wrong LAST version?')
+
+    def test_lastal_task_uptodate(self):
+        with TemporaryDirectory() as td:
+            with Move(td):
+                with TestData('test-protein.fa', td) as prot, \
+                     TemporaryFile(td) as out:
+                        
+                    print(os.listdir(td), file=sys.stderr)
+                    db_task = tasks.get_lastdb_task(prot, prot, self.lastdb_cfg)
+                    aln_task = tasks.get_lastal_task(prot, prot, out, False, 1,
+                                                     self.lastal_cfg)
+                    # Run it once
+                    run_tasks([db_task, aln_task], ['run'])
+
+                    # Now run again and check the status
+                    run_tasks([aln_task], ['run'])
+                    status = check_status(aln_task)
+                    self.assertEquals(status.status, 'up-to-date')
