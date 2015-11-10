@@ -279,6 +279,7 @@ class TestTransDecoderTasks(TestCase):
     def setup_class(cls):
         cls.longorfs_cfg = common.CONFIG['settings']['transdecoder']['longorfs']
         cls.predict_cfg = common.CONFIG['settings']['transdecoder']['predict']
+        cls.extensions = ['.bed', '.pep', '.gff3', '.mRNA', '.cds']
 
     def test_longorfs_task(self):
         with TemporaryDirectory() as td:
@@ -299,4 +300,26 @@ class TestTransDecoderTasks(TestCase):
 
                     self.assertIn(exp_pep, pep)
 
+    def test_predict_task(self):
+        with TemporaryDirectory() as td:
+            with Move(td):
+                with TestData('test-transcript.fa', td) as transcript, \
+                     TestData('test-protein-x-pfam-a.tbl', td) as pfam:
 
+                    orf_task = tasks.get_transdecoder_orf_task(transcript,
+                                                               self.longorfs_cfg)
+                    pred_task = tasks.get_transdecoder_predict_task(transcript,
+                                                                    pfam,
+                                                                    self.predict_cfg)
+                    run_tasks([orf_task, pred_task], ['run'])
+                    
+                    for ext in self.extensions:
+                        fn = os.path.join(td, transcript+'.transdecoder'+ext)
+                        self.assertTrue(os.path.isfile(fn))
+                        contents = open(fn).read()
+                        if ext == '.gff3':
+                            self.assertIn('mRNA', contents)
+                            self.assertIn('gene', contents)
+                            self.assertIn('CDS', contents)
+                            self.assertIn('three_prime_UTR', contents)
+                            self.assertIn('exon', contents)
