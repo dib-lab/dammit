@@ -271,3 +271,32 @@ class TestInfernalTasks(TestCase):
                     # TODO: better correctness check
                     self.assertEquals(aln.count('accession'), 2)
                     self.assertIn('E-value', aln)
+
+
+class TestTransDecoderTasks(TestCase):
+
+    @classmethod
+    def setup_class(cls):
+        cls.longorfs_cfg = common.CONFIG['settings']['transdecoder']['longorfs']
+        cls.predict_cfg = common.CONFIG['settings']['transdecoder']['predict']
+
+    def test_longorfs_task(self):
+        with TemporaryDirectory() as td:
+            with Move(td):
+                with TestData('test-transcript.fa', td) as transcript, \
+                     TestData('test-transcript-orf.pep', td) as exp_orf:
+
+                    task = tasks.get_transdecoder_orf_task(transcript,
+                                                           self.longorfs_cfg)
+                    run_tasks([task], ['run'])
+                    output_dir = transcript + '.transdecoder_dir'
+
+                    exp_pep = open(exp_orf).read()
+
+                    pep_fn = os.path.join(output_dir, 'longest_orfs.pep')
+                    self.assertTrue(os.path.isfile(pep_fn))
+                    pep = open(pep_fn).read()
+
+                    self.assertIn(exp_pep, pep)
+
+
