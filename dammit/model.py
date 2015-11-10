@@ -6,12 +6,15 @@ from sklearn.externals import joblib
 from sklearn import svm
 from sklearn import preprocessing
 
+from . import parsers
+from . import tasks
 
-class gCRBB(object):
+class CRBL(object):
 
     def __init__(self, training_pep_fn, transcriptome_fn, database_pep_fn,
                  model_fn, classifier=svm.OneClassSVM, 
                  params={nu:0.1, kernel:'rbf', gamma:'0.1'},
+                 n_threads=1,
                  lastal_cfg=common.CONFIG['settings']['last']['lastal'],
                  lastdb_cfg=common.CONFIG['settings']['last']['lastdb']):
 
@@ -25,12 +28,22 @@ class gCRBB(object):
                                                     self.training_pep_fn)
         self.transcriptome_x_db_fn = '{0}.x.{1}.maf'.format(self.transcriptome_fn,
                                                             self.database_pep_fn)
+        self.train_rbh_fn = '{0}.rbhx.{1}.csv'.format(self.training_pep_fn,
+                                                      self.database_pep_fn)
+        self.crbl_fn = '{0}.crbl.{1}.csv'.format(self.transcriptome_fn,
+                                                 self.database_fn)
 
         self.model_fn = model_fn
 
         self.trained = False
         self.features = ['q_aln_len', 'E']
-        self.classifier = classifier(**params)
+        self.classifier = classifier
+        self.params = params
+        self.model = classifier(**params)
+
+        self.n_threads = n_threads
+        self.lastal_cfg = lastal_cfg
+        self.lastdb_cfg = lastdb_cfg
 
     @staticmethod
     def best_hits(aln_df, comp_col='E'):
@@ -83,19 +96,55 @@ class gCRBB(object):
         return rbh_df
 
     def format_training_task(self):
-        pass
+        return tasks.get_lastdb_task(self.training_pep_fn,
+                                     self.training_pep_fn,
+                                     self.lastdb_cfg, 
+                                     prot=True)
 
     def format_database_pep_task(self):
-        pass
+        return tasks.get_lastdb_task(self.database_pep_fn,
+                                     self.database_pep_fn,
+                                     self.lastdb_cfg,
+                                     prot=True)
 
     def align_training_pep_task(self):
-        pass
+        return tasks.get_lastal_task(self.training_pep_fn,
+                                     self.database_pep_fn,
+                                     self.train_x_db_fn,
+                                     False, self.n_threads,
+                                     self.lastal_cfg)
 
     def align_database_pep_task(self):
-        pass
+        return tasks.get_lastal_task(self.database_pep_fn,
+                                     self.training_pep_fn,
+                                     self.db_x_train_fn,
+                                     False, self.n_threads,
+                                     self.lastal_cfg)
 
     def align_transcriptome_task(self):
-        pass
+        return tasks.get_lastal_task(self.transcriptome_fn,
+                                     self.database_pep_fn,
+                                     self.transcriptome_x_db_fn,
+                                     False, self.n_threads,
+                                     self.lastal_cfg)
+
+    @tasks.create_task_object
+    def training_reciprocals_task(self):
+
+        def cmd():
+            training_df = pd.concat([df for df in 
+                                     parsers.maf_to_df_iter(self.train_x_db_fn)])
+            db_df = pd.concat([df for df in
+                               parsers.maf_to_df_iter(self.db_x_train_fn)])
+            best_hits = CRBL.reciprocal_best_hits(training_df, db_df)
+            best_hits.to_csv(self.train_rbh_fn)
+
+        return {'name': '[CRBL]training_reciprocals:' + self.train_rbh_fn,
+                'title': title_with_actions,
+                'actions': [(cmd, [])],
+                'file_dep': [self.train_x_db_fn, self.db_x_train_fn],
+                'targets': [self.train_rbh_fn],
+                'clean': [clean_targets]}
 
     def preprocess(self, alignments):
 
@@ -110,19 +159,46 @@ class gCRBB(object):
 
     def fit(self, training_alignments):
         prepped = self.preprocess(training_alignments)
-        self.classifier.fit(prepped)
+        self.model.fit(prepped)
         joblib.dump(self.classifier, self.model_fn)
         self.trained = True
 
     def predict(self, alignments):
         if not self.trained:
-            self.classifier = joblib.load(self.model_fn)
-        results = self.classifier.predict(alignments)
+            self.model = joblib.load(self.model_fn)
+        results = self.model.predict(alignments)
         return results == 1.0
 
     def fit_task(self):
-        pass
+        
+        def cmd():
+            alignments = pd.read_csv(self.train_rbh_fn)
+            self.fit(alignments)
+
+        def clean():
+            self.model = self.classifier(**self.params)
+            self.trained = False
+
+        return {'name': '[CRBL]fit:' + self.model_fn,
+                'title': title_with_actions,
+                'actions': [(cmd, [])],
+                'file_dep': [self.train_rbh_fn],
+                'targets': [self.model_fn],
+                'clean': [clean_targets, (clean, [])]}
 
     def predict_task(self):
-        pass
+        
+        def cmd():
+            results = []
+            for group in parsers.maf_to_df_iter(self.transcriptome_x_db_fn):
+                mask = self.predict(group)
+                results.append(group.ix[mask])
+            pd.concat(results).to_csv(self.crbl_fn)
+
+        return {'name': '[CRBL]predict:' + self.crbl_fn,
+                'title': title_with_actions,
+                'actions': [(cmd, [])],
+                'file_dep': [self.model_fn, self.transcriptome_x_db_fn],
+                'targets': [self.crbl_fn],
+                'clean': [clean_targets]}
 
