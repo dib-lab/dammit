@@ -2,10 +2,15 @@
 from __future__ import print_function
 
 import numpy as np
+import pandas as pd
 from sklearn.externals import joblib
 from sklearn import svm
 from sklearn import preprocessing
 
+from doit.tools import run_once, create_folder, title_with_actions
+from doit.task import clean_targets, dict_to_task
+
+from . import common
 from . import parsers
 from . import tasks
 
@@ -13,7 +18,7 @@ class CRBL(object):
 
     def __init__(self, training_pep_fn, transcriptome_fn, database_pep_fn,
                  model_fn, classifier=svm.OneClassSVM, 
-                 params={nu:0.1, kernel:'rbf', gamma:'0.1'},
+                 params={'nu':0.1, 'kernel':'rbf', 'gamma':0.1},
                  n_threads=1,
                  lastal_cfg=common.CONFIG['settings']['last']['lastal'],
                  lastdb_cfg=common.CONFIG['settings']['last']['lastdb']):
@@ -31,7 +36,7 @@ class CRBL(object):
         self.train_rbh_fn = '{0}.rbhx.{1}.csv'.format(self.training_pep_fn,
                                                       self.database_pep_fn)
         self.crbl_fn = '{0}.crbl.{1}.csv'.format(self.transcriptome_fn,
-                                                 self.database_fn)
+                                                 self.database_pep_fn)
 
         self.model_fn = model_fn
 
@@ -66,7 +71,7 @@ class CRBL(object):
         '''Given to DataFrames with reciprocal MAF alignments, get the
         reciprocal best hits.
 
-        Uses the gCRBB.best_hits function to get best hits for each DataFrame,
+        Uses the CRBL.best_hits function to get best hits for each DataFrame,
         and then does an inner join to find the reciprocals. The DataFrames
         *will* be modified in-place by the best_hits function!
 
@@ -78,8 +83,8 @@ class CRBL(object):
             DataFrame with the reciprocal best hits.
         '''
 
-        gCRBB.best_hits(aln_df_A)
-        gCRBB.best_hits(alb_df_B)
+        CRBL.best_hits(aln_df_A)
+        CRBL.best_hits(aln_df_B)
 
         # Join between subject A and query B
         rbh_df = pd.merge(aln_df_A, aln_df_B, how='inner', 
@@ -90,12 +95,47 @@ class CRBL(object):
         # Drop extra columns and rename for clarity
         del rbh_df['s_name_x']
         del rbh_df['s_name_y']
-        rbh_df.rename(columns={'q_name_x': 'q_name', 'q_name_y': 's_name'},
+        rbh_df.rename(columns={'q_name_x': 'q_name', 
+                               'q_name_y': 's_name',
+                               'q_aln_len_x': 'q_aln_len',
+                               'E_x': 'E'},
                       inplace=True)
         
         return rbh_df
 
-    def format_training_task(self):
+    def preprocess(self, alignments):
+
+        # Subset out the features
+        data = alignments.dropna()[self.features].astype(float)
+
+        # e-values of 0.0 mess things up, set them to something really low
+        data['E'].ix[data['E'] == 0.0] = 1e-256
+        # put the evalues into a more reasonable range (thanks Richard!)
+        data['E'] = -np.log10(data['E'])
+        data = data.as_matrix()
+        return preprocessing.scale(data)
+
+    def fit(self, training_alignments):
+        prepped = self.preprocess(training_alignments)
+        print(type(prepped), type(prepped[0]), type(prepped[0,0]), prepped.ndim)
+        for row in prepped:
+            for item in row:
+                if not isinstance(item, float):
+                    print('non-float:', item, type(item))
+        print(self.model)
+        self.model.fit(prepped)
+        print('fit!')
+        joblib.dump(self.model, self.model_fn)
+        self.trained = True
+
+    def predict(self, alignments):
+        if not self.trained:
+            self.model = joblib.load(self.model_fn)
+        prepped = self.preprocess(alignments)
+        results = self.model.predict(prepped)
+        return results == 1.0
+
+    def format_training_pep_task(self):
         return tasks.get_lastdb_task(self.training_pep_fn,
                                      self.training_pep_fn,
                                      self.lastdb_cfg, 
@@ -146,29 +186,7 @@ class CRBL(object):
                 'targets': [self.train_rbh_fn],
                 'clean': [clean_targets]}
 
-    def preprocess(self, alignments):
-
-        # Subset out the features
-        data = alignments.dropna()[self.features].astype(float)
-
-        # e-values of 0.0 mess things up, set them to something really low
-        data['E'].ix[data['E'] == 0.0] = 1e-256
-        # put the evalues into a more reasonable range (thanks Richard!)
-        data['E'] = -np.log10(data['E'])
-        return preprocessing.scale(data)
-
-    def fit(self, training_alignments):
-        prepped = self.preprocess(training_alignments)
-        self.model.fit(prepped)
-        joblib.dump(self.classifier, self.model_fn)
-        self.trained = True
-
-    def predict(self, alignments):
-        if not self.trained:
-            self.model = joblib.load(self.model_fn)
-        results = self.model.predict(alignments)
-        return results == 1.0
-
+    @tasks.create_task_object
     def fit_task(self):
         
         def cmd():
@@ -186,6 +204,7 @@ class CRBL(object):
                 'targets': [self.model_fn],
                 'clean': [clean_targets, (clean, [])]}
 
+    @tasks.create_task_object
     def predict_task(self):
         
         def cmd():
@@ -202,3 +221,12 @@ class CRBL(object):
                 'targets': [self.crbl_fn],
                 'clean': [clean_targets]}
 
+    def tasks(self):
+        yield self.format_training_pep_task()
+        yield self.format_database_pep_task()
+        yield self.align_training_pep_task()
+        yield self.align_database_pep_task()
+        yield self.align_transcriptome_task()
+        yield self.training_reciprocals_task()
+        yield self.fit_task()
+        yield self.predict_task()

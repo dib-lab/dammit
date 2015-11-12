@@ -26,12 +26,12 @@ class LogFormatter(logging.Formatter):
             wrapped = self.do_wrap(record.msg, pad)
             res = '\n'.join(wrapped) + '\n'
         else:
-            pad = '{0}# '.format(' ' * (self.padding/2))
-            wrapped = self.do_wrap(record.msg, pad)
+            #pad = '{0}# '.format(' ' * (self.padding/2))
+            #wrapped = self.do_wrap(record.msg, pad)
             extra = '[{0}:{1}]'.format(record.name, record.levelname)
-            extra = extra.rjust((self.width + len(extra)) - len(wrapped[0]))
-            wrapped[0] = '{0}{1}'.format(wrapped[0], extra)
-            res = '\n'.join(wrapped)
+            #extra = extra.rjust((self.width + len(extra)) - len(wrapped[0]))
+            #wrapped[0] = '{0}{1}'.format(wrapped[0], extra)
+            res = record.msg + extra
 
         return res
 

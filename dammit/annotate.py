@@ -8,6 +8,7 @@ import sys
 
 from . import common
 from .log import LogReporter
+from .model import CRBL
 from .report import get_report_tasks
 from .tasks import get_transcriptome_stats_task, \
                    get_busco_task, \
@@ -182,7 +183,6 @@ class AnnotateHandler(object):
         '''
         Run LAST to get homologies with OrthoDB. We use LAST here because
         it is much faster than BLAST+, and OrthoDB is pretty huge.
-        '''
         
         lastal_cfg = common.CONFIG['settings']['last']['lastal']
         orthodb_fn = self.database_dict['ORTHODB']
@@ -193,25 +193,26 @@ class AnnotateHandler(object):
         )
         results['orthodb'] = tr_x_orthodb_fn
      
+        '''
 
         '''
-        Run conditional recipricol best hits blast (CRBB) against the
+        Run conditional recipricol best hits LAST (CRBL) against the
         user-supplied databases.
         '''
         results['user'] = {}
-        crb_blast_cfg = common.CONFIG['settings']['crb-blast']
         for path in self.args.user_databases:
             key = os.path.basename(path)
             tasks.append(
                 get_sanitize_fasta_task(os.path.abspath(path),
                                         key)
             )
-            fn = '{0}.x.{1}.crbb.tsv'.format(self.transcriptome, key)
-            annotate_tasks.append(
-                get_crb_blast_task(self.transcriptome, key, fn, 
-                                   crb_blast_cfg, self.args.n_threads)
+            model_fn = '{0}.x.{1}.crbl.model'.format(self.transcriptome, key)
+            crbl_mgr = CRBL(protein_prediction_pep, self.transcriptome,
+                            key, model_fn, n_threads=self.args.n_threads)
+            annotate_tasks.extend(
+                [tsk for tsk in crbl_mgr.tasks()]
             )
-            results['user'][key] = fn
+            results['user'][key] = crbl_mgr.crbl_fn
 
         tasks.extend(annotate_tasks)
 

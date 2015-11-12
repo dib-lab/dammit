@@ -16,12 +16,15 @@ def get_report_tasks(transcriptome, results_dict, databases, n_threads=1):
     tasks = []
     outputs = []
 
+
+    '''
     orthodb_gff3 = results_dict['orthodb'] + '.gff3'
     tasks.append(
         get_maf_gff3_task(results_dict['orthodb'],
                           orthodb_gff3, 'OrthoDB')
     )
     outputs.append(orthodb_gff3)
+    '''
 
     pfam_gff3 = results_dict['pfam'] + '.gff3'
     tasks.append(
