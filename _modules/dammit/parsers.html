@@ -416,6 +416,8 @@
 
                 <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cur_aln</span><span class="p">)</span>
                 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">chunksize</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">LAMBDA</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;old version of lastal; please update&quot;</span><span class="p">)</span>
                     <span class="k">yield</span> <span class="n">build_df</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">LAMBDA</span><span class="p">,</span> <span class="n">K</span><span class="p">)</span>
                     <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
 

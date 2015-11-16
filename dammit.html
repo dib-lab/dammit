@@ -121,105 +121,6 @@ cython and numpy, it can be super fast.</p>
 </div>
 <div class="section" id="module-dammit.common">
 <span id="dammit-common-module"></span><h2>dammit.common module<a class="headerlink" href="#module-dammit.common" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="dammit.common.LogFormatter">
-<em class="property">class </em><code class="descclassname">dammit.common.</code><code class="descname">LogFormatter</code><span class="sig-paren">(</span><em>width=70</em>, <em>padding=10</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/common.html#LogFormatter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.common.LogFormatter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">logging.Formatter</span></code></p>
-<dl class="method">
-<dt id="dammit.common.LogFormatter.do_wrap">
-<code class="descname">do_wrap</code><span class="sig-paren">(</span><em>msg</em>, <em>pad</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/common.html#LogFormatter.do_wrap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.common.LogFormatter.do_wrap" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="dammit.common.LogFormatter.format">
-<code class="descname">format</code><span class="sig-paren">(</span><em>record</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/common.html#LogFormatter.format"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.common.LogFormatter.format" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="dammit.common.LogReporter">
-<em class="property">class </em><code class="descclassname">dammit.common.</code><code class="descname">LogReporter</code><span class="sig-paren">(</span><em>logger</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/common.html#LogReporter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.common.LogReporter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
-<p>Log reporter. print results to the logger</p>
-<dl class="method">
-<dt id="dammit.common.LogReporter.add_failure">
-<code class="descname">add_failure</code><span class="sig-paren">(</span><em>task</em>, <em>exception</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/common.html#LogReporter.add_failure"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.common.LogReporter.add_failure" title="Permalink to this definition">¶</a></dt>
-<dd><p>called when excution finishes with a failure</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="dammit.common.LogReporter.add_success">
-<code class="descname">add_success</code><span class="sig-paren">(</span><em>task</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/common.html#LogReporter.add_success"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.common.LogReporter.add_success" title="Permalink to this definition">¶</a></dt>
-<dd><p>called when excution finishes successfuly</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="dammit.common.LogReporter.cleanup_error">
-<code class="descname">cleanup_error</code><span class="sig-paren">(</span><em>exception</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/common.html#LogReporter.cleanup_error"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.common.LogReporter.cleanup_error" title="Permalink to this definition">¶</a></dt>
-<dd><p>error during cleanup</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="dammit.common.LogReporter.complete_run">
-<code class="descname">complete_run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/common.html#LogReporter.complete_run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.common.LogReporter.complete_run" title="Permalink to this definition">¶</a></dt>
-<dd><p>called when finshed running all tasks</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="dammit.common.LogReporter.desc">
-<code class="descname">desc</code><em class="property"> = 'console output'</em><a class="headerlink" href="#dammit.common.LogReporter.desc" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="dammit.common.LogReporter.execute_task">
-<code class="descname">execute_task</code><span class="sig-paren">(</span><em>task</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/common.html#LogReporter.execute_task"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.common.LogReporter.execute_task" title="Permalink to this definition">¶</a></dt>
-<dd><p>called when excution starts</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="dammit.common.LogReporter.get_status">
-<code class="descname">get_status</code><span class="sig-paren">(</span><em>task</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/common.html#LogReporter.get_status"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.common.LogReporter.get_status" title="Permalink to this definition">¶</a></dt>
-<dd><p>called when task is selected (check if up-to-date)</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="dammit.common.LogReporter.initialize">
-<code class="descname">initialize</code><span class="sig-paren">(</span><em>tasks</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/common.html#LogReporter.initialize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.common.LogReporter.initialize" title="Permalink to this definition">¶</a></dt>
-<dd><p>called just after tasks have benn loaded before execution starts</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="dammit.common.LogReporter.runtime_error">
-<code class="descname">runtime_error</code><span class="sig-paren">(</span><em>msg</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/common.html#LogReporter.runtime_error"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.common.LogReporter.runtime_error" title="Permalink to this definition">¶</a></dt>
-<dd><p>error from doit (not from a task execution)</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="dammit.common.LogReporter.skip_ignore">
-<code class="descname">skip_ignore</code><span class="sig-paren">(</span><em>task</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/common.html#LogReporter.skip_ignore"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.common.LogReporter.skip_ignore" title="Permalink to this definition">¶</a></dt>
-<dd><p>skipped ignored task</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="dammit.common.LogReporter.skip_uptodate">
-<code class="descname">skip_uptodate</code><span class="sig-paren">(</span><em>task</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/common.html#LogReporter.skip_uptodate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.common.LogReporter.skip_uptodate" title="Permalink to this definition">¶</a></dt>
-<dd><p>skipped up-to-date task</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="dammit.common.LogReporter.teardown_task">
-<code class="descname">teardown_task</code><span class="sig-paren">(</span><em>task</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/common.html#LogReporter.teardown_task"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.common.LogReporter.teardown_task" title="Permalink to this definition">¶</a></dt>
-<dd><p>called when starts the execution of teardown action</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="dammit.common.LogReporter.write">
-<code class="descname">write</code><span class="sig-paren">(</span><em>text</em>, <em>level=10</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/common.html#LogReporter.write"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.common.LogReporter.write" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
 <dl class="function">
 <dt id="dammit.common.add_header">
 <code class="descclassname">dammit.common.</code><code class="descname">add_header</code><span class="sig-paren">(</span><em>msg</em>, <em>level</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/common.html#add_header"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.common.add_header" title="Permalink to this definition">¶</a></dt>
@@ -240,7 +141,7 @@ the user.</p>
 
 <dl class="function">
 <dt id="dammit.common.run_tasks">
-<code class="descclassname">dammit.common.</code><code class="descname">run_tasks</code><span class="sig-paren">(</span><em>tasks</em>, <em>args</em>, <em>config={'verbosity': 2}</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/common.html#run_tasks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.common.run_tasks" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">dammit.common.</code><code class="descname">run_tasks</code><span class="sig-paren">(</span><em>tasks</em>, <em>args</em>, <em>config={'verbosity': 0}</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/common.html#run_tasks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.common.run_tasks" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
@@ -329,7 +230,7 @@ list: A list of the doit tasks.</p>
 <span id="dammit-dependencies-module"></span><h2>dammit.dependencies module<a class="headerlink" href="#module-dammit.dependencies" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="dammit.dependencies.DependencyHandler">
-<em class="property">class </em><code class="descclassname">dammit.dependencies.</code><code class="descname">DependencyHandler</code><span class="sig-paren">(</span><em>args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/dependencies.html#DependencyHandler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.dependencies.DependencyHandler" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">dammit.dependencies.</code><code class="descname">DependencyHandler</code><a class="reference internal" href="_modules/dammit/dependencies.html#DependencyHandler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.dependencies.DependencyHandler" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 <dl class="method">
 <dt id="dammit.dependencies.DependencyHandler.check_or_fail">

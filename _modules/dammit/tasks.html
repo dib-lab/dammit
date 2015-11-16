@@ -206,6 +206,22 @@
 </div>
 <span class="nd">@create_task_object</span>
 <div class="viewcode-block" id="get_lastdb_task"><a class="viewcode-back" href="../../dammit.html#dammit.tasks.get_lastdb_task">[docs]</a><span class="k">def</span> <span class="nf">get_lastdb_task</span><span class="p">(</span><span class="n">db_fn</span><span class="p">,</span> <span class="n">db_out_prefix</span><span class="p">,</span> <span class="n">lastdb_cfg</span><span class="p">,</span> <span class="n">prot</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Create a pydoit task to run lastdb.</span>
+
+<span class="sd">    WARNING: This does not define a file_dep, to make sure it doesn&#39;t</span>
+<span class="sd">    get executed when the dependency and targets already exist. This means</span>
+<span class="sd">    that if a task acquires the database, it MUST be defined before the</span>
+<span class="sd">    lastdb task.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        db_fn (str): The FASTA file to format.</span>
+<span class="sd">        db_out_prefix (str): Prefix for the database files.</span>
+<span class="sd">        lastdb_cfg (dict): Config for the command. Shoud contain an entry</span>
+<span class="sd">        named &quot;params&quot; storing a str.</span>
+<span class="sd">        prot (bool): True if a protein FASTA, False otherwise.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        dict: A pydoit task.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     
     <span class="n">exc</span> <span class="o">=</span> <span class="n">which</span><span class="p">(</span><span class="s">&#39;lastdb&#39;</span><span class="p">)</span>
     <span class="n">params</span> <span class="o">=</span> <span class="n">lastdb_cfg</span><span class="p">[</span><span class="s">&#39;params&#39;</span><span class="p">]</span>
@@ -215,24 +231,36 @@
     <span class="n">cmd</span> <span class="o">=</span> <span class="s">&#39;{exc} {params} {db_out_prefix} {db_fn}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="nb">locals</span><span class="p">())</span>
 
     <span class="n">name</span> <span class="o">=</span> <span class="s">&#39;lastdb:&#39;</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">db_out_prefix</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">db_out_prefix</span><span class="p">,</span> <span class="nb">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="p">{</span><span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span>
             <span class="s">&#39;title&#39;</span><span class="p">:</span> <span class="n">title_with_actions</span><span class="p">,</span>
             <span class="s">&#39;actions&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">cmd</span><span class="p">],</span>
             <span class="s">&#39;targets&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">db_out_prefix</span> <span class="o">+</span> <span class="n">ext</span> \
                         <span class="k">for</span> <span class="n">ext</span> <span class="ow">in</span> \
-                        <span class="p">[</span><span class="s">&#39;.des&#39;</span><span class="p">,</span> <span class="s">&#39;.sds&#39;</span><span class="p">,</span> <span class="s">&#39;.ssp&#39;</span><span class="p">,</span> <span class="s">&#39;.tis&#39;</span><span class="p">,</span> <span class="s">&#39;.prj&#39;</span><span class="p">]],</span>
+                        <span class="p">[</span><span class="s">&#39;.bck&#39;</span><span class="p">,</span> <span class="s">&#39;.des&#39;</span><span class="p">,</span> <span class="s">&#39;.prj&#39;</span><span class="p">,</span> <span class="s">&#39;.sds&#39;</span><span class="p">,</span> <span class="s">&#39;.ssp&#39;</span><span class="p">,</span> <span class="s">&#39;.suf&#39;</span><span class="p">,</span> <span class="s">&#39;.tis&#39;</span><span class="p">]],</span>
             <span class="s">&#39;uptodate&#39;</span><span class="p">:</span> <span class="p">[</span><span class="bp">True</span><span class="p">],</span>
-            <span class="s">&#39;file_dep&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">db_fn</span><span class="p">],</span>
             <span class="s">&#39;clean&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">clean_targets</span><span class="p">]}</span>
 
 </div>
 <span class="nd">@create_task_object</span>
-<div class="viewcode-block" id="get_lastal_task"><a class="viewcode-back" href="../../dammit.html#dammit.tasks.get_lastal_task">[docs]</a><span class="k">def</span> <span class="nf">get_lastal_task</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="n">out_fn</span><span class="p">,</span> <span class="n">prot</span><span class="p">,</span> <span class="n">n_threads</span><span class="p">,</span> <span class="n">lastal_cfg</span><span class="p">):</span>
+<div class="viewcode-block" id="get_lastal_task"><a class="viewcode-back" href="../../dammit.html#dammit.tasks.get_lastal_task">[docs]</a><span class="k">def</span> <span class="nf">get_lastal_task</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="n">out_fn</span><span class="p">,</span> <span class="n">translate</span><span class="p">,</span> <span class="n">n_threads</span><span class="p">,</span> <span class="n">lastal_cfg</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Create a pydoit task to run lastal</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        query (str): The file with the query sequences.</span>
+<span class="sd">        db (str): The database file prefix.</span>
+<span class="sd">        out_fn (str): Destination file for alignments.</span>
+<span class="sd">        translate (bool): True if query is a nucleotide FASTA.</span>
+<span class="sd">        n_threads (int): Number of threads to run with.</span>
+<span class="sd">        lastal_cfg (dict): Config, must contain key params holding str.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        dict: A pydoit task.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
 
     <span class="n">exc</span> <span class="o">=</span> <span class="n">which</span><span class="p">(</span><span class="s">&#39;lastal&#39;</span><span class="p">)</span>
     <span class="n">params</span> <span class="o">=</span> <span class="n">lastal_cfg</span><span class="p">[</span><span class="s">&#39;params&#39;</span><span class="p">]</span>
-    <span class="k">if</span> <span class="n">prot</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">translate</span><span class="p">:</span>
         <span class="n">params</span> <span class="o">+=</span> <span class="s">&#39; -F&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">lastal_cfg</span><span class="p">[</span><span class="s">&#39;frameshift&#39;</span><span class="p">])</span>
     <span class="n">cmd</span> <span class="o">=</span> <span class="s">&#39;{exc} {params} {db} {query} &gt; {out_fn}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="nb">locals</span><span class="p">())</span>
 
@@ -284,7 +312,7 @@
     <span class="c"># BUSCO chokes on file paths as output names</span>
     <span class="n">output_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">output_name</span><span class="p">)</span>
 
-    <span class="n">cmd</span> <span class="o">=</span> <span class="s">&#39;python3 {exc} -in {input_filename} -o {output_name} -l {busco_db_dir} &#39;</span>\
+    <span class="n">cmd</span> <span class="o">=</span> <span class="s">&#39;python3 {exc} -in {input_filename} -f -o {output_name} -l {busco_db_dir} &#39;</span>\
             <span class="s">&#39;-m {input_type} -c {n_threads}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="nb">locals</span><span class="p">())</span>
 
     <span class="k">return</span> <span class="p">{</span><span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span>
@@ -305,7 +333,6 @@
             <span class="s">&#39;title&#39;</span><span class="p">:</span> <span class="n">title_with_actions</span><span class="p">,</span>
             <span class="s">&#39;actions&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">cmd</span><span class="p">],</span>
             <span class="s">&#39;targets&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">db_filename</span> <span class="o">+</span> <span class="n">ext</span> <span class="k">for</span> <span class="n">ext</span> <span class="ow">in</span> <span class="p">[</span><span class="s">&#39;.i1f&#39;</span><span class="p">,</span> <span class="s">&#39;.i1i&#39;</span><span class="p">,</span> <span class="s">&#39;.i1m&#39;</span><span class="p">,</span> <span class="s">&#39;.i1p&#39;</span><span class="p">]],</span>
-            <span class="s">&#39;file_dep&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">db_filename</span><span class="p">],</span>
             <span class="s">&#39;uptodate&#39;</span><span class="p">:</span> <span class="p">[</span><span class="bp">True</span><span class="p">],</span>
             <span class="s">&#39;clean&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">clean_targets</span><span class="p">]}</span>
 
@@ -340,7 +367,6 @@
             <span class="s">&#39;title&#39;</span><span class="p">:</span> <span class="n">title_with_actions</span><span class="p">,</span>
             <span class="s">&#39;actions&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">cmd</span><span class="p">],</span>
             <span class="s">&#39;targets&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">db_filename</span> <span class="o">+</span> <span class="n">ext</span> <span class="k">for</span> <span class="n">ext</span> <span class="ow">in</span> <span class="p">[</span><span class="s">&#39;.h3f&#39;</span><span class="p">,</span> <span class="s">&#39;.h3i&#39;</span><span class="p">,</span> <span class="s">&#39;.h3m&#39;</span><span class="p">,</span> <span class="s">&#39;.h3p&#39;</span><span class="p">]],</span>
-            <span class="s">&#39;file_dep&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">db_filename</span><span class="p">],</span>
             <span class="s">&#39;uptodate&#39;</span><span class="p">:</span> <span class="p">[</span><span class="bp">True</span><span class="p">],</span>
             <span class="s">&#39;clean&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">clean_targets</span><span class="p">]}</span>
 
@@ -384,15 +410,14 @@
 
 <span class="c"># TransDecoder.Predict -t lamp10.fasta --retain_pfam_hits lamp10.fasta.pfam-A.out</span></div>
 <span class="nd">@create_task_object</span>
-<div class="viewcode-block" id="get_transdecoder_predict_task"><a class="viewcode-back" href="../../dammit.html#dammit.tasks.get_transdecoder_predict_task">[docs]</a><span class="k">def</span> <span class="nf">get_transdecoder_predict_task</span><span class="p">(</span><span class="n">input_filename</span><span class="p">,</span> <span class="n">db_filename</span><span class="p">,</span> <span class="n">n_threads</span><span class="p">,</span> 
-                                  <span class="n">transdecoder_cfg</span><span class="p">):</span>
+<div class="viewcode-block" id="get_transdecoder_predict_task"><a class="viewcode-back" href="../../dammit.html#dammit.tasks.get_transdecoder_predict_task">[docs]</a><span class="k">def</span> <span class="nf">get_transdecoder_predict_task</span><span class="p">(</span><span class="n">input_filename</span><span class="p">,</span> <span class="n">db_filename</span><span class="p">,</span> <span class="n">transdecoder_cfg</span><span class="p">):</span>
 
     <span class="n">name</span> <span class="o">=</span> <span class="s">&#39;TransDecoder.Predict:&#39;</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">input_filename</span><span class="p">)</span>
 
     <span class="n">orf_cutoff</span> <span class="o">=</span> <span class="n">transdecoder_cfg</span><span class="p">[</span><span class="s">&#39;orf_cutoff&#39;</span><span class="p">]</span>
     <span class="n">exc</span> <span class="o">=</span> <span class="n">which</span><span class="p">(</span><span class="s">&#39;TransDecoder.Predict&#39;</span><span class="p">)</span>
     <span class="n">cmd</span> <span class="o">=</span> <span class="s">&#39;{exc} -t {input_filename} --retain_pfam_hits {db_filename} </span><span class="se">\</span>
-<span class="s">            --retain_long_orfs {orf_cutoff} --cpu {n_threads}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="nb">locals</span><span class="p">())</span>
+<span class="s">            --retain_long_orfs {orf_cutoff}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="nb">locals</span><span class="p">())</span>
     
     <span class="k">return</span> <span class="p">{</span><span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span>
             <span class="s">&#39;title&#39;</span><span class="p">:</span> <span class="n">title_with_actions</span><span class="p">,</span>
