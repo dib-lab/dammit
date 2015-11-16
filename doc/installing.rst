@@ -40,31 +40,43 @@ First, let's get packages from the Ubuntu PPAs::
 
     sudo apt-get update
     sudo apt-get install python-pip python-dev python-numpy git ruby hmmer \
-        infernal ncbi-blast+ last-align liburi-escape-xs-perl emboss liburi-perl
+        infernal ncbi-blast+ liburi-escape-xs-perl emboss liburi-perl
     
 
-If you're on Ubuntu 15.10, you can also install TransDecoder through aptitude::
+If you're on Ubuntu 15.10, you can also install TransDecoder and LAST through aptitude::
 
-    sudo apt-get install transdecoder
+    sudo apt-get install transdecoder last-align
 
-Otherwise, you'll need to install it `manually <https://transdecoder.github.io/>`__. 
-To install it in your home directory, execute these commands in your 
+Otherwise, you'll need to install them manually. 
+To install `TransDecoder <https://transdecoder.github.io/>`__ in your home directory, execute these commands in your 
 terminal::
 
     cd
-    wget https://github.com/TransDecoder/TransDecoder/archive/2.0.1.tar.gz
+    curl -O https://github.com/TransDecoder/TransDecoder/archive/2.0.1.tar.gz
     tar -xvzf 2.0.1.tar.gz
     cd TransDecoder-2.0.1; make
     export PATH=$PATH:$HOME/TransDecoder-2.0.1
 
-The above commands will only install it for the current session; to
-keep it installed, append it to your bash profile. For GNU/Linux::
+To get LAST::
+
+    cd
+    curl -O http://last.cbrc.jp/last-658.zip
+    unzip last-658.zip
+    cd last-658
+    make
+    export PATH=$PATH:$HOME/last-658
+
+
+The above commands will only install them for the current session; to
+keep it installed, append the exports to your bash profile. For GNU/Linux::
 
     echo 'export PATH=$PATH:$HOME/TransDecoder-2.0.1' >> $HOME/.bashrc
+    echo 'export PATH=$PATH:$HOME/last-658' >> $HOME/.bashrc
 
 For OSX::
 
     echo 'export PATH=$PATH:$HOME/TransDecoder-2.0.1' >> $HOME/.bash_profile
+    echo 'export PATH=$PATH:$HOME/last-658' >> $HOME/.bash_profile
 
 Next, we need to install Conditional Reciprocal Best-hits Blast (CRBB). The
 algorithm is described in
@@ -77,7 +89,7 @@ dammit also runs BUSCO to assess completeness. To install it, run the following
 commands::
 
     cd
-    wget http://busco.ezlab.org/files/BUSCO_v1.1b1.tar.gz
+    curl -O http://busco.ezlab.org/files/BUSCO_v1.1b1.tar.gz
     tar -xvzf BUSCO_v1.1b1.tar.gz
     chmod +x BUSCO_v1.1b1/*.py
     export PATH=$PATH:$HOME/BUSCO_v1.1b1

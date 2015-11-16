@@ -45,16 +45,18 @@
 
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
 
 <span class="kn">from</span> <span class="nn">doit.dependency</span> <span class="kn">import</span> <span class="n">Dependency</span><span class="p">,</span> <span class="n">SqliteDB</span>
 
-<span class="kn">import</span> <span class="nn">common</span>
-<span class="kn">from</span> <span class="nn">tasks</span> <span class="kn">import</span> <span class="n">get_download_and_gunzip_task</span><span class="p">,</span> \
-                  <span class="n">get_hmmpress_task</span><span class="p">,</span> \
-                  <span class="n">get_cmpress_task</span><span class="p">,</span> \
-                  <span class="n">get_download_and_untar_task</span><span class="p">,</span> \
-                  <span class="n">get_lastdb_task</span><span class="p">,</span> \
-                  <span class="n">print_tasks</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">common</span>
+<span class="kn">from</span> <span class="nn">.log</span> <span class="kn">import</span> <span class="n">LogReporter</span>
+<span class="kn">from</span> <span class="nn">.tasks</span> <span class="kn">import</span> <span class="n">get_download_and_gunzip_task</span><span class="p">,</span> \
+                   <span class="n">get_hmmpress_task</span><span class="p">,</span> \
+                   <span class="n">get_cmpress_task</span><span class="p">,</span> \
+                   <span class="n">get_download_and_untar_task</span><span class="p">,</span> \
+                   <span class="n">get_lastdb_task</span><span class="p">,</span> \
+                   <span class="n">print_tasks</span>
 
 
 <div class="viewcode-block" id="DatabaseHandler"><a class="viewcode-back" href="../../dammit.html#dammit.databases.DatabaseHandler">[docs]</a><span class="k">class</span> <span class="nc">DatabaseHandler</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -72,9 +74,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">directory</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">directory</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">doit_config</span> <span class="o">=</span> <span class="p">{</span>
-                            <span class="s">&#39;reporter&#39;</span><span class="p">:</span> <span class="n">common</span><span class="o">.</span><span class="n">LogReporter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">),</span>
+                            <span class="s">&#39;reporter&#39;</span><span class="p">:</span> <span class="n">LogReporter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">),</span>
                             <span class="s">&#39;backend&#39;</span><span class="p">:</span> <span class="n">common</span><span class="o">.</span><span class="n">DOIT_BACKEND</span><span class="p">,</span>
                             <span class="s">&#39;verbosity&#39;</span><span class="p">:</span> <span class="n">common</span><span class="o">.</span><span class="n">DOIT_VERBOSITY</span><span class="p">,</span>
+                            <span class="s">&#39;continue&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
                             <span class="s">&#39;dep_file&#39;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">directory</span><span class="p">,</span> <span class="s">&#39;databases.doit.db&#39;</span><span class="p">)</span>
                            <span class="p">}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;doit_config:{0}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">doit_config</span><span class="p">))</span>
@@ -103,7 +106,7 @@
 <div class="viewcode-block" id="DatabaseHandler.check_or_fail"><a class="viewcode-back" href="../../dammit.html#dammit.databases.DatabaseHandler.check_or_fail">[docs]</a>    <span class="k">def</span> <span class="nf">check_or_fail</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">missing</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">check</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">missing</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&#39;INstall databases to continue; exiting&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&#39;Install databases to continue; exiting&#39;</span><span class="p">)</span>
             <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="DatabaseHandler.check"><a class="viewcode-back" href="../../dammit.html#dammit.databases.DatabaseHandler.check">[docs]</a>    <span class="k">def</span> <span class="nf">check</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
