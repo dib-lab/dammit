@@ -19,7 +19,7 @@ Installation
 ------------
 
 Complete instructions with explanations are at the documentation 
-`website <http://www.camillescott.org/dammit/`__. For the impatient, here's a stripped 
+`website <http://www.camillescott.org/dammit/>`__. For the impatient, here's a stripped 
 down version.
 
 These instructions assume you're on Ubuntu 14.04. dammit will run on OSX too, though
