@@ -65,8 +65,3 @@ To add these to your environment permanently::
     echo 'export PATH=$PATH:$HOME/last-658' >> $HOME/.bashrc
     echo 'export PATH=$PATH:$HOME/BUSCO_v1.1b1' >> $HOME/.bashrc
 
-Miscellany
-----------
-
-Calvin and Hobbes is (c) Bill Watterson. I believe the above excerpt qualifies as fair use, but if there are any objections,
-I will dejectedly take it down.
