@@ -1,9 +1,6 @@
 dammit!
 =======
 
-.. image:: doc/_static/Character_Building.png
-    :align: left
-
 *"I love writing BLAST parsers!" -- no one, ever*
 
 dammit is a simple de novo transcriptome annotator. It was born out of the
