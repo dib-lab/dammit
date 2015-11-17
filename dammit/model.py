@@ -123,7 +123,7 @@ class CRBL(object):
         data = alignments.dropna()[self.features].astype(float)
 
         # e-values of 0.0 mess things up, set them to something really low
-        data['E'].ix[data['E'] == 0.0] = 1e-256
+        #data['E'].ix[data['E'] == 0.0] = 1e-256
         # put the evalues into a more reasonable range (thanks Richard!)
         data['E'] += 1e-256
         data['E'] = -np.log10(data['E'])
@@ -145,6 +145,7 @@ class CRBL(object):
         if not self.trained:
             self.model = joblib.load(self.model_fn)
             self.scaler = joblib.load(self.scaler_fn)
+            self.trainied = True
         prepped = self.preprocess(alignments)
         prepped = self.transform(prepped)
         results = self.model.predict(prepped)
@@ -210,11 +211,17 @@ class CRBL(object):
 
     @tasks.create_task_object
     def fit_task(self):
+
+        def fix_transdecoder_name(item):
+            return item.partition('|')[0]
         
         def cmd():
             rbh_alignments = pd.read_csv(self.train_rbh_fn)
+            rbh_alignments['q_name'] = rbh_alignments['q_name'].apply(fix_transdecoder_name)
+            print(rbh_alignments.q_name[0])
             train_alignments = pd.concat([group for group in
                                          parsers.maf_to_df_iter(self.transcriptome_x_db_fn)])
+            print(train_alignments.q_name[0])
             train_alignments = train_alignments.ix[rbh_alignments.index]
             self.fit(train_alignments)
 
