@@ -34,7 +34,7 @@ or PyPI, and if not, are trivial to install manually. If the goal is to make ann
 suck less, then installing the necessary software should suck less too.
 
 Most of this guide will assume you're on a Ubuntu system. However, the dependencies 
-should all run on any flavor of GNU/Linux and on OSX. 
+should all run on any flavor of GNU/Linux and on OSX.
 
 First, let's get packages from the Ubuntu PPAs::
 
@@ -68,15 +68,10 @@ To get LAST::
 
 
 The above commands will only install them for the current session; to
-keep it installed, append the exports to your bash profile. For GNU/Linux::
+keep it installed, append the exports to your bash profile::
 
     echo 'export PATH=$PATH:$HOME/TransDecoder-2.0.1' >> $HOME/.bashrc
     echo 'export PATH=$PATH:$HOME/last-658' >> $HOME/.bashrc
-
-For OSX::
-
-    echo 'export PATH=$PATH:$HOME/TransDecoder-2.0.1' >> $HOME/.bash_profile
-    echo 'export PATH=$PATH:$HOME/last-658' >> $HOME/.bash_profile
 
 Next, we need to install Conditional Reciprocal Best-hits Blast (CRBB). The
 algorithm is described in
@@ -97,12 +92,6 @@ commands::
 ...and once again, to install it permanently::
 
     echo 'export PATH=$PATH:$HOME/BUSCO_v1.1b1' >> $HOME/.bashrc
-
-for GNU/Linux, and::
-
-    echo  'export PATH=$PATH:$HOME/BUSCO_v1.1b1' >> $HOME/.bash_profile
-
-for OSX.
 
 When you're done, run the check again to make sure everything was installed
 correctly::
