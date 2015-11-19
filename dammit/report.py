@@ -17,14 +17,12 @@ def get_report_tasks(transcriptome, results_dict, databases, n_threads=1):
     outputs = []
 
 
-    '''
     orthodb_gff3 = results_dict['orthodb'] + '.gff3'
     tasks.append(
         get_maf_gff3_task(results_dict['orthodb'],
                           orthodb_gff3, 'OrthoDB')
     )
     outputs.append(orthodb_gff3)
-    '''
 
     pfam_gff3 = results_dict['pfam'] + '.gff3'
     tasks.append(
@@ -40,14 +38,12 @@ def get_report_tasks(transcriptome, results_dict, databases, n_threads=1):
     )
     outputs.append(rfam_gff3)
 
-    '''
     for db, fn in results_dict['user'].iteritems():
         gff3_fn = fn + '.gff3'
         tasks.append(
             get_crb_gff3_task(fn, gff3_fn, db)
         )
         outputs.append(gff3_fn)
-    '''
 
     outputs.append(results_dict['ORFs_gff3'])
 
