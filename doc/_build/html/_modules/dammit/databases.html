@@ -25,6 +25,7 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="author" title="About these documents" href="../../about.html" />
     <link rel="top" title="dammit 1.0 documentation" href="../../index.html" />
     <link rel="up" title="Module code" href="../index.html" />
    
@@ -67,8 +68,14 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">database_dir</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="n">directory</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">common</span><span class="o">.</span><span class="n">get_dammit_dir</span><span class="p">(),</span> 
-                                     <span class="n">common</span><span class="o">.</span><span class="n">CONFIG</span><span class="p">[</span><span class="s">&#39;settings&#39;</span><span class="p">][</span><span class="s">&#39;db_dir&#39;</span><span class="p">])</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">directory</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s">&#39;DAMMIT_DB_DIR&#39;</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;found DAMMIT_DB_DIR env variable&#39;</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;no DAMMIT_DB_DIR or --database-dir, using&#39;</span>\
+                                  <span class="s">&#39; default&#39;</span><span class="p">)</span>
+                <span class="n">directory</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">common</span><span class="o">.</span><span class="n">get_dammit_dir</span><span class="p">(),</span> 
+                                         <span class="n">common</span><span class="o">.</span><span class="n">CONFIG</span><span class="p">[</span><span class="s">&#39;settings&#39;</span><span class="p">][</span><span class="s">&#39;db_dir&#39;</span><span class="p">])</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">directory</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">database_dir</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">directory</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">directory</span><span class="p">)</span>

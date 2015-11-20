@@ -25,6 +25,7 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="author" title="About these documents" href="../../about.html" />
     <link rel="top" title="dammit 1.0 documentation" href="../../index.html" />
     <link rel="up" title="Module code" href="../index.html" />
    
@@ -51,7 +52,8 @@
                    <span class="n">get_hmmscan_gff3_task</span><span class="p">,</span> \
                    <span class="n">get_cmscan_gff3_task</span><span class="p">,</span> \
                    <span class="n">get_gff3_merge_task</span><span class="p">,</span> \
-                   <span class="n">get_crb_gff3_task</span>
+                   <span class="n">get_crb_gff3_task</span><span class="p">,</span> \
+                   <span class="n">get_maf_best_hits_task</span>
 
 <div class="viewcode-block" id="get_report_tasks"><a class="viewcode-back" href="../../dammit.html#dammit.report.get_report_tasks">[docs]</a><span class="k">def</span> <span class="nf">get_report_tasks</span><span class="p">(</span><span class="n">transcriptome</span><span class="p">,</span> <span class="n">results_dict</span><span class="p">,</span> <span class="n">databases</span><span class="p">,</span> <span class="n">n_threads</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
 
@@ -59,14 +61,17 @@
     <span class="n">outputs</span> <span class="o">=</span> <span class="p">[]</span>
 
 
-    <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    orthodb_gff3 = results_dict[&#39;orthodb&#39;] + &#39;.gff3&#39;</span>
-<span class="sd">    tasks.append(</span>
-<span class="sd">        get_maf_gff3_task(results_dict[&#39;orthodb&#39;],</span>
-<span class="sd">                          orthodb_gff3, &#39;OrthoDB&#39;)</span>
-<span class="sd">    )</span>
-<span class="sd">    outputs.append(orthodb_gff3)</span>
-<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">orthodb_best_hits</span> <span class="o">=</span> <span class="n">results_dict</span><span class="p">[</span><span class="s">&#39;orthodb&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s">&#39;.best.csv&#39;</span>
+    <span class="n">orthodb_gff3</span> <span class="o">=</span> <span class="n">results_dict</span><span class="p">[</span><span class="s">&#39;orthodb&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s">&#39;.gff3&#39;</span>
+    <span class="n">tasks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+        <span class="n">get_maf_best_hits_task</span><span class="p">(</span><span class="n">results_dict</span><span class="p">[</span><span class="s">&#39;orthodb&#39;</span><span class="p">],</span>
+                               <span class="n">orthodb_best_hits</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="n">tasks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+        <span class="n">get_maf_gff3_task</span><span class="p">(</span><span class="n">orthodb_best_hits</span><span class="p">,</span>
+                          <span class="n">orthodb_gff3</span><span class="p">,</span> <span class="s">&#39;OrthoDB&#39;</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="n">outputs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">orthodb_gff3</span><span class="p">)</span>
 
     <span class="n">pfam_gff3</span> <span class="o">=</span> <span class="n">results_dict</span><span class="p">[</span><span class="s">&#39;pfam&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s">&#39;.gff3&#39;</span>
     <span class="n">tasks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
@@ -89,7 +94,7 @@
         <span class="p">)</span>
         <span class="n">outputs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">gff3_fn</span><span class="p">)</span>
 
-    <span class="n">outputs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">results_dict</span><span class="p">[</span><span class="s">&#39;ORFs_gff3&#39;</span><span class="p">])</span>
+    <span class="n">outputs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">results_dict</span><span class="p">[</span><span class="s">&#39;prot_predictions_gff3&#39;</span><span class="p">])</span>
 
     <span class="n">merged_gff3</span> <span class="o">=</span> <span class="n">transcriptome</span> <span class="o">+</span> <span class="s">&#39;.dammit.gff3&#39;</span>
     <span class="n">tasks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>

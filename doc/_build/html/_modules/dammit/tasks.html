@@ -25,6 +25,7 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="author" title="About these documents" href="../../about.html" />
     <link rel="top" title="dammit 1.0 documentation" href="../../index.html" />
     <link rel="up" title="Module code" href="../index.html" />
    
@@ -61,6 +62,7 @@
 
 <span class="kn">from</span> <span class="nn">common</span> <span class="kn">import</span> <span class="n">which</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">parsers</span>
+<span class="kn">from</span> <span class="nn">.hits</span> <span class="kn">import</span> <span class="n">BestHits</span>
 <span class="c">#from . import taxonomy</span>
 <span class="kn">import</span> <span class="nn">gff</span>
 
@@ -231,7 +233,6 @@
     <span class="n">cmd</span> <span class="o">=</span> <span class="s">&#39;{exc} {params} {db_out_prefix} {db_fn}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="nb">locals</span><span class="p">())</span>
 
     <span class="n">name</span> <span class="o">=</span> <span class="s">&#39;lastdb:&#39;</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">db_out_prefix</span><span class="p">)</span>
-    <span class="k">print</span><span class="p">(</span><span class="n">db_out_prefix</span><span class="p">,</span> <span class="nb">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="p">{</span><span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span>
             <span class="s">&#39;title&#39;</span><span class="p">:</span> <span class="n">title_with_actions</span><span class="p">,</span>
@@ -272,6 +273,28 @@
             <span class="s">&#39;targets&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">out_fn</span><span class="p">],</span>
             <span class="s">&#39;file_dep&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">db</span> <span class="o">+</span> <span class="s">&#39;.sds&#39;</span><span class="p">],</span>
             <span class="s">&#39;clean&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">clean_targets</span><span class="p">]}</span>
+
+</div>
+<span class="nd">@create_task_object</span>
+<div class="viewcode-block" id="get_maf_best_hits_task"><a class="viewcode-back" href="../../dammit.html#dammit.tasks.get_maf_best_hits_task">[docs]</a><span class="k">def</span> <span class="nf">get_maf_best_hits_task</span><span class="p">(</span><span class="n">maf_fn</span><span class="p">,</span> <span class="n">output_fn</span><span class="p">):</span>
+
+    <span class="n">hits_mgr</span> <span class="o">=</span> <span class="n">BestHits</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">cmd</span><span class="p">():</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">group</span> <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span>
+                        <span class="n">parsers</span><span class="o">.</span><span class="n">maf_to_df_iter</span><span class="p">(</span><span class="n">maf_fn</span><span class="p">)])</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">hits_mgr</span><span class="o">.</span><span class="n">best_hits</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">output_fn</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+
+    <span class="n">name</span> <span class="o">=</span> <span class="s">&#39;maf_best_hits:{0}-{1}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">maf_fn</span><span class="p">,</span> <span class="n">output_fn</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="p">{</span><span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span>
+            <span class="s">&#39;title&#39;</span><span class="p">:</span> <span class="n">title_with_actions</span><span class="p">,</span>
+            <span class="s">&#39;actions&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">cmd</span><span class="p">],</span>
+            <span class="s">&#39;targets&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">output_fn</span><span class="p">],</span>
+            <span class="s">&#39;file_dep&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">maf_fn</span><span class="p">],</span>
+            <span class="s">&#39;clean&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">clean_targets</span><span class="p">]}</span>
+
 
 </div>
 <span class="nd">@create_task_object</span>
@@ -437,8 +460,13 @@
     <span class="n">name</span> <span class="o">=</span> <span class="s">&#39;maf-gff3:&#39;</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">output_filename</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">cmd</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">input_filename</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s">&#39;.csv&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">input_filename</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s">&#39;.tsv&#39;</span><span class="p">):</span>
+            <span class="n">it</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">input_filename</span><span class="p">,</span> <span class="n">chunksize</span><span class="o">=</span><span class="mi">10000</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">it</span> <span class="o">=</span> <span class="n">parsers</span><span class="o">.</span><span class="n">maf_to_df_iter</span><span class="p">(</span><span class="n">input_filename</span><span class="p">)</span>
+
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">output_filename</span><span class="p">,</span> <span class="s">&#39;a&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">parsers</span><span class="o">.</span><span class="n">maf_to_df_iter</span><span class="p">(</span><span class="n">input_filename</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">it</span><span class="p">:</span>
                 <span class="n">gff_group</span> <span class="o">=</span> <span class="n">gff</span><span class="o">.</span><span class="n">maf_to_gff3_df</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="s">&#39;dammit.last&#39;</span><span class="p">,</span> 
                                                <span class="n">database</span><span class="p">)</span>
                 <span class="n">gff</span><span class="o">.</span><span class="n">write_gff3_df</span><span class="p">(</span><span class="n">gff_group</span><span class="p">,</span> <span class="n">fp</span><span class="p">)</span>
@@ -521,10 +549,9 @@
     <span class="n">name</span> <span class="o">=</span> <span class="s">&#39;gff3-merge:{0}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">output_filename</span><span class="p">))</span>
 
     <span class="n">merge_cmd</span> <span class="o">=</span> <span class="s">&#39;echo &quot;{v}&quot; &gt; {out}; cat {f} | sed </span><span class="se">\&#39;</span><span class="s">/^#/ d</span><span class="se">\&#39;</span><span class="s">&#39;</span>\
-                <span class="s">&#39; | sort &gt;&gt; {out}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">v</span><span class="o">=</span><span class="n">gff</span><span class="o">.</span><span class="n">version_line</span><span class="p">(),</span>
+                <span class="s">&#39; | sort | sed </span><span class="se">\&#39;</span><span class="s">/^$/d</span><span class="se">\&#39;</span><span class="s">| &gt;&gt; {out}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">v</span><span class="o">=</span><span class="n">gff</span><span class="o">.</span><span class="n">version_line</span><span class="p">(),</span>
                                           <span class="n">f</span><span class="o">=</span><span class="s">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">gff3_filenames</span><span class="p">),</span>
                                           <span class="n">out</span><span class="o">=</span><span class="n">output_filename</span><span class="p">)</span>
-
     <span class="k">return</span> <span class="p">{</span><span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span>
             <span class="s">&#39;title&#39;</span><span class="p">:</span> <span class="n">title_with_actions</span><span class="p">,</span>
             <span class="s">&#39;actions&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">merge_cmd</span><span class="p">],</span>
