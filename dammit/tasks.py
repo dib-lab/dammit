@@ -19,6 +19,7 @@ from khmer import HLLCounter, ReadParser
 
 from common import which
 from . import parsers
+from .hits import BestHits
 #from . import taxonomy
 import gff
 
@@ -417,8 +418,13 @@ def get_maf_gff3_task(input_filename, output_filename, database):
     name = 'maf-gff3:' + os.path.basename(output_filename)
 
     def cmd():
+        if input_filename.endswith('.csv') or input_filename.endswith('.tsv'):
+            it = pd.read_csv(input_filename, chunksize=10000)
+        else:
+            it = parsers.maf_to_df_iter(input_filename)
+
         with open(output_filename, 'a') as fp:
-            for group in parsers.maf_to_df_iter(input_filename):
+            for group in it:
                 gff_group = gff.maf_to_gff3_df(group, 'dammit.last', 
                                                database)
                 gff.write_gff3_df(gff_group, fp)
