@@ -507,10 +507,9 @@ def get_gff3_merge_task(gff3_filenames, output_filename):
     name = 'gff3-merge:{0}'.format(os.path.basename(output_filename))
 
     merge_cmd = 'echo "{v}" > {out}; cat {f} | sed \'/^#/ d\''\
-                ' | sort >> {out}'.format(v=gff.version_line(),
+                ' | sort | sed \'/^$/d\'| >> {out}'.format(v=gff.version_line(),
                                           f=' '.join(gff3_filenames),
                                           out=output_filename)
-
     return {'name': name,
             'title': title_with_actions,
             'actions': [merge_cmd],
