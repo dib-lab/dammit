@@ -1,0 +1,4 @@
+2015-11-20  Camille Scott  <camille.scott.w@gmail.com>
+
+    * Add option to use DAMMIT_DB_DIR environment variable.
+	* 
