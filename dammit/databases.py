@@ -25,8 +25,14 @@ class DatabaseHandler(object):
         self.logger = logging.getLogger(self.__class__.__name__)
 
         if args.database_dir is None:
-            directory = os.path.join(common.get_dammit_dir(), 
-                                     common.CONFIG['settings']['db_dir'])
+            try:
+                directory = os.environ['DAMMIT_DB_DIR']
+                self.logger.debug('found DAMMIT_DB_DIR env variable')
+            except KeyError:
+                self.logger.debug('no DAMMIT_DB_DIR or --database-dir, using'\
+                                  ' default')
+                directory = os.path.join(common.get_dammit_dir(), 
+                                         common.CONFIG['settings']['db_dir'])
         else:
             directory = args.database_dir
         self.directory = os.path.abspath(directory)
