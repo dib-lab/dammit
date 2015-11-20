@@ -233,6 +233,28 @@ def get_lastal_task(query, db, out_fn, translate, n_threads, lastal_cfg):
 
 
 @create_task_object
+def get_maf_best_hits_task(maf_fn, output_fn):
+
+    hits_mgr = BestHits()
+
+    def cmd():
+        df = pd.concat([group for group in
+                        parsers.maf_to_df_iter(maf_fn)])
+        df = hits_mgr.best_hits(df)
+        df.to_csv(output_fn, index=False)
+
+    name = 'maf_best_hits:{0}-{1}'.format(maf_fn, output_fn)
+
+    return {'name': name,
+            'title': title_with_actions,
+            'actions': [cmd],
+            'targets': [output_fn],
+            'file_dep': [maf_fn],
+            'clean': [clean_targets]}
+
+
+
+@create_task_object
 def get_link_file_task(src, dst=''):
     ''' Soft-link file to the current directory
     '''

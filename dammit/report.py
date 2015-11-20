@@ -5,6 +5,7 @@ import os
 import sys
 
 from . import common
+from .model import CRBL
 from .tasks import get_maf_gff3_task, \
                    get_hmmscan_gff3_task, \
                    get_cmscan_gff3_task, \
