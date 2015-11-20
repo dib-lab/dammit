@@ -11,10 +11,6 @@ or rely on crappy non-free software.
 Science shouldn't suck for the sake of sucking, so dammit attempts
 to make this sucky part of the process suck a little less.
 
-
-.. image:: https://drone.io/github.com/camillescott/dammit/status.png
-    :target: https://drone.io/github.com/camillescott/dammit/latest)
-
 Installation
 ------------
 
@@ -65,3 +61,13 @@ To add these to your environment permanently::
     echo 'export PATH=$PATH:$HOME/last-658' >> $HOME/.bashrc
     echo 'export PATH=$PATH:$HOME/BUSCO_v1.1b1' >> $HOME/.bashrc
 
+Acknowledgements
+----------------
+
+I've received input and advice from a many sources, including but probably not limited to: C Titus
+Brown, Matt MacManes, Chris Hamm, Michael Crusoe, Russell Nechses, Luiz Irber, Lisa Cohen, Sherine
+Awad, and Tamer Mansour.
+
+CS is funded by the National Human Genome Research Institute of the National Institutes of Health
+under Award Number R01HG007513 through May 2016, and also receives support from the Gordon and Betty
+Moore Foundation under Award number GBMF4551.
