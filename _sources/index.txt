@@ -36,7 +36,7 @@ Details
 :Contact: camille.scott.w@gmail.com
 :GitHub: https://github.com/camillescott/dammit
 :License: BSD
-:Build: .. image:: https://drone.io/github.com/camillescott/dammit/status.png
+.. :Build: .. image:: https://drone.io/github.com/camillescott/dammit/status.png
 
 Contents:
 
