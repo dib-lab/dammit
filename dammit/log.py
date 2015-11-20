@@ -10,7 +10,7 @@ import textwrap
 
 class LogFormatter(logging.Formatter):
 
-    def __init__(self, width=70, padding=10):
+    def __init__(self, width=90, padding=10):
         super(LogFormatter, self).__init__('')
         self.width = width
         self.padding = padding

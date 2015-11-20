@@ -190,7 +190,6 @@ def get_lastdb_task(db_fn, db_out_prefix, lastdb_cfg, prot=True):
     cmd = '{exc} {params} {db_out_prefix} {db_fn}'.format(**locals())
 
     name = 'lastdb:' + os.path.basename(db_out_prefix)
-    print(db_out_prefix, file=sys.stderr)
 
     return {'name': name,
             'title': title_with_actions,
