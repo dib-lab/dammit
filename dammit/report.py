@@ -5,12 +5,12 @@ import os
 import sys
 
 from . import common
-from .model import CRBL
 from .tasks import get_maf_gff3_task, \
                    get_hmmscan_gff3_task, \
                    get_cmscan_gff3_task, \
                    get_gff3_merge_task, \
-                   get_crb_gff3_task
+                   get_crb_gff3_task, \
+                   get_maf_best_hits_task
 
 def get_report_tasks(transcriptome, results_dict, databases, n_threads=1):
 
@@ -18,9 +18,14 @@ def get_report_tasks(transcriptome, results_dict, databases, n_threads=1):
     outputs = []
 
 
+    orthodb_best_hits = results_dict['orthodb'] + '.best.csv'
     orthodb_gff3 = results_dict['orthodb'] + '.gff3'
     tasks.append(
-        get_maf_gff3_task(results_dict['orthodb'],
+        get_maf_best_hits_task(results_dict['orthodb'],
+                               orthodb_best_hits)
+    )
+    tasks.append(
+        get_maf_gff3_task(orthodb_best_hits,
                           orthodb_gff3, 'OrthoDB')
     )
     outputs.append(orthodb_gff3)
@@ -46,7 +51,7 @@ def get_report_tasks(transcriptome, results_dict, databases, n_threads=1):
         )
         outputs.append(gff3_fn)
 
-    outputs.append(results_dict['ORFs_gff3'])
+    outputs.append(results_dict['prot_predictions_gff3'])
 
     merged_gff3 = transcriptome + '.dammit.gff3'
     tasks.append(

@@ -8,7 +8,7 @@ import sys
 
 from . import common
 from .log import LogReporter
-from .model import CRBL
+#from .crbl import CRBL
 from .report import get_report_tasks
 from .tasks import get_transcriptome_stats_task, \
                    get_busco_task, \
