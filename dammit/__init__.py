@@ -6,6 +6,9 @@ import logging
 import log
 logger = log.DammitLogger()
 
+from .hits import BestHits
+from .crbl import CRBL
+
 import parsers
 import gff
 import blast
