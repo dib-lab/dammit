@@ -13,9 +13,13 @@ To check for databases in the default location::
 
     dammit databases
 
-To check for them in a custom location::
+To check for them in a custom location, you can either use the `--database-dir`
+flag::
 
     dammit databases --database-dir /path/to/databases
+
+or, you can set the `DAMMIT_DB_DIR` environment variable. The flag will supersede
+this variable, falling back to the default if neither is set.
 
 To download and install them into the default directory::
 
