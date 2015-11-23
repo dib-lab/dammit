@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 
-__version__ = '0.0.7'
-
 import logging
 import log
 logger = log.DammitLogger()
@@ -19,3 +17,7 @@ import databases
 import dependencies
 import common
 import report
+
+import os
+rel_path = os.path.dirname(__file__)
+__version__ = open(os.path.join(rel_path, 'VERSION')).read().strip()

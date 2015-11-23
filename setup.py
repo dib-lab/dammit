@@ -28,9 +28,12 @@ import numpy
 
 cmdclass = {}
 
+version = open('dammit/VERSION').read().strip()
+print version
+
 def main():
     setup(  name = 'dammit',
-            version = '0.0.8',
+            version = version,
             description = 'dammit!',
             url = 'https://github.com/camillescott/dammit',
             author = 'Camille Scott',

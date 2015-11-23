@@ -6,6 +6,7 @@ import logging
 import os
 import sys
 
+from dammit import __version__
 from dammit import common
 from dammit import annotate
 from dammit import databases
@@ -39,6 +40,8 @@ class DammitApp(object):
                      )
 
         parser.add_argument('--debug', action='store_true', default=False)
+        parser.add_argument('--version', action='version', 
+                            version='%(prog)s ' +__version__)
         subparsers = parser.add_subparsers(title='dammit subcommands')
 
         def add_common_args(parser):
