@@ -1,4 +1,8 @@
+2015-11-25  Camille Scott  <camille.scott.w@gmail.com>
+
+    * Fix bug when running from different directory.
+	* Fix syntax error in GFF3 merge task.
+
 2015-11-20  Camille Scott  <camille.scott.w@gmail.com>
 
     * Add option to use DAMMIT_DB_DIR environment variable.
-	* 

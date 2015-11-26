@@ -28,12 +28,13 @@ logger = logging.getLogger(__name__)
 class AnnotateHandler(object):
 
     def __init__(self, args, database_dict):
-        self.transcriptome = args.transcriptome
+        self.input_transcriptome = os.path.abspath(args.transcriptome)
+        self.transcriptome = os.path.basename(self.input_transcriptome)
         self.args = args
         self.logger = logging.getLogger(self.__class__.__name__)
 
         if args.output_dir is None:
-            out_dir = self.transcriptome + '.dammit'
+            out_dir = os.path.basename(self.input_transcriptome) + '.dammit'
         else:
             out_dir = args.output_dir
         self.directory = os.path.abspath(out_dir)
@@ -90,8 +91,8 @@ class AnnotateHandler(object):
         results = {}
 
         tasks.append(
-                get_sanitize_fasta_task(os.path.abspath(self.transcriptome),
-                                        os.path.basename(self.transcriptome))
+                get_sanitize_fasta_task(self.input_transcriptome,
+                                        self.transcriptome)
         )
 
         '''

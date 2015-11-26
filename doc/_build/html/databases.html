@@ -52,10 +52,13 @@ with the <code class="docutils literal"><span class="pre">--database-dir</span><
 <div class="highlight-python"><div class="highlight"><pre>dammit databases
 </pre></div>
 </div>
-<p>To check for them in a custom location:</p>
+<p>To check for them in a custom location, you can either use the <cite>&#8211;database-dir</cite>
+flag:</p>
 <div class="highlight-python"><div class="highlight"><pre>dammit databases --database-dir /path/to/databases
 </pre></div>
 </div>
+<p>or, you can set the <cite>DAMMIT_DB_DIR</cite> environment variable. The flag will supersede
+this variable, falling back to the default if neither is set.</p>
 <p>To download and install them into the default directory:</p>
 <div class="highlight-python"><div class="highlight"><pre>dammit databases --install
 </pre></div>

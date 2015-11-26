@@ -561,6 +561,33 @@
 
 </div>
 <span class="nd">@create_task_object</span>
+<div class="viewcode-block" id="get_annotate_fasta_task"><a class="viewcode-back" href="../../dammit.html#dammit.tasks.get_annotate_fasta_task">[docs]</a><span class="k">def</span> <span class="nf">get_annotate_fasta_task</span><span class="p">(</span><span class="n">transcriptome_fn</span><span class="p">,</span> <span class="n">gff3_fn</span><span class="p">,</span> <span class="n">output_fn</span><span class="p">):</span>
+    
+    <span class="n">name</span> <span class="o">=</span> <span class="s">&#39;fasta-annotate:{0}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">output_fn</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">annotate_fasta</span><span class="p">():</span>
+        <span class="n">annotations</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">g</span> <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> \
+                                 <span class="n">parsers</span><span class="o">.</span><span class="n">parse_gff3</span><span class="p">(</span><span class="n">gff3_fn</span><span class="p">)])</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">output_fn</span><span class="p">,</span> <span class="s">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">record</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">ReadParser</span><span class="p">(</span><span class="n">transcriptome_fn</span><span class="p">)):</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">df</span> <span class="o">=</span> <span class="n">annotations</span><span class="o">.</span><span class="n">ix</span><span class="p">[</span><span class="n">record</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
+                    <span class="n">desc</span> <span class="o">=</span> <span class="s">&#39;Transcript_{0}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+
+                <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                    <span class="n">desc</span> <span class="o">=</span> <span class="s">&#39;Transcript_{0}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+                <span class="k">finally</span><span class="p">:</span>
+                    <span class="n">fp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;&gt;{0}</span><span class="se">\n</span><span class="s">{1}</span><span class="se">\n</span><span class="s">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">desc</span><span class="p">,</span> <span class="n">record</span><span class="o">.</span><span class="n">sequence</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="p">{</span><span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span>
+                <span class="s">&#39;title&#39;</span><span class="p">:</span> <span class="n">title_with_actions</span><span class="p">,</span>
+                <span class="s">&#39;actions&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">annotate_fasta</span><span class="p">],</span>
+                <span class="s">&#39;file_dep&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">transcriptome_fn</span><span class="p">,</span> <span class="n">gff3_fn</span><span class="p">],</span>
+                <span class="s">&#39;targets&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">output_fn</span><span class="p">],</span>
+                <span class="s">&#39;clean&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">clean_targets</span><span class="p">]}</span>
+
+</div>
+<span class="nd">@create_task_object</span>
 <div class="viewcode-block" id="get_transcriptome_stats_task"><a class="viewcode-back" href="../../dammit.html#dammit.tasks.get_transcriptome_stats_task">[docs]</a><span class="k">def</span> <span class="nf">get_transcriptome_stats_task</span><span class="p">(</span><span class="n">transcriptome</span><span class="p">,</span> <span class="n">output_fn</span><span class="p">):</span>
 
     <span class="n">name</span> <span class="o">=</span> <span class="s">&#39;transcriptome_stats:&#39;</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">transcriptome</span><span class="p">)</span>
