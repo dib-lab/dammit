@@ -175,7 +175,7 @@ def get_lastdb_task(db_fn, db_out_prefix, lastdb_cfg, prot=True):
     Args:
         db_fn (str): The FASTA file to format.
         db_out_prefix (str): Prefix for the database files.
-        lastdb_cfg (dict): Config for the command. Shoud contain an entry
+        lastdb_cfg (dict): Config for the command. Should contain an entry
         named "params" storing a str.
         prot (bool): True if a protein FASTA, False otherwise.
     Returns:
@@ -384,8 +384,8 @@ def get_transdecoder_orf_task(input_filename, transdecoder_cfg):
             'title': title_with_actions,
             'actions': [cmd],
             'file_dep': [input_filename],
-            'targets': [input_filename + '.transdecoder_dir/longest_orfs.pep'],
-            'clean': [(clean_folder, [input_filename + '.transdecoder_dir'])]}
+            'targets': [os.path.basename(input_filename) + '.transdecoder_dir/longest_orfs.pep'],
+            'clean': [(clean_folder, [os.path.basename(input_filename) + '.transdecoder_dir'])]}
 
 
 # TransDecoder.Predict -t lamp10.fasta --retain_pfam_hits lamp10.fasta.pfam-A.out
@@ -403,12 +403,12 @@ def get_transdecoder_predict_task(input_filename, db_filename, transdecoder_cfg)
             'title': title_with_actions,
             'actions': [cmd],
             'file_dep': [input_filename, 
-                         input_filename + '.transdecoder_dir/longest_orfs.pep',
+                         os.path.basename(input_filename) + '.transdecoder_dir/longest_orfs.pep',
                          db_filename],
-            'targets': [input_filename + '.transdecoder' + ext \
+            'targets': [os.path.basename(input_filename) + '.transdecoder' + ext \
                         for ext in ['.bed', '.cds', '.pep', '.gff3', '.mRNA']],
             'clean': [clean_targets, 
-                     (clean_folder, [input_filename + '.transdecoder_dir'])]}
+                     (clean_folder, [os.path.basename(input_filename) + '.transdecoder_dir'])]}
 
 
 @create_task_object

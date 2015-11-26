@@ -105,14 +105,14 @@ class AnnotateHandler(object):
             get_transcriptome_stats_task(self.transcriptome, 
                                          os.path.basename(self.transcriptome + '.stats'))
         )
-        results['stats'] = self.transcriptome + '.stats'
+        results['stats'] = os.path.basename(self.transcriptome) + '.stats'
 
         '''
         BUSCO assesses completeness using a series of curated databases of core
         conserved genes.
         '''
         busco_cfg = common.CONFIG['settings']['busco']
-        busco_output_name = '{0}.busco.results'.format(self.transcriptome)
+        busco_output_name = '{0}.busco.results'.format(os.path.basename(self.transcriptome))
         assess_tasks.append(
             get_busco_task(self.transcriptome, busco_output_name, self.database_dict['BUSCO'],
                            'trans', self.args.n_threads, busco_cfg)
@@ -134,7 +134,7 @@ class AnnotateHandler(object):
 
         annotate_tasks = []
 
-        transdecoder_output_dir = self.transcriptome + '.transdecoder_dir'
+        transdecoder_output_dir = os.path.basename(self.transcriptome) + '.transdecoder_dir'
         orf_cfg = common.CONFIG['settings']['transdecoder']['longorfs']
         annotate_tasks.append(
             get_transdecoder_orf_task(self.transcriptome, 
@@ -147,7 +147,7 @@ class AnnotateHandler(object):
         results['ORFs_pep'] = orf_pep
         results['ORFs_gff3'] = orf_gff3
 
-        pfam_results = self.transcriptome + '.pfam-A.tbl'
+        pfam_results = os.path.basename(self.transcriptome) + '.pfam-A.tbl'
         annotate_tasks.append(
             get_hmmscan_task(orf_pep, pfam_results,
                          self.database_dict['PFAM'], self.args.n_threads, 
@@ -161,8 +161,8 @@ class AnnotateHandler(object):
                                           pfam_results,
                                           predict_cfg)
         )
-        protein_prediction_pep = self.transcriptome + '.transdecoder.pep'
-        protein_prediction_gff3 = self.transcriptome + '.transdecoder.gff3'
+        protein_prediction_pep = os.path.basename(self.transcriptome) + '.transdecoder.pep'
+        protein_prediction_gff3 = os.path.basename(self.transcriptome) + '.transdecoder.gff3'
         results['prot_predictions_pep'] = protein_prediction_pep
         results['prot_predictions_gff3'] = protein_prediction_gff3
 
@@ -172,7 +172,7 @@ class AnnotateHandler(object):
         database.
         '''
         cmscan_cfg = common.CONFIG['settings']['infernal']['cmscan']
-        rfam_results = self.transcriptome + '.rfam.tbl'
+        rfam_results = os.path.basename(self.transcriptome) + '.rfam.tbl'
         annotate_tasks.append(
             get_cmscan_task(self.transcriptome, rfam_results,
                          self.database_dict['RFAM'], self.args.n_threads, 
@@ -187,7 +187,7 @@ class AnnotateHandler(object):
         
         lastal_cfg = common.CONFIG['settings']['last']['lastal']
         orthodb_fn = self.database_dict['ORTHODB']
-        tr_x_orthodb_fn = '{0}.x.orthodb.maf'.format(self.transcriptome)
+        tr_x_orthodb_fn = '{0}.x.orthodb.maf'.format(os.path.basename(self.transcriptome))
         annotate_tasks.append(
             get_lastal_task(self.transcriptome, orthodb_fn, tr_x_orthodb_fn, True,
                            self.args.n_threads, lastal_cfg)
@@ -207,7 +207,7 @@ class AnnotateHandler(object):
                 get_sanitize_fasta_task(os.path.abspath(path),
                                         key)
             )
-            fn = '{0}.x.{1}.crbb.tsv'.format(self.transcriptome, key)
+            fn = '{0}.x.{1}.crbb.tsv'.format(os.path.basename(self.transcriptome), key)
             annotate_tasks.append(
                 get_crb_blast_task(self.transcriptome, key, fn, 
                                    crb_blast_cfg, self.args.n_threads)
