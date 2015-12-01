@@ -65,7 +65,7 @@ Acknowledgements
 ----------------
 
 I've received input and advice from a many sources, including but probably not limited to: C Titus
-Brown, Matt MacManes, Chris Hamm, Michael Crusoe, Russell Nechses, Luiz Irber, Lisa Cohen, Sherine
+Brown, Matt MacManes, Chris Hamm, Michael Crusoe, Russell Neches, Luiz Irber, Lisa Cohen, Sherine
 Awad, and Tamer Mansour.
 
 CS is funded by the National Human Genome Research Institute of the National Institutes of Health
