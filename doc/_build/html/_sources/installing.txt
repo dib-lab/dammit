@@ -47,7 +47,7 @@ should all run on any flavor of GNU/Linux and on OSX.
 First, let's get packages from the Ubuntu PPAs::
 
     sudo apt-get update
-    sudo apt-get install python-pip python-dev python-numpy git ruby hmmer \
+    sudo apt-get install python-pip python-dev python-numpy git ruby hmmer unzip \
         infernal ncbi-blast+ liburi-escape-xs-perl emboss liburi-perl python-sklearn
     
 
@@ -60,7 +60,7 @@ To install `TransDecoder <https://transdecoder.github.io/>`__ in your home direc
 terminal::
 
     cd
-    curl -O https://github.com/TransDecoder/TransDecoder/archive/2.0.1.tar.gz
+    curl -LO https://github.com/TransDecoder/TransDecoder/archive/2.0.1.tar.gz
     tar -xvzf 2.0.1.tar.gz
     cd TransDecoder-2.0.1; make
     export PATH=$PATH:$HOME/TransDecoder-2.0.1
@@ -68,18 +68,18 @@ terminal::
 To get LAST::
 
     cd
-    curl -O http://last.cbrc.jp/last-658.zip
+    curl -LO http://last.cbrc.jp/last-658.zip
     unzip last-658.zip
     cd last-658
     make
-    export PATH=$PATH:$HOME/last-658
+    export PATH=$PATH:$HOME/last-658/src
 
 
 The above commands will only install them for the current session; to
 keep it installed, append the exports to your bash profile::
 
     echo 'export PATH=$PATH:$HOME/TransDecoder-2.0.1' >> $HOME/.bashrc
-    echo 'export PATH=$PATH:$HOME/last-658' >> $HOME/.bashrc
+    echo 'export PATH=$PATH:$HOME/last-658/src' >> $HOME/.bashrc
 
 Next, we need to install Conditional Reciprocal Best-hits Blast (CRBB). The
 algorithm is described in
@@ -92,7 +92,7 @@ dammit also runs BUSCO to assess completeness. To install it, run the following
 commands::
 
     cd
-    curl -O http://busco.ezlab.org/files/BUSCO_v1.1b1.tar.gz
+    curl -LO http://busco.ezlab.org/files/BUSCO_v1.1b1.tar.gz
     tar -xvzf BUSCO_v1.1b1.tar.gz
     chmod +x BUSCO_v1.1b1/*.py
     export PATH=$PATH:$HOME/BUSCO_v1.1b1
@@ -109,8 +109,9 @@ dammit itself is quite easy to install. Just run::
     
     pip install dammit
 
-If you get an error about using an outdated version of setuptools, you'll need to
-update that first::
+If you're not running a virtual environment (which you really should be!), you'll have
+to put a `sudo` before pip. If you get an error about using an outdated version of 
+setuptools, you'll need to update that first::
 
     pip install -U setuptools
 

@@ -31,35 +31,36 @@ to manage your python packages. Once you have a working python environment, proc
 Get packages from the Ubuntu PPAs::
 
     sudo apt-get update
-    sudo apt-get install python-pip python-dev python-numpy git ruby hmmer \
+    sudo apt-get install python-pip python-dev python-numpy git ruby hmmer unzip \
         infernal ncbi-blast+ liburi-escape-xs-perl emboss liburi-perl python-sklearn
     sudo gem install crb-blast
 
 Install some packages manually::
 
     cd
-    curl -O https://github.com/TransDecoder/TransDecoder/archive/2.0.1.tar.gz
+    curl -LO https://github.com/TransDecoder/TransDecoder/archive/2.0.1.tar.gz
     tar -xvzf 2.0.1.tar.gz
     cd TransDecoder-2.0.1; make
     export PATH=$PATH:$HOME/TransDecoder-2.0.1
 
     cd
-    curl -O http://last.cbrc.jp/last-658.zip
+    curl -LO http://last.cbrc.jp/last-658.zip
     unzip last-658.zip
     cd last-658
     make
-    export PATH=$PATH:$HOME/last-658
+    export PATH=$PATH:$HOME/last-658/src
 
     cd
-    curl -O http://busco.ezlab.org/files/BUSCO_v1.1b1.tar.gz
+    curl -LO http://busco.ezlab.org/files/BUSCO_v1.1b1.tar.gz
     tar -xvzf BUSCO_v1.1b1.tar.gz
     chmod +x BUSCO_v1.1b1/*.py
     export PATH=$PATH:$HOME/BUSCO_v1.1b1
+    cd
 
 To add these to your environment permanently::
 
     echo 'export PATH=$PATH:$HOME/TransDecoder-2.0.1' >> $HOME/.bashrc
-    echo 'export PATH=$PATH:$HOME/last-658' >> $HOME/.bashrc
+    echo 'export PATH=$PATH:$HOME/last-658/src' >> $HOME/.bashrc
     echo 'export PATH=$PATH:$HOME/BUSCO_v1.1b1' >> $HOME/.bashrc
 
 Acknowledgements
