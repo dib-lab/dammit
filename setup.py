@@ -29,7 +29,6 @@ import numpy
 cmdclass = {}
 
 version = open('dammit/VERSION').read().strip()
-print version
 
 def main():
     setup(  name = 'dammit',
@@ -44,11 +43,18 @@ def main():
             packages = ['dammit'],
             scripts = glob('bin/*'),
             ext_modules = get_extension_modules(),
-            install_requires = ['khmer', 
-                                'nose', 
-                                'doit', 
-                                'pandas',
-                                'nose-capturestderr'],
+            install_requires = ['setuptools>=0.6.35',
+                                'pandas>=0.17',
+                                'khmer>=2.0',
+                                'doit>=0.29.0',
+                                'sphinxcontrib-napoleon>=0.3.11',
+                                'Sphinx>=1.3.1',
+                                'sphinx-rtd-theme>=0.1.9',
+                                'nose==1.3.4',
+                                'nose-capturestderr==1.0',
+                                'ficus>=0.1',
+                                'matplotlib>=1.0',
+                                'scikit-learn>=0.16'],
             include_package_data = True,
             zip_safe = False,
             cmdclass = cmdclass  )
