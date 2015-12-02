@@ -32,7 +32,8 @@ Get packages from the Ubuntu PPAs::
 
     sudo apt-get update
     sudo apt-get install python-pip python-dev python-numpy git ruby hmmer \
-        infernal ncbi-blast+ liburi-escape-xs-perl emboss liburi-perl
+        infernal ncbi-blast+ liburi-escape-xs-perl emboss liburi-perl python-sklearn
+    sudo gem install crb-blast
 
 Install some packages manually::
 
