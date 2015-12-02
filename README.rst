@@ -32,12 +32,15 @@ Get packages from the Ubuntu PPAs::
 
     sudo apt-get update
     sudo apt-get install python-pip python-dev python-numpy git ruby hmmer \
-        infernal ncbi-blast+ liburi-escape-xs-perl emboss liburi-perl
+        infernal ncbi-blast+ liburi-escape-xs-perl emboss liburi-perl python-sklearn
 
 Install some packages manually::
 
+    sudo gem install crb-blast
+    sudo pip install ficus
+    
     cd
-    curl -O https://github.com/TransDecoder/TransDecoder/archive/2.0.1.tar.gz
+    curl -LO https://github.com/TransDecoder/TransDecoder/archive/2.0.1.tar.gz
     tar -xvzf 2.0.1.tar.gz
     cd TransDecoder-2.0.1; make
     export PATH=$PATH:$HOME/TransDecoder-2.0.1
