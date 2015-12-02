@@ -67,7 +67,7 @@ suck less, then installing the necessary software should suck less too.</p>
 should all run on any flavor of GNU/Linux and on OSX.</p>
 <p>First, let&#8217;s get packages from the Ubuntu PPAs:</p>
 <div class="highlight-python"><div class="highlight"><pre>sudo apt-get update
-sudo apt-get install python-pip python-dev python-numpy git ruby hmmer \
+sudo apt-get install python-pip python-dev python-numpy git ruby hmmer unzip \
     infernal ncbi-blast+ liburi-escape-xs-perl emboss liburi-perl python-sklearn
 </pre></div>
 </div>
@@ -79,7 +79,7 @@ sudo apt-get install python-pip python-dev python-numpy git ruby hmmer \
 To install <a class="reference external" href="https://transdecoder.github.io/">TransDecoder</a> in your home directory, execute these commands in your
 terminal:</p>
 <div class="highlight-python"><div class="highlight"><pre>cd
-curl -O https://github.com/TransDecoder/TransDecoder/archive/2.0.1.tar.gz
+curl -LO https://github.com/TransDecoder/TransDecoder/archive/2.0.1.tar.gz
 tar -xvzf 2.0.1.tar.gz
 cd TransDecoder-2.0.1; make
 export PATH=$PATH:$HOME/TransDecoder-2.0.1
@@ -87,17 +87,17 @@ export PATH=$PATH:$HOME/TransDecoder-2.0.1
 </div>
 <p>To get LAST:</p>
 <div class="highlight-python"><div class="highlight"><pre>cd
-curl -O http://last.cbrc.jp/last-658.zip
+curl -LO http://last.cbrc.jp/last-658.zip
 unzip last-658.zip
 cd last-658
 make
-export PATH=$PATH:$HOME/last-658
+export PATH=$PATH:$HOME/last-658/src
 </pre></div>
 </div>
 <p>The above commands will only install them for the current session; to
 keep it installed, append the exports to your bash profile:</p>
 <div class="highlight-python"><div class="highlight"><pre>echo &#39;export PATH=$PATH:$HOME/TransDecoder-2.0.1&#39; &gt;&gt; $HOME/.bashrc
-echo &#39;export PATH=$PATH:$HOME/last-658&#39; &gt;&gt; $HOME/.bashrc
+echo &#39;export PATH=$PATH:$HOME/last-658/src&#39; &gt;&gt; $HOME/.bashrc
 </pre></div>
 </div>
 <p>Next, we need to install Conditional Reciprocal Best-hits Blast (CRBB). The
@@ -110,7 +110,7 @@ and is implemented in ruby. Assuming you have ruby, it can be installed with:</p
 <p>dammit also runs BUSCO to assess completeness. To install it, run the following
 commands:</p>
 <div class="highlight-python"><div class="highlight"><pre>cd
-curl -O http://busco.ezlab.org/files/BUSCO_v1.1b1.tar.gz
+curl -LO http://busco.ezlab.org/files/BUSCO_v1.1b1.tar.gz
 tar -xvzf BUSCO_v1.1b1.tar.gz
 chmod +x BUSCO_v1.1b1/*.py
 export PATH=$PATH:$HOME/BUSCO_v1.1b1
@@ -127,8 +127,9 @@ export PATH=$PATH:$HOME/BUSCO_v1.1b1
 <div class="highlight-python"><div class="highlight"><pre>pip install dammit
 </pre></div>
 </div>
-<p>If you get an error about using an outdated version of setuptools, you&#8217;ll need to
-update that first:</p>
+<p>If you&#8217;re not running a virtual environment (which you really should be!), you&#8217;ll have
+to put a <cite>sudo</cite> before pip. If you get an error about using an outdated version of
+setuptools, you&#8217;ll need to update that first:</p>
 <div class="highlight-python"><div class="highlight"><pre>pip install -U setuptools
 </pre></div>
 </div>

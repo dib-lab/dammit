@@ -60,7 +60,7 @@
                    <span class="n">print_tasks</span>
 
 
-<div class="viewcode-block" id="DatabaseHandler"><a class="viewcode-back" href="../../dammit.html#dammit.databases.DatabaseHandler">[docs]</a><span class="k">class</span> <span class="nc">DatabaseHandler</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="DatabaseHandler"><a class="viewcode-back" href="../../dammit.html#dammit.databases.DatabaseHandler">[docs]</a><span class="k">class</span> <span class="nc">DatabaseHandler</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span></div>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
 
@@ -98,7 +98,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">databases</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tasks</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_tasks</span><span class="p">()</span>
 
 
-<div class="viewcode-block" id="DatabaseHandler.handle"><a class="viewcode-back" href="../../dammit.html#dammit.databases.DatabaseHandler.handle">[docs]</a>    <span class="k">def</span> <span class="nf">handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">doit_args</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;run&#39;</span><span class="p">]):</span>
+    <span class="k">def</span> <span class="nf">handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">doit_args</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;run&#39;</span><span class="p">]):</span>
 
         <span class="n">missing</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">check</span><span class="p">()</span>
         <span class="n">print_tasks</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tasks</span><span class="p">,</span> <span class="n">logger</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">)</span>
@@ -109,14 +109,14 @@
                 <span class="n">common</span><span class="o">.</span><span class="n">run_tasks</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tasks</span><span class="p">,</span> <span class="n">doit_args</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">doit_config</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">common</span><span class="o">.</span><span class="n">print_header</span><span class="p">(</span><span class="s">&#39;Nothing to install&#39;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-</div>
-<div class="viewcode-block" id="DatabaseHandler.check_or_fail"><a class="viewcode-back" href="../../dammit.html#dammit.databases.DatabaseHandler.check_or_fail">[docs]</a>    <span class="k">def</span> <span class="nf">check_or_fail</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">check_or_fail</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">missing</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">check</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">missing</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&#39;Install databases to continue; exiting&#39;</span><span class="p">)</span>
             <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-</div>
-<div class="viewcode-block" id="DatabaseHandler.check"><a class="viewcode-back" href="../../dammit.html#dammit.databases.DatabaseHandler.check">[docs]</a>    <span class="k">def</span> <span class="nf">check</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">check</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 
         <span class="n">common</span><span class="o">.</span><span class="n">print_header</span><span class="p">(</span><span class="s">&#39;Checking for database prep (dir: {0})&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">directory</span><span class="p">),</span>
                             <span class="n">level</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
@@ -142,8 +142,8 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&#39;All databases prepared!&#39;</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">missing</span>
-</div>
-<div class="viewcode-block" id="DatabaseHandler.get_tasks"><a class="viewcode-back" href="../../dammit.html#dammit.databases.DatabaseHandler.get_tasks">[docs]</a>    <span class="k">def</span> <span class="nf">get_tasks</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">get_tasks</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Generate tasks for installing the bundled databases. </span>
 <span class="sd">        </span>
 <span class="sd">        These tasks download the databases, unpack them, and format them for use.</span>
@@ -236,7 +236,7 @@
             <span class="n">databases</span><span class="p">[</span><span class="s">&#39;UNIREF&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">UNIREF</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">databases</span><span class="p">,</span> <span class="n">tasks</span>
-</div></div>
+
 </pre></div>
 
           </div>

@@ -111,16 +111,6 @@
                           <span class="p">(</span><span class="s">&#39;end&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span> 
                           <span class="p">(</span><span class="s">&#39;strand&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">)]</span>
 
-<span class="n">gff_cols</span> <span class="o">=</span> <span class="p">[(</span><span class="s">&#39;seqid&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">),</span>
-            <span class="p">(</span><span class="s">&#39;source&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">),</span>
-            <span class="p">(</span><span class="s">&#39;feature_type&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">),</span>
-            <span class="p">(</span><span class="s">&#39;start&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span>
-            <span class="p">(</span><span class="s">&#39;end&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span>
-            <span class="p">(</span><span class="s">&#39;score&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span>
-            <span class="p">(</span><span class="s">&#39;strand&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">),</span>
-            <span class="p">(</span><span class="s">&#39;frame&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span>
-            <span class="p">(</span><span class="s">&#39;attributes&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">)]</span>
-
 <span class="n">crb_cols</span> <span class="o">=</span> <span class="p">[(</span><span class="s">&#39;query&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">),</span>
             <span class="p">(</span><span class="s">&#39;subject&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">),</span>
             <span class="p">(</span><span class="s">&#39;id&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">),</span>
@@ -164,45 +154,6 @@
         <span class="k">if</span> <span class="n">remap</span><span class="p">:</span>
             <span class="n">remap_blast</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
         <span class="k">yield</span> <span class="n">group</span>
-
-</div>
-<div class="viewcode-block" id="parse_gff3"><a class="viewcode-back" href="../../dammit.html#dammit.parsers.parse_gff3">[docs]</a><span class="k">def</span> <span class="nf">parse_gff3</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">chunksize</span><span class="o">=</span><span class="mi">10000</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;Iterator over DataFrames of length chunksize from a given</span>
-<span class="sd">    GTF/GFF file.</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        fn (str): Path to the file.</span>
-<span class="sd">        chunksize (int): Rows per iteration.</span>
-<span class="sd">    Yields:</span>
-<span class="sd">        DataFrame: Pandas DataFrame with the results.</span>
-<span class="sd">    &#39;&#39;&#39;</span>
-
-    <span class="k">def</span> <span class="nf">attr_col_func</span><span class="p">(</span><span class="n">col</span><span class="p">):</span>
-        <span class="n">d</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">col</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s">&#39;;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;;&#39;</span><span class="p">):</span>
-            <span class="n">key</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">val</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">partition</span><span class="p">(</span><span class="s">&#39;=&#39;</span><span class="p">)</span>
-            <span class="n">d</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">d</span>
-
-
-    <span class="c"># Read everything into a DataFrame</span>
-    <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span>  <span class="n">pd</span><span class="o">.</span><span class="n">read_table</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s">&#39;</span><span class="se">\t</span><span class="s">&#39;</span><span class="p">,</span> <span class="n">comment</span><span class="o">=</span><span class="s">&#39;#&#39;</span><span class="p">,</span> 
-                                <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">_</span> <span class="ow">in</span> <span class="n">gff_cols</span><span class="p">],</span> <span class="n">na_values</span><span class="o">=</span><span class="s">&#39;.&#39;</span><span class="p">,</span>
-                                <span class="n">converters</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;attributes&#39;</span><span class="p">:</span> <span class="n">attr_col_func</span><span class="p">},</span>
-                                <span class="n">chunksize</span><span class="o">=</span><span class="n">chunksize</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
-                                <span class="n">dtype</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">gff_cols</span><span class="p">)):</span>
-
-        <span class="c"># Generate a new DataFrame from the attributes dicts, and merge it in</span>
-        <span class="n">gtf_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">group</span><span class="p">,</span>
-                          <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">attributes</span><span class="p">)),</span>
-                          <span class="n">left_index</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">right_index</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-        <span class="k">del</span> <span class="n">gtf_df</span><span class="p">[</span><span class="s">&#39;attributes&#39;</span><span class="p">]</span>
-    
-        <span class="c"># Switch from [start, end] to [start, end)</span>
-        <span class="n">gtf_df</span><span class="o">.</span><span class="n">end</span> <span class="o">=</span> <span class="n">gtf_df</span><span class="o">.</span><span class="n">end</span> <span class="o">+</span> <span class="mi">1</span>
-        <span class="c">#convert_dtypes(gtf_df, dict(gff_cols))</span>
-
-        <span class="k">yield</span> <span class="n">gtf_df</span>
 
 </div>
 <div class="viewcode-block" id="crb_to_df_iter"><a class="viewcode-back" href="../../dammit.html#dammit.parsers.crb_to_df_iter">[docs]</a><span class="k">def</span> <span class="nf">crb_to_df_iter</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">chunksize</span><span class="o">=</span><span class="mi">10000</span><span class="p">,</span> <span class="n">remap</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>

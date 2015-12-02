@@ -68,29 +68,29 @@
 
 
 <div class="viewcode-block" id="task_str"><a class="viewcode-back" href="../../dammit.html#dammit.tasks.task_str">[docs]</a><span class="k">def</span> <span class="nf">task_str</span><span class="p">(</span><span class="n">task</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">pprint</span><span class="o">.</span><span class="n">pformat</span><span class="p">(</span><span class="n">task</span><span class="o">.</span><span class="n">__dict__</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">pprint</span><span class="o">.</span><span class="n">pformat</span><span class="p">(</span><span class="n">task</span><span class="o">.</span><span class="n">__dict__</span><span class="p">)</span></div>
 
-</div>
+
 <div class="viewcode-block" id="print_tasks"><a class="viewcode-back" href="../../dammit.html#dammit.tasks.print_tasks">[docs]</a><span class="k">def</span> <span class="nf">print_tasks</span><span class="p">(</span><span class="n">tasks</span><span class="p">,</span> <span class="n">logger</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">):</span>
     <span class="k">for</span> <span class="n">task</span> <span class="ow">in</span> <span class="n">tasks</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">logger</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">level</span><span class="p">,</span> <span class="n">task_str</span><span class="p">(</span><span class="n">task</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">print</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="nb">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>
+            <span class="k">print</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="nb">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span></div>
 
-</div>
+
 <div class="viewcode-block" id="clean_folder"><a class="viewcode-back" href="../../dammit.html#dammit.tasks.clean_folder">[docs]</a><span class="k">def</span> <span class="nf">clean_folder</span><span class="p">(</span><span class="n">target</span><span class="p">):</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">rmtree</span><span class="p">(</span><span class="n">target</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
-        <span class="k">pass</span>
+        <span class="k">pass</span></div>
 
-</div>
+
 <span class="n">seq_ext</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s">r&#39;(.fasta)|(.fa)|(.fastq)|(.fq)&#39;</span><span class="p">)</span>
 <div class="viewcode-block" id="strip_seq_extension"><a class="viewcode-back" href="../../dammit.html#dammit.tasks.strip_seq_extension">[docs]</a><span class="k">def</span> <span class="nf">strip_seq_extension</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">seq_ext</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">fn</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">seq_ext</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">fn</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span></div>
 
-</div>
+
 <div class="viewcode-block" id="create_task_object"><a class="viewcode-back" href="../../dammit.html#dammit.tasks.create_task_object">[docs]</a><span class="k">def</span> <span class="nf">create_task_object</span><span class="p">(</span><span class="n">task_dict_func</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Wrapper to decorate functions returning pydoit</span>
 <span class="sd">    Task dictionaries and have them return pydoit Task</span>
@@ -99,19 +99,19 @@
     <span class="k">def</span> <span class="nf">d_to_t</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">ret_dict</span> <span class="o">=</span> <span class="n">task_dict_func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">dict_to_task</span><span class="p">(</span><span class="n">ret_dict</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">d_to_t</span>
+    <span class="k">return</span> <span class="n">d_to_t</span></div>
 
-</div>
+
 <span class="nd">@create_task_object</span>
-<div class="viewcode-block" id="get_group_task"><a class="viewcode-back" href="../../dammit.html#dammit.tasks.get_group_task">[docs]</a><span class="k">def</span> <span class="nf">get_group_task</span><span class="p">(</span><span class="n">group_name</span><span class="p">,</span> <span class="n">tasks</span><span class="p">):</span>
+<div class="viewcode-block" id="get_group_task"><a class="viewcode-back" href="../../dammit.html#dammit.tasks.get_group_task">[docs]</a><span class="k">def</span> <span class="nf">get_group_task</span><span class="p">(</span><span class="n">group_name</span><span class="p">,</span> <span class="n">tasks</span><span class="p">):</span></div>
 
     <span class="k">return</span> <span class="p">{</span><span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="n">group_name</span><span class="p">,</span>
             <span class="s">&#39;actions&#39;</span><span class="p">:</span> <span class="bp">None</span><span class="p">,</span>
             <span class="s">&#39;task_dep&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">tasks</span><span class="p">]}</span>
 
-</div>
+
 <span class="nd">@create_task_object</span>
-<div class="viewcode-block" id="get_download_task"><a class="viewcode-back" href="../../dammit.html#dammit.tasks.get_download_task">[docs]</a><span class="k">def</span> <span class="nf">get_download_task</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">target_fn</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">&#39;default&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="get_download_task"><a class="viewcode-back" href="../../dammit.html#dammit.tasks.get_download_task">[docs]</a><span class="k">def</span> <span class="nf">get_download_task</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">target_fn</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">&#39;default&#39;</span><span class="p">):</span></div>
 
     <span class="n">cmd</span> <span class="o">=</span> <span class="s">&#39;curl -o {target_fn} {url}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="nb">locals</span><span class="p">())</span>
     <span class="n">name</span> <span class="o">=</span> <span class="s">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s">&#39;download_gunzip&#39;</span><span class="p">,</span> <span class="n">target_fn</span><span class="p">,</span> <span class="n">label</span><span class="p">])</span>
@@ -123,7 +123,7 @@
             <span class="s">&#39;clean&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">clean_targets</span><span class="p">],</span>
             <span class="s">&#39;uptodate&#39;</span><span class="p">:</span> <span class="p">[</span><span class="bp">True</span><span class="p">]}</span>
 
-</div>
+
 <span class="nd">@create_task_object</span>
 <div class="viewcode-block" id="get_download_and_gunzip_task"><a class="viewcode-back" href="../../dammit.html#dammit.tasks.get_download_and_gunzip_task">[docs]</a><span class="k">def</span> <span class="nf">get_download_and_gunzip_task</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">target_fn</span><span class="p">):</span>
     <span class="n">cmd</span> <span class="o">=</span> <span class="s">&#39;curl {url} | gunzip -c &gt; {target_fn}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="nb">locals</span><span class="p">())</span>
@@ -135,11 +135,11 @@
             <span class="s">&#39;actions&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">cmd</span><span class="p">],</span>
             <span class="s">&#39;targets&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">target_fn</span><span class="p">],</span>
             <span class="s">&#39;clean&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">clean_targets</span><span class="p">],</span>
-            <span class="s">&#39;uptodate&#39;</span><span class="p">:</span> <span class="p">[</span><span class="bp">True</span><span class="p">]}</span>
+            <span class="s">&#39;uptodate&#39;</span><span class="p">:</span> <span class="p">[</span><span class="bp">True</span><span class="p">]}</span></div>
 
-</div>
+
 <span class="nd">@create_task_object</span>
-<div class="viewcode-block" id="get_download_and_untar_task"><a class="viewcode-back" href="../../dammit.html#dammit.tasks.get_download_and_untar_task">[docs]</a><span class="k">def</span> <span class="nf">get_download_and_untar_task</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">target_dir</span><span class="p">,</span> <span class="n">label</span><span class="p">):</span>
+<div class="viewcode-block" id="get_download_and_untar_task"><a class="viewcode-back" href="../../dammit.html#dammit.tasks.get_download_and_untar_task">[docs]</a><span class="k">def</span> <span class="nf">get_download_and_untar_task</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">target_dir</span><span class="p">,</span> <span class="n">label</span><span class="p">):</span></div>
 
     <span class="n">cmd1</span> <span class="o">=</span> <span class="s">&#39;mkdir -p {target_dir}; curl {url} | tar -xz -C {target_dir}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="nb">locals</span><span class="p">())</span>
     <span class="n">name</span> <span class="o">=</span> <span class="s">&#39;download_and_untar:&#39;</span>  <span class="o">+</span> \
@@ -154,9 +154,9 @@
             <span class="s">&#39;clean&#39;</span><span class="p">:</span> <span class="p">[(</span><span class="n">clean_folder</span><span class="p">,</span> <span class="p">[</span><span class="n">target_dir</span><span class="p">])],</span>
             <span class="s">&#39;uptodate&#39;</span><span class="p">:</span> <span class="p">[</span><span class="bp">True</span><span class="p">]}</span>
 
-</div>
+
 <span class="nd">@create_task_object</span>
-<div class="viewcode-block" id="get_create_folder_task"><a class="viewcode-back" href="../../dammit.html#dammit.tasks.get_create_folder_task">[docs]</a><span class="k">def</span> <span class="nf">get_create_folder_task</span><span class="p">(</span><span class="n">folder</span><span class="p">):</span>
+<div class="viewcode-block" id="get_create_folder_task"><a class="viewcode-back" href="../../dammit.html#dammit.tasks.get_create_folder_task">[docs]</a><span class="k">def</span> <span class="nf">get_create_folder_task</span><span class="p">(</span><span class="n">folder</span><span class="p">):</span></div>
 
     <span class="n">name</span> <span class="o">=</span> <span class="s">&#39;create_folder:{folder}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="nb">locals</span><span class="p">())</span>
 
@@ -167,9 +167,9 @@
             <span class="s">&#39;uptodate&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">run_once</span><span class="p">],</span>
             <span class="s">&#39;clean&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">clean_targets</span><span class="p">]</span> <span class="p">}</span>
 
-</div>
+
 <span class="nd">@create_task_object</span>
-<div class="viewcode-block" id="get_sanitize_fasta_task"><a class="viewcode-back" href="../../dammit.html#dammit.tasks.get_sanitize_fasta_task">[docs]</a><span class="k">def</span> <span class="nf">get_sanitize_fasta_task</span><span class="p">(</span><span class="n">input_fn</span><span class="p">,</span> <span class="n">output_fn</span><span class="p">):</span>
+<div class="viewcode-block" id="get_sanitize_fasta_task"><a class="viewcode-back" href="../../dammit.html#dammit.tasks.get_sanitize_fasta_task">[docs]</a><span class="k">def</span> <span class="nf">get_sanitize_fasta_task</span><span class="p">(</span><span class="n">input_fn</span><span class="p">,</span> <span class="n">output_fn</span><span class="p">):</span></div>
 
     <span class="kn">import</span> <span class="nn">re</span>
     <span class="n">name</span> <span class="o">=</span> <span class="s">&#39;sanitize_fasta:{0}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">input_fn</span><span class="p">))</span>
@@ -178,7 +178,7 @@
         <span class="n">bad</span> <span class="o">=</span> <span class="s">r&#39;[&quot;`/|=]+&#39;</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">output_fn</span><span class="p">,</span> <span class="s">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">record</span> <span class="ow">in</span> <span class="n">ReadParser</span><span class="p">(</span><span class="n">input_fn</span><span class="p">):</span>
-                <span class="n">header</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">bad</span><span class="p">,</span> <span class="s">r&#39;.&#39;</span><span class="p">,</span> <span class="n">record</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+                <span class="n">header</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">bad</span><span class="p">,</span> <span class="s">r&#39;_&#39;</span><span class="p">,</span> <span class="n">record</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
                 <span class="n">fp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;&gt;{0}</span><span class="se">\n</span><span class="s">{1}</span><span class="se">\n</span><span class="s">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">header</span><span class="p">,</span> <span class="n">record</span><span class="o">.</span><span class="n">sequence</span><span class="p">))</span>
 
     <span class="k">return</span> <span class="p">{</span><span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span>
@@ -187,10 +187,10 @@
             <span class="s">&#39;file_dep&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">input_fn</span><span class="p">],</span>
             <span class="s">&#39;clean&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">clean_targets</span><span class="p">]}</span>
 
-    </div>
+    
 <span class="nd">@create_task_object</span>
 <div class="viewcode-block" id="get_crb_blast_task"><a class="viewcode-back" href="../../dammit.html#dammit.tasks.get_crb_blast_task">[docs]</a><span class="k">def</span> <span class="nf">get_crb_blast_task</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span> <span class="n">crb_blast_cfg</span><span class="p">,</span>
-                       <span class="n">n_threads</span><span class="p">):</span>
+                       <span class="n">n_threads</span><span class="p">):</span></div>
 
     <span class="n">name</span> <span class="o">=</span> <span class="s">&#39;crb-blast:{0}.x.{1}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
     <span class="n">exc</span> <span class="o">=</span> <span class="n">which</span><span class="p">(</span><span class="s">&#39;crb-blast&#39;</span><span class="p">)</span>
@@ -205,7 +205,7 @@
             <span class="s">&#39;file_dep&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">query</span><span class="p">,</span> <span class="n">target</span><span class="p">],</span>
             <span class="s">&#39;clean&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">clean_targets</span><span class="p">]}</span>
 
-</div>
+
 <span class="nd">@create_task_object</span>
 <div class="viewcode-block" id="get_lastdb_task"><a class="viewcode-back" href="../../dammit.html#dammit.tasks.get_lastdb_task">[docs]</a><span class="k">def</span> <span class="nf">get_lastdb_task</span><span class="p">(</span><span class="n">db_fn</span><span class="p">,</span> <span class="n">db_out_prefix</span><span class="p">,</span> <span class="n">lastdb_cfg</span><span class="p">,</span> <span class="n">prot</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Create a pydoit task to run lastdb.</span>
@@ -241,9 +241,9 @@
                         <span class="k">for</span> <span class="n">ext</span> <span class="ow">in</span> \
                         <span class="p">[</span><span class="s">&#39;.bck&#39;</span><span class="p">,</span> <span class="s">&#39;.des&#39;</span><span class="p">,</span> <span class="s">&#39;.prj&#39;</span><span class="p">,</span> <span class="s">&#39;.sds&#39;</span><span class="p">,</span> <span class="s">&#39;.ssp&#39;</span><span class="p">,</span> <span class="s">&#39;.suf&#39;</span><span class="p">,</span> <span class="s">&#39;.tis&#39;</span><span class="p">]],</span>
             <span class="s">&#39;uptodate&#39;</span><span class="p">:</span> <span class="p">[</span><span class="bp">True</span><span class="p">],</span>
-            <span class="s">&#39;clean&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">clean_targets</span><span class="p">]}</span>
+            <span class="s">&#39;clean&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">clean_targets</span><span class="p">]}</span></div>
 
-</div>
+
 <span class="nd">@create_task_object</span>
 <div class="viewcode-block" id="get_lastal_task"><a class="viewcode-back" href="../../dammit.html#dammit.tasks.get_lastal_task">[docs]</a><span class="k">def</span> <span class="nf">get_lastal_task</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="n">out_fn</span><span class="p">,</span> <span class="n">translate</span><span class="p">,</span> <span class="n">n_threads</span><span class="p">,</span> <span class="n">lastal_cfg</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Create a pydoit task to run lastal</span>
@@ -272,11 +272,11 @@
             <span class="s">&#39;actions&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">cmd</span><span class="p">],</span>
             <span class="s">&#39;targets&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">out_fn</span><span class="p">],</span>
             <span class="s">&#39;file_dep&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">db</span> <span class="o">+</span> <span class="s">&#39;.sds&#39;</span><span class="p">],</span>
-            <span class="s">&#39;clean&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">clean_targets</span><span class="p">]}</span>
+            <span class="s">&#39;clean&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">clean_targets</span><span class="p">]}</span></div>
 
-</div>
+
 <span class="nd">@create_task_object</span>
-<div class="viewcode-block" id="get_maf_best_hits_task"><a class="viewcode-back" href="../../dammit.html#dammit.tasks.get_maf_best_hits_task">[docs]</a><span class="k">def</span> <span class="nf">get_maf_best_hits_task</span><span class="p">(</span><span class="n">maf_fn</span><span class="p">,</span> <span class="n">output_fn</span><span class="p">):</span>
+<div class="viewcode-block" id="get_maf_best_hits_task"><a class="viewcode-back" href="../../dammit.html#dammit.tasks.get_maf_best_hits_task">[docs]</a><span class="k">def</span> <span class="nf">get_maf_best_hits_task</span><span class="p">(</span><span class="n">maf_fn</span><span class="p">,</span> <span class="n">output_fn</span><span class="p">):</span></div>
 
     <span class="n">hits_mgr</span> <span class="o">=</span> <span class="n">BestHits</span><span class="p">()</span>
 
@@ -296,7 +296,7 @@
             <span class="s">&#39;clean&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">clean_targets</span><span class="p">]}</span>
 
 
-</div>
+
 <span class="nd">@create_task_object</span>
 <div class="viewcode-block" id="get_link_file_task"><a class="viewcode-back" href="../../dammit.html#dammit.tasks.get_link_file_task">[docs]</a><span class="k">def</span> <span class="nf">get_link_file_task</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">dst</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39; Soft-link file to the current directory</span>
@@ -308,11 +308,11 @@
             <span class="s">&#39;file_dep&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">src</span><span class="p">],</span>
             <span class="s">&#39;targets&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">src</span><span class="p">)</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">dst</span> <span class="k">else</span> <span class="n">dst</span><span class="p">],</span>
             <span class="s">&#39;uptodate&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">run_once</span><span class="p">],</span>
-            <span class="s">&#39;clean&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">clean_targets</span><span class="p">]}</span>
+            <span class="s">&#39;clean&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">clean_targets</span><span class="p">]}</span></div>
 
-</div>
+
 <span class="nd">@create_task_object</span>
-<div class="viewcode-block" id="get_cat_task"><a class="viewcode-back" href="../../dammit.html#dammit.tasks.get_cat_task">[docs]</a><span class="k">def</span> <span class="nf">get_cat_task</span><span class="p">(</span><span class="n">file_list</span><span class="p">,</span> <span class="n">target_fn</span><span class="p">):</span>
+<div class="viewcode-block" id="get_cat_task"><a class="viewcode-back" href="../../dammit.html#dammit.tasks.get_cat_task">[docs]</a><span class="k">def</span> <span class="nf">get_cat_task</span><span class="p">(</span><span class="n">file_list</span><span class="p">,</span> <span class="n">target_fn</span><span class="p">):</span></div>
 
     <span class="n">cmd</span> <span class="o">=</span> <span class="s">&#39;cat {files} &gt; {t}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">files</span><span class="o">=</span><span class="s">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">file_list</span><span class="p">),</span> <span class="n">t</span><span class="o">=</span><span class="n">target_fn</span><span class="p">)</span>
 
@@ -323,10 +323,10 @@
             <span class="s">&#39;targets&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">target_fn</span><span class="p">],</span>
             <span class="s">&#39;clean&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">clean_targets</span><span class="p">]}</span>
 
-</div>
+
 <span class="nd">@create_task_object</span>
 <div class="viewcode-block" id="get_busco_task"><a class="viewcode-back" href="../../dammit.html#dammit.tasks.get_busco_task">[docs]</a><span class="k">def</span> <span class="nf">get_busco_task</span><span class="p">(</span><span class="n">input_filename</span><span class="p">,</span> <span class="n">output_name</span><span class="p">,</span> <span class="n">busco_db_dir</span><span class="p">,</span> <span class="n">input_type</span><span class="p">,</span>
-                   <span class="n">n_threads</span><span class="p">,</span> <span class="n">busco_cfg</span><span class="p">):</span>
+                   <span class="n">n_threads</span><span class="p">,</span> <span class="n">busco_cfg</span><span class="p">):</span></div>
     
     <span class="n">name</span> <span class="o">=</span> <span class="s">&#39;busco:&#39;</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">input_filename</span><span class="p">)</span> <span class="o">+</span> <span class="s">&#39;-&#39;</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">busco_db_dir</span><span class="p">)</span>
 
@@ -345,9 +345,9 @@
             <span class="s">&#39;uptodate&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">run_once</span><span class="p">],</span>
             <span class="s">&#39;clean&#39;</span><span class="p">:</span> <span class="p">[(</span><span class="n">clean_folder</span><span class="p">,</span> <span class="p">[</span><span class="s">&#39;run_&#39;</span> <span class="o">+</span> <span class="n">output_name</span><span class="p">])]}</span>
 
-</div>
+
 <span class="nd">@create_task_object</span>
-<div class="viewcode-block" id="get_cmpress_task"><a class="viewcode-back" href="../../dammit.html#dammit.tasks.get_cmpress_task">[docs]</a><span class="k">def</span> <span class="nf">get_cmpress_task</span><span class="p">(</span><span class="n">db_filename</span><span class="p">,</span> <span class="n">infernal_cfg</span><span class="p">):</span>
+<div class="viewcode-block" id="get_cmpress_task"><a class="viewcode-back" href="../../dammit.html#dammit.tasks.get_cmpress_task">[docs]</a><span class="k">def</span> <span class="nf">get_cmpress_task</span><span class="p">(</span><span class="n">db_filename</span><span class="p">,</span> <span class="n">infernal_cfg</span><span class="p">):</span></div>
 
     <span class="n">exc</span> <span class="o">=</span> <span class="n">which</span><span class="p">(</span><span class="s">&#39;cmpress&#39;</span><span class="p">)</span>
     <span class="n">cmd</span> <span class="o">=</span> <span class="s">&#39;{exc} {db_filename}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="nb">locals</span><span class="p">())</span>
@@ -359,10 +359,10 @@
             <span class="s">&#39;uptodate&#39;</span><span class="p">:</span> <span class="p">[</span><span class="bp">True</span><span class="p">],</span>
             <span class="s">&#39;clean&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">clean_targets</span><span class="p">]}</span>
 
-</div>
+
 <span class="nd">@create_task_object</span>
 <div class="viewcode-block" id="get_cmscan_task"><a class="viewcode-back" href="../../dammit.html#dammit.tasks.get_cmscan_task">[docs]</a><span class="k">def</span> <span class="nf">get_cmscan_task</span><span class="p">(</span><span class="n">input_filename</span><span class="p">,</span> <span class="n">output_filename</span><span class="p">,</span> <span class="n">db_filename</span><span class="p">,</span> 
-                    <span class="n">n_threads</span><span class="p">,</span> <span class="n">infernal_cfg</span><span class="p">):</span>
+                    <span class="n">n_threads</span><span class="p">,</span> <span class="n">infernal_cfg</span><span class="p">):</span></div>
     
     <span class="n">name</span> <span class="o">=</span> <span class="s">&#39;cmscan:&#39;</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">input_filename</span><span class="p">)</span> <span class="o">+</span> <span class="s">&#39;.x.&#39;</span> <span class="o">+</span> \
            <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">db_filename</span><span class="p">)</span>
@@ -378,9 +378,9 @@
             <span class="s">&#39;targets&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">output_filename</span><span class="p">,</span> <span class="n">output_filename</span> <span class="o">+</span> <span class="s">&#39;.cmscan&#39;</span><span class="p">],</span>
             <span class="s">&#39;clean&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">clean_targets</span><span class="p">]}</span>
 
-</div>
+
 <span class="nd">@create_task_object</span>
-<div class="viewcode-block" id="get_hmmpress_task"><a class="viewcode-back" href="../../dammit.html#dammit.tasks.get_hmmpress_task">[docs]</a><span class="k">def</span> <span class="nf">get_hmmpress_task</span><span class="p">(</span><span class="n">db_filename</span><span class="p">,</span> <span class="n">hmmer_cfg</span><span class="p">):</span>
+<div class="viewcode-block" id="get_hmmpress_task"><a class="viewcode-back" href="../../dammit.html#dammit.tasks.get_hmmpress_task">[docs]</a><span class="k">def</span> <span class="nf">get_hmmpress_task</span><span class="p">(</span><span class="n">db_filename</span><span class="p">,</span> <span class="n">hmmer_cfg</span><span class="p">):</span></div>
     
     <span class="n">name</span> <span class="o">=</span> <span class="s">&#39;hmmpress:&#39;</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">db_filename</span><span class="p">)</span>
     <span class="n">exc</span> <span class="o">=</span> <span class="n">which</span><span class="p">(</span><span class="s">&#39;hmmpress&#39;</span><span class="p">)</span>
@@ -393,10 +393,10 @@
             <span class="s">&#39;uptodate&#39;</span><span class="p">:</span> <span class="p">[</span><span class="bp">True</span><span class="p">],</span>
             <span class="s">&#39;clean&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">clean_targets</span><span class="p">]}</span>
 
-</div>
+
 <span class="nd">@create_task_object</span>
 <div class="viewcode-block" id="get_hmmscan_task"><a class="viewcode-back" href="../../dammit.html#dammit.tasks.get_hmmscan_task">[docs]</a><span class="k">def</span> <span class="nf">get_hmmscan_task</span><span class="p">(</span><span class="n">input_filename</span><span class="p">,</span> <span class="n">output_filename</span><span class="p">,</span> <span class="n">db_filename</span><span class="p">,</span> 
-                     <span class="n">n_threads</span><span class="p">,</span> <span class="n">hmmer_cfg</span><span class="p">):</span>
+                     <span class="n">n_threads</span><span class="p">,</span> <span class="n">hmmer_cfg</span><span class="p">):</span></div>
 
     <span class="n">name</span> <span class="o">=</span> <span class="s">&#39;hmmscan:&#39;</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">input_filename</span><span class="p">)</span> <span class="o">+</span> <span class="s">&#39;.x.&#39;</span> <span class="o">+</span> \
                 <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">db_filename</span><span class="p">)</span>
@@ -413,9 +413,9 @@
             <span class="s">&#39;targets&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">output_filename</span><span class="p">,</span> <span class="n">stat</span><span class="p">],</span>
             <span class="s">&#39;clean&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">clean_targets</span><span class="p">]}</span>
 
-</div>
+
 <span class="nd">@create_task_object</span>
-<div class="viewcode-block" id="get_transdecoder_orf_task"><a class="viewcode-back" href="../../dammit.html#dammit.tasks.get_transdecoder_orf_task">[docs]</a><span class="k">def</span> <span class="nf">get_transdecoder_orf_task</span><span class="p">(</span><span class="n">input_filename</span><span class="p">,</span> <span class="n">transdecoder_cfg</span><span class="p">):</span>
+<div class="viewcode-block" id="get_transdecoder_orf_task"><a class="viewcode-back" href="../../dammit.html#dammit.tasks.get_transdecoder_orf_task">[docs]</a><span class="k">def</span> <span class="nf">get_transdecoder_orf_task</span><span class="p">(</span><span class="n">input_filename</span><span class="p">,</span> <span class="n">transdecoder_cfg</span><span class="p">):</span></div>
 
     <span class="n">name</span> <span class="o">=</span> <span class="s">&#39;TransDecoder.LongOrfs:&#39;</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">input_filename</span><span class="p">)</span>
 
@@ -431,9 +431,9 @@
             <span class="s">&#39;clean&#39;</span><span class="p">:</span> <span class="p">[(</span><span class="n">clean_folder</span><span class="p">,</span> <span class="p">[</span><span class="n">input_filename</span> <span class="o">+</span> <span class="s">&#39;.transdecoder_dir&#39;</span><span class="p">])]}</span>
 
 
-<span class="c"># TransDecoder.Predict -t lamp10.fasta --retain_pfam_hits lamp10.fasta.pfam-A.out</span></div>
+<span class="c"># TransDecoder.Predict -t lamp10.fasta --retain_pfam_hits lamp10.fasta.pfam-A.out</span>
 <span class="nd">@create_task_object</span>
-<div class="viewcode-block" id="get_transdecoder_predict_task"><a class="viewcode-back" href="../../dammit.html#dammit.tasks.get_transdecoder_predict_task">[docs]</a><span class="k">def</span> <span class="nf">get_transdecoder_predict_task</span><span class="p">(</span><span class="n">input_filename</span><span class="p">,</span> <span class="n">db_filename</span><span class="p">,</span> <span class="n">transdecoder_cfg</span><span class="p">):</span>
+<div class="viewcode-block" id="get_transdecoder_predict_task"><a class="viewcode-back" href="../../dammit.html#dammit.tasks.get_transdecoder_predict_task">[docs]</a><span class="k">def</span> <span class="nf">get_transdecoder_predict_task</span><span class="p">(</span><span class="n">input_filename</span><span class="p">,</span> <span class="n">db_filename</span><span class="p">,</span> <span class="n">transdecoder_cfg</span><span class="p">):</span></div>
 
     <span class="n">name</span> <span class="o">=</span> <span class="s">&#39;TransDecoder.Predict:&#39;</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">input_filename</span><span class="p">)</span>
 
@@ -453,9 +453,9 @@
             <span class="s">&#39;clean&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">clean_targets</span><span class="p">,</span> 
                      <span class="p">(</span><span class="n">clean_folder</span><span class="p">,</span> <span class="p">[</span><span class="n">input_filename</span> <span class="o">+</span> <span class="s">&#39;.transdecoder_dir&#39;</span><span class="p">])]}</span>
 
-</div>
+
 <span class="nd">@create_task_object</span>
-<div class="viewcode-block" id="get_maf_gff3_task"><a class="viewcode-back" href="../../dammit.html#dammit.tasks.get_maf_gff3_task">[docs]</a><span class="k">def</span> <span class="nf">get_maf_gff3_task</span><span class="p">(</span><span class="n">input_filename</span><span class="p">,</span> <span class="n">output_filename</span><span class="p">,</span> <span class="n">database</span><span class="p">):</span>
+<div class="viewcode-block" id="get_maf_gff3_task"><a class="viewcode-back" href="../../dammit.html#dammit.tasks.get_maf_gff3_task">[docs]</a><span class="k">def</span> <span class="nf">get_maf_gff3_task</span><span class="p">(</span><span class="n">input_filename</span><span class="p">,</span> <span class="n">output_filename</span><span class="p">,</span> <span class="n">database</span><span class="p">):</span></div>
 
     <span class="n">name</span> <span class="o">=</span> <span class="s">&#39;maf-gff3:&#39;</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">output_filename</span><span class="p">)</span>
 
@@ -479,9 +479,9 @@
             <span class="s">&#39;targets&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">output_filename</span><span class="p">],</span>
             <span class="s">&#39;clean&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">clean_targets</span><span class="p">]}</span>
 
-</div>
+
 <span class="nd">@create_task_object</span>
-<div class="viewcode-block" id="get_crb_gff3_task"><a class="viewcode-back" href="../../dammit.html#dammit.tasks.get_crb_gff3_task">[docs]</a><span class="k">def</span> <span class="nf">get_crb_gff3_task</span><span class="p">(</span><span class="n">input_filename</span><span class="p">,</span> <span class="n">output_filename</span><span class="p">,</span> <span class="n">database</span><span class="p">):</span>
+<div class="viewcode-block" id="get_crb_gff3_task"><a class="viewcode-back" href="../../dammit.html#dammit.tasks.get_crb_gff3_task">[docs]</a><span class="k">def</span> <span class="nf">get_crb_gff3_task</span><span class="p">(</span><span class="n">input_filename</span><span class="p">,</span> <span class="n">output_filename</span><span class="p">,</span> <span class="n">database</span><span class="p">):</span></div>
 
     <span class="n">name</span> <span class="o">=</span> <span class="s">&#39;crbb-gff3:&#39;</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">output_filename</span><span class="p">)</span>
 
@@ -500,9 +500,9 @@
             <span class="s">&#39;targets&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">output_filename</span><span class="p">],</span>
             <span class="s">&#39;clean&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">clean_targets</span><span class="p">]}</span>
 
-</div>
+
 <span class="nd">@create_task_object</span>
-<div class="viewcode-block" id="get_hmmscan_gff3_task"><a class="viewcode-back" href="../../dammit.html#dammit.tasks.get_hmmscan_gff3_task">[docs]</a><span class="k">def</span> <span class="nf">get_hmmscan_gff3_task</span><span class="p">(</span><span class="n">input_filename</span><span class="p">,</span> <span class="n">output_filename</span><span class="p">,</span> <span class="n">database</span><span class="p">):</span>
+<div class="viewcode-block" id="get_hmmscan_gff3_task"><a class="viewcode-back" href="../../dammit.html#dammit.tasks.get_hmmscan_gff3_task">[docs]</a><span class="k">def</span> <span class="nf">get_hmmscan_gff3_task</span><span class="p">(</span><span class="n">input_filename</span><span class="p">,</span> <span class="n">output_filename</span><span class="p">,</span> <span class="n">database</span><span class="p">):</span></div>
 
     <span class="n">name</span> <span class="o">=</span> <span class="s">&#39;hmmscan-gff3:&#39;</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">output_filename</span><span class="p">)</span>
 
@@ -521,9 +521,9 @@
             <span class="s">&#39;targets&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">output_filename</span><span class="p">],</span>
             <span class="s">&#39;clean&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">clean_targets</span><span class="p">]}</span>
 
-</div>
+
 <span class="nd">@create_task_object</span>
-<div class="viewcode-block" id="get_cmscan_gff3_task"><a class="viewcode-back" href="../../dammit.html#dammit.tasks.get_cmscan_gff3_task">[docs]</a><span class="k">def</span> <span class="nf">get_cmscan_gff3_task</span><span class="p">(</span><span class="n">input_filename</span><span class="p">,</span> <span class="n">output_filename</span><span class="p">,</span> <span class="n">database</span><span class="p">):</span>
+<div class="viewcode-block" id="get_cmscan_gff3_task"><a class="viewcode-back" href="../../dammit.html#dammit.tasks.get_cmscan_gff3_task">[docs]</a><span class="k">def</span> <span class="nf">get_cmscan_gff3_task</span><span class="p">(</span><span class="n">input_filename</span><span class="p">,</span> <span class="n">output_filename</span><span class="p">,</span> <span class="n">database</span><span class="p">):</span></div>
 
     <span class="n">name</span> <span class="o">=</span> <span class="s">&#39;cmscan-gff3:&#39;</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">output_filename</span><span class="p">)</span>
 
@@ -542,9 +542,9 @@
             <span class="s">&#39;targets&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">output_filename</span><span class="p">],</span>
             <span class="s">&#39;clean&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">clean_targets</span><span class="p">]}</span>
 
-</div>
+
 <span class="nd">@create_task_object</span>
-<div class="viewcode-block" id="get_gff3_merge_task"><a class="viewcode-back" href="../../dammit.html#dammit.tasks.get_gff3_merge_task">[docs]</a><span class="k">def</span> <span class="nf">get_gff3_merge_task</span><span class="p">(</span><span class="n">gff3_filenames</span><span class="p">,</span> <span class="n">output_filename</span><span class="p">):</span>
+<div class="viewcode-block" id="get_gff3_merge_task"><a class="viewcode-back" href="../../dammit.html#dammit.tasks.get_gff3_merge_task">[docs]</a><span class="k">def</span> <span class="nf">get_gff3_merge_task</span><span class="p">(</span><span class="n">gff3_filenames</span><span class="p">,</span> <span class="n">output_filename</span><span class="p">):</span></div>
 
     <span class="n">name</span> <span class="o">=</span> <span class="s">&#39;gff3-merge:{0}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">output_filename</span><span class="p">))</span>
 
@@ -559,36 +559,9 @@
             <span class="s">&#39;targets&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">output_filename</span><span class="p">],</span>
             <span class="s">&#39;clean&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">clean_targets</span><span class="p">]}</span>
 
-</div>
+
 <span class="nd">@create_task_object</span>
-<div class="viewcode-block" id="get_annotate_fasta_task"><a class="viewcode-back" href="../../dammit.html#dammit.tasks.get_annotate_fasta_task">[docs]</a><span class="k">def</span> <span class="nf">get_annotate_fasta_task</span><span class="p">(</span><span class="n">transcriptome_fn</span><span class="p">,</span> <span class="n">gff3_fn</span><span class="p">,</span> <span class="n">output_fn</span><span class="p">):</span>
-    
-    <span class="n">name</span> <span class="o">=</span> <span class="s">&#39;fasta-annotate:{0}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">output_fn</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">annotate_fasta</span><span class="p">():</span>
-        <span class="n">annotations</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">g</span> <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> \
-                                 <span class="n">parsers</span><span class="o">.</span><span class="n">parse_gff3</span><span class="p">(</span><span class="n">gff3_fn</span><span class="p">)])</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">output_fn</span><span class="p">,</span> <span class="s">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">record</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">ReadParser</span><span class="p">(</span><span class="n">transcriptome_fn</span><span class="p">)):</span>
-                <span class="k">try</span><span class="p">:</span>
-                    <span class="n">df</span> <span class="o">=</span> <span class="n">annotations</span><span class="o">.</span><span class="n">ix</span><span class="p">[</span><span class="n">record</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
-                    <span class="n">desc</span> <span class="o">=</span> <span class="s">&#39;Transcript_{0}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
-
-                <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-                    <span class="n">desc</span> <span class="o">=</span> <span class="s">&#39;Transcript_{0}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
-                <span class="k">finally</span><span class="p">:</span>
-                    <span class="n">fp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;&gt;{0}</span><span class="se">\n</span><span class="s">{1}</span><span class="se">\n</span><span class="s">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">desc</span><span class="p">,</span> <span class="n">record</span><span class="o">.</span><span class="n">sequence</span><span class="p">))</span>
-
-        <span class="k">return</span> <span class="p">{</span><span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span>
-                <span class="s">&#39;title&#39;</span><span class="p">:</span> <span class="n">title_with_actions</span><span class="p">,</span>
-                <span class="s">&#39;actions&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">annotate_fasta</span><span class="p">],</span>
-                <span class="s">&#39;file_dep&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">transcriptome_fn</span><span class="p">,</span> <span class="n">gff3_fn</span><span class="p">],</span>
-                <span class="s">&#39;targets&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">output_fn</span><span class="p">],</span>
-                <span class="s">&#39;clean&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">clean_targets</span><span class="p">]}</span>
-
-</div>
-<span class="nd">@create_task_object</span>
-<div class="viewcode-block" id="get_transcriptome_stats_task"><a class="viewcode-back" href="../../dammit.html#dammit.tasks.get_transcriptome_stats_task">[docs]</a><span class="k">def</span> <span class="nf">get_transcriptome_stats_task</span><span class="p">(</span><span class="n">transcriptome</span><span class="p">,</span> <span class="n">output_fn</span><span class="p">):</span>
+<div class="viewcode-block" id="get_transcriptome_stats_task"><a class="viewcode-back" href="../../dammit.html#dammit.tasks.get_transcriptome_stats_task">[docs]</a><span class="k">def</span> <span class="nf">get_transcriptome_stats_task</span><span class="p">(</span><span class="n">transcriptome</span><span class="p">,</span> <span class="n">output_fn</span><span class="p">):</span></div>
 
     <span class="n">name</span> <span class="o">=</span> <span class="s">&#39;transcriptome_stats:&#39;</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">transcriptome</span><span class="p">)</span>
     <span class="n">K</span> <span class="o">=</span> <span class="mi">25</span>
@@ -654,7 +627,7 @@
             <span class="s">&#39;actions&#39;</span><span class="p">:</span> <span class="p">[(</span><span class="n">cmd</span><span class="p">,</span> <span class="p">[])],</span>
             <span class="s">&#39;file_dep&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">transcriptome</span><span class="p">],</span>
             <span class="s">&#39;targets&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">output_fn</span><span class="p">],</span>
-            <span class="s">&#39;clean&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">clean_targets</span><span class="p">]}</span></div>
+            <span class="s">&#39;clean&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">clean_targets</span><span class="p">]}</span>
 </pre></div>
 
           </div>
