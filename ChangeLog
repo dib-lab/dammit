@@ -1,3 +1,7 @@
+2015-12-02  Camille Scott  <camille.scott.w@gmail.com>
+
+    * Fix requirements and installation documentation.
+
 2015-11-25  Camille Scott  <camille.scott.w@gmail.com>
 
     * Fix bug when running from different directory.
