@@ -1,5 +1,12 @@
 2015-12-02  Camille Scott  <camille.scott.w@gmail.com>
 
+    * Add separate pip, Ubuntu, and Anaconda install instructions
+	  to documentation.
+	* Fix remaining issues with the README and documenation install
+	  instructions and test on EC2.
+
+2015-12-02  Camille Scott  <camille.scott.w@gmail.com>
+
 	* Additional fixes to installation documentation.
 	* Removed unused taxonomy module.
 
