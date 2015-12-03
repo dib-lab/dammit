@@ -14,25 +14,18 @@ to make this sucky part of the process suck a little less.
 Installation
 ------------
 
-Complete instructions with explanations are at the documentation 
+Complete instructions with explanations and more platform options are in the documentation 
 `website <http://www.camillescott.org/dammit/>`__. For the impatient, here's a stripped 
-down version.
+down version. These instructions assume you're on a clean Ubuntu 14.04 install.
+dammit will run on OSX too, though some of the dependencies will need to be 
+installed manually and are not included here.
 
-These instructions assume you're on Ubuntu 14.04. dammit will run on OSX too, though
-some of the dependencies will need to be installed manually.
- 
-`Anaconda <http://conda.pydata.org/docs/using/envs.html>`__ is the recommended python
-distribution, or at the very least, `virtualenv <https://virtualenv.pypa.io/en/latest/userguide.html#usage>`__
-to manage your python packages. Once you have a working python environment, proceed as follows::
-
-    pip install -U setuptools
-    pip install dammit
-
-Get packages from the Ubuntu PPAs::
+First get packages from the Ubuntu PPAs::
 
     sudo apt-get update
     sudo apt-get install python-pip python-dev python-numpy git ruby hmmer unzip \
-        infernal ncbi-blast+ liburi-escape-xs-perl emboss liburi-perl python-sklearn
+        infernal ncbi-blast+ liburi-escape-xs-perl emboss liburi-perl \
+        python-sklearn build-essential libsm6 libxrender1 libfontconfig1
     sudo gem install crb-blast
 
 Install some packages manually::
@@ -62,6 +55,15 @@ To add these to your environment permanently::
     echo 'export PATH=$PATH:$HOME/TransDecoder-2.0.1' >> $HOME/.bashrc
     echo 'export PATH=$PATH:$HOME/last-658/src' >> $HOME/.bashrc
     echo 'export PATH=$PATH:$HOME/BUSCO_v1.1b1' >> $HOME/.bashrc
+
+Now, install dammit::
+
+    sudo pip install -U setuptools
+    sudo pip install dammit
+
+This will spend a bit of time compiling and installing pandas and scikit-learn if you don't 
+already have a recent versions installed; the ones available in the Ubuntu 14.04 PPA are
+just too old.
 
 Acknowledgements
 ----------------
