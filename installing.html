@@ -43,21 +43,10 @@
             
   <div class="section" id="installation">
 <h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
-<p>dammit is a python package, so if you have the following python dependencies already,
-you can skip installing them via aptitude:</p>
-<div class="highlight-python"><div class="highlight"><pre>setuptools&gt;=0.6.35
-pandas&gt;=0.17
-khmer&gt;=2.0
-doit&gt;=0.29.0
-nose==1.3.4
-ficus&gt;=0.1
-matplotlib&gt;=1.0
-scikit-learn&gt;=0.16
-</pre></div>
-</div>
-<p>Otherwise, carry on!</p>
-<div class="section" id="dependencies">
-<h2>Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="non-python-dependencies">
+<h2>Non-python Dependencies<a class="headerlink" href="#non-python-dependencies" title="Permalink to this headline">¶</a></h2>
+<p>First we will take care of the external non-python dependencies; then
+we&#8217;ll move on to getting our python environment ready.</p>
 <p>Unfortunately, annotation necessarily relies on many software packages. I have
 worked hard to make dammit rely only on software which is accessible <em>and</em> likely
 to continue to be so. Most of the dependencies are available in either Ubuntu PPAs
@@ -67,8 +56,9 @@ suck less, then installing the necessary software should suck less too.</p>
 should all run on any flavor of GNU/Linux and on OSX.</p>
 <p>First, let&#8217;s get packages from the Ubuntu PPAs:</p>
 <div class="highlight-python"><div class="highlight"><pre>sudo apt-get update
-sudo apt-get install python-pip python-dev python-numpy git ruby hmmer unzip \
-    infernal ncbi-blast+ liburi-escape-xs-perl emboss liburi-perl python-sklearn
+sudo apt-get install git ruby hmmer unzip build-essential \
+    infernal ncbi-blast+ liburi-escape-xs-perl emboss liburi-perl \
+    libsm6 libxrender1 libfontconfig1
 </pre></div>
 </div>
 <p>If you&#8217;re on Ubuntu 15.10, you can also install TransDecoder and LAST through aptitude:</p>
@@ -100,10 +90,10 @@ keep it installed, append the exports to your bash profile:</p>
 echo &#39;export PATH=$PATH:$HOME/last-658/src&#39; &gt;&gt; $HOME/.bashrc
 </pre></div>
 </div>
-<p>Next, we need to install Conditional Reciprocal Best-hits Blast (CRBB). The
-algorithm is described in
-<a class="reference external" href="http://journals.plos.org/plosgenetics/article?id=10.1371/journal.pgen.1004365">Aubry et al.</a>,
-and is implemented in ruby. Assuming you have ruby, it can be installed with:</p>
+<p>Next, we need to install Conditional Reciprocal Best-hits Blast (CRBB). The algorithm is
+described in <a class="reference external" href="http://journals.plos.org/plosgenetics/article?id=10.1371/journal.pgen.1004365">Aubry et al.</a>,
+and is implemented in ruby. Assuming you have ruby (which was installed above),
+it can be installed with:</p>
 <div class="highlight-python"><div class="highlight"><pre>sudo gem install crb-blast
 </pre></div>
 </div>
@@ -121,24 +111,86 @@ export PATH=$PATH:$HOME/BUSCO_v1.1b1
 </pre></div>
 </div>
 </div>
-<div class="section" id="id1">
-<h2>Installation<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
-<p>dammit itself is quite easy to install. Just run:</p>
-<div class="highlight-python"><div class="highlight"><pre>pip install dammit
+<div class="section" id="python-dependencies">
+<h2>Python Dependencies<a class="headerlink" href="#python-dependencies" title="Permalink to this headline">¶</a></h2>
+<p>dammit is a python package, and relies on a number of commonly-used scientific
+libraries. If you&#8217;re sure you have the following python dependencies already,
+you can skip this step and move on to the final stage:</p>
+<div class="highlight-python"><div class="highlight"><pre>setuptools&gt;=0.6.35
+pandas&gt;=0.17
+khmer&gt;=2.0
+doit&gt;=0.29.0
+nose==1.3.4
+ficus&gt;=0.1
+matplotlib&gt;=1.0
+scikit-learn&gt;=0.16
 </pre></div>
 </div>
-<p>If you&#8217;re not running a virtual environment (which you really should be!), you&#8217;ll have
-to put a <cite>sudo</cite> before pip. If you get an error about using an outdated version of
-setuptools, you&#8217;ll need to update that first:</p>
+<p>Otherwise, we will have to install them. Pandas, numpy, matplotlib, and scikit-learn
+are quite hefty, mostly because they require a lot of compilation. To get around this,
+you can either install them via Anaconda, which I recommend, or you can install those
+which are available through the Ubuntu PPAs. If you wish to do things the slow
+but traditional way, you can just skip right ahead and:</p>
 <div class="highlight-python"><div class="highlight"><pre>pip install -U setuptools
+pip install dammit
 </pre></div>
 </div>
+<p>Otherwise, proceed to the Anaconda instructions, or skip ahead to the hybrid
+<a class="reference internal" href="#ubuntu-instructions"><span>Ubuntu / Pip Instructions</span></a>.</p>
+<div class="section" id="anaconda">
+<h3>Anaconda<a class="headerlink" href="#anaconda" title="Permalink to this headline">¶</a></h3>
+<p>Anaconda (or miniconda) is the preferred distribution for dammit. It&#8217;s straightforward
+to install and saves a lot of time compiling things when creating new environments. To
+install it on Ubuntu, first download it:</p>
+<div class="highlight-python"><div class="highlight"><pre>cd
+curl -OL https://3230d63b5fc54e62148e-c95ac804525aac4b6dba79b00b39d1d3.ssl.cf1.rackcdn.com/Anaconda2-2.4.0-Linux-x86_64.sh
+</pre></div>
+</div>
+<p>And run the installer:</p>
+<div class="highlight-python"><div class="highlight"><pre>bash Anaconda2-2.4.0-Linux-x86_64.sh
+</pre></div>
+</div>
+<p>Select <cite>yes</cite> when prompted on adding it to your <cite>.bashrc</cite>, and resource your profile
+to gain access to it:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">source</span> <span class="o">.</span><span class="n">bashrc</span>
+</pre></div>
+</div>
+<p>The version of Sphinx which is shipped with Anaconda has issues; we will remove it
+and allow dammit to install its own version via PyPI:</p>
+<div class="highlight-python"><div class="highlight"><pre>conda remove sphinx
+</pre></div>
+</div>
+</div>
+<div class="section" id="ubuntu-pip-instructions">
+<span id="ubuntu-instructions"></span><h3>Ubuntu / Pip Instructions<a class="headerlink" href="#ubuntu-pip-instructions" title="Permalink to this headline">¶</a></h3>
+<p>If you&#8217;d prefer to not use Anaconda, are on a clean Ubuntu 14.04 machine, have not
+installed the python packages with pip, and have installed the non-python dependencies,
+you can install them through the Ubuntu PPAs as follows:</p>
+<div class="highlight-python"><div class="highlight"><pre>sudo apt-get update
+sudo apt-get install python-pip python-dev python-numpy python-sklearn
+</pre></div>
+</div>
+<p>Unfortunately, you&#8217;ll still have to install Pandas and scikit-learn through pip, as
+the versions in the Ubuntu 14.04 PPAs are quite old. These will be installed automatically
+along with dammit.</p>
+</div>
+<div class="section" id="dammit">
+<span id="dammit-instructions"></span><h3>Dammit<a class="headerlink" href="#dammit" title="Permalink to this headline">¶</a></h3>
+<p>dammit itself is quite easy to install. Just run:</p>
+<div class="highlight-python"><div class="highlight"><pre>pip install -U setuptools
+pip install dammit
+</pre></div>
+</div>
+<p>If you&#8217;re not running anaconda or a virtual environment, you&#8217;ll have to put a <cite>sudo</cite>
+before pip to install it globally. If you don&#8217;t already have a recent versions of Pandas and
+scikit-learn this will take a bit.</p>
 <p>When you&#8217;re done, run the check again to make sure everything was installed
 correctly:</p>
 <div class="highlight-python"><div class="highlight"><pre>dammit dependencies
 </pre></div>
 </div>
-<p>Which will report which ones are missing.</p>
+<p>And you&#8217;re ready to go!</p>
+</div>
 </div>
 </div>
 
@@ -151,8 +203,13 @@ correctly:</p>
   <h3><a href="index.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Installation</a><ul>
-<li><a class="reference internal" href="#dependencies">Dependencies</a></li>
-<li><a class="reference internal" href="#id1">Installation</a></li>
+<li><a class="reference internal" href="#non-python-dependencies">Non-python Dependencies</a></li>
+<li><a class="reference internal" href="#python-dependencies">Python Dependencies</a><ul>
+<li><a class="reference internal" href="#anaconda">Anaconda</a></li>
+<li><a class="reference internal" href="#ubuntu-pip-instructions">Ubuntu / Pip Instructions</a></li>
+<li><a class="reference internal" href="#dammit">Dammit</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>

@@ -133,9 +133,9 @@
 <span class="sd">    &#39;&#39;&#39;</span>
 
     <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
-        <span class="n">df</span><span class="p">[</span><span class="n">c</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">c</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">dtypes</span><span class="p">[</span><span class="n">c</span><span class="p">])</span>
+        <span class="n">df</span><span class="p">[</span><span class="n">c</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">c</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">dtypes</span><span class="p">[</span><span class="n">c</span><span class="p">])</span></div>
 
-</div>
+
 <div class="viewcode-block" id="blast_to_df_iter"><a class="viewcode-back" href="../../dammit.html#dammit.parsers.blast_to_df_iter">[docs]</a><span class="k">def</span> <span class="nf">blast_to_df_iter</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s">&#39;</span><span class="se">\t</span><span class="s">&#39;</span><span class="p">,</span> <span class="n">chunksize</span><span class="o">=</span><span class="mi">10000</span><span class="p">,</span> <span class="n">remap</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Iterator of DataFrames of length chunksize parsed from an</span>
 <span class="sd">    NCBI BLAST+ `-outfmt6` file.</span>
@@ -153,9 +153,9 @@
         <span class="n">convert_dtypes</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="nb">dict</span><span class="p">(</span><span class="n">blast_cols</span><span class="p">))</span>
         <span class="k">if</span> <span class="n">remap</span><span class="p">:</span>
             <span class="n">remap_blast</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
-        <span class="k">yield</span> <span class="n">group</span>
+        <span class="k">yield</span> <span class="n">group</span></div>
 
-</div>
+
 <div class="viewcode-block" id="crb_to_df_iter"><a class="viewcode-back" href="../../dammit.html#dammit.parsers.crb_to_df_iter">[docs]</a><span class="k">def</span> <span class="nf">crb_to_df_iter</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">chunksize</span><span class="o">=</span><span class="mi">10000</span><span class="p">,</span> <span class="n">remap</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Iterator of DataFrames of length chunksize parsed from</span>
 <span class="sd">    the results from CRBB version crb-blast 0.6.6.</span>
@@ -177,9 +177,9 @@
 
         <span class="k">if</span> <span class="n">remap</span><span class="p">:</span>
             <span class="n">remap_blast</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
-        <span class="k">yield</span> <span class="n">group</span>
+        <span class="k">yield</span> <span class="n">group</span></div>
 
-</div>
+
 <div class="viewcode-block" id="parse_busco"><a class="viewcode-back" href="../../dammit.html#dammit.parsers.parse_busco">[docs]</a><span class="k">def</span> <span class="nf">parse_busco</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Parse a single BUSCO summary file to a dictionary.</span>
 
@@ -208,9 +208,9 @@
                         <span class="k">if</span> <span class="n">key</span> <span class="o">!=</span> <span class="s">&#39;n&#39;</span><span class="p">:</span>
                            <span class="n">key</span> <span class="o">+=</span> <span class="s">&#39;(%)&#39;</span>
                         <span class="n">res</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s">&#39;%&#39;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">res</span>
+    <span class="k">return</span> <span class="n">res</span></div>
 
-</div>
+
 <div class="viewcode-block" id="busco_to_df"><a class="viewcode-back" href="../../dammit.html#dammit.parsers.busco_to_df">[docs]</a><span class="k">def</span> <span class="nf">busco_to_df</span><span class="p">(</span><span class="n">fn_list</span><span class="p">,</span> <span class="n">dbs</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;metazoa&#39;</span><span class="p">,</span> <span class="s">&#39;vertebrata&#39;</span><span class="p">]):</span>
     <span class="sd">&#39;&#39;&#39; Given a list of BUSCO results from different databases, produce</span>
 <span class="sd">    an appropriately multi-indexed DataFrame of the results.</span>
@@ -233,9 +233,9 @@
         <span class="n">idx</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">fn</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="n">db</span><span class="p">)</span>
         <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span><span class="s">&#39;db&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">db</span>
         <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span><span class="s">&#39;fn&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="s">&#39;fn&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">fn</span><span class="p">:</span> <span class="n">fn</span><span class="p">[:</span><span class="n">fn</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">db</span><span class="p">)]</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s">&#39;. &#39;</span><span class="p">))</span>
-    <span class="k">return</span> <span class="n">df</span>
+    <span class="k">return</span> <span class="n">df</span></div>
 
-</div>
+
 <div class="viewcode-block" id="hmmscan_to_df_iter"><a class="viewcode-back" href="../../dammit.html#dammit.parsers.hmmscan_to_df_iter">[docs]</a><span class="k">def</span> <span class="nf">hmmscan_to_df_iter</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">chunksize</span><span class="o">=</span><span class="mi">10000</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Iterator over DataFrames of length chunksize from a given</span>
 <span class="sd">    hmmscan result file.</span>
@@ -271,9 +271,9 @@
                 <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="k">if</span> <span class="n">data</span><span class="p">:</span>
-        <span class="k">yield</span> <span class="n">build_df</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">yield</span> <span class="n">build_df</span><span class="p">(</span><span class="n">data</span><span class="p">)</span></div>
 
-</div>
+
 <div class="viewcode-block" id="cmscan_to_df_iter"><a class="viewcode-back" href="../../dammit.html#dammit.parsers.cmscan_to_df_iter">[docs]</a><span class="k">def</span> <span class="nf">cmscan_to_df_iter</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">chunksize</span><span class="o">=</span><span class="mi">10000</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Iterator over DataFrames of length chunksize from a given</span>
 <span class="sd">    cmscan result file.</span>
@@ -305,9 +305,9 @@
                 <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="k">if</span> <span class="n">data</span><span class="p">:</span>
-        <span class="k">yield</span> <span class="n">build_df</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">yield</span> <span class="n">build_df</span><span class="p">(</span><span class="n">data</span><span class="p">)</span></div>
 
-</div>
+
 <div class="viewcode-block" id="gff3_transdecoder_to_df_iter"><a class="viewcode-back" href="../../dammit.html#dammit.parsers.gff3_transdecoder_to_df_iter">[docs]</a><span class="k">def</span> <span class="nf">gff3_transdecoder_to_df_iter</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">chunksize</span><span class="o">=</span><span class="mi">10000</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Iterator yeilding DataFrames of length chunksize</span>
 <span class="sd">    from a given TransDecoder GFF file.</span>
@@ -341,9 +341,9 @@
                 <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="k">if</span> <span class="n">data</span><span class="p">:</span>
-        <span class="k">yield</span> <span class="n">build_df</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">yield</span> <span class="n">build_df</span><span class="p">(</span><span class="n">data</span><span class="p">)</span></div>
 
-</div>
+
 <div class="viewcode-block" id="maf_to_df_iter"><a class="viewcode-back" href="../../dammit.html#dammit.parsers.maf_to_df_iter">[docs]</a><span class="k">def</span> <span class="nf">maf_to_df_iter</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">chunksize</span><span class="o">=</span><span class="mi">10000</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Iterator yielding DataFrames of length chunksize holding MAF alignments.</span>
 
@@ -423,8 +423,8 @@
                     <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="k">if</span> <span class="n">data</span><span class="p">:</span>
-        <span class="k">yield</span> <span class="n">build_df</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">LAMBDA</span><span class="p">,</span> <span class="n">K</span><span class="p">)</span>
-    </div>
+        <span class="k">yield</span> <span class="n">build_df</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">LAMBDA</span><span class="p">,</span> <span class="n">K</span><span class="p">)</span></div>
+    
 </pre></div>
 
           </div>

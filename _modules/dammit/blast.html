@@ -55,9 +55,9 @@
     <span class="n">df</span><span class="p">[</span><span class="s">&#39;ind&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">index</span>
     <span class="n">df</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;ind&#39;</span><span class="p">,</span> <span class="n">comp_col</span><span class="p">],</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
     <span class="n">df</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">(</span><span class="n">subset</span><span class="o">=</span><span class="s">&#39;ind&#39;</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-    <span class="k">del</span> <span class="n">df</span><span class="p">[</span><span class="s">&#39;ind&#39;</span><span class="p">]</span>
-</div>
-<div class="viewcode-block" id="get_orthologies"><a class="viewcode-back" href="../../dammit.html#dammit.blast.get_orthologies">[docs]</a><span class="k">def</span> <span class="nf">get_orthologies</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">idx</span><span class="p">,</span> <span class="n">comp_col</span><span class="o">=</span><span class="s">&#39;evalue&#39;</span><span class="p">):</span>
+    <span class="k">del</span> <span class="n">df</span><span class="p">[</span><span class="s">&#39;ind&#39;</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="get_orthologies"><a class="viewcode-back" href="../../dammit.html#dammit.blast.get_orthologies">[docs]</a><span class="k">def</span> <span class="nf">get_orthologies</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">idx</span><span class="p">,</span> <span class="n">comp_col</span><span class="o">=</span><span class="s">&#39;evalue&#39;</span><span class="p">):</span></div>
 
     <span class="k">assert</span> <span class="nb">type</span><span class="p">(</span><span class="n">A</span><span class="p">)</span> <span class="ow">is</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span>
     <span class="k">assert</span> <span class="nb">type</span><span class="p">(</span><span class="n">B</span><span class="p">)</span> <span class="ow">is</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span>
@@ -73,7 +73,7 @@
     <span class="k">del</span> <span class="n">X</span><span class="p">[</span><span class="s">&#39;sseqid_y&#39;</span><span class="p">]</span>
 
     <span class="k">return</span> <span class="n">X</span>
-</div>
+
 <div class="viewcode-block" id="remap_blast_coords_df"><a class="viewcode-back" href="../../dammit.html#dammit.blast.remap_blast_coords_df">[docs]</a><span class="k">def</span> <span class="nf">remap_blast_coords_df</span><span class="p">(</span><span class="n">df</span><span class="p">):</span>
     <span class="n">coords</span> <span class="o">=</span> <span class="n">cblast</span><span class="o">.</span><span class="n">fix_blast_coords</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">sstart</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">df</span><span class="o">.</span><span class="n">send</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">df</span><span class="o">.</span><span class="n">qstart</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">df</span><span class="o">.</span><span class="n">qend</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
     <span class="n">df</span><span class="p">[</span><span class="s">&#39;sstart&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">coords</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span>
