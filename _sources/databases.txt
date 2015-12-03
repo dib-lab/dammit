@@ -19,7 +19,11 @@ flag::
     dammit databases --database-dir /path/to/databases
 
 or, you can set the `DAMMIT_DB_DIR` environment variable. The flag will supersede
-this variable, falling back to the default if neither is set.
+this variable, falling back to the default if neither is set. For example::
+
+    export DAMMIT_DB_DIR=/path/to/databases
+
+This can also be added to your `$HOME/.bashrc` file to make it persistent.
 
 To download and install them into the default directory::
 
@@ -35,13 +39,14 @@ dammit uses the following databases:
 #. `Pfam-A <http://pfam.xfam.org/>`__
 
     Pfam-A is a collection of protein domain profiles for use with profile hidden markov
-    model programs like `hmmer <>`__. These searches are quite fast and very sensitive,
+    model programs like `hmmer <http://hmmer.janelia.org/>`__. These searches are moderately fast and very sensitive,
     and the Pfam database is very well curated. Pfam is used during TransDecoder's ORF
     finding and for annotation assignment.
 
 #. `Rfam <http://rfam.xfam.org/>`__
 
-     Rfam is a collection of RNA covariance models for use with programs like `Infernal <>`__.
+     Rfam is a collection of RNA covariance models for use with programs like 
+     `Infernal <http://infernal.janelia.org/>`__.
      Covariance models describe RNA secondary structure, and Rfam is a curated database
      of non-coding RNAs.
 
@@ -64,7 +69,8 @@ dammit uses the following databases:
     #. Eukaryota
    
     dammit uses the metazoa database by default, but different databases can be used with
-    the ``--busco-group`` parameter.
+    the ``--busco-group`` parameter. You should try to use the database which most closely
+    bounds your organism.
 
 #. `uniref90 <http://www.uniprot.org/help/uniref>`__
     
