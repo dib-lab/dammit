@@ -35,11 +35,10 @@ simple invocation with the default databases would look like::
 
 While a more complex invocation might look like::
 
-    dammit annotate <transcriptome.fasta> --database-dir /path/to/dbs --busco-group vertebrata
---n_threads 4 --user-databases whale.pep.fasta dolphin.pep.fasta
+    dammit annotate <transcriptome.fasta> --database-dir /path/to/dbs --busco-group vertebrata --n_threads 4 --user-databases whale.pep.fasta dolphin.pep.fasta
 
 User databases will be searched with CRBB; this runs `blastx`, so if you supply ridiculously huge
-databases, it *will* take a long time. Future versions will likely use LAST for all searches to
+databases, it *will* take a long time. Future versions will use LAST for all searches to
 improve performance, but for now, we're stuck with the NCBI's dinosaur. Also note that the
 information from the deflines in your databases will be used to construct the GFF3 file, so if your
 databases lack useful IDs, your annotations will too.

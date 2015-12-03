@@ -72,12 +72,11 @@ simple invocation with the default databases would look like:</p>
 </pre></div>
 </div>
 <p>While a more complex invocation might look like:</p>
-<div class="highlight-python"><div class="highlight"><pre>dammit annotate &lt;transcriptome.fasta&gt; --database-dir /path/to/dbs --busco-group vertebrata
+<div class="highlight-python"><div class="highlight"><pre>dammit annotate &lt;transcriptome.fasta&gt; --database-dir /path/to/dbs --busco-group vertebrata --n_threads 4 --user-databases whale.pep.fasta dolphin.pep.fasta
 </pre></div>
 </div>
-<p>&#8211;n_threads 4 &#8211;user-databases whale.pep.fasta dolphin.pep.fasta</p>
 <p>User databases will be searched with CRBB; this runs <cite>blastx</cite>, so if you supply ridiculously huge
-databases, it <em>will</em> take a long time. Future versions will likely use LAST for all searches to
+databases, it <em>will</em> take a long time. Future versions will use LAST for all searches to
 improve performance, but for now, we&#8217;re stuck with the NCBI&#8217;s dinosaur. Also note that the
 information from the deflines in your databases will be used to construct the GFF3 file, so if your
 databases lack useful IDs, your annotations will too.</p>

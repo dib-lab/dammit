@@ -58,7 +58,11 @@ flag:</p>
 </pre></div>
 </div>
 <p>or, you can set the <cite>DAMMIT_DB_DIR</cite> environment variable. The flag will supersede
-this variable, falling back to the default if neither is set.</p>
+this variable, falling back to the default if neither is set. For example:</p>
+<div class="highlight-python"><div class="highlight"><pre>export DAMMIT_DB_DIR=/path/to/databases
+</pre></div>
+</div>
+<p>This can also be added to your <cite>$HOME/.bashrc</cite> file to make it persistent.</p>
 <p>To download and install them into the default directory:</p>
 <div class="highlight-python"><div class="highlight"><pre>dammit databases --install
 </pre></div>
@@ -72,14 +76,15 @@ this variable, falling back to the default if neither is set.</p>
 <li><p class="first"><a class="reference external" href="http://pfam.xfam.org/">Pfam-A</a></p>
 <blockquote>
 <div><p>Pfam-A is a collection of protein domain profiles for use with profile hidden markov
-model programs like <a href="#id1"><span class="problematic" id="id2">`hmmer &lt;&gt;`__</span></a>. These searches are quite fast and very sensitive,
+model programs like <a class="reference external" href="http://hmmer.janelia.org/">hmmer</a>. These searches are moderately fast and very sensitive,
 and the Pfam database is very well curated. Pfam is used during TransDecoder&#8217;s ORF
 finding and for annotation assignment.</p>
 </div></blockquote>
 </li>
 <li><p class="first"><a class="reference external" href="http://rfam.xfam.org/">Rfam</a></p>
 <blockquote>
-<div><p>Rfam is a collection of RNA covariance models for use with programs like <a href="#id1"><span class="problematic" id="id3">`Infernal &lt;&gt;`__</span></a>.
+<div><p>Rfam is a collection of RNA covariance models for use with programs like
+<a class="reference external" href="http://infernal.janelia.org/">Infernal</a>.
 Covariance models describe RNA secondary structure, and Rfam is a curated database
 of non-coding RNAs.</p>
 </div></blockquote>
@@ -104,7 +109,8 @@ use depends on your particular organism. Currently available databases are:</p>
 <li>Eukaryota</li>
 </ol>
 <p>dammit uses the metazoa database by default, but different databases can be used with
-the <code class="docutils literal"><span class="pre">--busco-group</span></code> parameter.</p>
+the <code class="docutils literal"><span class="pre">--busco-group</span></code> parameter. You should try to use the database which most closely
+bounds your organism.</p>
 </div></blockquote>
 </li>
 <li><p class="first"><a class="reference external" href="http://www.uniprot.org/help/uniref">uniref90</a></p>
