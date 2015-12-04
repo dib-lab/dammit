@@ -68,6 +68,16 @@ gff3_transdecoder_cols = [('seqid', str),
                           ('end', int), 
                           ('strand', str)]
 
+gff_cols = [('seqid', str),
+            ('source', str),
+            ('feature_type', str),
+            ('start', float),
+            ('end', float),
+            ('score', float),
+            ('strand', str),
+            ('frame', float),
+            ('attributes', str)]
+
 crb_cols = [('query', str),
             ('subject', str),
             ('id', str),
@@ -113,6 +123,45 @@ def blast_to_df_iter(fn, delimiter='\t', chunksize=10000, remap=False):
         yield group
 
 
+def parse_gff3(fn, chunksize=10000):
+    '''Iterator over DataFrames of length chunksize from a given
+    GTF/GFF file.
+
+    Args:
+        fn (str): Path to the file.
+        chunksize (int): Rows per iteration.
+    Yields:
+        DataFrame: Pandas DataFrame with the results.
+    '''
+
+    def attr_col_func(col):
+        d = {}
+        for item in col.strip(';').split(';'):
+            key, _, val = item.strip().partition('=')
+            d[key] = val.strip('')
+        return d
+
+
+    # Read everything into a DataFrame
+    for group in  pd.read_table(fn, delimiter='\t', comment='#', 
+                                names=[k for k,_ in gff_cols], na_values='.',
+                                converters={'attributes': attr_col_func},
+                                chunksize=chunksize, header=None,
+                                dtype=dict(gff_cols)):
+
+        # Generate a new DataFrame from the attributes dicts, and merge it in
+        gtf_df = pd.merge(group,
+                          pd.DataFrame(list(group.attributes)),
+                          left_index=True, right_index=True)
+        del gtf_df['attributes']
+    
+        # Switch from [start, end] to [start, end)
+        gtf_df.end = gtf_df.end + 1
+        #convert_dtypes(gtf_df, dict(gff_cols))
+
+        yield gtf_df
+
+
 def crb_to_df_iter(fn, chunksize=10000, remap=False):
     '''Iterator of DataFrames of length chunksize parsed from
     the results from CRBB version crb-blast 0.6.6.
@@ -126,11 +175,18 @@ def crb_to_df_iter(fn, chunksize=10000, remap=False):
 
     for group in pd.read_table(fn, header=None, names=[k for k, _ in crb_cols],
                                 delimiter='\t', chunksize=chunksize):
+
         convert_dtypes(group, dict(crb_cols))
-        group['qstart'], _, group['qend'] = group.qrange.str.partition('..')
+
+        qrange = group.qrange.str.partition('..')
+        group['qstart'] = qrange[0].astype(int)
+        group['qend'] = qrange[2].astype(int)
         del group['qrange']
-        group['sstart'], _, group['send'] = group.srange.str.partition('..')
+        srange = group.srange.str.partition('..')
+        group['sstart'] = srange[0].astype(int)
+        group['send'] = srange[2].astype(int)
         del group['srange']
+
 
         if remap:
             remap_blast(group)

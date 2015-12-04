@@ -10,7 +10,8 @@ from .tasks import get_maf_gff3_task, \
                    get_cmscan_gff3_task, \
                    get_gff3_merge_task, \
                    get_crb_gff3_task, \
-                   get_maf_best_hits_task
+                   get_maf_best_hits_task, \
+                   get_annotate_fasta_task
 
 def get_report_tasks(transcriptome, results_dict, databases, n_threads=1):
 
@@ -58,6 +59,13 @@ def get_report_tasks(transcriptome, results_dict, databases, n_threads=1):
         get_gff3_merge_task(outputs, merged_gff3)
     )
     outputs.append(merged_gff3)
+
+    renamed_transcriptome = transcriptome + '.dammit.fasta'
+    tasks.append(
+        get_annotate_fasta_task(transcriptome, merged_gff3,
+                                renamed_transcriptome)
+    )
+    outputs.append(renamed_transcriptome)
 
     return outputs, tasks
 

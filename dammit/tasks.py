@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 from __future__ import print_function
 
-from itertools import izip
+from itertools import count, izip
 import json
 import logging
 import os
@@ -135,7 +135,7 @@ def get_sanitize_fasta_task(input_fn, output_fn):
         bad = r'["`/|=]+'
         with open(output_fn, 'wb') as fp:
             for record in ReadParser(input_fn):
-                header = re.sub(bad, r'_', record.name)
+                header = re.sub(bad, r'.', record.name)
                 fp.write('>{0}\n{1}\n'.format(header, record.sequence))
 
     return {'name': name,
@@ -143,6 +143,43 @@ def get_sanitize_fasta_task(input_fn, output_fn):
             'actions': [fix],
             'file_dep': [input_fn],
             'clean': [clean_targets]}
+
+
+@create_task_object
+def get_rename_transcriptome_task(transcriptome_fn, output_fn, names_fn, 
+                                  split_regex=None):
+
+    import re
+    name = os.path.basename(transcriptome_fn)
+
+    if split_regex is None:
+        counter = count()
+        header_func = lambda name: 'Transcript_{0}'.format(next(counter))
+    else:
+        def header_func(header):
+            results = re.search(split_regex, header).groupdict()
+            try:
+                header = results['name']
+            except KeyError as err:
+                err.message = 'Header regex should have a name field!'
+                raise
+            return header
+
+    def fix():
+        names = []
+        with open(output_fn, 'wb') as fp:
+            for record in ReadParser(transcriptome_fn):
+                header = header_func(record.name)
+                fp.write('>{0}\n{1}\n'.format(header, record.sequence))
+                names.append((record.name, header))
+        pd.DataFrame(names, columns=['original', 'renamed']).to_csv(names_fn)
+
+    return {'name': name,
+            'title': title_with_actions,
+            'actions': [fix],
+            'targets': [output_fn, names_fn],
+            'file_dep': [transcriptome_fn],
+            'clean': [clean_targets]} 
 
     
 @create_task_object
@@ -515,6 +552,57 @@ def get_gff3_merge_task(gff3_filenames, output_filename):
             'file_dep': gff3_filenames,
             'targets': [output_filename],
             'clean': [clean_targets]}
+
+
+@create_task_object
+def get_annotate_fasta_task(transcriptome_fn, gff3_fn, output_fn):
+    
+    name = 'fasta-annotate:{0}'.format(output_fn)
+
+    def annotate_fasta():
+        annotations = pd.concat([g for g in \
+                                 parsers.parse_gff3(gff3_fn)])
+        with open(output_fn, 'wb') as fp:
+            for n, record in enumerate(ReadParser(transcriptome_fn)):
+                df = annotations.query('seqid == "{0}"'.format(record.name))
+                annots = []
+                for seqid, sgroup in df.groupby('seqid'):
+                    for feature_type, fgroup in sgroup.groupby('feature_type'):
+
+                        if feature_type in ['translated_nucleotide_match',
+                                            'protein_hmm_match']:
+
+                            collapsed = ','.join(['{}:{}-{}'.format(row.Name.split(':dammit')[0], 
+                                                                     int(row.start), 
+                                                                     int(row.end)) \
+                                            for _, row in fgroup.iterrows()])
+                            if feature_type == 'translated_nucleotide_match':
+                                key = 'homologies'
+                            elif feature_type == 'protein_hmm_match':
+                                key = 'hmm_matches'
+                            else:
+                                key = 'RNA_matches'
+                            annots.append('{0}={1}'.format(key, collapsed))
+
+                        elif feature_type in ['exon', 'CDS', 'gene',
+                                              'five_prime_UTR', 'three_prime_UTR', 
+                                              'mRNA']:
+                            
+                            collapsed = ','.join(['{}-{}'.format(int(row.start),
+                                                                 int(row.end)) \
+                                            for _, row in fgroup.iterrows()])
+                            annots.append('{0}={1}'.format(feature_type, collapsed))
+
+                desc = '{0} {1}'.format(record.name, ' '.join(annots))
+
+                fp.write('>{0}\n{1}\n'.format(desc.strip(), record.sequence))
+
+    return {'name': name,
+                'title': title_with_actions,
+                'actions': [annotate_fasta],
+                'file_dep': [transcriptome_fn, gff3_fn],
+                'targets': [output_fn],
+                'clean': [clean_targets]}
 
 
 @create_task_object

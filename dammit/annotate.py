@@ -21,6 +21,7 @@ from .tasks import get_transcriptome_stats_task, \
                    get_lastal_task, \
                    get_crb_blast_task, \
                    get_sanitize_fasta_task, \
+                   get_rename_transcriptome_task, \
                    print_tasks
 
 logger = logging.getLogger(__name__)
@@ -91,8 +92,9 @@ class AnnotateHandler(object):
         results = {}
 
         tasks.append(
-                get_sanitize_fasta_task(self.input_transcriptome,
-                                        self.transcriptome)
+                get_rename_transcriptome_task(self.input_transcriptome,
+                                              self.transcriptome,
+                                              '{0}.names.csv'.format(self.transcriptome))
         )
 
         '''
