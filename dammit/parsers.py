@@ -123,7 +123,7 @@ def blast_to_df_iter(fn, delimiter='\t', chunksize=10000, remap=False):
         yield group
 
 
-def parse_busco_results(fn):
+def parse_busco_full(fn):
     '''Parses a BUSCO full result table into a Pandas DataFrame.
 
     Args:
@@ -133,7 +133,65 @@ def parse_busco_results(fn):
     '''
 
     df = pd.read_table(fn)
-    return df..rename(columns={'#BUSCO_group': 'BUSCO_group'})
+    return df.rename(columns={'#BUSCO_group': 'BUSCO_group'})
+
+
+def parse_busco_summary(fn):
+    '''Parses a BUSCO summary file into a JSON compatible
+    dictionary.
+
+    Args:
+        fn (str): The summary results file.
+    Returns:
+        dict: The BUSCO results.
+    '''
+
+    res = {}
+    with open(fn) as fp:
+        for ln in fp:
+            if ln.strip().startswith('C:'):
+                tokens = ln.split(',')
+                for token in tokens:
+                    key, _, val = token.partition(':')
+                    key = key.strip()
+                    val = val.strip().strip('%')
+                    if key == 'C':
+                        valc, _, vald = val.partition('%')
+                        valc = valc.strip()
+                        vald = vald.strip('D:][%')
+                        res['C(%)'] = valc
+                        res['D(%)'] = vald
+                    else:
+                        if key != 'n':
+                           key += '(%)'
+                        res[key] = val.strip().strip('%')
+    return res
+
+
+def parse_busco_multiple(fn_list, dbs=['metazoa', 'vertebrata']):
+    '''Parses multiple BUSCO results summaries into an appropriately
+    index DataFrame.
+
+    Args:
+        fn_list (list): List of paths to results files.
+        dbs (list): List of BUSCO database names.
+    Returns:
+        DataFrame: The formated DataFrame.
+    '''
+
+    data = []
+    for fn in fn_list:
+        data.append(parse_busco_summary(fn))
+
+    df = pd.DataFrame(data)
+    df['fn'] = [os.path.basename(fn)[14:-14].strip('.') for fn in fn_list]
+    df['db'] = None
+    for db in dbs:
+        idx = df.fn.str.contains(db)
+        df.loc[idx,'db'] = db
+        df.loc[idx,'fn'] = df.loc[idx, 'fn'].apply(lambda fn: fn[:fn.find(db)].strip('. '))
+
+    return df
 
 
 def parse_gff3(fn, chunksize=10000):
