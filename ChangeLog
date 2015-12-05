@@ -1,3 +1,7 @@
+2015-12-04  Camille Scott  <camille.scott.w@gmail.com>
+
+	* Add FASTA annotation output.
+
 2015-12-02  Camille Scott  <camille.scott.w@gmail.com>
 
     * Add separate pip, Ubuntu, and Anaconda install instructions

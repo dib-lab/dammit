@@ -570,7 +570,8 @@ def get_annotate_fasta_task(transcriptome_fn, gff3_fn, output_fn):
                     for feature_type, fgroup in sgroup.groupby('feature_type'):
 
                         if feature_type in ['translated_nucleotide_match',
-                                            'protein_hmm_match']:
+                                            'protein_hmm_match',
+                                            'RNA_sequence_secondary_structure']:
 
                             collapsed = ','.join(['{}:{}-{}'.format(row.Name.split(':dammit')[0], 
                                                                      int(row.start), 
@@ -623,7 +624,10 @@ def get_transcriptome_stats_task(transcriptome, output_fn):
             gc_len += contig.sequence.count('C')
             gc_len += contig.sequence.count('G')
         S = pd.Series(lens, index=names)
-        S.sort()
+        try:
+            S.sort_values()
+        except AttributeError:
+            S.sort()
         gc_perc = float(gc_len) / S.sum()
         return S, hll.estimate_cardinality(), gc_perc
 
