@@ -123,6 +123,19 @@ def blast_to_df_iter(fn, delimiter='\t', chunksize=10000, remap=False):
         yield group
 
 
+def parse_busco_results(fn):
+    '''Parses a BUSCO full result table into a Pandas DataFrame.
+
+    Args:
+        fn (str): The results file.
+    Returns:
+        DataFrame: The results DataFrame.
+    '''
+
+    df = pd.read_table(fn)
+    return df..rename(columns={'#BUSCO_group': 'BUSCO_group'})
+
+
 def parse_gff3(fn, chunksize=10000):
     '''Iterator over DataFrames of length chunksize from a given
     GTF/GFF file.
