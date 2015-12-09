@@ -23,7 +23,7 @@ installed manually and are not included here.
 First get packages from the Ubuntu PPAs::
 
     sudo apt-get update
-    sudo apt-get install python-pip python-dev python-numpy git ruby hmmer unzip \
+    sudo apt-get install python-pip python-dev python-matplotlib python-numpy git ruby hmmer unzip \
         infernal ncbi-blast+ liburi-escape-xs-perl emboss liburi-perl \
         python-sklearn build-essential libsm6 libxrender1 libfontconfig1
     sudo gem install crb-blast
