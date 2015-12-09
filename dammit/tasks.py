@@ -147,14 +147,14 @@ def get_sanitize_fasta_task(input_fn, output_fn):
 
 @create_task_object
 def get_rename_transcriptome_task(transcriptome_fn, output_fn, names_fn, 
-                                  split_regex=None):
+                                  transcript_basename, split_regex=None):
 
     import re
     name = os.path.basename(transcriptome_fn)
 
     if split_regex is None:
         counter = count()
-        header_func = lambda name: 'Transcript_{0}'.format(next(counter))
+        header_func = lambda name: '{0}_{1}'.format(transcript_basename, next(counter))
     else:
         def header_func(header):
             results = re.search(split_regex, header).groupdict()
@@ -172,7 +172,8 @@ def get_rename_transcriptome_task(transcriptome_fn, output_fn, names_fn,
                 header = header_func(record.name)
                 fp.write('>{0}\n{1}\n'.format(header, record.sequence))
                 names.append((record.name, header))
-        pd.DataFrame(names, columns=['original', 'renamed']).to_csv(names_fn)
+        pd.DataFrame(names, columns=['original', 'renamed']).to_csv(names_fn,
+                                                                    index=False)
 
     return {'name': name,
             'title': title_with_actions,
@@ -181,7 +182,7 @@ def get_rename_transcriptome_task(transcriptome_fn, output_fn, names_fn,
             'file_dep': [transcriptome_fn],
             'clean': [clean_targets]} 
 
-    
+
 @create_task_object
 def get_crb_blast_task(query, target, output, crb_blast_cfg,
                        n_threads):

@@ -132,6 +132,16 @@ class DammitApp(object):
                                           ' annotated.'
                                      )
 
+        annotate_parser.add_argument('-n', '--name',
+                                     default='Transcript',
+                                     help='Base name to use for renaming the'\
+                                          ' input transcripts. The new names'\
+                                          ' will be of the form <name>_<X>.'\
+                                          ' It should not have spaces, pipes,'\
+                                          ' ampersands, or other characters'\
+                                          ' with special meaning to BASH.'
+                                     )
+
         annotate_parser.add_argument('-o', '--output-dir', 
                                      default=None,
                                      help='Output directory. By default this will'\

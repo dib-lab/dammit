@@ -94,7 +94,8 @@ class AnnotateHandler(object):
         tasks.append(
                 get_rename_transcriptome_task(self.input_transcriptome,
                                               self.transcriptome,
-                                              '{0}.names.csv'.format(self.transcriptome))
+                                              '{0}.names.csv'.format(self.transcriptome),
+                                              self.args.name)
         )
 
         '''

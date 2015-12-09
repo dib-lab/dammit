@@ -1,3 +1,7 @@
+2015-12-09  Camille Scott  <camille.scott.w@gmail.com>
+
+	* Add a --name flag for transcript renaming.
+
 2015-12-04  Camille Scott  <camille.scott.w@gmail.com>
 
 	* Add FASTA annotation output.
