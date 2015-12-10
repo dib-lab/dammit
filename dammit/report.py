@@ -13,16 +13,16 @@ from .tasks import get_maf_gff3_task, \
                    get_maf_best_hits_task, \
                    get_annotate_fasta_task
 
-def get_report_tasks(transcriptome, results_dict, databases, n_threads=1):
+def get_report_tasks(transcriptome, annotator, databases, n_threads=1):
 
     tasks = []
     outputs = []
 
 
-    orthodb_best_hits = results_dict['orthodb'] + '.best.csv'
-    orthodb_gff3 = results_dict['orthodb'] + '.gff3'
+    orthodb_best_hits = annotator.orthodb_fn + '.best.csv'
+    orthodb_gff3 = annotator.orthodb_fn + '.gff3'
     tasks.append(
-        get_maf_best_hits_task(results_dict['orthodb'],
+        get_maf_best_hits_task(annotator.orthodb_fn,
                                orthodb_best_hits)
     )
     tasks.append(
@@ -31,28 +31,30 @@ def get_report_tasks(transcriptome, results_dict, databases, n_threads=1):
     )
     outputs.append(orthodb_gff3)
 
-    pfam_gff3 = results_dict['pfam'] + '.gff3'
+    pfam_gff3 = annotator.transdecoder_pfam_fn + '.gff3'
     tasks.append(
-        get_hmmscan_gff3_task(results_dict['pfam'],
-                              pfam_gff3, 'Pfam')
+        get_hmmscan_gff3_task(annotator.transdecoder_pfam_fn,
+                              pfam_gff3, 
+                              'Pfam')
     )
     outputs.append(pfam_gff3)
 
-    rfam_gff3 = results_dict['rfam'] + '.gff3'
+    rfam_gff3 = annotator.rfam_fn + '.gff3'
     tasks.append(
-        get_cmscan_gff3_task(results_dict['rfam'],
-                             rfam_gff3, 'Rfam')
+        get_cmscan_gff3_task(annotator.rfam_fn,
+                             rfam_gff3, 
+                             'Rfam')
     )
     outputs.append(rfam_gff3)
 
-    for db, fn in results_dict['user'].iteritems():
+    for db, fn in annotator.user_pep_fn_dict.iteritems():
         gff3_fn = fn + '.gff3'
         tasks.append(
             get_crb_gff3_task(fn, gff3_fn, db)
         )
         outputs.append(gff3_fn)
 
-    outputs.append(results_dict['prot_predictions_gff3'])
+    outputs.append(annotator.transdecoder_gff3_fn)
 
     merged_gff3 = transcriptome + '.dammit.gff3'
     tasks.append(
