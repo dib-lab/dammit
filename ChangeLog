@@ -1,5 +1,9 @@
 2015-12-10  Camille Scott  <camille.scott.w@gmail.com>
 
+	* Fix error with output directory creation.
+
+2015-12-10  Camille Scott  <camille.scott.w@gmail.com>
+
 	* Make BUSCO output dir database-specific.
 	* Add new _init_filenames() method to AnnotateHandler to
 	  better organize class and allow multiple constructors in
