@@ -103,7 +103,7 @@ class TestLASTTasks(TestCase):
                         
                     print(os.listdir(td), file=sys.stderr)
                     db_task = tasks.get_lastdb_task(prot, prot, self.lastdb_cfg)
-                    aln_task = tasks.get_lastal_task(tr, prot, out, True, 1,
+                    aln_task = tasks.get_lastal_task(tr, prot, out, True, None, 1,
                                                      self.lastal_cfg)
                     run_tasks([db_task, aln_task], ['run'])
 
@@ -126,8 +126,8 @@ class TestLASTTasks(TestCase):
                         
                     print(os.listdir(td), file=sys.stderr)
                     db_task = tasks.get_lastdb_task(prot, prot, self.lastdb_cfg)
-                    aln_task = tasks.get_lastal_task(prot, prot, out, False, 1,
-                                                     self.lastal_cfg)
+                    aln_task = tasks.get_lastal_task(prot, prot, out, False,
+                                                     None, 1, self.lastal_cfg)
                     run_tasks([db_task, aln_task], ['run'])
 
                     aln = ''.join(open(out).readlines())
@@ -149,8 +149,8 @@ class TestLASTTasks(TestCase):
                         
                     print(os.listdir(td), file=sys.stderr)
                     db_task = tasks.get_lastdb_task(prot, prot, self.lastdb_cfg)
-                    aln_task = tasks.get_lastal_task(prot, prot, out, False, 1,
-                                                     self.lastal_cfg)
+                    aln_task = tasks.get_lastal_task(prot, prot, out, False,
+                                                     None, 1, self.lastal_cfg)
                     # Run it once
                     run_tasks([db_task, aln_task], ['run'])
 
@@ -205,7 +205,7 @@ class TestHMMERTasks(TestCase):
                      TemporaryFile(td) as out:
                         
                     db_task = tasks.get_hmmpress_task(hmm, self.hmmpress_cfg)
-                    aln_task = tasks.get_hmmscan_task(prot, out, hmm, 1,
+                    aln_task = tasks.get_hmmscan_task(prot, out, hmm, 1.0, 1,
                                                       self.hmmscan_cfg)
                     run_tasks([db_task, aln_task], ['run'])
                     print(os.listdir(td), file=sys.stderr)
@@ -261,7 +261,7 @@ class TestInfernalTasks(TestCase):
                      TemporaryFile(td) as out:
                         
                     db_task = tasks.get_cmpress_task(cm, self.cmpress_cfg)
-                    aln_task = tasks.get_cmscan_task(transcript, out, cm, 1,
+                    aln_task = tasks.get_cmscan_task(transcript, out, cm, 1.0, 1,
                                                       self.cmscan_cfg)
                     run_tasks([db_task, aln_task], ['run'])
                     print(os.listdir(td), file=sys.stderr)
