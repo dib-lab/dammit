@@ -111,6 +111,16 @@
                           <span class="p">(</span><span class="s">&#39;end&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span> 
                           <span class="p">(</span><span class="s">&#39;strand&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">)]</span>
 
+<span class="n">gff_cols</span> <span class="o">=</span> <span class="p">[(</span><span class="s">&#39;seqid&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">),</span>
+            <span class="p">(</span><span class="s">&#39;source&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">),</span>
+            <span class="p">(</span><span class="s">&#39;feature_type&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">),</span>
+            <span class="p">(</span><span class="s">&#39;start&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span>
+            <span class="p">(</span><span class="s">&#39;end&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span>
+            <span class="p">(</span><span class="s">&#39;score&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span>
+            <span class="p">(</span><span class="s">&#39;strand&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">),</span>
+            <span class="p">(</span><span class="s">&#39;frame&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span>
+            <span class="p">(</span><span class="s">&#39;attributes&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">)]</span>
+
 <span class="n">crb_cols</span> <span class="o">=</span> <span class="p">[(</span><span class="s">&#39;query&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">),</span>
             <span class="p">(</span><span class="s">&#39;subject&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">),</span>
             <span class="p">(</span><span class="s">&#39;id&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">),</span>
@@ -156,6 +166,116 @@
         <span class="k">yield</span> <span class="n">group</span></div>
 
 
+<div class="viewcode-block" id="parse_busco_full"><a class="viewcode-back" href="../../dammit.html#dammit.parsers.parse_busco_full">[docs]</a><span class="k">def</span> <span class="nf">parse_busco_full</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Parses a BUSCO full result table into a Pandas DataFrame.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        fn (str): The results file.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        DataFrame: The results DataFrame.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_table</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">df</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;#BUSCO_group&#39;</span><span class="p">:</span> <span class="s">&#39;BUSCO_group&#39;</span><span class="p">})</span></div>
+
+
+<div class="viewcode-block" id="parse_busco_summary"><a class="viewcode-back" href="../../dammit.html#dammit.parsers.parse_busco_summary">[docs]</a><span class="k">def</span> <span class="nf">parse_busco_summary</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Parses a BUSCO summary file into a JSON compatible</span>
+<span class="sd">    dictionary.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        fn (str): The summary results file.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        dict: The BUSCO results.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="n">res</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">ln</span> <span class="ow">in</span> <span class="n">fp</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">ln</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;C:&#39;</span><span class="p">):</span>
+                <span class="n">tokens</span> <span class="o">=</span> <span class="n">ln</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;,&#39;</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">tokens</span><span class="p">:</span>
+                    <span class="n">key</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">val</span> <span class="o">=</span> <span class="n">token</span><span class="o">.</span><span class="n">partition</span><span class="p">(</span><span class="s">&#39;:&#39;</span><span class="p">)</span>
+                    <span class="n">key</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                    <span class="n">val</span> <span class="o">=</span> <span class="n">val</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s">&#39;%&#39;</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s">&#39;C&#39;</span><span class="p">:</span>
+                        <span class="n">valc</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">vald</span> <span class="o">=</span> <span class="n">val</span><span class="o">.</span><span class="n">partition</span><span class="p">(</span><span class="s">&#39;%&#39;</span><span class="p">)</span>
+                        <span class="n">valc</span> <span class="o">=</span> <span class="n">valc</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                        <span class="n">vald</span> <span class="o">=</span> <span class="n">vald</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s">&#39;D:][%&#39;</span><span class="p">)</span>
+                        <span class="n">res</span><span class="p">[</span><span class="s">&#39;C(%)&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">valc</span>
+                        <span class="n">res</span><span class="p">[</span><span class="s">&#39;D(%)&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">vald</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">key</span> <span class="o">!=</span> <span class="s">&#39;n&#39;</span><span class="p">:</span>
+                           <span class="n">key</span> <span class="o">+=</span> <span class="s">&#39;(%)&#39;</span>
+                        <span class="n">res</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s">&#39;%&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">res</span></div>
+
+
+<div class="viewcode-block" id="parse_busco_multiple"><a class="viewcode-back" href="../../dammit.html#dammit.parsers.parse_busco_multiple">[docs]</a><span class="k">def</span> <span class="nf">parse_busco_multiple</span><span class="p">(</span><span class="n">fn_list</span><span class="p">,</span> <span class="n">dbs</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;metazoa&#39;</span><span class="p">,</span> <span class="s">&#39;vertebrata&#39;</span><span class="p">]):</span>
+    <span class="sd">&#39;&#39;&#39;Parses multiple BUSCO results summaries into an appropriately</span>
+<span class="sd">    index DataFrame.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        fn_list (list): List of paths to results files.</span>
+<span class="sd">        dbs (list): List of BUSCO database names.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        DataFrame: The formated DataFrame.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">fn</span> <span class="ow">in</span> <span class="n">fn_list</span><span class="p">:</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">parse_busco_summary</span><span class="p">(</span><span class="n">fn</span><span class="p">))</span>
+
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="n">df</span><span class="p">[</span><span class="s">&#39;fn&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">fn</span><span class="p">)[</span><span class="mi">14</span><span class="p">:</span><span class="o">-</span><span class="mi">14</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s">&#39;.&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">fn</span> <span class="ow">in</span> <span class="n">fn_list</span><span class="p">]</span>
+    <span class="n">df</span><span class="p">[</span><span class="s">&#39;db&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="k">for</span> <span class="n">db</span> <span class="ow">in</span> <span class="n">dbs</span><span class="p">:</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">fn</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="n">db</span><span class="p">)</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span><span class="s">&#39;db&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">db</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span><span class="s">&#39;fn&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="s">&#39;fn&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">fn</span><span class="p">:</span> <span class="n">fn</span><span class="p">[:</span><span class="n">fn</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">db</span><span class="p">)]</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s">&#39;. &#39;</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">df</span></div>
+
+
+<div class="viewcode-block" id="parse_gff3"><a class="viewcode-back" href="../../dammit.html#dammit.parsers.parse_gff3">[docs]</a><span class="k">def</span> <span class="nf">parse_gff3</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">chunksize</span><span class="o">=</span><span class="mi">10000</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Iterator over DataFrames of length chunksize from a given</span>
+<span class="sd">    GTF/GFF file.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        fn (str): Path to the file.</span>
+<span class="sd">        chunksize (int): Rows per iteration.</span>
+<span class="sd">    Yields:</span>
+<span class="sd">        DataFrame: Pandas DataFrame with the results.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="k">def</span> <span class="nf">attr_col_func</span><span class="p">(</span><span class="n">col</span><span class="p">):</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">col</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s">&#39;;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;;&#39;</span><span class="p">):</span>
+            <span class="n">key</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">val</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">partition</span><span class="p">(</span><span class="s">&#39;=&#39;</span><span class="p">)</span>
+            <span class="n">d</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">d</span>
+
+
+    <span class="c"># Read everything into a DataFrame</span>
+    <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span>  <span class="n">pd</span><span class="o">.</span><span class="n">read_table</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s">&#39;</span><span class="se">\t</span><span class="s">&#39;</span><span class="p">,</span> <span class="n">comment</span><span class="o">=</span><span class="s">&#39;#&#39;</span><span class="p">,</span> 
+                                <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">_</span> <span class="ow">in</span> <span class="n">gff_cols</span><span class="p">],</span> <span class="n">na_values</span><span class="o">=</span><span class="s">&#39;.&#39;</span><span class="p">,</span>
+                                <span class="n">converters</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;attributes&#39;</span><span class="p">:</span> <span class="n">attr_col_func</span><span class="p">},</span>
+                                <span class="n">chunksize</span><span class="o">=</span><span class="n">chunksize</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                                <span class="n">dtype</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">gff_cols</span><span class="p">)):</span>
+
+        <span class="c"># Generate a new DataFrame from the attributes dicts, and merge it in</span>
+        <span class="n">gtf_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">group</span><span class="p">,</span>
+                          <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">attributes</span><span class="p">)),</span>
+                          <span class="n">left_index</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">right_index</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="k">del</span> <span class="n">gtf_df</span><span class="p">[</span><span class="s">&#39;attributes&#39;</span><span class="p">]</span>
+    
+        <span class="c"># Switch from [start, end] to [start, end)</span>
+        <span class="n">gtf_df</span><span class="o">.</span><span class="n">end</span> <span class="o">=</span> <span class="n">gtf_df</span><span class="o">.</span><span class="n">end</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="c">#convert_dtypes(gtf_df, dict(gff_cols))</span>
+
+        <span class="k">yield</span> <span class="n">gtf_df</span></div>
+
+
 <div class="viewcode-block" id="crb_to_df_iter"><a class="viewcode-back" href="../../dammit.html#dammit.parsers.crb_to_df_iter">[docs]</a><span class="k">def</span> <span class="nf">crb_to_df_iter</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">chunksize</span><span class="o">=</span><span class="mi">10000</span><span class="p">,</span> <span class="n">remap</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Iterator of DataFrames of length chunksize parsed from</span>
 <span class="sd">    the results from CRBB version crb-blast 0.6.6.</span>
@@ -169,11 +289,18 @@
 
     <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_table</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">crb_cols</span><span class="p">],</span>
                                 <span class="n">delimiter</span><span class="o">=</span><span class="s">&#39;</span><span class="se">\t</span><span class="s">&#39;</span><span class="p">,</span> <span class="n">chunksize</span><span class="o">=</span><span class="n">chunksize</span><span class="p">):</span>
+
         <span class="n">convert_dtypes</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="nb">dict</span><span class="p">(</span><span class="n">crb_cols</span><span class="p">))</span>
-        <span class="n">group</span><span class="p">[</span><span class="s">&#39;qstart&#39;</span><span class="p">],</span> <span class="n">_</span><span class="p">,</span> <span class="n">group</span><span class="p">[</span><span class="s">&#39;qend&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">qrange</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">partition</span><span class="p">(</span><span class="s">&#39;..&#39;</span><span class="p">)</span>
+
+        <span class="n">qrange</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">qrange</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">partition</span><span class="p">(</span><span class="s">&#39;..&#39;</span><span class="p">)</span>
+        <span class="n">group</span><span class="p">[</span><span class="s">&#39;qstart&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">qrange</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+        <span class="n">group</span><span class="p">[</span><span class="s">&#39;qend&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">qrange</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
         <span class="k">del</span> <span class="n">group</span><span class="p">[</span><span class="s">&#39;qrange&#39;</span><span class="p">]</span>
-        <span class="n">group</span><span class="p">[</span><span class="s">&#39;sstart&#39;</span><span class="p">],</span> <span class="n">_</span><span class="p">,</span> <span class="n">group</span><span class="p">[</span><span class="s">&#39;send&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">srange</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">partition</span><span class="p">(</span><span class="s">&#39;..&#39;</span><span class="p">)</span>
+        <span class="n">srange</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">srange</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">partition</span><span class="p">(</span><span class="s">&#39;..&#39;</span><span class="p">)</span>
+        <span class="n">group</span><span class="p">[</span><span class="s">&#39;sstart&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">srange</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+        <span class="n">group</span><span class="p">[</span><span class="s">&#39;send&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">srange</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
         <span class="k">del</span> <span class="n">group</span><span class="p">[</span><span class="s">&#39;srange&#39;</span><span class="p">]</span>
+
 
         <span class="k">if</span> <span class="n">remap</span><span class="p">:</span>
             <span class="n">remap_blast</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>

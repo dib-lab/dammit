@@ -53,18 +53,19 @@
                    <span class="n">get_cmscan_gff3_task</span><span class="p">,</span> \
                    <span class="n">get_gff3_merge_task</span><span class="p">,</span> \
                    <span class="n">get_crb_gff3_task</span><span class="p">,</span> \
-                   <span class="n">get_maf_best_hits_task</span>
+                   <span class="n">get_maf_best_hits_task</span><span class="p">,</span> \
+                   <span class="n">get_annotate_fasta_task</span>
 
-<div class="viewcode-block" id="get_report_tasks"><a class="viewcode-back" href="../../dammit.html#dammit.report.get_report_tasks">[docs]</a><span class="k">def</span> <span class="nf">get_report_tasks</span><span class="p">(</span><span class="n">transcriptome</span><span class="p">,</span> <span class="n">results_dict</span><span class="p">,</span> <span class="n">databases</span><span class="p">,</span> <span class="n">n_threads</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span></div>
+<div class="viewcode-block" id="get_report_tasks"><a class="viewcode-back" href="../../dammit.html#dammit.report.get_report_tasks">[docs]</a><span class="k">def</span> <span class="nf">get_report_tasks</span><span class="p">(</span><span class="n">transcriptome</span><span class="p">,</span> <span class="n">annotator</span><span class="p">,</span> <span class="n">databases</span><span class="p">,</span> <span class="n">n_threads</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span></div>
 
     <span class="n">tasks</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">outputs</span> <span class="o">=</span> <span class="p">[]</span>
 
 
-    <span class="n">orthodb_best_hits</span> <span class="o">=</span> <span class="n">results_dict</span><span class="p">[</span><span class="s">&#39;orthodb&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s">&#39;.best.csv&#39;</span>
-    <span class="n">orthodb_gff3</span> <span class="o">=</span> <span class="n">results_dict</span><span class="p">[</span><span class="s">&#39;orthodb&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s">&#39;.gff3&#39;</span>
+    <span class="n">orthodb_best_hits</span> <span class="o">=</span> <span class="n">annotator</span><span class="o">.</span><span class="n">orthodb_fn</span> <span class="o">+</span> <span class="s">&#39;.best.csv&#39;</span>
+    <span class="n">orthodb_gff3</span> <span class="o">=</span> <span class="n">annotator</span><span class="o">.</span><span class="n">orthodb_fn</span> <span class="o">+</span> <span class="s">&#39;.gff3&#39;</span>
     <span class="n">tasks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-        <span class="n">get_maf_best_hits_task</span><span class="p">(</span><span class="n">results_dict</span><span class="p">[</span><span class="s">&#39;orthodb&#39;</span><span class="p">],</span>
+        <span class="n">get_maf_best_hits_task</span><span class="p">(</span><span class="n">annotator</span><span class="o">.</span><span class="n">orthodb_fn</span><span class="p">,</span>
                                <span class="n">orthodb_best_hits</span><span class="p">)</span>
     <span class="p">)</span>
     <span class="n">tasks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
@@ -73,34 +74,43 @@
     <span class="p">)</span>
     <span class="n">outputs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">orthodb_gff3</span><span class="p">)</span>
 
-    <span class="n">pfam_gff3</span> <span class="o">=</span> <span class="n">results_dict</span><span class="p">[</span><span class="s">&#39;pfam&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s">&#39;.gff3&#39;</span>
+    <span class="n">pfam_gff3</span> <span class="o">=</span> <span class="n">annotator</span><span class="o">.</span><span class="n">transdecoder_pfam_fn</span> <span class="o">+</span> <span class="s">&#39;.gff3&#39;</span>
     <span class="n">tasks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-        <span class="n">get_hmmscan_gff3_task</span><span class="p">(</span><span class="n">results_dict</span><span class="p">[</span><span class="s">&#39;pfam&#39;</span><span class="p">],</span>
-                              <span class="n">pfam_gff3</span><span class="p">,</span> <span class="s">&#39;Pfam&#39;</span><span class="p">)</span>
+        <span class="n">get_hmmscan_gff3_task</span><span class="p">(</span><span class="n">annotator</span><span class="o">.</span><span class="n">transdecoder_pfam_fn</span><span class="p">,</span>
+                              <span class="n">pfam_gff3</span><span class="p">,</span> 
+                              <span class="s">&#39;Pfam&#39;</span><span class="p">)</span>
     <span class="p">)</span>
     <span class="n">outputs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pfam_gff3</span><span class="p">)</span>
 
-    <span class="n">rfam_gff3</span> <span class="o">=</span> <span class="n">results_dict</span><span class="p">[</span><span class="s">&#39;rfam&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s">&#39;.gff3&#39;</span>
+    <span class="n">rfam_gff3</span> <span class="o">=</span> <span class="n">annotator</span><span class="o">.</span><span class="n">rfam_fn</span> <span class="o">+</span> <span class="s">&#39;.gff3&#39;</span>
     <span class="n">tasks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-        <span class="n">get_cmscan_gff3_task</span><span class="p">(</span><span class="n">results_dict</span><span class="p">[</span><span class="s">&#39;rfam&#39;</span><span class="p">],</span>
-                             <span class="n">rfam_gff3</span><span class="p">,</span> <span class="s">&#39;Rfam&#39;</span><span class="p">)</span>
+        <span class="n">get_cmscan_gff3_task</span><span class="p">(</span><span class="n">annotator</span><span class="o">.</span><span class="n">rfam_fn</span><span class="p">,</span>
+                             <span class="n">rfam_gff3</span><span class="p">,</span> 
+                             <span class="s">&#39;Rfam&#39;</span><span class="p">)</span>
     <span class="p">)</span>
     <span class="n">outputs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rfam_gff3</span><span class="p">)</span>
 
-    <span class="k">for</span> <span class="n">db</span><span class="p">,</span> <span class="n">fn</span> <span class="ow">in</span> <span class="n">results_dict</span><span class="p">[</span><span class="s">&#39;user&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+    <span class="k">for</span> <span class="n">db</span><span class="p">,</span> <span class="n">fn</span> <span class="ow">in</span> <span class="n">annotator</span><span class="o">.</span><span class="n">user_pep_fn_dict</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
         <span class="n">gff3_fn</span> <span class="o">=</span> <span class="n">fn</span> <span class="o">+</span> <span class="s">&#39;.gff3&#39;</span>
         <span class="n">tasks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
             <span class="n">get_crb_gff3_task</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">gff3_fn</span><span class="p">,</span> <span class="n">db</span><span class="p">)</span>
         <span class="p">)</span>
         <span class="n">outputs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">gff3_fn</span><span class="p">)</span>
 
-    <span class="n">outputs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">results_dict</span><span class="p">[</span><span class="s">&#39;prot_predictions_gff3&#39;</span><span class="p">])</span>
+    <span class="n">outputs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">annotator</span><span class="o">.</span><span class="n">transdecoder_gff3_fn</span><span class="p">)</span>
 
     <span class="n">merged_gff3</span> <span class="o">=</span> <span class="n">transcriptome</span> <span class="o">+</span> <span class="s">&#39;.dammit.gff3&#39;</span>
     <span class="n">tasks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
         <span class="n">get_gff3_merge_task</span><span class="p">(</span><span class="n">outputs</span><span class="p">,</span> <span class="n">merged_gff3</span><span class="p">)</span>
     <span class="p">)</span>
     <span class="n">outputs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">merged_gff3</span><span class="p">)</span>
+
+    <span class="n">renamed_transcriptome</span> <span class="o">=</span> <span class="n">transcriptome</span> <span class="o">+</span> <span class="s">&#39;.dammit.fasta&#39;</span>
+    <span class="n">tasks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+        <span class="n">get_annotate_fasta_task</span><span class="p">(</span><span class="n">transcriptome</span><span class="p">,</span> <span class="n">merged_gff3</span><span class="p">,</span>
+                                <span class="n">renamed_transcriptome</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="n">outputs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">renamed_transcriptome</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">outputs</span><span class="p">,</span> <span class="n">tasks</span>
 

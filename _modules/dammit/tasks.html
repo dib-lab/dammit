@@ -44,7 +44,7 @@
 <span class="c">#!/usr/bin/env python</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
 
-<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">izip</span>
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">count</span><span class="p">,</span> <span class="n">izip</span>
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">os</span>
@@ -178,25 +178,83 @@
         <span class="n">bad</span> <span class="o">=</span> <span class="s">r&#39;[&quot;`/|=]+&#39;</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">output_fn</span><span class="p">,</span> <span class="s">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">record</span> <span class="ow">in</span> <span class="n">ReadParser</span><span class="p">(</span><span class="n">input_fn</span><span class="p">):</span>
-                <span class="n">header</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">bad</span><span class="p">,</span> <span class="s">r&#39;_&#39;</span><span class="p">,</span> <span class="n">record</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+                <span class="n">header</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">bad</span><span class="p">,</span> <span class="s">r&#39;.&#39;</span><span class="p">,</span> <span class="n">record</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
                 <span class="n">fp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;&gt;{0}</span><span class="se">\n</span><span class="s">{1}</span><span class="se">\n</span><span class="s">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">header</span><span class="p">,</span> <span class="n">record</span><span class="o">.</span><span class="n">sequence</span><span class="p">))</span>
 
     <span class="k">return</span> <span class="p">{</span><span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span>
             <span class="s">&#39;title&#39;</span><span class="p">:</span> <span class="n">title_with_actions</span><span class="p">,</span>
             <span class="s">&#39;actions&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">fix</span><span class="p">],</span>
             <span class="s">&#39;file_dep&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">input_fn</span><span class="p">],</span>
+            <span class="s">&#39;targets&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">output_fn</span><span class="p">],</span>
             <span class="s">&#39;clean&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">clean_targets</span><span class="p">]}</span>
 
-    
+
 <span class="nd">@create_task_object</span>
-<div class="viewcode-block" id="get_crb_blast_task"><a class="viewcode-back" href="../../dammit.html#dammit.tasks.get_crb_blast_task">[docs]</a><span class="k">def</span> <span class="nf">get_crb_blast_task</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span> <span class="n">crb_blast_cfg</span><span class="p">,</span>
+<div class="viewcode-block" id="get_rename_transcriptome_task"><a class="viewcode-back" href="../../dammit.html#dammit.tasks.get_rename_transcriptome_task">[docs]</a><span class="k">def</span> <span class="nf">get_rename_transcriptome_task</span><span class="p">(</span><span class="n">transcriptome_fn</span><span class="p">,</span> <span class="n">output_fn</span><span class="p">,</span> <span class="n">names_fn</span><span class="p">,</span> 
+                                  <span class="n">transcript_basename</span><span class="p">,</span> <span class="n">split_regex</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span></div>
+
+    <span class="kn">import</span> <span class="nn">re</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">transcriptome_fn</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">split_regex</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">counter</span> <span class="o">=</span> <span class="n">count</span><span class="p">()</span>
+        <span class="n">header_func</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">name</span><span class="p">:</span> <span class="s">&#39;{0}_{1}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">transcript_basename</span><span class="p">,</span> <span class="nb">next</span><span class="p">(</span><span class="n">counter</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">def</span> <span class="nf">header_func</span><span class="p">(</span><span class="n">header</span><span class="p">):</span>
+            <span class="n">results</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">split_regex</span><span class="p">,</span> <span class="n">header</span><span class="p">)</span><span class="o">.</span><span class="n">groupdict</span><span class="p">()</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">header</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">]</span>
+            <span class="k">except</span> <span class="ne">KeyError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+                <span class="n">err</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="s">&#39;Header regex should have a name field!&#39;</span>
+                <span class="k">raise</span>
+            <span class="k">return</span> <span class="n">header</span>
+
+    <span class="k">def</span> <span class="nf">fix</span><span class="p">():</span>
+        <span class="n">names</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">output_fn</span><span class="p">,</span> <span class="s">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">record</span> <span class="ow">in</span> <span class="n">ReadParser</span><span class="p">(</span><span class="n">transcriptome_fn</span><span class="p">):</span>
+                <span class="n">header</span> <span class="o">=</span> <span class="n">header_func</span><span class="p">(</span><span class="n">record</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+                <span class="n">fp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;&gt;{0}</span><span class="se">\n</span><span class="s">{1}</span><span class="se">\n</span><span class="s">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">header</span><span class="p">,</span> <span class="n">record</span><span class="o">.</span><span class="n">sequence</span><span class="p">))</span>
+                <span class="n">names</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">record</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">header</span><span class="p">))</span>
+        <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">names</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;original&#39;</span><span class="p">,</span> <span class="s">&#39;renamed&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">names_fn</span><span class="p">,</span>
+                                                                    <span class="n">index</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="p">{</span><span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span>
+            <span class="s">&#39;title&#39;</span><span class="p">:</span> <span class="n">title_with_actions</span><span class="p">,</span>
+            <span class="s">&#39;actions&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">fix</span><span class="p">],</span>
+            <span class="s">&#39;targets&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">output_fn</span><span class="p">,</span> <span class="n">names_fn</span><span class="p">],</span>
+            <span class="s">&#39;file_dep&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">transcriptome_fn</span><span class="p">],</span>
+            <span class="s">&#39;clean&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">clean_targets</span><span class="p">]}</span> 
+
+
+<span class="nd">@create_task_object</span>
+<div class="viewcode-block" id="get_transeq_task"><a class="viewcode-back" href="../../dammit.html#dammit.tasks.get_transeq_task">[docs]</a><span class="k">def</span> <span class="nf">get_transeq_task</span><span class="p">(</span><span class="n">input_fn</span><span class="p">,</span> <span class="n">output_fn</span><span class="p">,</span> <span class="n">clean</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="mi">6</span><span class="p">):</span></div>
+
+    <span class="n">name</span> <span class="o">=</span> <span class="s">&#39;transeq:{0}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">input_fn</span><span class="p">))</span>
+
+    <span class="n">params</span> <span class="o">=</span> <span class="s">&#39;-frame {frame}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">frame</span><span class="o">=</span><span class="n">frame</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">clean</span><span class="p">:</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="s">&#39;{params} -clean&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
+
+    <span class="n">cmd</span> <span class="o">=</span> <span class="s">&#39;transeq -sequence {input_fn} {params}&#39;</span>\
+          <span class="s">&#39; -clean -outseq {output_fn}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="nb">locals</span><span class="p">())</span>
+
+    <span class="k">return</span> <span class="p">{</span><span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span>
+            <span class="s">&#39;title&#39;</span><span class="p">:</span> <span class="n">title_with_actions</span><span class="p">,</span>
+            <span class="s">&#39;actions&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">cmd</span><span class="p">],</span>
+            <span class="s">&#39;targets&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">output_fn</span><span class="p">],</span>
+            <span class="s">&#39;file_dep&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">input_fn</span><span class="p">],</span>
+            <span class="s">&#39;clean&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">clean_targets</span><span class="p">]}</span>
+
+
+<span class="nd">@create_task_object</span>
+<div class="viewcode-block" id="get_crb_blast_task"><a class="viewcode-back" href="../../dammit.html#dammit.tasks.get_crb_blast_task">[docs]</a><span class="k">def</span> <span class="nf">get_crb_blast_task</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span> <span class="n">cutoff</span><span class="p">,</span> <span class="n">crb_blast_cfg</span><span class="p">,</span>
                        <span class="n">n_threads</span><span class="p">):</span></div>
 
     <span class="n">name</span> <span class="o">=</span> <span class="s">&#39;crb-blast:{0}.x.{1}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
     <span class="n">exc</span> <span class="o">=</span> <span class="n">which</span><span class="p">(</span><span class="s">&#39;crb-blast&#39;</span><span class="p">)</span>
-    <span class="n">evalue</span> <span class="o">=</span> <span class="n">crb_blast_cfg</span><span class="p">[</span><span class="s">&#39;evalue&#39;</span><span class="p">]</span>
     <span class="n">cmd</span> <span class="o">=</span> <span class="s">&#39;{exc} --query {query} --target {target} --output {output} &#39;</span>\
-          <span class="s">&#39;--evalue {evalue} --threads {n_threads}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="nb">locals</span><span class="p">())</span>
+          <span class="s">&#39;--evalue {cutoff} --threads {n_threads}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="nb">locals</span><span class="p">())</span>
 
     <span class="k">return</span> <span class="p">{</span><span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span>
             <span class="s">&#39;title&#39;</span><span class="p">:</span> <span class="n">title_with_actions</span><span class="p">,</span>
@@ -245,7 +303,7 @@
 
 
 <span class="nd">@create_task_object</span>
-<div class="viewcode-block" id="get_lastal_task"><a class="viewcode-back" href="../../dammit.html#dammit.tasks.get_lastal_task">[docs]</a><span class="k">def</span> <span class="nf">get_lastal_task</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="n">out_fn</span><span class="p">,</span> <span class="n">translate</span><span class="p">,</span> <span class="n">n_threads</span><span class="p">,</span> <span class="n">lastal_cfg</span><span class="p">):</span>
+<div class="viewcode-block" id="get_lastal_task"><a class="viewcode-back" href="../../dammit.html#dammit.tasks.get_lastal_task">[docs]</a><span class="k">def</span> <span class="nf">get_lastal_task</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="n">out_fn</span><span class="p">,</span> <span class="n">translate</span><span class="p">,</span> <span class="n">cutoff</span><span class="p">,</span> <span class="n">n_threads</span><span class="p">,</span> <span class="n">lastal_cfg</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Create a pydoit task to run lastal</span>
 
 <span class="sd">    Args:</span>
@@ -261,8 +319,12 @@
 
     <span class="n">exc</span> <span class="o">=</span> <span class="n">which</span><span class="p">(</span><span class="s">&#39;lastal&#39;</span><span class="p">)</span>
     <span class="n">params</span> <span class="o">=</span> <span class="n">lastal_cfg</span><span class="p">[</span><span class="s">&#39;params&#39;</span><span class="p">]</span>
+
     <span class="k">if</span> <span class="n">translate</span><span class="p">:</span>
         <span class="n">params</span> <span class="o">+=</span> <span class="s">&#39; -F&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">lastal_cfg</span><span class="p">[</span><span class="s">&#39;frameshift&#39;</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">cutoff</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">cutoff</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">/</span> <span class="n">cutoff</span><span class="p">)</span>
+        <span class="n">params</span> <span class="o">+=</span> <span class="s">&#39; -D&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">cutoff</span><span class="p">)</span>
     <span class="n">cmd</span> <span class="o">=</span> <span class="s">&#39;{exc} {params} {db} {query} &gt; {out_fn}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="nb">locals</span><span class="p">())</span>
 
     <span class="n">name</span> <span class="o">=</span> <span class="s">&#39;lastal:&#39;</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">out_fn</span><span class="p">)</span>
@@ -362,14 +424,15 @@
 
 <span class="nd">@create_task_object</span>
 <div class="viewcode-block" id="get_cmscan_task"><a class="viewcode-back" href="../../dammit.html#dammit.tasks.get_cmscan_task">[docs]</a><span class="k">def</span> <span class="nf">get_cmscan_task</span><span class="p">(</span><span class="n">input_filename</span><span class="p">,</span> <span class="n">output_filename</span><span class="p">,</span> <span class="n">db_filename</span><span class="p">,</span> 
-                    <span class="n">n_threads</span><span class="p">,</span> <span class="n">infernal_cfg</span><span class="p">):</span></div>
+                    <span class="n">cutoff</span><span class="p">,</span> <span class="n">n_threads</span><span class="p">,</span> <span class="n">infernal_cfg</span><span class="p">):</span></div>
     
     <span class="n">name</span> <span class="o">=</span> <span class="s">&#39;cmscan:&#39;</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">input_filename</span><span class="p">)</span> <span class="o">+</span> <span class="s">&#39;.x.&#39;</span> <span class="o">+</span> \
            <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">db_filename</span><span class="p">)</span>
     
     <span class="n">exc</span> <span class="o">=</span> <span class="n">which</span><span class="p">(</span><span class="s">&#39;cmscan&#39;</span><span class="p">)</span>
-    <span class="n">cmd</span> <span class="o">=</span> <span class="s">&#39;{exc} --cpu {n_threads} --cut_ga --rfam --nohmmonly --tblout {output_filename}&#39;</span>\
-          <span class="s">&#39; {db_filename} {input_filename} &gt; {output_filename}.cmscan&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="nb">locals</span><span class="p">())</span>
+    <span class="n">cmd</span> <span class="o">=</span> <span class="s">&#39;{exc} --cpu {n_threads} --rfam --nohmmonly -E {cutoff}&#39;</span>\
+          <span class="s">&#39; --tblout {output_filename} {db_filename} {input_filename}&#39;</span>\
+          <span class="s">&#39; &gt; {output_filename}.cmscan&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="nb">locals</span><span class="p">())</span>
 
     <span class="k">return</span> <span class="p">{</span><span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span>
             <span class="s">&#39;title&#39;</span><span class="p">:</span> <span class="n">title_with_actions</span><span class="p">,</span>
@@ -396,14 +459,14 @@
 
 <span class="nd">@create_task_object</span>
 <div class="viewcode-block" id="get_hmmscan_task"><a class="viewcode-back" href="../../dammit.html#dammit.tasks.get_hmmscan_task">[docs]</a><span class="k">def</span> <span class="nf">get_hmmscan_task</span><span class="p">(</span><span class="n">input_filename</span><span class="p">,</span> <span class="n">output_filename</span><span class="p">,</span> <span class="n">db_filename</span><span class="p">,</span> 
-                     <span class="n">n_threads</span><span class="p">,</span> <span class="n">hmmer_cfg</span><span class="p">):</span></div>
+                     <span class="n">cutoff</span><span class="p">,</span> <span class="n">n_threads</span><span class="p">,</span> <span class="n">hmmer_cfg</span><span class="p">):</span></div>
 
     <span class="n">name</span> <span class="o">=</span> <span class="s">&#39;hmmscan:&#39;</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">input_filename</span><span class="p">)</span> <span class="o">+</span> <span class="s">&#39;.x.&#39;</span> <span class="o">+</span> \
                 <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">db_filename</span><span class="p">)</span>
     
     <span class="n">exc</span> <span class="o">=</span> <span class="n">which</span><span class="p">(</span><span class="s">&#39;hmmscan&#39;</span><span class="p">)</span>
     <span class="n">stat</span> <span class="o">=</span> <span class="n">output_filename</span> <span class="o">+</span> <span class="s">&#39;.out&#39;</span>
-    <span class="n">cmd</span> <span class="o">=</span> <span class="s">&#39;{exc} --cpu {n_threads} --domtblout {output_filename}&#39;</span>\
+    <span class="n">cmd</span> <span class="o">=</span> <span class="s">&#39;{exc} --cpu {n_threads} --domtblout {output_filename} -E {cutoff}&#39;</span>\
           <span class="s">&#39; -o {stat} {db_filename} {input_filename}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="nb">locals</span><span class="p">())</span>
 
     <span class="k">return</span> <span class="p">{</span><span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span>
@@ -561,6 +624,59 @@
 
 
 <span class="nd">@create_task_object</span>
+<div class="viewcode-block" id="get_annotate_fasta_task"><a class="viewcode-back" href="../../dammit.html#dammit.tasks.get_annotate_fasta_task">[docs]</a><span class="k">def</span> <span class="nf">get_annotate_fasta_task</span><span class="p">(</span><span class="n">transcriptome_fn</span><span class="p">,</span> <span class="n">gff3_fn</span><span class="p">,</span> <span class="n">output_fn</span><span class="p">):</span></div>
+    
+    <span class="n">name</span> <span class="o">=</span> <span class="s">&#39;fasta-annotate:{0}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">output_fn</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">annotate_fasta</span><span class="p">():</span>
+        <span class="n">annotations</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">g</span> <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> \
+                                 <span class="n">parsers</span><span class="o">.</span><span class="n">parse_gff3</span><span class="p">(</span><span class="n">gff3_fn</span><span class="p">)])</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">output_fn</span><span class="p">,</span> <span class="s">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">record</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">ReadParser</span><span class="p">(</span><span class="n">transcriptome_fn</span><span class="p">)):</span>
+                <span class="n">df</span> <span class="o">=</span> <span class="n">annotations</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s">&#39;seqid == &quot;{0}&quot;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">record</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+                <span class="n">annots</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;len={0}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">record</span><span class="o">.</span><span class="n">sequence</span><span class="p">))]</span>
+                <span class="c">#for seqid, sgroup in df.groupby(&#39;seqid&#39;):</span>
+                <span class="c">#    for feature_type, fgroup in sgroup.groupby(&#39;feature_type&#39;):</span>
+                <span class="k">for</span> <span class="n">feature_type</span><span class="p">,</span> <span class="n">fgroup</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s">&#39;feature_type&#39;</span><span class="p">):</span>
+
+                    <span class="k">if</span> <span class="n">feature_type</span> <span class="ow">in</span> <span class="p">[</span><span class="s">&#39;translated_nucleotide_match&#39;</span><span class="p">,</span>
+                                        <span class="s">&#39;protein_hmm_match&#39;</span><span class="p">,</span>
+                                        <span class="s">&#39;RNA_sequence_secondary_structure&#39;</span><span class="p">]:</span>
+
+                        <span class="n">collapsed</span> <span class="o">=</span> <span class="s">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s">&#39;{}:{}-{}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">Name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;:dammit&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span> 
+                                                                 <span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">start</span><span class="p">),</span> 
+                                                                 <span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">end</span><span class="p">))</span> \
+                                        <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">fgroup</span><span class="o">.</span><span class="n">iterrows</span><span class="p">()])</span>
+                        <span class="k">if</span> <span class="n">feature_type</span> <span class="o">==</span> <span class="s">&#39;translated_nucleotide_match&#39;</span><span class="p">:</span>
+                            <span class="n">key</span> <span class="o">=</span> <span class="s">&#39;homologies&#39;</span>
+                        <span class="k">elif</span> <span class="n">feature_type</span> <span class="o">==</span> <span class="s">&#39;protein_hmm_match&#39;</span><span class="p">:</span>
+                            <span class="n">key</span> <span class="o">=</span> <span class="s">&#39;hmm_matches&#39;</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">key</span> <span class="o">=</span> <span class="s">&#39;RNA_matches&#39;</span>
+                        <span class="n">annots</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&#39;{0}={1}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">collapsed</span><span class="p">))</span>
+
+                    <span class="k">elif</span> <span class="n">feature_type</span> <span class="ow">in</span> <span class="p">[</span><span class="s">&#39;exon&#39;</span><span class="p">,</span> <span class="s">&#39;CDS&#39;</span><span class="p">,</span> <span class="s">&#39;gene&#39;</span><span class="p">,</span>
+                                          <span class="s">&#39;five_prime_UTR&#39;</span><span class="p">,</span> <span class="s">&#39;three_prime_UTR&#39;</span><span class="p">,</span> 
+                                          <span class="s">&#39;mRNA&#39;</span><span class="p">]:</span>
+                        
+                        <span class="n">collapsed</span> <span class="o">=</span> <span class="s">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s">&#39;{}-{}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">start</span><span class="p">),</span>
+                                                             <span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">end</span><span class="p">))</span> \
+                                        <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">fgroup</span><span class="o">.</span><span class="n">iterrows</span><span class="p">()])</span>
+                        <span class="n">annots</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&#39;{0}={1}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">feature_type</span><span class="p">,</span> <span class="n">collapsed</span><span class="p">))</span>
+
+                <span class="n">desc</span> <span class="o">=</span> <span class="s">&#39;{0} {1}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">record</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">annots</span><span class="p">))</span>
+
+                <span class="n">fp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;&gt;{0}</span><span class="se">\n</span><span class="s">{1}</span><span class="se">\n</span><span class="s">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">desc</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span> <span class="n">record</span><span class="o">.</span><span class="n">sequence</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="p">{</span><span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span>
+                <span class="s">&#39;title&#39;</span><span class="p">:</span> <span class="n">title_with_actions</span><span class="p">,</span>
+                <span class="s">&#39;actions&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">annotate_fasta</span><span class="p">],</span>
+                <span class="s">&#39;file_dep&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">transcriptome_fn</span><span class="p">,</span> <span class="n">gff3_fn</span><span class="p">],</span>
+                <span class="s">&#39;targets&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">output_fn</span><span class="p">],</span>
+                <span class="s">&#39;clean&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">clean_targets</span><span class="p">]}</span>
+
+
+<span class="nd">@create_task_object</span>
 <div class="viewcode-block" id="get_transcriptome_stats_task"><a class="viewcode-back" href="../../dammit.html#dammit.tasks.get_transcriptome_stats_task">[docs]</a><span class="k">def</span> <span class="nf">get_transcriptome_stats_task</span><span class="p">(</span><span class="n">transcriptome</span><span class="p">,</span> <span class="n">output_fn</span><span class="p">):</span></div>
 
     <span class="n">name</span> <span class="o">=</span> <span class="s">&#39;transcriptome_stats:&#39;</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">transcriptome</span><span class="p">)</span>
@@ -578,7 +694,10 @@
             <span class="n">gc_len</span> <span class="o">+=</span> <span class="n">contig</span><span class="o">.</span><span class="n">sequence</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s">&#39;C&#39;</span><span class="p">)</span>
             <span class="n">gc_len</span> <span class="o">+=</span> <span class="n">contig</span><span class="o">.</span><span class="n">sequence</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s">&#39;G&#39;</span><span class="p">)</span>
         <span class="n">S</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">lens</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">names</span><span class="p">)</span>
-        <span class="n">S</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">S</span><span class="o">.</span><span class="n">sort_values</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="n">S</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
         <span class="n">gc_perc</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">gc_len</span><span class="p">)</span> <span class="o">/</span> <span class="n">S</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">S</span><span class="p">,</span> <span class="n">hll</span><span class="o">.</span><span class="n">estimate_cardinality</span><span class="p">(),</span> <span class="n">gc_perc</span>
 
