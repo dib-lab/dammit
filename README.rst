@@ -20,7 +20,7 @@ down version. These instructions assume you're on a clean Ubuntu 14.04 install.
 dammit will run on OSX too, though some of the dependencies will need to be 
 installed manually and are not included here.
 
-First get packages from the Ubuntu PPAs::
+First get packages from the Ubuntu archives::
 
     sudo apt-get update
     sudo apt-get install python-pip python-dev python-numpy git ruby hmmer unzip \
@@ -62,8 +62,32 @@ Now, install dammit::
     sudo pip install dammit
 
 This will spend a bit of time compiling and installing pandas and scikit-learn if you don't 
-already have a recent versions installed; the ones available in the Ubuntu 14.04 PPA are
+already have a recent versions installed; the ones available in the Ubuntu 14.04 archives are
 just too old.
+
+Usage
+-----
+
+To check for dependencies, run::
+
+    dammit dependencies
+
+To check for databases, run::
+
+    dammit databases
+
+and to download and install them, run::
+
+    dammit databases --install
+
+To annotate your transcriptome, the most basic usage is::
+
+    dammit annotate <transcriptome_fasta>
+
+These are extremely basic examples; for a much more detailed description, take a look at the
+relevant page in the `documentation <http://www.camillescott.org/dammit/usage.html>`__. The
+documentation describes how to customization the database installation location and utilize existing
+databases.
 
 Known Issues
 ------------
