@@ -180,7 +180,8 @@ class DatabaseHandler(object):
         databases['BUSCO'] = os.path.abspath(os.path.join(BUSCO, self.args.busco_group))
 
         # Get uniref90 if the user specifies
-        if self.args.full:
+        # Ignoring this until we have working CRBL
+        if self.args.full and False:
             UNIREF = os.path.join(common.DATABASES['uniref90']['filename'])
             tasks.append(
                 get_download_and_gunzip_task(common.DATABASES['uniref90']['url'], UNIREF)
