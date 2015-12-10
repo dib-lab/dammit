@@ -154,7 +154,9 @@ class AnnotateHandler(object):
         pfam_results = self.transcriptome + '.pfam-A.tbl'
         annotate_tasks.append(
             get_hmmscan_task(orf_pep, pfam_results,
-                         self.database_dict['PFAM'], self.args.n_threads, 
+                         self.database_dict['PFAM'], 
+                         self.args.evalue,
+                         self.args.n_threads, 
                          common.CONFIG['settings']['hmmer']['hmmscan'])
         )
         results['pfam'] = pfam_results
@@ -179,8 +181,10 @@ class AnnotateHandler(object):
         rfam_results = self.transcriptome + '.rfam.tbl'
         annotate_tasks.append(
             get_cmscan_task(self.transcriptome, rfam_results,
-                         self.database_dict['RFAM'], self.args.n_threads, 
-                         cmscan_cfg)
+                            self.database_dict['RFAM'], 
+                            self.args.evalue,
+                            self.args.n_threads, 
+                            cmscan_cfg)
         )
         results['rfam'] = rfam_results
 
@@ -193,8 +197,13 @@ class AnnotateHandler(object):
         orthodb_fn = self.database_dict['ORTHODB']
         tr_x_orthodb_fn = '{0}.x.orthodb.maf'.format(self.transcriptome)
         annotate_tasks.append(
-            get_lastal_task(self.transcriptome, orthodb_fn, tr_x_orthodb_fn, True,
-                           self.args.n_threads, lastal_cfg)
+            get_lastal_task(self.transcriptome, 
+                            orthodb_fn, 
+                            tr_x_orthodb_fn, 
+                            True,
+                            self.args.evalue,
+                            self.args.n_threads, 
+                            lastal_cfg)
         )
         results['orthodb'] = tr_x_orthodb_fn
      
@@ -213,8 +222,12 @@ class AnnotateHandler(object):
             )
             fn = '{0}.x.{1}.crbb.tsv'.format(self.transcriptome, key)
             annotate_tasks.append(
-                get_crb_blast_task(self.transcriptome, key, fn, 
-                                   crb_blast_cfg, self.args.n_threads)
+                get_crb_blast_task(self.transcriptome, 
+                                   key, 
+                                   fn, 
+                                   self.args.evalue,
+                                   crb_blast_cfg, 
+                                   self.args.n_threads)
             )
             results['user'][key] = fn
 

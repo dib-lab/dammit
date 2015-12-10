@@ -142,6 +142,13 @@ class DammitApp(object):
                                           ' with special meaning to BASH.'
                                      )
 
+        annotate_parser.add_argument('-e', '--evalue',
+                                     default=1e-5,
+                                     type=float,
+                                     help='e-value cutoff for similarity'\
+                                          ' searches.'
+                                     )
+
         annotate_parser.add_argument('-o', '--output-dir', 
                                      default=None,
                                      help='Output directory. By default this will'\

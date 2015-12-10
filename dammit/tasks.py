@@ -184,14 +184,13 @@ def get_rename_transcriptome_task(transcriptome_fn, output_fn, names_fn,
 
 
 @create_task_object
-def get_crb_blast_task(query, target, output, crb_blast_cfg,
+def get_crb_blast_task(query, target, output, cutoff, crb_blast_cfg,
                        n_threads):
 
     name = 'crb-blast:{0}.x.{1}'.format(query, target)
     exc = which('crb-blast')
-    evalue = crb_blast_cfg['evalue']
     cmd = '{exc} --query {query} --target {target} --output {output} '\
-          '--evalue {evalue} --threads {n_threads}'.format(**locals())
+          '--evalue {cutoff} --threads {n_threads}'.format(**locals())
 
     return {'name': name,
             'title': title_with_actions,
@@ -240,7 +239,7 @@ def get_lastdb_task(db_fn, db_out_prefix, lastdb_cfg, prot=True):
 
 
 @create_task_object
-def get_lastal_task(query, db, out_fn, translate, n_threads, lastal_cfg):
+def get_lastal_task(query, db, out_fn, translate, cutoff, n_threads, lastal_cfg):
     '''Create a pydoit task to run lastal
 
     Args:
@@ -256,9 +255,10 @@ def get_lastal_task(query, db, out_fn, translate, n_threads, lastal_cfg):
 
     exc = which('lastal')
     params = lastal_cfg['params']
+    cutoff = int(1.0 / cutoff)
     if translate:
         params += ' -F' + str(lastal_cfg['frameshift'])
-    cmd = '{exc} {params} {db} {query} > {out_fn}'.format(**locals())
+    cmd = '{exc} {params} -D{cutoff} {db} {query} > {out_fn}'.format(**locals())
 
     name = 'lastal:' + os.path.join(out_fn)
 
@@ -357,14 +357,15 @@ def get_cmpress_task(db_filename, infernal_cfg):
 
 @create_task_object
 def get_cmscan_task(input_filename, output_filename, db_filename, 
-                    n_threads, infernal_cfg):
+                    cutoff, n_threads, infernal_cfg):
     
     name = 'cmscan:' + os.path.basename(input_filename) + '.x.' + \
            os.path.basename(db_filename)
     
     exc = which('cmscan')
-    cmd = '{exc} --cpu {n_threads} --cut_ga --rfam --nohmmonly --tblout {output_filename}'\
-          ' {db_filename} {input_filename} > {output_filename}.cmscan'.format(**locals())
+    cmd = '{exc} --cpu {n_threads} --rfam --nohmmonly -E {cutoff}'\
+          ' --tblout {output_filename} {db_filename} {input_filename}'\
+          ' > {output_filename}.cmscan'.format(**locals())
 
     return {'name': name,
             'title': title_with_actions,
@@ -391,14 +392,14 @@ def get_hmmpress_task(db_filename, hmmer_cfg):
 
 @create_task_object
 def get_hmmscan_task(input_filename, output_filename, db_filename, 
-                     n_threads, hmmer_cfg):
+                     cutoff, n_threads, hmmer_cfg):
 
     name = 'hmmscan:' + os.path.basename(input_filename) + '.x.' + \
                 os.path.basename(db_filename)
     
     exc = which('hmmscan')
     stat = output_filename + '.out'
-    cmd = '{exc} --cpu {n_threads} --domtblout {output_filename}'\
+    cmd = '{exc} --cpu {n_threads} --domtblout {output_filename} -E {cutoff}'\
           ' -o {stat} {db_filename} {input_filename}'.format(**locals())
 
     return {'name': name,
@@ -566,34 +567,35 @@ def get_annotate_fasta_task(transcriptome_fn, gff3_fn, output_fn):
         with open(output_fn, 'wb') as fp:
             for n, record in enumerate(ReadParser(transcriptome_fn)):
                 df = annotations.query('seqid == "{0}"'.format(record.name))
-                annots = []
-                for seqid, sgroup in df.groupby('seqid'):
-                    for feature_type, fgroup in sgroup.groupby('feature_type'):
+                annots = ['len={0}'.format(len(record.sequence))]
+                #for seqid, sgroup in df.groupby('seqid'):
+                #    for feature_type, fgroup in sgroup.groupby('feature_type'):
+                for feature_type, fgroup in df.groupby('feature_type'):
 
-                        if feature_type in ['translated_nucleotide_match',
-                                            'protein_hmm_match',
-                                            'RNA_sequence_secondary_structure']:
+                    if feature_type in ['translated_nucleotide_match',
+                                        'protein_hmm_match',
+                                        'RNA_sequence_secondary_structure']:
 
-                            collapsed = ','.join(['{}:{}-{}'.format(row.Name.split(':dammit')[0], 
-                                                                     int(row.start), 
-                                                                     int(row.end)) \
-                                            for _, row in fgroup.iterrows()])
-                            if feature_type == 'translated_nucleotide_match':
-                                key = 'homologies'
-                            elif feature_type == 'protein_hmm_match':
-                                key = 'hmm_matches'
-                            else:
-                                key = 'RNA_matches'
-                            annots.append('{0}={1}'.format(key, collapsed))
-
-                        elif feature_type in ['exon', 'CDS', 'gene',
-                                              'five_prime_UTR', 'three_prime_UTR', 
-                                              'mRNA']:
-                            
-                            collapsed = ','.join(['{}-{}'.format(int(row.start),
+                        collapsed = ','.join(['{}:{}-{}'.format(row.Name.split(':dammit')[0], 
+                                                                 int(row.start), 
                                                                  int(row.end)) \
-                                            for _, row in fgroup.iterrows()])
-                            annots.append('{0}={1}'.format(feature_type, collapsed))
+                                        for _, row in fgroup.iterrows()])
+                        if feature_type == 'translated_nucleotide_match':
+                            key = 'homologies'
+                        elif feature_type == 'protein_hmm_match':
+                            key = 'hmm_matches'
+                        else:
+                            key = 'RNA_matches'
+                        annots.append('{0}={1}'.format(key, collapsed))
+
+                    elif feature_type in ['exon', 'CDS', 'gene',
+                                          'five_prime_UTR', 'three_prime_UTR', 
+                                          'mRNA']:
+                        
+                        collapsed = ','.join(['{}-{}'.format(int(row.start),
+                                                             int(row.end)) \
+                                        for _, row in fgroup.iterrows()])
+                        annots.append('{0}={1}'.format(feature_type, collapsed))
 
                 desc = '{0} {1}'.format(record.name, ' '.join(annots))
 
