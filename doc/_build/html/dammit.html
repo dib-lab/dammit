@@ -51,6 +51,21 @@
 <em class="property">class </em><code class="descclassname">dammit.annotate.</code><code class="descname">AnnotateHandler</code><span class="sig-paren">(</span><em>args</em>, <em>database_dict</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/annotate.html#AnnotateHandler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.annotate.AnnotateHandler" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 <dl class="method">
+<dt id="dammit.annotate.AnnotateHandler.busco_task">
+<code class="descname">busco_task</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dammit.annotate.AnnotateHandler.busco_task" title="Permalink to this definition">¶</a></dt>
+<dd><p>BUSCO assesses completeness using a series of curated databases of core
+conserved genes.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="dammit.annotate.AnnotateHandler.cmscan_task">
+<code class="descname">cmscan_task</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dammit.annotate.AnnotateHandler.cmscan_task" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run Infernal. Infernal uses covariance models to detect
+RNA secondary structures. Here we use Rfam as our reference
+database.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="dammit.annotate.AnnotateHandler.get_tasks">
 <code class="descname">get_tasks</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dammit.annotate.AnnotateHandler.get_tasks" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -58,6 +73,24 @@
 <dl class="method">
 <dt id="dammit.annotate.AnnotateHandler.handle">
 <code class="descname">handle</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dammit.annotate.AnnotateHandler.handle" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dammit.annotate.AnnotateHandler.logger">
+<code class="descname">logger</code><em class="property"> = None</em><a class="headerlink" href="#dammit.annotate.AnnotateHandler.logger" title="Permalink to this definition">¶</a></dt>
+<dd><p>Output file attributes.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="dammit.annotate.AnnotateHandler.orthodb_task">
+<code class="descname">orthodb_task</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dammit.annotate.AnnotateHandler.orthodb_task" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run LAST to get homologies with OrthoDB. We use LAST here because
+it is much faster than BLAST+, and OrthoDB is pretty huge.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="dammit.annotate.AnnotateHandler.rename_task">
+<code class="descname">rename_task</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dammit.annotate.AnnotateHandler.rename_task" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -68,6 +101,38 @@ We&#8217;ll put the doit database for these tasks into the output
 directory so that we don&#8217;t end up scattering them around the
 filesystem, or worse, with one master db containing dependency
 metadata from every analysis ever run by the user!</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="dammit.annotate.AnnotateHandler.stats_task">
+<code class="descname">stats_task</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dammit.annotate.AnnotateHandler.stats_task" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate assembly information. First it runs some basic stats like N50 and
+number of contigs, and uses the HyperLogLog counter from khmer to
+estimate unique k-mers for checking redundancy. Then it runs BUSCO to
+assess completeness. These tasks are grouped under the &#8216;assess&#8217; task.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="dammit.annotate.AnnotateHandler.transdecoder_tasks">
+<code class="descname">transdecoder_tasks</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dammit.annotate.AnnotateHandler.transdecoder_tasks" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run TransDecoder. TransDecoder first finds long ORFs with
+TransDecoder.LongOrfs, which are output as a FASTA file of protein
+sequences. We can then use these sequences to search against Pfam-A for
+conserved domains. TransDecoder.Predict uses the Pfam results to train its
+model for prediction of gene features.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="dammit.annotate.AnnotateHandler.transeq_task">
+<code class="descname">transeq_task</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dammit.annotate.AnnotateHandler.transeq_task" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run transeq to do full six-frame protein translation.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="dammit.annotate.AnnotateHandler.user_crb_tasks">
+<code class="descname">user_crb_tasks</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dammit.annotate.AnnotateHandler.user_crb_tasks" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run conditional recipricol best hits LAST (CRBL) against the
+user-supplied databases.</p>
 </dd></dl>
 
 </dd></dl>
@@ -488,12 +553,96 @@ hmmscan result file.</p>
 </table>
 </dd></dl>
 
+<dl class="function">
+<dt id="dammit.parsers.parse_busco_full">
+<code class="descclassname">dammit.parsers.</code><code class="descname">parse_busco_full</code><span class="sig-paren">(</span><em>fn</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/parsers.html#parse_busco_full"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.parsers.parse_busco_full" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parses a BUSCO full result table into a Pandas DataFrame.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fn</strong> (<em>str</em>) &#8211; The results file.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The results DataFrame.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">DataFrame</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="dammit.parsers.parse_busco_multiple">
+<code class="descclassname">dammit.parsers.</code><code class="descname">parse_busco_multiple</code><span class="sig-paren">(</span><em>fn_list, dbs=['metazoa', 'vertebrata']</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/parsers.html#parse_busco_multiple"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.parsers.parse_busco_multiple" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parses multiple BUSCO results summaries into an appropriately
+index DataFrame.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>fn_list</strong> (<em>list</em>) &#8211; List of paths to results files.</li>
+<li><strong>dbs</strong> (<em>list</em>) &#8211; List of BUSCO database names.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The formated DataFrame.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">DataFrame</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="dammit.parsers.parse_busco_summary">
+<code class="descclassname">dammit.parsers.</code><code class="descname">parse_busco_summary</code><span class="sig-paren">(</span><em>fn</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/parsers.html#parse_busco_summary"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.parsers.parse_busco_summary" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parses a BUSCO summary file into a JSON compatible
+dictionary.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fn</strong> (<em>str</em>) &#8211; The summary results file.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The BUSCO results.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">dict</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="dammit.parsers.parse_gff3">
+<code class="descclassname">dammit.parsers.</code><code class="descname">parse_gff3</code><span class="sig-paren">(</span><em>fn</em>, <em>chunksize=10000</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/parsers.html#parse_gff3"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.parsers.parse_gff3" title="Permalink to this definition">¶</a></dt>
+<dd><p>Iterator over DataFrames of length chunksize from a given
+GTF/GFF file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>fn</strong> (<em>str</em>) &#8211; Path to the file.</li>
+<li><strong>chunksize</strong> (<em>int</em>) &#8211; Rows per iteration.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Yields:</th><td class="field-body"><p class="first last"><em>DataFrame</em> &#8211; Pandas DataFrame with the results.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </div>
 <div class="section" id="module-dammit.report">
 <span id="dammit-report-module"></span><h2>dammit.report module<a class="headerlink" href="#module-dammit.report" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="dammit.report.get_report_tasks">
-<code class="descclassname">dammit.report.</code><code class="descname">get_report_tasks</code><span class="sig-paren">(</span><em>transcriptome</em>, <em>results_dict</em>, <em>databases</em>, <em>n_threads=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/report.html#get_report_tasks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.report.get_report_tasks" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">dammit.report.</code><code class="descname">get_report_tasks</code><span class="sig-paren">(</span><em>transcriptome</em>, <em>annotator</em>, <em>databases</em>, <em>n_threads=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/report.html#get_report_tasks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.report.get_report_tasks" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </div>
@@ -511,6 +660,11 @@ hmmscan result file.</p>
 Task dictionaries and have them return pydoit Task
 objects</p>
 </dd></dl>
+
+<dl class="function">
+<dt id="dammit.tasks.get_annotate_fasta_task">
+<code class="descclassname">dammit.tasks.</code><code class="descname">get_annotate_fasta_task</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/tasks.html#get_annotate_fasta_task"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.tasks.get_annotate_fasta_task" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="function">
 <dt id="dammit.tasks.get_busco_task">
@@ -618,6 +772,11 @@ objects</p>
 <dd></dd></dl>
 
 <dl class="function">
+<dt id="dammit.tasks.get_rename_transcriptome_task">
+<code class="descclassname">dammit.tasks.</code><code class="descname">get_rename_transcriptome_task</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/tasks.html#get_rename_transcriptome_task"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.tasks.get_rename_transcriptome_task" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
 <dt id="dammit.tasks.get_sanitize_fasta_task">
 <code class="descclassname">dammit.tasks.</code><code class="descname">get_sanitize_fasta_task</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/tasks.html#get_sanitize_fasta_task"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.tasks.get_sanitize_fasta_task" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -635,6 +794,11 @@ objects</p>
 <dl class="function">
 <dt id="dammit.tasks.get_transdecoder_predict_task">
 <code class="descclassname">dammit.tasks.</code><code class="descname">get_transdecoder_predict_task</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/tasks.html#get_transdecoder_predict_task"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.tasks.get_transdecoder_predict_task" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="dammit.tasks.get_transeq_task">
+<code class="descclassname">dammit.tasks.</code><code class="descname">get_transeq_task</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/tasks.html#get_transeq_task"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.tasks.get_transeq_task" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">

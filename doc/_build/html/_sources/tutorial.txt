@@ -33,7 +33,7 @@ it first::
     dammit databases --install --busco-group eukaryota
 
 Alternatively, if you happen to have downloaded many of these databases before,
-you can follow the directions in the `advanced databases guide <advanced-databases.html>`__.
+you can follow the directions in the `databases guide <databases.html>`__.
 
 While the initial download takes a while, once its done, you won't need to do it again --
 dammit keeps track of the database state and won't repeat work its already completed,
