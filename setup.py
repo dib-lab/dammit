@@ -54,7 +54,8 @@ def main():
                                 'nose-capturestderr==1.0',
                                 'ficus>=0.1',
                                 'matplotlib>=1.0',
-                                'scikit-learn>=0.16'],
+                                'scikit-learn>=0.16',
+                                'numexpr>=2.3.1'],
             include_package_data = True,
             zip_safe = False,
             cmdclass = cmdclass  )

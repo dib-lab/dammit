@@ -37,7 +37,7 @@ class AnnotateHandler(object):
         '''
         self.input_transcriptome_fn = os.path.abspath(args.transcriptome)
         self.transcriptome_fn = os.path.basename(self.input_transcriptome_fn)
-        self.names_fn = '{0}.names.csv'.format(self.transcriptome_fn)
+        self.names_fn = '{0}.dammit.names.csv'.format(self.transcriptome_fn)
         if args.output_dir is None:
             out_dir = os.path.basename(self.input_transcriptome) + '.dammit'
         else:
