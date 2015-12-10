@@ -184,6 +184,26 @@ def get_rename_transcriptome_task(transcriptome_fn, output_fn, names_fn,
 
 
 @create_task_object
+def get_transeq_task(input_fn, output_fn, clean=True, frame=6):
+
+    name = 'transeq:{0}'.format(os.path.basename(input_fn))
+
+    params = '-frame {frame}'.format(frame=frame)
+    if clean:
+        params = '{params} -clean'.format(params=params)
+
+    cmd = 'transeq -sequence {input_fn} {params}'\
+          ' -clean -outseq {output_fn}'.format(**locals())
+
+    return {'name': name,
+            'title': title_with_actions,
+            'actions': [cmd],
+            'targets': [output_fn],
+            'file_dep': [input_fn],
+            'clean': [clean_targets]}
+
+
+@create_task_object
 def get_crb_blast_task(query, target, output, cutoff, crb_blast_cfg,
                        n_threads):
 

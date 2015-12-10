@@ -22,6 +22,7 @@ from .tasks import get_transcriptome_stats_task, \
                    get_crb_blast_task, \
                    get_sanitize_fasta_task, \
                    get_rename_transcriptome_task, \
+                   get_transeq_task, \
                    print_tasks
 
 logger = logging.getLogger(__name__)
@@ -127,6 +128,17 @@ class AnnotateHandler(object):
         # Collect the stats and BUSCO tasks under an "assess" group for convenience
         tasks.extend(assess_tasks)
         tasks.append(get_group_task('assess', assess_tasks))
+
+        '''
+        Run transeq to do full six-frame protein translation.
+        '''
+
+        translated_fn = '{0}.pep'.format(self.transcriptome)
+        tasks.append(
+            get_transeq_task(self.transcriptome,
+                             translated_fn)
+        )
+        results['translated_fn'] = translated_fn
 
         '''
         Run TransDecoder. TransDecoder first finds long ORFs with
