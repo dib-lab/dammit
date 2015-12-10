@@ -141,6 +141,8 @@ class TestLASTTasks(TestCase):
                     self.assertIn('lambda', aln, 
                                   msg='lambda missing, wrong LAST version?')
 
+                    assert False
+
     def test_lastal_task_uptodate(self):
         with TemporaryDirectory() as td:
             with Move(td):
