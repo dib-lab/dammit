@@ -142,6 +142,7 @@ def get_sanitize_fasta_task(input_fn, output_fn):
             'title': title_with_actions,
             'actions': [fix],
             'file_dep': [input_fn],
+            'targets': [output_fn],
             'clean': [clean_targets]}
 
 
@@ -275,10 +276,13 @@ def get_lastal_task(query, db, out_fn, translate, cutoff, n_threads, lastal_cfg)
 
     exc = which('lastal')
     params = lastal_cfg['params']
-    cutoff = int(1.0 / cutoff)
+
     if translate:
         params += ' -F' + str(lastal_cfg['frameshift'])
-    cmd = '{exc} {params} -D{cutoff} {db} {query} > {out_fn}'.format(**locals())
+    if cutoff is not None:
+        cutoff = int(1.0 / cutoff)
+        params += ' -D' + str(cutoff)
+    cmd = '{exc} {params} {db} {query} > {out_fn}'.format(**locals())
 
     name = 'lastal:' + os.path.join(out_fn)
 
