@@ -33,20 +33,38 @@ class AnnotateHandler(object):
         self.args = args
         self.logger = logging.getLogger(self.__class__.__name__)
 
-        ''' Output file attributes.
+        self._init_filenames()
+
+        self.doit_config = {
+                        'reporter': LogReporter(logger),
+                        'backend': common.DOIT_BACKEND,
+                        'verbosity': common.DOIT_VERBOSITY,
+                        'continue': True,
+                        'dep_file': os.path.join(self.directory, '.' +
+                                                 os.path.basename(self.transcriptome_fn) +
+                                                 '.doit.db')
+                      }
+
+        self.database_dict = database_dict
+        self.tasks = list(self.get_tasks())
+
+    def _init_filenames(self):
+        '''Initialize all the input/output filename atributes.
         '''
-        self.input_transcriptome_fn = os.path.abspath(args.transcriptome)
+
+        self.input_transcriptome_fn = os.path.abspath(self.args.transcriptome)
         self.transcriptome_fn = os.path.basename(self.input_transcriptome_fn)
         self.names_fn = '{0}.dammit.names.csv'.format(self.transcriptome_fn)
-        if args.output_dir is None:
+        if self.args.output_dir is None:
             out_dir = os.path.basename(self.input_transcriptome) + '.dammit'
         else:
-            out_dir = args.output_dir
+            out_dir = self.args.output_dir
         self.directory = os.path.abspath(out_dir)
         
         self.stats_fn = self.transcriptome_fn + '.stats.json'
 
-        self.busco_basename = '{0}.busco.results'.format(self.transcriptome_fn)
+        self.busco_basename = '{0}.{1}.busco.results'.format(self.transcriptome_fn,
+                                                             self.args.busco_group)
         self.busco_dir = 'run_{0}'.format(self.busco_basename)
         busco_summary_fn = 'short_summary_{0}'.format(self.transcriptome_fn)
         self.busco_summary_fn = os.path.join(self.busco_dir,
@@ -68,18 +86,7 @@ class AnnotateHandler(object):
 
         self.user_pep_fn_dict = {}
 
-        self.doit_config = {
-                        'reporter': LogReporter(logger),
-                        'backend': common.DOIT_BACKEND,
-                        'verbosity': common.DOIT_VERBOSITY,
-                        'continue': True,
-                        'dep_file': os.path.join(self.directory, '.' +
-                                                 os.path.basename(self.transcriptome_fn) +
-                                                 '.doit.db')
-                      }
 
-        self.database_dict = database_dict
-        self.tasks = list(self.get_tasks())
 
     def handle(self):
 

@@ -1,5 +1,12 @@
 2015-12-10  Camille Scott  <camille.scott.w@gmail.com>
 
+	* Make BUSCO output dir database-specific.
+	* Add new _init_filenames() method to AnnotateHandler to
+	  better organize class and allow multiple constructors in
+	  the future.
+
+2015-12-10  Camille Scott  <camille.scott.w@gmail.com>
+
     * Update requirements to include numexpr.
 	* Change the names file to the form 
 	  <transcriptome>.dammit.names.csv, to keep in line
