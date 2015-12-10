@@ -65,6 +65,22 @@ This will spend a bit of time compiling and installing pandas and scikit-learn i
 already have a recent versions installed; the ones available in the Ubuntu 14.04 PPA are
 just too old.
 
+Known Issues
+------------
+
+* Currently, the `--full` option is a no-op; it will be reactivated in a future release.
+* There can be errors resuming runs which were interrupted on the BUSCO stage. If the task fails on
+  resume, delete the BUSCO results folder within your dammit results folder, which will have a name
+  of the form `run_<name>.busco_results`.
+* The GFF3 coordinates for the `hmmscan`/Pfam-A results are currently being reported incorrectly --
+  they are relative to the predicted ORFs, and should be relative to the transcripts. This is a
+  top-priority issue.
+* The `dependencies` subcommand doesn't search for all subdependencies; for example, BUSCO relies on
+  EMBOSS, which is not searched for. Although the installation instructions cover these
+  dependencies, users who *cough* don't read the directions *cough* might be confused that a
+  dependency is marked as installed but still doesn't work.
+
+
 Acknowledgements
 ----------------
 
