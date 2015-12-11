@@ -280,7 +280,7 @@ def get_lastal_task(query, db, out_fn, translate, cutoff, n_threads, lastal_cfg)
     if translate:
         params += ' -F' + str(lastal_cfg['frameshift'])
     if cutoff is not None:
-        cutoff = int(1.0 / cutoff)
+        cutoff = 1.0 / cutoff
         params += ' -D' + str(cutoff)
     cmd = '{exc} {params} {db} {query} > {out_fn}'.format(**locals())
 

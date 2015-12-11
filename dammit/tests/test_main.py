@@ -76,6 +76,12 @@ class TestDammit(TestCase):
             self.assertIn('prep incomplete', err)
             self.assertEquals(status, 1)
 
+    @attr('long')
+    def test_dammit_database_install_full(self):
+        with TemporaryDirectory() as td:
+            args = ['databases', '--install', '--database-dir', td]
+            status, out, err = run(args)
+
     def test_annotate_basic(self):
         with TemporaryDirectory() as td,\
              TestData('pom.single.fa', td) as transcripts:
@@ -106,6 +112,46 @@ class TestDammit(TestCase):
             outdir = os.path.join(td, 'test_out')
             args = ['annotate', transcripts, '-o', outdir]
             status, out, err = run(args)
+            fn = os.path.join(outdir, os.path.basename(transcripts))
+            self.assertTrue(os.path.isfile(fn))
+
+    def test_annotate_dbdir_fail(self):
+        with TemporaryDirectory() as td, \
+             TestData('pom.single.fa', td) as transcripts:
+
+            args = ['annotate', transcripts, '--database-dir', td]
+            status, out, err = run(args, in_directory=td, fail_ok=True)
+            self.assertIn('Install databases to continue', err)
+            self.assertEquals(status, 1)
+
+    def test_annotate_dbdir(self):
+        with TemporaryDirectory() as td,\
+             TestData('pom.single.fa', td) as transcripts:
+
+            db_dir = os.environ['DAMMIT_DB_DIR']
+            args = ['annotate', transcripts, '--database-dir', db_dir]
+            status, out, err = run(args, in_directory=td)
+
+    def test_annotate_user_databases(self):
+        with TemporaryDirectory() as td,\
+             TestData('pom.single.fa', td) as transcripts,\
+             TestData('pep.fa', td) as pep:
+
+            args = ['annotate', transcripts, '--user-databases', pep]
+            status, out, err = run(args, in_directory=td)
+
+    def test_annotate_name(self):
+        with TemporaryDirectory() as td,\
+             TestData('pom.single.fa', td) as transcripts:
+
+            args = ['annotate', transcripts, '--name', 'Test']
+            status, out, err = run(args, in_directory=td)
+            outdir = '{0}.dammit'.format(transcripts)
+            fn = os.path.join(outdir, os.path.basename(transcripts))
+            self.assertTrue(os.path.isfile(fn))
+            contents = open(fn).read()
+            self.assertIn('Test_0', contents)
+
 
 
 class TestDammitApp(TestCase):
