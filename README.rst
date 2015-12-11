@@ -1,6 +1,10 @@
 dammit!
 =======
 
+.. image:: https://badges.gitter.im/Join%20Chat.svg
+   :alt: Join the chat at https://gitter.im/camillescott/dammit
+   :target: https://gitter.im/camillescott/dammit?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
+
 *"I love writing BLAST parsers!" -- no one, ever*
 
 dammit is a simple de novo transcriptome annotator. It was born out of the
