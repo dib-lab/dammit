@@ -3,10 +3,11 @@ from unittest import TestCase
 from nose.plugins.attrib import attr
 import os
 import stat
+import pandas as pd
 
 from dammit.app import DammitApp
 from dammit import dependencies
-
+from dammit import gff
 
 from utils import TemporaryDirectory, TestData, runscript
 
@@ -42,6 +43,16 @@ def run(args, **kwargs):
 @attr('acceptance')
 class TestDammit(TestCase):
 
+    def setUp(self):
+        '''This was fun to diagnose! Because the acceptance tests are actually
+        being executed in the current namespace with eval, this global generator
+        was retaining its state between tests. Oops!
+        '''
+
+        from itertools import count
+        gff.ID_GEN = count()
+
+
     def test_dammit_version(self):
         '''Test the dammit --version command.
         '''
@@ -52,14 +63,14 @@ class TestDammit(TestCase):
         self.assertEquals(err.strip(), 'dammit {0}'.format(__version__))
 
     def test_dammit_dependencies(self):
-        '''Test the dammit dependencies subcommand.
+        '''Test the dependencies subcommand.
         '''
 
         status, out, err = run(['dependencies'])
         self.assertEquals(status, 0)
 
     def test_dammit_databases_check(self):
-        '''Test dammit database check subcommand.
+        '''Test the database check subcommand.
         '''
 
         status, out, err = run(['databases'])
@@ -78,18 +89,36 @@ class TestDammit(TestCase):
 
     @attr('long')
     def test_dammit_database_install_full(self):
+        '''Run a full database installation (very long).
+        '''
+
         with TemporaryDirectory() as td:
             args = ['databases', '--install', '--database-dir', td]
             status, out, err = run(args)
 
     def test_annotate_basic(self):
+        '''Run a basic annotation and veryify the results.
+        '''
+
         with TemporaryDirectory() as td,\
-             TestData('pom.single.fa', td) as transcripts:
+             TestData('pom.single.fa', td) as transcripts,\
+             TestData('pom.single.fa.dammit.gff3', td) as exp_gff3,\
+             TestData('pom.single.fa.dammit.fasta', td) as exp_fasta:
 
             args = ['annotate', transcripts]
             status, out, err = run(args, in_directory=td)
 
+            outdir = '{0}.dammit'.format(transcripts)
+            gff3_fn = os.path.join(outdir, 'pom.single.fa.dammit.gff3')
+            fasta_fn = os.path.join(outdir, 'pom.single.fa.dammit.fasta')
+
+            self.assertEquals(open(gff3_fn).read(), open(exp_gff3).read())
+            self.assertEquals(open(fasta_fn).read(), open(exp_fasta).read())
+
     def test_annotate_threaded(self):
+        '''Test the --n_threads argument.
+        '''
+
         with TemporaryDirectory() as td,\
              TestData('pom.single.fa', td) as transcripts:
 
@@ -98,14 +127,29 @@ class TestDammit(TestCase):
 
 
     def test_annotate_evalue(self):
-        with TemporaryDirectory() as td,\
-             TestData('pom.single.fa', td) as transcripts:
+        '''Test the --evalue argument and verify the results.
+        '''
 
-            args = ['annotate', transcripts, '--evalue', '.01']
+        with TemporaryDirectory() as td,\
+             TestData('pom.single.fa', td) as transcripts,\
+             TestData('pom.single.fa.dammit.gff3.evalue10', td) as exp_gff3,\
+             TestData('pom.single.fa.dammit.fasta.evalue10', td) as exp_fasta:
+
+            args = ['annotate', transcripts, '--evalue', '10.0']
             status, out, err = run(args, in_directory=td)
+
+            outdir = '{0}.dammit'.format(transcripts)
+            gff3_fn = os.path.join(outdir, 'pom.single.fa.dammit.gff3')
+            fasta_fn = os.path.join(outdir, 'pom.single.fa.dammit.fasta')
+
+            self.assertEquals(open(gff3_fn).read(), open(exp_gff3).read())
+            self.assertEquals(open(fasta_fn).read(), open(exp_fasta).read())
   
 
     def test_annotate_outdir(self):
+        '''Test that the --output-dir argument works.
+        '''
+
         with TemporaryDirectory() as td,\
              TestData('pom.single.fa', td) as transcripts:
 
@@ -116,6 +160,9 @@ class TestDammit(TestCase):
             self.assertTrue(os.path.isfile(fn))
 
     def test_annotate_dbdir_fail(self):
+        '''Test annotation with a faulty database directory.
+        '''
+
         with TemporaryDirectory() as td, \
              TestData('pom.single.fa', td) as transcripts:
 
@@ -125,6 +172,9 @@ class TestDammit(TestCase):
             self.assertEquals(status, 1)
 
     def test_annotate_dbdir(self):
+        '''Test that --database-dir works.
+        '''
+
         with TemporaryDirectory() as td,\
              TestData('pom.single.fa', td) as transcripts:
 
@@ -133,6 +183,9 @@ class TestDammit(TestCase):
             status, out, err = run(args, in_directory=td)
 
     def test_annotate_user_databases(self):
+        '''Test that a user database works.
+        '''
+
         with TemporaryDirectory() as td,\
              TestData('pom.single.fa', td) as transcripts,\
              TestData('pep.fa', td) as pep:
@@ -141,6 +194,9 @@ class TestDammit(TestCase):
             status, out, err = run(args, in_directory=td)
 
     def test_annotate_name(self):
+        '''Test the --name argument.
+        '''
+
         with TemporaryDirectory() as td,\
              TestData('pom.single.fa', td) as transcripts:
 

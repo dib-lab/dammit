@@ -10,7 +10,7 @@ test: FORCE
 		python setup.py nosetests --attr !acceptance,!long
 
 acceptance: FORCE
-		python setup.py nosetests --attr acceptance,!long
+		python setup.py nosetests --attr acceptance,!long -x
 
 acceptance-long: FORCE
 		python setup.py nosetests --attr acceptance,long
