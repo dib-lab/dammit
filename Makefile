@@ -7,7 +7,10 @@ install: deps
 		python setup.py install
 
 test: FORCE
-		python setup.py test
+		python setup.py nosetests --attr !acceptance
+
+acceptance: FORCE
+		python setup.py nosetests --attr acceptance
 
 publish: FORCE
 		python setup.py sdist upload

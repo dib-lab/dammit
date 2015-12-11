@@ -1,12 +1,14 @@
 from unittest import TestCase
 
+from nose.plugins.attrib import attr
 import os
 import stat
 
 from dammit.app import DammitApp
 from dammit import dependencies
 
-from utils import TemporaryDirectory
+
+from utils import TemporaryDirectory, runscript
 
 names = ['TransDecoder',
          'crb-blast',
@@ -32,6 +34,33 @@ execs = ['hmmscan',
          'crb-blast']
 
 PATH_BACKUP = os.environ['PATH']
+
+def run(args):
+    return runscript('dammit', args)
+
+
+@attr('acceptance')
+class TestDammit(TestCase):
+
+    #def run(self, args):
+    #    return runscript('dammit', args)
+
+    def test_dammit_version(self):
+        '''Test the dammit --version command.
+        '''
+
+        from dammit import __version__
+        status, out, err = run(['--version'])
+        self.assertEquals(status, 0)
+        self.assertEquals(err.strip(), 'dammit {0}'.format(__version__))
+
+    def test_dammit_dependencies(self):
+        '''Test the dammit dependencies subcommand.
+        '''
+
+        status, out, err = run(['dependencies'])
+        self.assertEquals(status, 0)
+
 
 class TestDammitApp(TestCase):
 

@@ -18,6 +18,7 @@ from dammit.tasks import print_tasks
 class DammitApp(object):
 
     def __init__(self, arg_src=sys.argv[1:]):
+        print(arg_src)
         self.logger = logging.getLogger(self.__class__.__name__)
         self.meta = '{0}\n{1} {2}'.format(common.CONFIG['meta']['description'],
                                           ', '.join(common.CONFIG['meta']['authors']),

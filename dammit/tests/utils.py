@@ -1,7 +1,11 @@
 #!/usr/bin/env python
 from __future__ import print_function
+from __future__ import absolute_import
 
-import os as _os
+import nose
+import os
+from io import StringIO
+import traceback
 import shutil
 import stat
 import sys
@@ -9,6 +13,12 @@ import warnings as _warnings
 from pkg_resources import Requirement, resource_filename, ResolutionError
 
 from tempfile import mkdtemp
+
+
+try:
+        from StringIO import StringIO
+except ImportError:
+        from io import StringIO
 
 
 def touch(filename):
@@ -19,7 +29,7 @@ def touch(filename):
     '''
 
     open(filename, 'a').close()
-    _os.chmod(filename, stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
+    os.chmod(filename, stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
 
 
 class TestData(object):
@@ -31,18 +41,18 @@ class TestData(object):
                                               "dammit/tests/test-data/"     + filename)
         except ResolutionError:
             pass
-        if not self.filepath or not _os.path.isfile(self.filepath):
-            self.filepath = _os.path.join(_os.path.dirname(__file__), 
+        if not self.filepath or not os.path.isfile(self.filepath):
+            self.filepath = os.path.join(os.path.dirname(__file__), 
                                           'test-data', filename)
         shutil.copy(self.filepath, dest_dir)
-        self.filepath = _os.path.join(dest_dir, filename)
+        self.filepath = os.path.join(dest_dir, filename)
     
     def __enter__(self):
         return self.filepath
 
     def __exit__(self, exc_type, exc_value, traceback):
         try:
-            _os.remove(self.filepath)
+            os.remove(self.filepath)
         except OSError:
             pass
         if exc_type:
@@ -52,14 +62,14 @@ class TestData(object):
 class TemporaryFile(object):
 
     def __init__(self, directory):
-        self.filepath = _os.path.join(directory, str(hash(self)))
+        self.filepath = os.path.join(directory, str(hash(self)))
 
     def __enter__(self):
         return self.filepath
 
     def __exit__(self, exc_type, exc_value, traceback):
         try:
-            _os.remove(self.filepath)
+            os.remove(self.filepath)
         except OSError:
             pass
         if exc_type:
@@ -73,12 +83,12 @@ class Move(object):
         self.target = target
    
     def __enter__(self):
-        self.cwd = _os.getcwd()
+        self.cwd = os.getcwd()
         print('cwd:', self.cwd, file=sys.stderr)
-        _os.chdir(self.target)
+        os.chdir(self.target)
 
     def __exit__(self, exc_type, exc_value, traceback):
-        _os.chdir(self.cwd)
+        os.chdir(self.cwd)
         if exc_type:
             return False
 
@@ -138,12 +148,12 @@ class TemporaryDirectory(object):
     # this class tolerant of the module nulling out process
     # that happens during CPython interpreter shutdown
     # Alas, it doesn't actually manage it. See issue #10188
-    _listdir = staticmethod(_os.listdir)
-    _path_join = staticmethod(_os.path.join)
-    _isdir = staticmethod(_os.path.isdir)
-    _islink = staticmethod(_os.path.islink)
-    _remove = staticmethod(_os.remove)
-    _rmdir = staticmethod(_os.rmdir)
+    _listdir = staticmethod(os.listdir)
+    _path_join = staticmethod(os.path.join)
+    _isdir = staticmethod(os.path.isdir)
+    _islink = staticmethod(os.path.islink)
+    _remove = staticmethod(os.remove)
+    _rmdir = staticmethod(os.rmdir)
     _warn = _warnings.warn
 
     def _rmtree(self, path):
@@ -166,3 +176,134 @@ class TemporaryDirectory(object):
             self._rmdir(path)
         except OSError:
             pass
+
+
+'''
+These script running functions were taken from the khmer project:
+https://github.com/dib-lab/khmer/blob/master/tests/khmer_tst_utils.py
+'''
+
+def scriptpath(scriptname='dammit'):
+    "Return the path to the scripts, in both dev and install situations."
+
+    # note - it doesn't matter what the scriptname is here, as long as
+    # it's some dammit script present in this version of dammit.
+
+    path = os.path.join(os.path.dirname(__file__), "../../bin")
+    if os.path.exists(os.path.join(path, scriptname)):
+        return path
+
+    path = os.path.join(os.path.dirname(__file__), "../../../EGG-INFO/bin")
+    if os.path.exists(os.path.join(path, scriptname)):
+        return path
+
+    for path in os.environ['PATH'].split(':'):
+        if os.path.exists(os.path.join(path, scriptname)):
+            return path
+
+
+def _runscript(scriptname, sandbox=False):
+    """
+    Find & run a script with exec (i.e. not via os.system or subprocess).
+    """
+
+    import pkg_resources
+    ns = {"__name__": "__main__"}
+    ns['sys'] = globals()['sys']
+
+    try:
+        pkg_resources.get_distribution("dammit").run_script(scriptname, ns)
+        return 0
+    except pkg_resources.ResolutionError as err:
+        if sandbox:
+            path = os.path.join(os.path.dirname(__file__), "../sandbox")
+        else:
+            path = scriptpath()
+
+        scriptfile = os.path.join(path, scriptname)
+        if os.path.isfile(scriptfile):
+            if os.path.isfile(scriptfile):
+                exec(compile(open(scriptfile).read(), scriptfile, 'exec'), ns)
+                return 0
+        elif sandbox:
+            raise nose.SkipTest("sandbox tests are only run in a repository.")
+
+    return -1
+
+
+def runscript(scriptname, args, in_directory=None,
+              fail_ok=False, sandbox=False):
+    """Run a Python script using exec().
+    Run the given Python script, with the given args, in the given directory,
+    using 'exec'.  Mimic proper shell functionality with argv, and capture
+    stdout and stderr.
+    When using :attr:`fail_ok`=False in tests, specify the expected error.
+    """
+    sysargs = [scriptname]
+    sysargs.extend(args)
+    cwd = os.getcwd()
+
+    try:
+        status = -1
+        oldargs = sys.argv
+        sys.argv = sysargs
+
+        oldout, olderr = sys.stdout, sys.stderr
+        sys.stdout = StringIO()
+        sys.stdout.name = "StringIO"
+        sys.stderr = StringIO()
+
+        if in_directory:
+            os.chdir(in_directory)
+        else:
+            in_directory = cwd
+
+        try:
+            print('running:', scriptname, 'in:', in_directory, file=oldout)
+            print('arguments', sysargs, file=oldout)
+
+            status = _runscript(scriptname, sandbox=sandbox)
+        except nose.SkipTest:
+            raise
+        except SystemExit as e:
+            status = e.code
+        except:
+            traceback.print_exc(file=sys.stderr)
+            status = -1
+    finally:
+        sys.argv = oldargs
+        out, err = sys.stdout.getvalue(), sys.stderr.getvalue()
+        sys.stdout, sys.stderr = oldout, olderr
+
+        os.chdir(cwd)
+
+    if status != 0 and not fail_ok:
+        print(out)
+        print(err)
+        assert False, (status, out, err)
+
+    return status, out, err
+
+
+def run_shell_cmd(cmd, fail_ok=False, in_directory=None):
+    cwd = os.getcwd()
+    if in_directory:
+        os.chdir(in_directory)
+
+    print('running: ', cmd)
+    try:
+        p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE,
+                             stderr=subprocess.PIPE)
+        (out, err) = p.communicate()
+
+        out = out.decode('utf-8')
+        err = err.decode('utf-8')
+
+        if p.returncode != 0 and not fail_ok:
+            print('out:', out)
+            print('err:', err)
+            raise AssertionError("exit code is non zero: %d" % p.returncode)
+
+        return (p.returncode, out, err)
+    finally:
+        os.chdir(cwd)

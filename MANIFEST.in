@@ -3,6 +3,7 @@ include setup.cfg
 include LICENSE
 include distribute_setup.py
 include dammit/VERSION
+recursive-include bin
 recursive-include dammit .*.json
 recursive-include dammit *.h
 recursive-include dammit *.c
