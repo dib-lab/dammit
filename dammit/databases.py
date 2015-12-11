@@ -66,6 +66,9 @@ class DatabaseHandler(object):
                 common.run_tasks(self.tasks, doit_args, config=self.doit_config)
             else:
                 common.print_header('Nothing to install', level=2)
+        else:
+            if missing:
+                sys.exit(1)
 
     def check_or_fail(self):
         missing = self.check()

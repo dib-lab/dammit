@@ -8,7 +8,7 @@ from dammit.app import DammitApp
 from dammit import dependencies
 
 
-from utils import TemporaryDirectory, runscript
+from utils import TemporaryDirectory, TestData, runscript
 
 names = ['TransDecoder',
          'crb-blast',
@@ -35,15 +35,12 @@ execs = ['hmmscan',
 
 PATH_BACKUP = os.environ['PATH']
 
-def run(args):
-    return runscript('dammit', args)
+def run(args, **kwargs):
+    return runscript('dammit', args, **kwargs)
 
 
 @attr('acceptance')
 class TestDammit(TestCase):
-
-    #def run(self, args):
-    #    return runscript('dammit', args)
 
     def test_dammit_version(self):
         '''Test the dammit --version command.
@@ -60,6 +57,55 @@ class TestDammit(TestCase):
 
         status, out, err = run(['dependencies'])
         self.assertEquals(status, 0)
+
+    def test_dammit_databases_check(self):
+        '''Test dammit database check subcommand.
+        '''
+
+        status, out, err = run(['databases'])
+        self.assertIn('All databases prepared!', err)
+
+    def test_dammit_databases_check_fail(self):
+        '''Test that the database check fails properly.
+        '''
+
+        with TemporaryDirectory() as td:
+            
+            args = ['databases', '--database-dir', td]
+            status, out, err = run(args, fail_ok=True)
+            self.assertIn('prep incomplete', err)
+            self.assertEquals(status, 1)
+
+    def test_annotate_basic(self):
+        with TemporaryDirectory() as td,\
+             TestData('pom.single.fa', td) as transcripts:
+
+            args = ['annotate', transcripts]
+            status, out, err = run(args, in_directory=td)
+
+    def test_annotate_threaded(self):
+        with TemporaryDirectory() as td,\
+             TestData('pom.single.fa', td) as transcripts:
+
+            args = ['annotate', transcripts, '--n_threads', '2']
+            status, out, err = run(args, in_directory=td)
+
+
+    def test_annotate_evalue(self):
+        with TemporaryDirectory() as td,\
+             TestData('pom.single.fa', td) as transcripts:
+
+            args = ['annotate', transcripts, '--evalue', '.01']
+            status, out, err = run(args, in_directory=td)
+  
+
+    def test_annotate_outdir(self):
+        with TemporaryDirectory() as td,\
+             TestData('pom.single.fa', td) as transcripts:
+
+            outdir = os.path.join(td, 'test_out')
+            args = ['annotate', transcripts, '-o', outdir]
+            status, out, err = run(args)
 
 
 class TestDammitApp(TestCase):
