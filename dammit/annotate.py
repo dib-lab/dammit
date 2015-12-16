@@ -17,6 +17,7 @@ from .tasks import get_transcriptome_stats_task, \
                    get_transdecoder_predict_task, \
                    get_transdecoder_orf_task, \
                    get_hmmscan_task, \
+                   get_remap_hmmer_task, \
                    get_cmscan_task, \
                    get_lastal_task, \
                    get_crb_blast_task, \
@@ -75,17 +76,18 @@ class AnnotateHandler(object):
         self.transdecoder_dir = '{0}.transdecoder_dir'.format(self.transcriptome_fn)
         self.transdecoder_orf_fn = os.path.join(self.transdecoder_dir,
                                                 'longest_orfs.pep')
+        self.transdecoder_orf_gff3_fn = os.path.join(self.transdecoder_dir,
+                                                     'longest_orfs.gff3')
         self.transdecoder_pfam_fn = '{0}.pfam.tbl'.format(self.transdecoder_orf_fn)
         self.transdecoder_pep_fn = '{0}.transdecoder.pep'.format(self.transcriptome_fn)
         self.transdecoder_gff3_fn = '{0}.transdecoder.gff3'.format(self.transcriptome_fn)
         
-        self.pfam_fn = '{0}.pfam.tbl'.format(self.transcriptome_fn)
+        self.pfam_fn = '{0}.pfam.csv'.format(self.transcriptome_fn)
         self.rfam_fn = '{0}.rfam.tbl'.format(self.transcriptome_fn)
 
         self.orthodb_fn = '{0}.x.orthodb.maf'.format(self.transcriptome_fn)
 
         self.user_pep_fn_dict = {}
-
 
 
     def handle(self):
@@ -176,6 +178,10 @@ class AnnotateHandler(object):
                                self.args.evalue,
                                self.args.n_threads, 
                                common.CONFIG['settings']['hmmer']['hmmscan'])
+
+        yield get_remap_hmmer_task(self.transdecoder_pfam_fn,
+                                   self.transdecoder_orf_gff3_fn,
+                                   self.pfam_fn)
 
         predict_cfg = common.CONFIG['settings']['transdecoder']['predict']
         yield get_transdecoder_predict_task(self.transcriptome_fn, 

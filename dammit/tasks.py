@@ -451,6 +451,35 @@ def get_transdecoder_orf_task(input_filename, transdecoder_cfg):
             'clean': [(clean_folder, [input_filename + '.transdecoder_dir'])]}
 
 
+@create_task_object
+def get_remap_hmmer_task(hmmer_filename, remap_gff_filename, output_filename):
+
+    name = 'remap_hmmer:{0}'.format(os.path.basename(hmmer_filename))
+
+    def cmd():
+        gff_df = pd.concat([group for group in
+                            parsers.parse_gff3(remap_gff_filename)])
+        hmmer_df = pd.concat([group for group in
+                              parsers.hmmscan_to_df_iter(hmmer_filename)])
+
+        merged_df = pd.merge(hmmer_df, gff_df, left_on='full_query_name', right_on='ID')
+
+        hmmer_df['env_coord_from'] = (merged_df.start + \
+                                      (3 * merged_df.env_coord_from)).astype(int)
+        hmmer_df['env_coord_to'] = (merged_df.start + \
+                                    (3 * merged_df.env_coord_to)).astype(int)
+        assert(all(hmmer_df.env_coord_to <= merged_df.end))
+
+        hmmer_df.to_csv(output_filename, header=True, index=False)
+
+    return {'name': name,
+            'title': title_with_actions,
+            'actions': [cmd],
+            'file_dep': [hmmer_filename, remap_gff_filename],
+            'targets': [output_filename],
+            'clean': [clean_targets]}
+
+
 # TransDecoder.Predict -t lamp10.fasta --retain_pfam_hits lamp10.fasta.pfam-A.out
 @create_task_object
 def get_transdecoder_predict_task(input_filename, db_filename, transdecoder_cfg):
@@ -528,7 +557,8 @@ def get_hmmscan_gff3_task(input_filename, output_filename, database):
 
     def cmd():
         with open(output_filename, 'a') as fp:
-            for group in parsers.hmmscan_to_df_iter(input_filename):
+            for group in pd.read_csv(input_filename, chunksize=10000):
+                print(group.head())
                 gff_group = gff.hmmscan_to_gff3_df(group, 'dammit.hmmscan',
                                                    database)
                 gff.write_gff3_df(gff_group, fp)

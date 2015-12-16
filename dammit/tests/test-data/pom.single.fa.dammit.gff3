@@ -1,7 +1,7 @@
 ##gff-version 3.2.1
-Transcript_0	HMMER	protein_hmm_match	1194	4092	2.1e-10	.	.	ID=homology:3;Name=DEAD:dammit.hmmscan;Target=DEAD 10 174 +;Note=DEAD/DEAH box helicase;accuracy=0.75;Dbxref="Pfam:PF00270.25"
-Transcript_0	HMMER	protein_hmm_match	1396	4548	3.2e-18	.	.	ID=homology:1;Name=Helicase_C:dammit.hmmscan;Target=Helicase_C 8 105 +;Note=Helicase conserved C-terminal domain;accuracy=0.87;Dbxref="Pfam:PF00271.27"
-Transcript_0	HMMER	protein_hmm_match	1735	5307	11000.0	.	.	ID=homology:2;Name=Helicase_C:dammit.hmmscan;Target=Helicase_C 16 34 +;Note=Helicase conserved C-terminal domain;accuracy=0.78;Dbxref="Pfam:PF00271.27"
+Transcript_0	HMMER	protein_hmm_match	3583	4093	2.1000000000000002e-10	.	.	ID=homology:3;Name=DEAD:dammit.hmmscan;Target=DEAD 10 174 +;Note=DEAD/DEAH box helicase;accuracy=0.75;Dbxref="Pfam:PF00270.25"
+Transcript_0	HMMER	protein_hmm_match	4189	4549	3.2e-18	.	.	ID=homology:1;Name=Helicase_C:dammit.hmmscan;Target=Helicase_C 8 105 +;Note=Helicase conserved C-terminal domain;accuracy=0.87;Dbxref="Pfam:PF00271.27"
+Transcript_0	HMMER	protein_hmm_match	5206	5308	11000.0	.	.	ID=homology:2;Name=Helicase_C:dammit.hmmscan;Target=Helicase_C 16 34 +;Note=Helicase conserved C-terminal domain;accuracy=0.78;Dbxref="Pfam:PF00271.27"
 Transcript_0	LAST	translated_nucleotide_match	1	5662	0.0	+	.	ID=homology:0;Name=TLH2_SCHPO:dammit.last;Target=TLH2_SCHPO 0 1887 +;database=OrthoDB
 Transcript_0	transdecoder	CDS	1	5661	.	+	.	ID=cds.Transcript_0|m.1;Parent=Transcript_0|m.1
 Transcript_0	transdecoder	exon	1	5662	.	+	.	ID=Transcript_0|m.1.exon1;Parent=Transcript_0|m.1

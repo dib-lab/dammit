@@ -1,12 +1,12 @@
 ##gff-version 3.2.1
-Transcript_0	HMMER	protein_hmm_match	1194	4092	2.1e-10	.	.	ID=homology:3;Name=DEAD:dammit.hmmscan;Target=DEAD 10 174 +;Note=DEAD/DEAH box helicase;accuracy=0.75;Dbxref="Pfam:PF00270.25"
-Transcript_0	HMMER	protein_hmm_match	1396	4548	3.2e-18	.	.	ID=homology:1;Name=Helicase_C:dammit.hmmscan;Target=Helicase_C 8 105 +;Note=Helicase conserved C-terminal domain;accuracy=0.87;Dbxref="Pfam:PF00271.27"
-Transcript_0	HMMER	protein_hmm_match	1735	5307	11000.0	.	.	ID=homology:2;Name=Helicase_C:dammit.hmmscan;Target=Helicase_C 16 34 +;Note=Helicase conserved C-terminal domain;accuracy=0.78;Dbxref="Pfam:PF00271.27"
-Transcript_0	HMMER	protein_hmm_match	1804	5463	0.067	.	.	ID=homology:5;Name=zf-CCHC:dammit.hmmscan;Target=zf-CCHC 2 17 +;Note=Zinc knuckle;accuracy=0.93;Dbxref="Pfam:PF00098.19"
-Transcript_0	HMMER	protein_hmm_match	20	75	7000.0	.	.	ID=homology:4;Name=zf-CCHC:dammit.hmmscan;Target=zf-CCHC 2 7 +;Note=Zinc knuckle;accuracy=0.85;Dbxref="Pfam:PF00098.19"
-Transcript_0	HMMER	protein_hmm_match	248	870	6800.0	.	.	ID=homology:6;Name=Poxvirus_B22R_N:dammit.hmmscan;Target=Poxvirus_B22R_N 47 68 +;Note=Poxvirus B22R protein N-terminal;accuracy=0.73;Dbxref="Pfam:PF13169.2"
-Transcript_0	HMMER	protein_hmm_match	349	1227	0.13	.	.	ID=homology:7;Name=Poxvirus_B22R_N:dammit.hmmscan;Target=Poxvirus_B22R_N 33 63 +;Note=Poxvirus B22R protein N-terminal;accuracy=0.8;Dbxref="Pfam:PF13169.2"
-Transcript_0	HMMER	protein_hmm_match	803	2514	3900.0	.	.	ID=homology:8;Name=Poxvirus_B22R_N:dammit.hmmscan;Target=Poxvirus_B22R_N 53 77 +;Note=Poxvirus B22R protein N-terminal;accuracy=0.78;Dbxref="Pfam:PF13169.2"
+Transcript_0	HMMER	protein_hmm_match	1048	1228	0.13	.	.	ID=homology:7;Name=Poxvirus_B22R_N:dammit.hmmscan;Target=Poxvirus_B22R_N 33 63 +;Note=Poxvirus B22R protein N-terminal;accuracy=0.8;Dbxref="Pfam:PF13169.2"
+Transcript_0	HMMER	protein_hmm_match	2410	2515	3900.0	.	.	ID=homology:8;Name=Poxvirus_B22R_N:dammit.hmmscan;Target=Poxvirus_B22R_N 53 77 +;Note=Poxvirus B22R protein N-terminal;accuracy=0.78;Dbxref="Pfam:PF13169.2"
+Transcript_0	HMMER	protein_hmm_match	3583	4093	2.1000000000000002e-10	.	.	ID=homology:3;Name=DEAD:dammit.hmmscan;Target=DEAD 10 174 +;Note=DEAD/DEAH box helicase;accuracy=0.75;Dbxref="Pfam:PF00270.25"
+Transcript_0	HMMER	protein_hmm_match	4189	4549	3.2e-18	.	.	ID=homology:1;Name=Helicase_C:dammit.hmmscan;Target=Helicase_C 8 105 +;Note=Helicase conserved C-terminal domain;accuracy=0.87;Dbxref="Pfam:PF00271.27"
+Transcript_0	HMMER	protein_hmm_match	5206	5308	11000.0	.	.	ID=homology:2;Name=Helicase_C:dammit.hmmscan;Target=Helicase_C 16 34 +;Note=Helicase conserved C-terminal domain;accuracy=0.78;Dbxref="Pfam:PF00271.27"
+Transcript_0	HMMER	protein_hmm_match	5413	5464	0.067	.	.	ID=homology:5;Name=zf-CCHC:dammit.hmmscan;Target=zf-CCHC 2 17 +;Note=Zinc knuckle;accuracy=0.93;Dbxref="Pfam:PF00098.19"
+Transcript_0	HMMER	protein_hmm_match	61	76	7000.0	.	.	ID=homology:4;Name=zf-CCHC:dammit.hmmscan;Target=zf-CCHC 2 7 +;Note=Zinc knuckle;accuracy=0.85;Dbxref="Pfam:PF00098.19"
+Transcript_0	HMMER	protein_hmm_match	745	871	6800.0	.	.	ID=homology:6;Name=Poxvirus_B22R_N:dammit.hmmscan;Target=Poxvirus_B22R_N 47 68 +;Note=Poxvirus B22R protein N-terminal;accuracy=0.73;Dbxref="Pfam:PF13169.2"
 Transcript_0	Infernal	RNA_sequence_secondary_structure	3799	3912	7.9	+	.	ID=homology:11;Name=SPRY4-IT1_2:dammit.cmscan;Target=SPRY4-IT1_2 1 121 +;Note=-;Dbxref="Rfam:RF02039";trunc=no;bitscore=13.6
 Transcript_0	Infernal	RNA_sequence_secondary_structure	4609	4665	8.3	+	.	ID=homology:12;Name=ceN69:dammit.cmscan;Target=ceN69 1 107 +;Note=-;Dbxref="Rfam:RF01651";trunc=no;bitscore=17.4
 Transcript_0	Infernal	RNA_sequence_secondary_structure	4992	4925	9.6	-	.	ID=homology:13;Name=SNORD75:dammit.cmscan;Target=SNORD75 1 62 +;Note=-;Dbxref="Rfam:RF00612";trunc=no;bitscore=14.1

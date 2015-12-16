@@ -31,9 +31,9 @@ def get_report_tasks(transcriptome, annotator, databases, n_threads=1):
     )
     outputs.append(orthodb_gff3)
 
-    pfam_gff3 = annotator.transdecoder_pfam_fn + '.gff3'
+    pfam_gff3 = annotator.pfam_fn + '.gff3'
     tasks.append(
-        get_hmmscan_gff3_task(annotator.transdecoder_pfam_fn,
+        get_hmmscan_gff3_task(annotator.pfam_fn,
                               pfam_gff3, 
                               'Pfam')
     )

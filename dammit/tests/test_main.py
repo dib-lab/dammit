@@ -97,7 +97,7 @@ class TestDammit(TestCase):
             status, out, err = run(args)
 
     def test_annotate_basic(self):
-        '''Run a basic annotation and veryify the results.
+        '''Run a basic annotation and verify the results.
         '''
 
         with TemporaryDirectory() as td,\

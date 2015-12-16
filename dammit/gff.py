@@ -126,9 +126,8 @@ def hmmscan_to_gff3_df(hmmscan_df, tag, database=''):
     gff3_df['source'] = ['HMMER'] * len(hmmscan_df)
     gff3_df['type'] = ['protein_hmm_match'] * len(hmmscan_df)
 
-    # This is kludgy and quite wrong
     gff3_df['start'] = hmmscan_df['env_coord_from']
-    gff3_df['end'] = hmmscan_df['env_coord_to'] * 3
+    gff3_df['end'] = hmmscan_df['env_coord_to']
 
     # Confirm whether this is the appropriate value to use
     gff3_df['score'] = hmmscan_df['domain_i_evalue']
