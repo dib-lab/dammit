@@ -31,6 +31,16 @@ def get_report_tasks(transcriptome, annotator, databases, n_threads=1):
     )
     outputs.append(orthodb_gff3)
 
+    if annotator.args.full:
+        uniref_best_hits = annotator.uniref_fn + '.best.csv'
+        uniref_gff3 = annotator.uniref_best_hits + '.gff3'
+        tasks.append(get_maf_best_hits_task(annotator.uniref_fn,
+                                            uniref_best_hits))
+        tasks.append(get_maf_gff3_task(uniref_best_hits,
+                                       uniref_gff3, 'uniref90'))
+        outputs.append(uniref_gff3)
+
+
     pfam_gff3 = annotator.pfam_fn + '.gff3'
     tasks.append(
         get_hmmscan_gff3_task(annotator.pfam_fn,

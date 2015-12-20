@@ -86,6 +86,7 @@ class AnnotateHandler(object):
         self.rfam_fn = '{0}.rfam.tbl'.format(self.transcriptome_fn)
 
         self.orthodb_fn = '{0}.x.orthodb.maf'.format(self.transcriptome_fn)
+        self.uniref_fn = '{0}.x.uniref.maf'.format(self.transctiptome_fn)
 
         self.user_pep_fn_dict = {}
 
@@ -217,6 +218,18 @@ class AnnotateHandler(object):
                                self.args.n_threads, 
                                lastal_cfg)
 
+    def uniref_task(self):
+
+        lastal_cfg = common.CONFIG['settings']['last']['lastal']
+        uniref = self.database_dict['UNIREF']
+        return get_lastal_task(self.transcriptome_fn,
+                               uniref,
+                               self.uniref_fn,
+                               True,
+                               self.args.evalue,
+                               self.args.n_threads,
+                               lastal_cfg)
+
     def user_crb_tasks(self):
         '''Run conditional recipricol best hits LAST (CRBL) against the
         user-supplied databases.
@@ -247,6 +260,8 @@ class AnnotateHandler(object):
             yield task
         yield self.cmscan_task()
         yield self.orthodb_task()
+        if self.args.full:
+            yield self.uniref_task()
         for task in self.user_crb_tasks():
             yield task
 

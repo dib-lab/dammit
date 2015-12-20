@@ -73,7 +73,9 @@ class DatabaseHandler(object):
     def check_or_fail(self):
         missing = self.check()
         if missing:
-            self.logger.error('Install databases to continue; exiting')
+            self.logger.error('Install databases to continue.')
+            common.print_header('to prepare databases, run: dammit databases'\
+                                ' --install', level=2)
             sys.exit(1)
 
     def check(self):
@@ -95,9 +97,7 @@ class DatabaseHandler(object):
         common.print_header('Database results', level=2)
 
         if missing:
-            self.logger.warning('Database prep incomplete')
-            common.print_header('to prepare databases, run: dammit databases'\
-                                ' --install', level=2)
+            self.logger.warning('Database prep incomplete...')
         else:
             self.logger.info('All databases prepared!')
 
@@ -184,14 +184,15 @@ class DatabaseHandler(object):
 
         # Get uniref90 if the user specifies
         # Ignoring this until we have working CRBL
-        if self.args.full and False:
-            UNIREF = os.path.join(common.DATABASES['uniref90']['filename'])
+        if self.args.full:
+            UNIREF = os.path.join(self.directory, 
+                                  common.DATABASES['uniref90']['filename'])
             tasks.append(
-                get_download_and_gunzip_task(common.DATABASES['uniref90']['url'], UNIREF)
+                get_download_and_gunzip_task(common.DATABASES['uniref90']['url'], 
+                                             UNIREF)
             )
             tasks.append(
-                get_blast_format_task(UNIREF, UNIREF + '.db',
-                                      common.DATABASES['uniref90']['db_type'])
+                get_lastdb_task(UNIREF, UNIREF + '.db', lastdb_cfg, True)
             )
             UNIREF += '.db'
             databases['UNIREF'] = os.path.abspath(UNIREF)
