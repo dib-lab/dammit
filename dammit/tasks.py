@@ -288,7 +288,7 @@ def get_lastal_task(query, db, out_fn, translate, cutoff, n_threads, lastal_cfg)
             'title': title_with_actions,
             'actions': [cmd],
             'targets': [out_fn],
-            'file_dep': [db + '.sds'],
+            'file_dep': [db + '.prj'],
             'clean': [clean_targets]}
 
 
@@ -556,7 +556,6 @@ def get_hmmscan_gff3_task(input_filename, output_filename, database):
     def cmd():
         with open(output_filename, 'a') as fp:
             for group in pd.read_csv(input_filename, chunksize=10000):
-                print(group.head())
                 gff_group = gff.hmmscan_to_gff3_df(group, 'dammit.hmmscan',
                                                    database)
                 gff.write_gff3_df(gff_group, fp)
