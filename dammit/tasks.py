@@ -252,9 +252,7 @@ def get_lastdb_task(db_fn, db_out_prefix, lastdb_cfg, prot=True):
     return {'name': name,
             'title': title_with_actions,
             'actions': [cmd],
-            'targets': [db_out_prefix + ext \
-                        for ext in \
-                        ['.bck', '.des', '.prj', '.sds', '.ssp', '.suf', '.tis']],
+            'targets': ['{0}.prj'.format(db_out_prefix)],
             'uptodate': [True],
             'clean': [clean_targets]}
 
