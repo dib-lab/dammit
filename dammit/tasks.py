@@ -25,7 +25,10 @@ import gff
 
 
 def task_str(task):
-    return pprint.pformat(task.__dict__)
+    return '{{ Task: {0}\n  actions: {1}\n  file_dep: {2}'\
+           '\n  task_dep: {3}\n  targets: {4} }}'.format(task.name, task.actions,
+                                                         task.file_dep, task.task_dep,
+                                                         task.targets)
 
 
 def print_tasks(tasks, logger=None, level=logging.DEBUG):
