@@ -86,7 +86,7 @@ class AnnotateHandler(object):
         self.rfam_fn = '{0}.rfam.tbl'.format(self.transcriptome_fn)
 
         self.orthodb_fn = '{0}.x.orthodb.maf'.format(self.transcriptome_fn)
-        self.uniref_fn = '{0}.x.uniref.maf'.format(self.transctiptome_fn)
+        self.uniref_fn = '{0}.x.uniref.maf'.format(self.transcriptome_fn)
 
         self.user_pep_fn_dict = {}
 
