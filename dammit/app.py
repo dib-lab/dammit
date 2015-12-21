@@ -78,6 +78,11 @@ class DammitApp(object):
                                 help='Which BUSCO group to use. Depends on'\
                                      ' the organism being annotated.'
                                 )
+            parser.add_argument('--verbosity',
+                                default=0,
+                                choices=[0,1,2],
+                                help='Verbosity level for doit tasks.'
+                                )
 
         '''
         Add the databases subcommand.
