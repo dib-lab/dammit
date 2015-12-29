@@ -52,7 +52,6 @@ class TestDammit(TestCase):
         from itertools import count
         gff.ID_GEN = count()
 
-
     def test_dammit_version(self):
         '''Test the dammit --version command.
         '''

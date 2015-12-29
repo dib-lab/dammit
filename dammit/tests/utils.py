@@ -280,7 +280,7 @@ def runscript(scriptname, args, in_directory=None,
     if status != 0 and not fail_ok:
         #print(out)
         #print(err)
-        assert False #, (status, out, err)
+        assert False, (status, out, err)
 
     return status, out, err
 
