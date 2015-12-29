@@ -26,11 +26,7 @@ class LogFormatter(logging.Formatter):
             wrapped = self.do_wrap(record.msg, pad)
             res = '\n'.join(wrapped) + '\n'
         else:
-            #pad = '{0}# '.format(' ' * (self.padding/2))
-            #wrapped = self.do_wrap(record.msg, pad)
             extra = '[{0}:{1}]'.format(record.name, record.levelname)
-            #extra = extra.rjust((self.width + len(extra)) - len(wrapped[0]))
-            #wrapped[0] = '{0}{1}'.format(wrapped[0], extra)
             res = record.msg + extra
 
         return res
@@ -54,7 +50,7 @@ class DammitLogger(object):
         self.config = { 'format': '%(asctime)s %(name)s:%(funcName)s:%(lineno)d '\
                                   '[%(levelname)s] \n%(message)s\n-----',
                         'datefmt': '%m-%d %H:%M:%S',
-                        'filename':self.log_file,
+                        'filename': self.log_file,
                         'filemode': 'a' }
 
         # By default, only log errors (to the console)
