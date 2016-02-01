@@ -25,7 +25,10 @@ import gff
 
 
 def task_str(task):
-    return pprint.pformat(task.__dict__)
+    return '{{ Task: {0}\n  actions: {1}\n  file_dep: {2}'\
+           '\n  task_dep: {3}\n  targets: {4} }}'.format(task.name, task.actions,
+                                                         task.file_dep, task.task_dep,
+                                                         task.targets)
 
 
 def print_tasks(tasks, logger=None, level=logging.DEBUG):
@@ -252,9 +255,7 @@ def get_lastdb_task(db_fn, db_out_prefix, lastdb_cfg, prot=True):
     return {'name': name,
             'title': title_with_actions,
             'actions': [cmd],
-            'targets': [db_out_prefix + ext \
-                        for ext in \
-                        ['.bck', '.des', '.prj', '.sds', '.ssp', '.suf', '.tis']],
+            'targets': ['{0}.prj'.format(db_out_prefix)],
             'uptodate': [True],
             'clean': [clean_targets]}
 
@@ -290,7 +291,7 @@ def get_lastal_task(query, db, out_fn, translate, cutoff, n_threads, lastal_cfg)
             'title': title_with_actions,
             'actions': [cmd],
             'targets': [out_fn],
-            'file_dep': [db + '.sds'],
+            'file_dep': [db + '.prj'],
             'clean': [clean_targets]}
 
 
@@ -558,7 +559,6 @@ def get_hmmscan_gff3_task(input_filename, output_filename, database):
     def cmd():
         with open(output_filename, 'a') as fp:
             for group in pd.read_csv(input_filename, chunksize=10000):
-                print(group.head())
                 gff_group = gff.hmmscan_to_gff3_df(group, 'dammit.hmmscan',
                                                    database)
                 gff.write_gff3_df(gff_group, fp)

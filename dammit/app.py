@@ -18,7 +18,6 @@ from dammit.tasks import print_tasks
 class DammitApp(object):
 
     def __init__(self, arg_src=sys.argv[1:]):
-        print(arg_src)
         self.logger = logging.getLogger(self.__class__.__name__)
         self.meta = '{0}\n{1} {2}'.format(common.CONFIG['meta']['description'],
                                           ', '.join(common.CONFIG['meta']['authors']),
@@ -77,6 +76,11 @@ class DammitApp(object):
                                          'arthropoda'],
                                 help='Which BUSCO group to use. Depends on'\
                                      ' the organism being annotated.'
+                                )
+            parser.add_argument('--verbosity',
+                                default=0,
+                                choices=[0,1,2],
+                                help='Verbosity level for doit tasks.'
                                 )
 
         '''

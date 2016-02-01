@@ -40,7 +40,7 @@ class DatabaseHandler(object):
         self.doit_config = {
                             'reporter': LogReporter(self.logger),
                             'backend': common.DOIT_BACKEND,
-                            'verbosity': common.DOIT_VERBOSITY,
+                            'verbosity': self.args.verbosity,
                             'continue': True,
                             'dep_file': os.path.join(self.directory, 'databases.doit.db')
                            }
