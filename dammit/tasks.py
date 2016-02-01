@@ -466,7 +466,7 @@ def get_remap_hmmer_task(hmmer_filename, remap_gff_filename, output_filename):
 
         hmmer_df['env_coord_from'] = (merged_df.start + \
                                       (3 * merged_df.env_coord_from)).astype(int)
-        hmmer_df['env_coord_to'] = (merged_df.start + \
+        hmmer_df['env_coord_to'] = (1 + merged_df.start + \
                                     (3 * merged_df.env_coord_to)).astype(int)
         assert(all(hmmer_df.env_coord_to <= merged_df.end))
 
