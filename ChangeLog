@@ -1,3 +1,7 @@
+2016-02-01  Camille Scott  <camille.scott.w@gmail.com>
+
+	* Temporarily fix a coordinate translation error.
+
 2015-12-15  Camille Scott  <camille.scott.w@gmail.com>
 
 	* Remap hmmscan coordinates with respect to the
