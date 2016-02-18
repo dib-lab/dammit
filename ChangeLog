@@ -1,3 +1,8 @@
+2015-02-17  Camille Scott  <camille.scott.w@gmail.com>
+
+	* Refactor DependencyHandler to allow adding additional dependencies.
+	* Add a version check for LAST.
+
 2016-02-01  Camille Scott  <camille.scott.w@gmail.com>
 
 	* Temporarily fix a coordinate translation error.
