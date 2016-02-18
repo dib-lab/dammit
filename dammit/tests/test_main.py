@@ -208,13 +208,6 @@ class TestDammit(TestCase):
             self.assertIn('Test_0', contents)
 
 
-
-class TestDammitApp(TestCase):
-
-    def test_main_module(self):
-        pass
-        
-
 class TestDependencies(TestCase):
 
     @classmethod
@@ -238,28 +231,27 @@ class TestDependencies(TestCase):
         print('Added execs:', os.environ['PATH'])
         print('dir:', os.listdir(tempdir))
 
-    def test_check_system_path_nodeps(self):
-        '''Test check_system_path when the dependencies aren't on the PATH.
+    def test_check_default_deps_nodeps(self):
+        '''Test run_checks() when the dependencies aren't on the PATH.
         '''
 
         os.environ['PATH'] = ''
         handler = dependencies.DependencyHandler()
-        deps = handler.check_system_path()
-        for name, stat in deps.iteritems():
+        for name, stat, msg in handler.run_checks():
             self.assertIn(name, names)
             self.assertFalse(stat)
 
     def test_check_system_path_alldeps(self):
-        '''Test check_system_path when the dependencies are on the PATH.
+        '''Test run_checks() when the dependencies are on the PATH.
         '''
         handler = dependencies.DependencyHandler()
         with TemporaryDirectory() as tempdir:
             TestDependencies.add_execs_to_path(tempdir)
 
-            deps = handler.check_system_path()
-            for name, stat in deps.iteritems():
+            for name, stat, msg in handler.run_checks():
                 self.assertIn(name, names)
-                self.assertTrue(stat, msg=name)
+                if name != 'LAST':
+                    self.assertTrue(stat, msg=name + ' ' + msg)
     
     def test_handle_nodeps(self):
         os.environ['PATH'] = ''
@@ -274,7 +266,7 @@ class TestDependencies(TestCase):
         with TemporaryDirectory() as tempdir:
             TestDependencies.add_execs_to_path(tempdir)
             missing = handler.handle()
-            self.assertEquals(missing, [])
+            self.assertEquals(missing, ['LAST'])
 
 class TestDatabases(TestCase):
 

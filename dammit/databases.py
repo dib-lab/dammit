@@ -116,11 +116,6 @@ class DatabaseHandler(object):
         
         User-supplied databases are downloaded separately.
 
-        Args:
-            self.directory (str): Directory where the databases will be stored.
-            busco_db (str): The BUSCO group to use.
-            full (bool): Whether to do a full run and get UNIREF90 as well.
-
         Returns:
             dict: A dictionary of the final database paths.
             list: A list of the doit tasks.
