@@ -144,8 +144,7 @@ def check_last(logger):
         return False, 'Not found on $PATH'
     else:
         try:
-            version_string = subprocess.check_output(['lastal', '--version'],
-                                                     shell=True)
+            version_string = subprocess.check_output(['lastal', '--version'])
         except subprocess.CalledProcessError as e:
             return False, '[{0}] {1}'.format(e.returncode, e.output)
         except OSError as e:
