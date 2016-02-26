@@ -6,6 +6,8 @@ import os
 from platform import system
 import sys
 
+from doit.task import Task
+
 from . import common
 from .log import LogReporter
 #from .crbl import CRBL
@@ -61,7 +63,7 @@ class AnnotateHandler(object):
         else:
             out_dir = self.args.output_dir
         self.directory = os.path.abspath(out_dir)
-        
+
         self.stats_fn = self.transcriptome_fn + '.stats.json'
 
         self.busco_basename = '{0}.{1}.busco.results'.format(self.transcriptome_fn,
@@ -70,7 +72,7 @@ class AnnotateHandler(object):
         busco_summary_fn = 'short_summary_{0}'.format(self.transcriptome_fn)
         self.busco_summary_fn = os.path.join(self.busco_dir,
                                              busco_summary_fn)
-        
+
         self.translated_fn = '{0}.pep'.format(self.transcriptome_fn)
 
         self.transdecoder_dir = '{0}.transdecoder_dir'.format(self.transcriptome_fn)
@@ -81,7 +83,7 @@ class AnnotateHandler(object):
         self.transdecoder_pfam_fn = '{0}.pfam.tbl'.format(self.transdecoder_orf_fn)
         self.transdecoder_pep_fn = '{0}.transdecoder.pep'.format(self.transcriptome_fn)
         self.transdecoder_gff3_fn = '{0}.transdecoder.gff3'.format(self.transcriptome_fn)
-        
+
         self.pfam_fn = '{0}.pfam.csv'.format(self.transcriptome_fn)
         self.rfam_fn = '{0}.rfam.tbl'.format(self.transcriptome_fn)
 
@@ -117,8 +119,8 @@ class AnnotateHandler(object):
                 os.makedirs(self.directory)
             os.chdir(self.directory)
 
-            common.run_tasks(self.tasks, 
-                             doit_args, 
+            common.run_tasks(self.tasks,
+                             doit_args,
                              config=self.doit_config)
         finally:
             self.logger.debug('chdir: {0}'.format(cwd))
@@ -137,20 +139,20 @@ class AnnotateHandler(object):
         assess completeness. These tasks are grouped under the 'assess' task.
         '''
 
-        return get_transcriptome_stats_task(self.transcriptome_fn, 
+        return get_transcriptome_stats_task(self.transcriptome_fn,
                                             self.stats_fn)
-   
+
     def busco_task(self):
         '''BUSCO assesses completeness using a series of curated databases of core
         conserved genes.
         '''
 
         busco_cfg = common.CONFIG['settings']['busco']
-        return get_busco_task(self.transcriptome_fn, 
-                              self.busco_basename, 
+        return get_busco_task(self.transcriptome_fn,
+                              self.busco_basename,
                               self.database_dict['BUSCO'],
-                              'trans', 
-                              self.args.n_threads, 
+                              'trans',
+                              self.args.n_threads,
                               busco_cfg)
 
     def transeq_task(self):
@@ -170,14 +172,14 @@ class AnnotateHandler(object):
 
 
         orf_cfg = common.CONFIG['settings']['transdecoder']['longorfs']
-        yield get_transdecoder_orf_task(self.transcriptome_fn, 
+        yield get_transdecoder_orf_task(self.transcriptome_fn,
                                         orf_cfg)
 
-        yield get_hmmscan_task(self.transdecoder_orf_fn, 
+        yield get_hmmscan_task(self.transdecoder_orf_fn,
                                self.transdecoder_pfam_fn,
-                               self.database_dict['PFAM'], 
+                               self.database_dict['PFAM'],
                                self.args.evalue,
-                               self.args.n_threads, 
+                               self.args.n_threads,
                                common.CONFIG['settings']['hmmer']['hmmscan'])
 
         yield get_remap_hmmer_task(self.transdecoder_pfam_fn,
@@ -185,7 +187,7 @@ class AnnotateHandler(object):
                                    self.pfam_fn)
 
         predict_cfg = common.CONFIG['settings']['transdecoder']['predict']
-        yield get_transdecoder_predict_task(self.transcriptome_fn, 
+        yield get_transdecoder_predict_task(self.transcriptome_fn,
                                             self.transdecoder_pfam_fn,
                                             predict_cfg)
 
@@ -196,26 +198,26 @@ class AnnotateHandler(object):
         '''
 
         cmscan_cfg = common.CONFIG['settings']['infernal']['cmscan']
-        return get_cmscan_task(self.transcriptome_fn, 
+        return get_cmscan_task(self.transcriptome_fn,
                                self.rfam_fn,
-                               self.database_dict['RFAM'], 
+                               self.database_dict['RFAM'],
                                self.args.evalue,
-                               self.args.n_threads, 
+                               self.args.n_threads,
                                cmscan_cfg)
 
     def orthodb_task(self):
         '''Run LAST to get homologies with OrthoDB. We use LAST here because
         it is much faster than BLAST+, and OrthoDB is pretty huge.
         '''
-        
+
         lastal_cfg = common.CONFIG['settings']['last']['lastal']
         orthodb = self.database_dict['ORTHODB']
-        return get_lastal_task(self.transcriptome_fn, 
-                               orthodb, 
-                               self.orthodb_fn, 
+        return get_lastal_task(self.transcriptome_fn,
+                               orthodb,
+                               self.orthodb_fn,
                                True,
                                self.args.evalue,
-                               self.args.n_threads, 
+                               self.args.n_threads,
                                lastal_cfg)
 
     def uniref_task(self):
@@ -243,11 +245,11 @@ class AnnotateHandler(object):
 
             fn = '{0}.x.{1}.crbb.tsv'.format(self.transcriptome_fn, key)
             self.user_pep_fn_dict[key] = fn
-            yield get_crb_blast_task(self.transcriptome_fn, 
-                                     key, 
-                                     fn, 
+            yield get_crb_blast_task(self.transcriptome_fn,
+                                     key,
+                                     fn,
                                      self.args.evalue,
-                                     crb_blast_cfg, 
+                                     crb_blast_cfg,
                                      self.args.n_threads)
 
     def get_tasks(self):
@@ -265,10 +267,9 @@ class AnnotateHandler(object):
         for task in self.user_crb_tasks():
             yield task
 
-        self.outputs, report_tasks = get_report_tasks(self.transcriptome_fn, 
+        self.outputs, report_tasks = get_report_tasks(self.transcriptome_fn,
                                                       self,
                                                       self.database_dict,
                                                       n_threads=self.args.n_threads)
         for task in report_tasks:
             yield task
-
