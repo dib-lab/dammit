@@ -6,8 +6,8 @@ class BaseParser(object):
 class ChunkParser(BaseParser):
 
     def __init__(self, filename, chunksize=10000):
-        super(BaseParser, self).__init__(filename)
         self.chunksize = chunksize
+        super(ChunkParser, self).__init__(filename)
 
     def __iter__(self):
         raise NotImplementedError()

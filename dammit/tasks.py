@@ -299,11 +299,11 @@ def get_lastal_task(query, db, out_fn, translate, cutoff, n_threads, lastal_cfg)
 def get_maf_best_hits_task(maf_fn, output_fn):
 
     hits_mgr = BestHits()
-    from fileio.af import MafParser
+    from .fileio import maf
 
     def cmd():
         df = pd.concat([group for group in
-                        MafParser(maf_fn)])
+                        maf.MafParser(maf_fn)])
         df = hits_mgr.best_hits(df)
         df.to_csv(output_fn, index=False)
 

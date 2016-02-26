@@ -5,9 +5,9 @@ from .base import ChunkParser
 class MafParser(ChunkParser):
 
     def __init__(self, *args, **kwargs):
-        super(ChunkParser, self).__init__(*args, **kwargs)
         self.LAMBDA = None
         self.K = None
+        super(MafParser, self).__init__(*args, **kwargs)
 
     def __iter__(self):
         '''Iterator yielding DataFrames of length chunksize holding MAF alignments.
@@ -21,6 +21,7 @@ class MafParser(ChunkParser):
         Yields:
             DataFrame: Pandas DataFrame with the alignments.
         '''
+        data = []
         with open(self.filename) as fp:
             while (True):
                 try:
@@ -65,14 +66,14 @@ class MafParser(ChunkParser):
                     cur_aln['q_len'] = int(tokens[5])
 
                     data.append(cur_aln)
-                    if len(data) >= chunksize:
+                    if len(data) >= self.chunksize:
                         if self.LAMBDA is None:
                             raise Exception("old version of lastal; please update")
-                        yield _build_df(data)
+                        yield self._build_df(data)
                         data = []
 
         if data:
-            yield _build_df(data)
+            yield self._build_df(data)
 
     def _build_df(self, data):
 
