@@ -255,7 +255,7 @@ class AnnotateHandler(object):
         yield self.rename_task()
         yield self.stats_task()
         yield self.busco_task()
-        yield self.transeq_task()
+        #yield self.transeq_task()
         for task in self.transdecoder_tasks():
             yield task
         yield self.cmscan_task()

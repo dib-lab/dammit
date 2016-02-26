@@ -1,3 +1,8 @@
+2015-02-25  Camille Scott  <camille.scott.w@gmail.com>
+
+	* Add missing acceptance test data.
+	* Remove test transeq task, which isn't tested for.
+
 2015-02-17  Camille Scott  <camille.scott.w@gmail.com>
 
 	* Refactor DependencyHandler to allow adding additional dependencies.
