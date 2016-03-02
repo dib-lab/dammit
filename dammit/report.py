@@ -18,7 +18,6 @@ def get_report_tasks(transcriptome, annotator, databases, n_threads=1):
     tasks = []
     outputs = []
 
-
     orthodb_best_hits = annotator.orthodb_fn + '.best.csv'
     orthodb_gff3 = annotator.orthodb_fn + '.gff3'
     tasks.append(
@@ -44,7 +43,7 @@ def get_report_tasks(transcriptome, annotator, databases, n_threads=1):
     pfam_gff3 = annotator.pfam_fn + '.gff3'
     tasks.append(
         get_hmmscan_gff3_task(annotator.pfam_fn,
-                              pfam_gff3, 
+                              pfam_gff3,
                               'Pfam')
     )
     outputs.append(pfam_gff3)
@@ -52,7 +51,7 @@ def get_report_tasks(transcriptome, annotator, databases, n_threads=1):
     rfam_gff3 = annotator.rfam_fn + '.gff3'
     tasks.append(
         get_cmscan_gff3_task(annotator.rfam_fn,
-                             rfam_gff3, 
+                             rfam_gff3,
                              'Rfam')
     )
     outputs.append(rfam_gff3)
@@ -66,18 +65,13 @@ def get_report_tasks(transcriptome, annotator, databases, n_threads=1):
 
     outputs.append(annotator.transdecoder_gff3_fn)
 
-    merged_gff3 = transcriptome + '.dammit.gff3'
     tasks.append(
-        get_gff3_merge_task(outputs, merged_gff3)
+        get_gff3_merge_task(outputs, annotator.final_gff3_fn)
     )
-    outputs.append(merged_gff3)
 
-    renamed_transcriptome = transcriptome + '.dammit.fasta'
     tasks.append(
-        get_annotate_fasta_task(transcriptome, merged_gff3,
-                                renamed_transcriptome)
+        get_annotate_fasta_task(transcriptome, annotator.final_gff3_fn,
+                                annotator.final_fasta_fn)
     )
-    outputs.append(renamed_transcriptome)
 
-    return outputs, tasks
-
+    return tasks

@@ -12,7 +12,7 @@ from . import common
 from .log import LogReporter
 #from .crbl import CRBL
 from .report import get_report_tasks
-from .tasks import get_transcriptome_stats_task, \
+from .tasks import get_summary_task, \
                    get_busco_task, \
                    get_group_task, \
                    get_link_file_task, \
@@ -64,12 +64,13 @@ class AnnotateHandler(object):
             out_dir = self.args.output_dir
         self.directory = os.path.abspath(out_dir)
 
-        self.stats_fn = self.transcriptome_fn + '.stats.json'
+        #self.stats_fn = self.transcriptome_fn + '.stats.json'
+        self.summary_fn = 'dammit.summary.json'
 
         self.busco_basename = '{0}.{1}.busco.results'.format(self.transcriptome_fn,
                                                              self.args.busco_group)
         self.busco_dir = 'run_{0}'.format(self.busco_basename)
-        busco_summary_fn = 'short_summary_{0}'.format(self.transcriptome_fn)
+        busco_summary_fn = 'short_summary_{0}'.format(self.busco_basename)
         self.busco_summary_fn = os.path.join(self.busco_dir,
                                              busco_summary_fn)
 
@@ -89,6 +90,9 @@ class AnnotateHandler(object):
 
         self.orthodb_fn = '{0}.x.orthodb.maf'.format(self.transcriptome_fn)
         self.uniref_fn = '{0}.x.uniref.maf'.format(self.transcriptome_fn)
+
+        self.final_gff3_fn = '{0}.dammit.gff3'.format(self.transcriptome_fn)
+        self.final_fasta_fn = '{0}.dammit.fasta'.format(self.transcriptome_fn)
 
         self.user_pep_fn_dict = {}
 
@@ -131,16 +135,6 @@ class AnnotateHandler(object):
                                              self.transcriptome_fn,
                                              self.names_fn,
                                              self.args.name)
-
-    def stats_task(self):
-        '''Calculate assembly information. First it runs some basic stats like N50 and
-        number of contigs, and uses the HyperLogLog counter from khmer to
-        estimate unique k-mers for checking redundancy. Then it runs BUSCO to
-        assess completeness. These tasks are grouped under the 'assess' task.
-        '''
-
-        return get_transcriptome_stats_task(self.transcriptome_fn,
-                                            self.stats_fn)
 
     def busco_task(self):
         '''BUSCO assesses completeness using a series of curated databases of core
@@ -252,10 +246,24 @@ class AnnotateHandler(object):
                                      crb_blast_cfg,
                                      self.args.n_threads)
 
+    def summary_task(self):
+        '''Calculate assembly information. First it runs some basic stats like N50 and
+        number of contigs, and uses the HyperLogLog counter from khmer to
+        estimate unique k-mers for checking redundancy. Then it runs BUSCO to
+        assess completeness. These tasks are grouped under the 'assess' task.
+        '''
+
+        return get_summary_task(self.final_fasta_fn,
+                                self.names_fn,
+                                self.directory,
+                                self.final_gff3_fn,
+                                self.busco_summary_fn,
+                                self.summary_fn)
+
     def get_tasks(self):
 
         yield self.rename_task()
-        yield self.stats_task()
+        #yield self.stats_task()
         yield self.busco_task()
         #yield self.transeq_task()
         for task in self.transdecoder_tasks():
@@ -267,9 +275,10 @@ class AnnotateHandler(object):
         for task in self.user_crb_tasks():
             yield task
 
-        self.outputs, report_tasks = get_report_tasks(self.transcriptome_fn,
-                                                      self,
-                                                      self.database_dict,
-                                                      n_threads=self.args.n_threads)
+        report_tasks = get_report_tasks(self.transcriptome_fn,
+                                        self,
+                                        self.database_dict,
+                                        n_threads=self.args.n_threads)
         for task in report_tasks:
             yield task
+        yield self.summary_task()
