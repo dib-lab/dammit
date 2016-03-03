@@ -26,6 +26,7 @@ from .tasks import get_summary_task, \
                    get_sanitize_fasta_task, \
                    get_rename_transcriptome_task, \
                    get_transeq_task, \
+                   get_create_zodb_task, \
                    print_tasks
 
 logger = logging.getLogger(__name__)
@@ -64,9 +65,6 @@ class AnnotateHandler(object):
             out_dir = self.args.output_dir
         self.directory = os.path.abspath(out_dir)
 
-        #self.stats_fn = self.transcriptome_fn + '.stats.json'
-        self.summary_fn = 'dammit.summary.json'
-
         self.busco_basename = '{0}.{1}.busco.results'.format(self.transcriptome_fn,
                                                              self.args.busco_group)
         self.busco_dir = 'run_{0}'.format(self.busco_basename)
@@ -93,6 +91,9 @@ class AnnotateHandler(object):
 
         self.final_gff3_fn = '{0}.dammit.gff3'.format(self.transcriptome_fn)
         self.final_fasta_fn = '{0}.dammit.fasta'.format(self.transcriptome_fn)
+        self.final_transcript_fn = '{0}.dammit.json'.format(self.transcriptome_fn)
+        self.summary_fn = common.CONFIG['settings']['summary_filename']
+        self.database_fn = common.CONFIG['settings']['database_filename']
 
         self.user_pep_fn_dict = {}
 
@@ -260,6 +261,9 @@ class AnnotateHandler(object):
                                 self.busco_summary_fn,
                                 self.summary_fn)
 
+    def create_zodb_task(self):
+        return get_create_zodb_task(self.final_gff3_fn, self.database_fn)
+
     def get_tasks(self):
 
         yield self.rename_task()
@@ -282,3 +286,4 @@ class AnnotateHandler(object):
         for task in report_tasks:
             yield task
         yield self.summary_task()
+        yield self.create_zodb_task()
