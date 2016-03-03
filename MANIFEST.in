@@ -5,3 +5,7 @@ include distribute_setup.py
 include dammit/VERSION
 include bin/dammit
 recursive-include dammit .*.json
+recursive-include dammit/viewer/templates *.html
+recursive-include dammit/viewer/templates *.js
+recursive-include dammit/viewer/static *.css
+recursive-include dammit/viewer/static *.js
