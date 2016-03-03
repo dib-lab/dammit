@@ -1,0 +1,286 @@
+/* Classes for the demo's controls */
+#demo-controls {
+  padding: 10px;
+}
+
+.control-item {
+  padding: 5px;
+}
+
+/* Render the chart as cleanly as possible */
+#circularchart {
+    shape-rendering: geometricPrecision;
+}
+
+/* Text on the demo */
+.mini text {
+    font: 9px sans-serif;
+}
+
+.main text {
+    font: 12px sans-serif;
+}
+
+/* Definitions for the plot resize dragger, and
+   resizing shadow */
+.dragbar-line {
+    stroke-width: 1;
+    stroke: lightgrey;
+    pointer-events: inherit;
+}
+
+.dragbar-shadow {
+    stroke-width: 1;
+    stroke: lightgrey;
+    fill: transparent;
+}
+
+/* Style for the plot move arrow if active */
+.move-cross {
+    stroke-width: 1;
+    stroke: lightgrey;
+    fill: lightgrey;
+    cursor:move;
+}
+
+.move-shadow {
+    cursor:move !important;
+}
+
+/* For resizing the linear chart */
+#linearchart {
+    cursor: -webkit-grab; cursor: -moz-grab;
+}
+
+#linearchart:active {
+    cursor: -webkit-grabbing; cursor: -moz-grabbing;
+}
+
+.mainTrack {
+    cursor: pointer;
+    cursor: hand;
+}
+
+/* Definitions for first stranded track, colour, stroke */
+."dammit.HMMER"_pos {
+    fill: darksalmon;
+    stroke: #d1876d;
+    stroke-opacity: 0.8;
+    stroke-width: 1;
+}
+
+."dammit.HMMER"_neg {
+    fill: #FFCC00;
+    fill-opacity: .7;
+    /*stroke-width: 1;
+    stroke: #4c602a;*/
+}
+
+/* In a linear track if an intergenic
+   region is defined, give it a colour */
+."dammit.HMMER"_none {
+    fill: #cccccc;
+    fill-opacity: .7;
+    stroke-width: 1;
+}
+
+/* And we want to show the user as they hover
+   over a track, change the colour */
+."dammit.HMMER"_pos:hover {
+    fill: red;
+    stroke-width: 1;
+    stroke: 1;
+}
+
+."dammit.HMMER"_neg:hover {
+    fill: red;
+    fill-opacity: .9;
+    stroke-width: 1;
+    stroke: red;
+}
+
+/* In a linear track, if there are regulatory
+   elements such as transcription factors and
+   terminators, give them a colour for the stroke */
+."dammit.HMMER"_arrow_pos, ."dammit.HMMER"_arrow_neg, ."dammit.LAST"_arrow {
+    stroke-width: 1;
+    stroke: black;
+}
+
+/* Labels on the linear track */
+."dammit.HMMER"_text {
+    fill: white;
+    font-weight: bold;
+    font: 12px arial;
+}
+
+/* Track 2 is also a stranded track, give it
+   a different set of colours */
+.transdecoder_pos {
+    fill: #000099;
+    fill-opacity: .7;
+}
+
+/* When a linear track is zoomed to the point
+   it's text is visible an extra class is added
+   to the element we can hook in to */
+.transdecoder_pos_zoomed {
+    stroke-width: 1px;
+    stroke: #647381;
+}
+
+.transdecoder_neg {
+    fill: #006600;
+    fill-opacity: .7;
+}
+
+.transdecoder_neg_zoomed {
+    stroke-width: 1px;
+    stroke: #007300;
+    stroke-opacity: 0.7;
+}
+
+.transdecoder_text {
+    fill: white;
+    font-weight: bold;
+    font: 12px arial;
+}
+
+/* Track 3 is a non-stranded track, so no _pos
+   and _neg modifiers on the classes */
+.dammit\.LAST {
+    fill: #3399FF;
+    fill-opacity: .7;
+}
+
+.dammit\.LAST:hover {
+    fill: blue;
+    fill-opacity: .9;
+}
+
+.dammit\.LAST_text {
+    fill: white;
+    font-weight: bold;
+    font: 12px arial;
+}
+
+/* The GC Plot type track, give the stroke a colour */
+.gcplot {
+    stroke: black;
+}
+
+/* Track 5 is the glyphs, classes of a concatenation
+   of the track name and the type of glyph in the track */
+.track5_vfdb {
+    fill: #663300;
+}
+
+.track5_adb {
+    fill: #FF9933;
+}
+
+/* Give a colour to the glyph track's stroke */
+.gapTrack {
+    stroke: grey;
+}
+
+/* Set the stroke width of the axis lines */
+.trackAxis .domain {
+    stroke-width: 1;
+}
+
+/* In a linear track, we need to set the
+   colours for the drag brush */
+.brush .background {
+    stroke: black;
+    stroke-width: 2;
+    fill: slategray;
+    fill-opacity: .3;
+}
+
+.brush .extent {
+    stroke: gray;
+    fill: dodgerblue;
+    fill-opacity: .365;
+}
+
+/* In a circular plot if there's a
+   drag brush for zoomed region, define the
+   colours and style */
+.polarbrush {
+    fill: lightgrey;
+    opacity: 0.5;
+}
+
+/* In the circular plot, the circular end points
+   for the drag brush */
+.brushEnd {
+    fill: "red";
+}
+
+.brushStart {
+    fill: "green";
+}
+
+/* If we need to set an element to hidden, give
+   ourselves a class */
+.linear_hidden {
+	visibility: hidden;
+}
+
+/* For regulatory elements in a linear plot,
+   define the colours and stroke for the lollipop
+   head (terminator site) */
+.lollipophead {
+  stroke:#000000;
+  stroke-opacity: 1;
+  fill: none;
+}
+
+.lollipopstemstart {
+  fill:none;
+  stroke:#000000;
+  stroke-width: 1px;
+  stroke-linecap:butt;
+  stroke-linejoin:miter;
+  stroke-dasharray: 5,5;
+}
+
+.lollipopstemend {
+  fill:none;
+  stroke:#000000;
+  stroke-width: 1px;
+  stroke-linecap:butt;
+  stroke-linejoin:miter;
+}
+
+/* For our tooltips, how should we display them? */
+.d3-tip {
+  line-height: 1;
+  font: 12px arial;
+  font-weight: bold;
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  border-radius: 2px;
+}
+
+/* Creates a small triangle extender for the tooltip */
+.d3-tip:after {
+  box-sizing: border-box;
+  display: inline;
+  font-size: 10px;
+  width: 100%;
+  line-height: 1;
+  color: rgba(0, 0, 0, 0.8);
+  content: "\25BC";
+  position: absolute;
+  text-align: center;
+}
+
+/* Style northward tooltips differently */
+.d3-tip.n:after {
+  margin: -1px 0 0 0;
+  top: 100%;
+  left: 0;
+}

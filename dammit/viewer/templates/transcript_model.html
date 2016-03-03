@@ -1,0 +1,114 @@
+<div id="plotbody">
+  <!-- The container that will hold the SVG of the plot -->
+  <div id="circularchart"></div>
+</div>
+
+<script type="text/javascript"
+        src="{{ url_for('static', filename='rgbcolor.js') }}"></script>
+<script type="text/javascript"
+        src="{{ url_for('static', filename='canvg.js') }}"></script>
+<script type="text/javascript"
+        src="{{ url_for('static', filename='FileSaver.js') }}"></script>
+
+<!-- Circular plot library -->
+<script type="text/javascript"
+        src="{{ url_for('static', filename='circularplot.js') }}"></script>
+
+<!-- Initialization code to initialize the plot, this is what you would write
+     and place in your application. -->
+<script type="text/javascript">
+
+// Sample routines to initialize the plot for rendering
+// and add some basic functionality.
+
+// Initialize the defaults for the chart such as
+// the genome size, the div container to put the
+// SVG object in, what function to call during a
+// double click and the initial chart size.
+
+d3.json("{{ url_for('transcript_pane.tracks', transcript='Transcript_0') }}", function(error, result) {
+
+    var genomesize = result.data.length;
+    var circularlayout = {genomesize: genomesize,
+                  spacing: 100,
+                  container: "#circularchart",
+                  dblclick: "doubleClick",
+                          w: 550, h: 550
+            };
+
+    // The actual initialization call which takes two
+    // parameters, the layout (above) for the plot and
+    // the dataset to visualize (from data.js, a json
+    // data structure)
+    var cTrack = new circularTrack(circularlayout, result.data.tracks);
+
+    // If we're showing both a circular and linear chart,
+    // and have a linear brush, attach it (see combo plot demo)
+    if('undefined' !== typeof linearTrack) {
+        console.log("Attaching linear track");
+        cTrack.attachBrush(linearTrack);
+        cTrack.showBrush();
+    }
+
+    if('undefined' !== typeof brush) {
+        console.log("Attaching linear track brush");
+        cTrack.attachBrush(brush);
+    }
+
+    // Now some callbacks to make the interactive functionality work.
+
+    // Attached to the onchange callback for the GC Plot checkbox,
+    // call the plot to add/remove the GC Plot as needed
+    function saveImage() {
+        cTrack.savePlot(4.0, "islandviewer.png", "tracks.css", 'png');
+    }
+
+    // Demo of the hover over timer, we had to
+    // do it this way to get around IE <9 not supporting
+    // parameters to the function called by setTimeout()
+    //
+    // If you have over an island, the console log will
+    // display the callback parameters when the timer expires
+    //
+    // The callback for hover (along with click) are defined in
+    // the data definition for each track in the dataset (data.js)
+    var timer;
+    var d_callback;
+    function islandPopup(d) {
+        d_callback = d;
+        timer = setTimeout(function() {console.log(d_callback);}, 1000);
+    }
+
+    function islandPopupClear(d) {
+        clearTimeout(timer);
+    }
+
+    // Callback defined at the top of this file, for
+    // double clicks on the plot
+    function doubleClick(plotid, bp) {
+        // If we have an attached linear plot, we're going
+        // to refocus the zoomed area, otherwise we'll just
+        // alert the user that a double click happened
+        if('undefined' !== typeof linearTrack) {
+            var halfBP = (cTrack.brushEndBP - cTrack.brushStartBP) /2;
+
+        var newStart = Math.max(0, (bp - halfBP));
+        var newEnd = Math.min(genomesize, (bp + halfBP));
+
+            console.log("Moving zoom area to: " + newStart + ", " + newEnd);
+            cTrack.moveBrushbyBP(newStart,
+                                 newEnd);
+            linearTrack.update(newStart, newEnd);
+        } else {
+          alert("Double click! From " + plotid + " at " + bp + " bp" )
+          console.log("double click!");
+          console.log(plotid);
+          console.log(bp);
+
+        }
+    }
+})
+</script>
+<div id="demo-controls">
+  <div class="control-item"><button name="saveImage" onclick="saveImage(); return false">Save Image</button></div>
+</div>

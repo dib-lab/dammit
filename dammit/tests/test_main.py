@@ -80,7 +80,7 @@ class TestDammit(TestCase):
         '''
 
         with TemporaryDirectory() as td:
-            
+
             args = ['databases', '--database-dir', td]
             status, out, err = run(args, fail_ok=True)
             self.assertIn('prep incomplete', err)
@@ -143,7 +143,7 @@ class TestDammit(TestCase):
 
             self.assertEquals(open(gff3_fn).read(), open(exp_gff3).read())
             self.assertEquals(open(fasta_fn).read(), open(exp_fasta).read())
-  
+
 
     def test_annotate_outdir(self):
         '''Test that the --output-dir argument works.
@@ -177,9 +177,12 @@ class TestDammit(TestCase):
         with TemporaryDirectory() as td,\
              TestData('pom.single.fa', td) as transcripts:
 
-            db_dir = os.environ['DAMMIT_DB_DIR']
-            args = ['annotate', transcripts, '--database-dir', db_dir]
-            status, out, err = run(args, in_directory=td)
+            try:
+                db_dir = os.environ['DAMMIT_DB_DIR']
+                args = ['annotate', transcripts, '--database-dir', db_dir]
+                status, out, err = run(args, in_directory=td)
+            except KeyError:
+                pass
 
     def test_annotate_user_databases(self):
         '''Test that a user database works.
@@ -252,7 +255,7 @@ class TestDependencies(TestCase):
                 self.assertIn(name, names)
                 if name != 'LAST':
                     self.assertTrue(stat, msg=name + ' ' + msg)
-    
+
     def test_handle_nodeps(self):
         os.environ['PATH'] = ''
         handler = dependencies.DependencyHandler()
@@ -273,6 +276,3 @@ class TestDatabases(TestCase):
     @classmethod
     def setup_class(cls):
         cls.db_dir = 'test_db_dir'
-
-
-            

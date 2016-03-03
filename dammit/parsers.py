@@ -6,41 +6,41 @@ import pandas as pd
 
 from blast import remap_blast_coords_df as remap_blast
 
-blast_cols = [('qseqid', str), 
-              ('sseqid', str), 
-              ('pident', float), 
-              ('length', int), 
-              ('mismatch', int), 
+blast_cols = [('qseqid', str),
+              ('sseqid', str),
+              ('pident', float),
+              ('length', int),
+              ('mismatch', int),
               ('gapopen', int),
-              ('qstart', int), 
-              ('qend', int), 
-              ('sstart', int), 
-              ('send', int), 
-              ('evalue', float), 
+              ('qstart', int),
+              ('qend', int),
+              ('sstart', int),
+              ('send', int),
+              ('evalue', float),
               ('bitscore', float)]
 
-hmmscan_cols = [('target_name', str), 
-                ('target_accession', str), 
+hmmscan_cols = [('target_name', str),
+                ('target_accession', str),
                 ('tlen', int),
-                ('query_name', str), 
-                ('query_accession', str), 
+                ('query_name', str),
+                ('query_accession', str),
                 ('query_len', int),
-                ('full_evalue', float), 
-                ('full_score', float), 
-                ('full_bias', float), 
-                ('domain_num', int), 
-                ('domain_total', int), 
-                ('domain_c_evalue', float), 
+                ('full_evalue', float),
+                ('full_score', float),
+                ('full_bias', float),
+                ('domain_num', int),
+                ('domain_total', int),
+                ('domain_c_evalue', float),
                 ('domain_i_evalue', float),
-                ('domain_score', float), 
-                ('domain_bias', float), 
-                ('hmm_coord_from', int), 
-                ('hmm_coord_to', int), 
-                ('ali_coord_from', int), 
-                ('ali_coord_to', int), 
-                ('env_coord_from', int), 
-                ('env_coord_to', int), 
-                ('accuracy', float), 
+                ('domain_score', float),
+                ('domain_bias', float),
+                ('hmm_coord_from', int),
+                ('hmm_coord_to', int),
+                ('ali_coord_from', int),
+                ('ali_coord_to', int),
+                ('env_coord_from', int),
+                ('env_coord_to', int),
+                ('accuracy', float),
                 ('description', str)]
 
 cmscan_cols = [('target_name', str),
@@ -52,8 +52,8 @@ cmscan_cols = [('target_name', str),
                ('mdl_to', int),
                ('seq_from', int),
                ('seq_to', int),
-               ('strand', str), 
-               ('trunc', str), 
+               ('strand', str),
+               ('trunc', str),
                ('pass', str),
                ('gc', float),
                ('bias', float),
@@ -62,10 +62,10 @@ cmscan_cols = [('target_name', str),
                ('inc', str),
                ('description', str)]
 
-gff3_transdecoder_cols = [('seqid', str), 
-                          ('feature_type', str), 
-                          ('start', int), 
-                          ('end', int), 
+gff3_transdecoder_cols = [('seqid', str),
+                          ('feature_type', str),
+                          ('start', int),
+                          ('end', int),
                           ('strand', str)]
 
 gff_cols = [('seqid', str),
@@ -214,7 +214,7 @@ def parse_gff3(fn, chunksize=10000):
 
 
     # Read everything into a DataFrame
-    for group in  pd.read_table(fn, delimiter='\t', comment='#', 
+    for group in  pd.read_table(fn, delimiter='\t', comment='#',
                                 names=[k for k,_ in gff_cols], na_values='.',
                                 converters={'attributes': attr_col_func},
                                 chunksize=chunksize, header=None,
@@ -225,7 +225,7 @@ def parse_gff3(fn, chunksize=10000):
                           pd.DataFrame(list(group.attributes)),
                           left_index=True, right_index=True)
         del gtf_df['attributes']
-    
+
         # Switch from [start, end] to [start, end)
         gtf_df.end = gtf_df.end + 1
         #convert_dtypes(gtf_df, dict(gff_cols))
@@ -262,37 +262,6 @@ def crb_to_df_iter(fn, chunksize=10000, remap=False):
         if remap:
             remap_blast(group)
         yield group
-
-
-def parse_busco(fn):
-    '''Parse a single BUSCO summary file to a dictionary.
-
-    Args:
-        fn (str): The results file.
-    Returns:
-        dict: The parsed results.
-    '''
-
-    res = {}
-    with open(fn) as fp:
-        for ln in fp:
-            if ln.strip().startswith('C:'):
-                tokens = ln.split(',')
-                for token in tokens:
-                    key, _, val = token.partition(':')
-                    key = key.strip()
-                    val = val.strip().strip('%')
-                    if key == 'C':
-                        valc, _, vald = val.partition('%')
-                        valc = valc.strip()
-                        vald = vald.strip('D:][%')
-                        res['C(%)'] = valc
-                        res['D(%)'] = vald
-                    else:
-                        if key != 'n':
-                           key += '(%)'
-                        res[key] = val.strip().strip('%')
-    return res
 
 
 def busco_to_df(fn_list, dbs=['metazoa', 'vertebrata']):
@@ -407,7 +376,7 @@ def gff3_transdecoder_to_df_iter(fn, chunksize=10000):
         df = pd.DataFrame(data, columns=[k for k, _ in gff3_transdecoder_cols])
         convert_dtype(df, dict(gff3_transdecoder_cols))
         return df
-    
+
     data = []
     with open(fn) as fp:
         for ln in fp:
@@ -426,86 +395,3 @@ def gff3_transdecoder_to_df_iter(fn, chunksize=10000):
 
     if data:
         yield build_df(data)
-
-
-def maf_to_df_iter(fn, chunksize=10000):
-    '''Iterator yielding DataFrames of length chunksize holding MAF alignments.
-
-    An extra column is added for bitscore, using the equation described here:
-        http://last.cbrc.jp/doc/last-evalues.html
-
-    Args:
-        fn (str): Path to the MAF alignment file.
-        chunksize (int): Alignments to parse per iteration.
-    Yields:
-        DataFrame: Pandas DataFrame with the alignments.
-    '''
-
-    def fix_sname(name):
-        new, _, _ = name.partition(',')
-        return new
-
-    def build_df(data, LAMBDA, K):
-        df = pd.DataFrame(data)
-        df['s_name'] = df['s_name'].apply(fix_sname)
-        setattr(df, 'LAMBDA', LAMBDA)
-        setattr(df, 'K', K)
-        df['bitscore'] = (LAMBDA * df['score'] - np.log(K)) / np.log(2)
-        return df
-
-    data = []
-    LAMBDA = None
-    K = None
-    with open(fn) as fp:
-        while (True):
-            try:
-                line = fp.next().strip()
-            except StopIteration:
-                break
-            if not line:
-                continue
-            if line.startswith('#'):
-                if 'lambda' in line:
-                    meta = line.strip(' #').split()
-                    meta = {k:v for k, _, v in map(lambda x: x.partition('='), meta)}
-                    LAMBDA = float(meta['lambda'])
-                    K = float(meta['K'])
-                else:
-                    continue
-            if line.startswith('a'):
-                cur_aln = {}
-
-                # Alignment info
-                tokens = line.split()
-                for token in tokens[1:]:
-                    key, _, val = token.strip().partition('=')
-                    cur_aln[key] = float(val)
-                
-                # First sequence info
-                line = fp.next()
-                tokens = line.split()
-                cur_aln['s_name'] = tokens[1]
-                cur_aln['s_start'] = int(tokens[2])
-                cur_aln['s_aln_len'] = int(tokens[3])
-                cur_aln['s_strand'] = tokens[4]
-                cur_aln['s_len'] = int(tokens[5])
-                
-                # First sequence info
-                line = fp.next()
-                tokens = line.split()
-                cur_aln['q_name'] = tokens[1]
-                cur_aln['q_start'] = int(tokens[2])
-                cur_aln['q_aln_len'] = int(tokens[3])
-                cur_aln['q_strand'] = tokens[4]
-                cur_aln['q_len'] = int(tokens[5])
-
-                data.append(cur_aln)
-                if len(data) >= chunksize:
-                    if LAMBDA is None:
-                        raise Exception("old version of lastal; please update")
-                    yield build_df(data, LAMBDA, K)
-                    data = []
-
-    if data:
-        yield build_df(data, LAMBDA, K)
-    

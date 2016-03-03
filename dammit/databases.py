@@ -10,6 +10,7 @@ from doit.dependency import Dependency, SqliteDB
 from . import common
 from .log import LogReporter
 from .tasks import get_download_and_gunzip_task, \
+                   get_download_task, \
                    get_hmmpress_task, \
                    get_cmpress_task, \
                    get_download_and_untar_task, \
@@ -31,7 +32,7 @@ class DatabaseHandler(object):
             except KeyError:
                 self.logger.debug('no DAMMIT_DB_DIR or --database-dir, using'\
                                   ' default')
-                directory = os.path.join(common.get_dammit_dir(), 
+                directory = os.path.join(common.get_dammit_dir(),
                                          common.CONFIG['settings']['db_dir'])
         else:
             directory = args.database_dir
@@ -59,7 +60,7 @@ class DatabaseHandler(object):
 
         missing = self.check()
         print_tasks(self.tasks, logger=self.logger)
-        
+
         if self.args.install:
             if missing:
                 common.print_header('Installing databases', level=2)
@@ -104,8 +105,8 @@ class DatabaseHandler(object):
         return missing
 
     def get_tasks(self):
-        '''Generate tasks for installing the bundled databases. 
-        
+        '''Generate tasks for installing the bundled databases.
+
         These tasks download the databases, unpack them, and format them for use.
         Current bundled databases are:
 
@@ -113,7 +114,7 @@ class DatabaseHandler(object):
             * Rfam (RNA models)
             * OrthoDB8 (conserved ortholog groups)
             * uniref90 (protiens, if --full selected)
-        
+
         User-supplied databases are downloaded separately.
 
         Returns:
@@ -170,20 +171,28 @@ class DatabaseHandler(object):
         BUSCO = os.path.join(self.directory, 'buscodb')
         tasks.append(
             # That top-level path is given to the download task:
-            get_download_and_untar_task(common.DATABASES['busco'][self.args.busco_group]['url'], 
+            get_download_and_untar_task(common.DATABASES['busco'][self.args.busco_group]['url'],
                                         BUSCO,
                                         label=self.args.busco_group)
         )
         # The untarred arhive has a folder named after the group:
         databases['BUSCO'] = os.path.abspath(os.path.join(BUSCO, self.args.busco_group))
 
+        NCBI_TAXA = os.path.join(self.directory,
+                                 common.DATABASES['ncbi.tax']['filename'])
+        tasks.append(
+            get_download_task(common.DATABASES['ncbi.tax']['url'],
+                              NCBI_TAXA)
+        )
+        databases['NCBI_TAXA'] = os.path.abspath(NCBI_TAXA)
+
         # Get uniref90 if the user specifies
         # Ignoring this until we have working CRBL
         if self.args.full:
-            UNIREF = os.path.join(self.directory, 
+            UNIREF = os.path.join(self.directory,
                                   common.DATABASES['uniref90']['filename'])
             tasks.append(
-                get_download_and_gunzip_task(common.DATABASES['uniref90']['url'], 
+                get_download_and_gunzip_task(common.DATABASES['uniref90']['url'],
                                              UNIREF)
             )
             tasks.append(
@@ -193,4 +202,3 @@ class DatabaseHandler(object):
             databases['UNIREF'] = os.path.abspath(UNIREF)
 
         return databases, tasks
-

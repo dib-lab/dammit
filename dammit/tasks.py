@@ -71,10 +71,10 @@ def get_group_task(group_name, tasks):
 
 
 @create_task_object
-def get_download_task(url, target_fn, label='default'):
+def get_download_task(url, target_fn):
 
     cmd = 'curl -o {target_fn} {url}'.format(**locals())
-    name = '_'.join(['download_gunzip', target_fn, label])
+    name = 'download_' + os.path.basename(target_fn)
 
     return {'title': title_with_actions,
             'name': name,
@@ -150,7 +150,7 @@ def get_sanitize_fasta_task(input_fn, output_fn):
 
 
 @create_task_object
-def get_rename_transcriptome_task(transcriptome_fn, output_fn, names_fn, 
+def get_rename_transcriptome_task(transcriptome_fn, output_fn, names_fn,
                                   transcript_basename, split_regex=None):
 
     import re
@@ -184,7 +184,7 @@ def get_rename_transcriptome_task(transcriptome_fn, output_fn, names_fn,
             'actions': [fix],
             'targets': [output_fn, names_fn],
             'file_dep': [transcriptome_fn],
-            'clean': [clean_targets]} 
+            'clean': [clean_targets]}
 
 
 @create_task_object
@@ -242,7 +242,7 @@ def get_lastdb_task(db_fn, db_out_prefix, lastdb_cfg, prot=True):
     Returns:
         dict: A pydoit task.
     '''
-    
+
     exc = which('lastdb')
     params = lastdb_cfg['params']
     if prot:
@@ -299,10 +299,11 @@ def get_lastal_task(query, db, out_fn, translate, cutoff, n_threads, lastal_cfg)
 def get_maf_best_hits_task(maf_fn, output_fn):
 
     hits_mgr = BestHits()
+    from .fileio import maf
 
     def cmd():
         df = pd.concat([group for group in
-                        parsers.maf_to_df_iter(maf_fn)])
+                        maf.MafParser(maf_fn)])
         df = hits_mgr.best_hits(df)
         df.to_csv(output_fn, index=False)
 
@@ -347,13 +348,15 @@ def get_cat_task(file_list, target_fn):
 @create_task_object
 def get_busco_task(input_filename, output_name, busco_db_dir, input_type,
                    n_threads, busco_cfg):
-    
+
     name = 'busco:' + os.path.basename(input_filename) + '-' + os.path.basename(busco_db_dir)
 
     assert input_type in ['genome', 'OGS', 'trans']
     exc = which('BUSCO_v1.1b1.py')
     # BUSCO chokes on file paths as output names
     output_name = os.path.basename(output_name)
+    summary_fn = os.path.join('run_{0}'.format(output_name),
+                              'short_summary_{0}'.format(output_name))
 
     cmd = 'python3 {exc} -in {input_filename} -f -o {output_name} -l {busco_db_dir} '\
             '-m {input_type} -c {n_threads}'.format(**locals())
@@ -361,6 +364,7 @@ def get_busco_task(input_filename, output_name, busco_db_dir, input_type,
     return {'name': name,
             'title': title_with_actions,
             'actions': [cmd],
+            'targets': [summary_fn],
             'file_dep': [input_filename],
             'uptodate': [run_once],
             'clean': [(clean_folder, ['run_' + output_name])]}
@@ -381,12 +385,12 @@ def get_cmpress_task(db_filename, infernal_cfg):
 
 
 @create_task_object
-def get_cmscan_task(input_filename, output_filename, db_filename, 
+def get_cmscan_task(input_filename, output_filename, db_filename,
                     cutoff, n_threads, infernal_cfg):
-    
+
     name = 'cmscan:' + os.path.basename(input_filename) + '.x.' + \
            os.path.basename(db_filename)
-    
+
     exc = which('cmscan')
     cmd = '{exc} --cpu {n_threads} --rfam --nohmmonly -E {cutoff}'\
           ' --tblout {output_filename} {db_filename} {input_filename}'\
@@ -402,7 +406,7 @@ def get_cmscan_task(input_filename, output_filename, db_filename,
 
 @create_task_object
 def get_hmmpress_task(db_filename, hmmer_cfg):
-    
+
     name = 'hmmpress:' + os.path.basename(db_filename)
     exc = which('hmmpress')
     cmd = '{exc} {db_filename}'.format(**locals())
@@ -416,12 +420,12 @@ def get_hmmpress_task(db_filename, hmmer_cfg):
 
 
 @create_task_object
-def get_hmmscan_task(input_filename, output_filename, db_filename, 
+def get_hmmscan_task(input_filename, output_filename, db_filename,
                      cutoff, n_threads, hmmer_cfg):
 
     name = 'hmmscan:' + os.path.basename(input_filename) + '.x.' + \
                 os.path.basename(db_filename)
-    
+
     exc = which('hmmscan')
     stat = output_filename + '.out'
     cmd = '{exc} --cpu {n_threads} --domtblout {output_filename} -E {cutoff}'\
@@ -491,34 +495,34 @@ def get_transdecoder_predict_task(input_filename, db_filename, transdecoder_cfg)
     exc = which('TransDecoder.Predict')
     cmd = '{exc} -t {input_filename} --retain_pfam_hits {db_filename} \
             --retain_long_orfs {orf_cutoff}'.format(**locals())
-    
+
     return {'name': name,
             'title': title_with_actions,
             'actions': [cmd],
-            'file_dep': [input_filename, 
+            'file_dep': [input_filename,
                          input_filename + '.transdecoder_dir/longest_orfs.pep',
                          db_filename],
             'targets': [input_filename + '.transdecoder' + ext \
                         for ext in ['.bed', '.cds', '.pep', '.gff3', '.mRNA']],
-            'clean': [clean_targets, 
+            'clean': [clean_targets,
                      (clean_folder, [input_filename + '.transdecoder_dir'])]}
 
 
 @create_task_object
 def get_maf_gff3_task(input_filename, output_filename, database):
 
+    from .fileio import maf
     name = 'maf-gff3:' + os.path.basename(output_filename)
 
     def cmd():
         if input_filename.endswith('.csv') or input_filename.endswith('.tsv'):
             it = pd.read_csv(input_filename, chunksize=10000)
         else:
-            it = parsers.maf_to_df_iter(input_filename)
+            it = maf.MafParser(input_filename).__iter__()
 
         with open(output_filename, 'a') as fp:
             for group in it:
-                gff_group = gff.maf_to_gff3_df(group, 'dammit.last', 
-                                               database)
+                gff_group = gff.maf_to_gff3_df(group, database=database)
                 gff.write_gff3_df(gff_group, fp)
 
     return {'name': name,
@@ -539,7 +543,7 @@ def get_crb_gff3_task(input_filename, output_filename, database):
         with open(output_filename, 'a') as fp:
             for group in parsers.crb_to_df_iter(input_filename,
                                                 remap=True):
-                gff_group = gff.crb_to_gff3_df(group, 'dammit.crbb', database)
+                gff_group = gff.crb_to_gff3_df(group, database=database)
                 gff.write_gff3_df(gff_group, fp)
 
     return {'name': name,
@@ -559,8 +563,7 @@ def get_hmmscan_gff3_task(input_filename, output_filename, database):
     def cmd():
         with open(output_filename, 'a') as fp:
             for group in pd.read_csv(input_filename, chunksize=10000):
-                gff_group = gff.hmmscan_to_gff3_df(group, 'dammit.hmmscan',
-                                                   database)
+                gff_group = gff.hmmscan_to_gff3_df(group, database=database)
                 gff.write_gff3_df(gff_group, fp)
 
     return {'name': name,
@@ -580,8 +583,7 @@ def get_cmscan_gff3_task(input_filename, output_filename, database):
     def cmd():
         with open(output_filename, 'a') as fp:
             for group in parsers.cmscan_to_df_iter(input_filename):
-                gff_group = gff.cmscan_to_gff3_df(group, 'dammit.cmscan',
-                                                  database)
+                gff_group = gff.cmscan_to_gff3_df(group, database=database)
                 gff.write_gff3_df(gff_group, fp)
 
     return {'name': name,
@@ -609,16 +611,33 @@ def get_gff3_merge_task(gff3_filenames, output_filename):
             'targets': [output_filename],
             'clean': [clean_targets]}
 
+'''
+@create_task_object
+def get_json_task(gff3_fn, fasta_fn, output_fn):
+
+    import json
+
+    def create_json():
+        annotations = pd.concat(parsers.parse_gff3(gff3_fn))
+
+        with open(output_fn, 'wb') as fp:
+            fp.write('{\n')
+            for record in ReadParser(fasta_fn):
+                short_name, _, _ = record.name.split()[0]
+                annots = annotations.query('seqid == "{0}"'.format(short_name))
+'''
+
 
 @create_task_object
 def get_annotate_fasta_task(transcriptome_fn, gff3_fn, output_fn):
-    
+
     name = 'fasta-annotate:{0}'.format(output_fn)
 
     def annotate_fasta():
         annotations = pd.concat([g for g in \
                                  parsers.parse_gff3(gff3_fn)])
         with open(output_fn, 'wb') as fp:
+
             for n, record in enumerate(ReadParser(transcriptome_fn)):
                 df = annotations.query('seqid == "{0}"'.format(record.name))
                 annots = ['len={0}'.format(len(record.sequence))]
@@ -630,8 +649,8 @@ def get_annotate_fasta_task(transcriptome_fn, gff3_fn, output_fn):
                                         'protein_hmm_match',
                                         'RNA_sequence_secondary_structure']:
 
-                        collapsed = ','.join(['{}:{}-{}'.format(row.Name.split(':dammit')[0], 
-                                                                 int(row.start), 
+                        collapsed = ','.join(['{}:{}-{}'.format(row.Name.split(':dammit')[0],
+                                                                 int(row.start),
                                                                  int(row.end)) \
                                         for _, row in fgroup.iterrows()])
                         if feature_type == 'translated_nucleotide_match':
@@ -643,9 +662,9 @@ def get_annotate_fasta_task(transcriptome_fn, gff3_fn, output_fn):
                         annots.append('{0}={1}'.format(key, collapsed))
 
                     elif feature_type in ['exon', 'CDS', 'gene',
-                                          'five_prime_UTR', 'three_prime_UTR', 
+                                          'five_prime_UTR', 'three_prime_UTR',
                                           'mRNA']:
-                        
+
                         collapsed = ','.join(['{}-{}'.format(int(row.start),
                                                              int(row.end)) \
                                         for _, row in fgroup.iterrows()])
@@ -664,29 +683,33 @@ def get_annotate_fasta_task(transcriptome_fn, gff3_fn, output_fn):
 
 
 @create_task_object
-def get_transcriptome_stats_task(transcriptome, output_fn):
+def get_summary_task(transcriptome, name_map_fn, work_dir, final_gff3_fn,
+                     busco_summary_fn, output_fn, transcript_info_fn):
 
-    name = 'transcriptome_stats:' + os.path.basename(transcriptome)
+    name = 'json_summary:' + os.path.basename(transcriptome)
     K = 25
-    
+
     def parse(fn):
         hll = HLLCounter(.01, K)
         lens = []
         names = []
+        annots = []
         gc_len = 0
         for contig in ReadParser(fn):
             lens.append(len(contig.sequence))
-            names.append(contig.name)
+            name, _, annot = contig.name.partition(' ')
+            names.append(name)
+            annots.append(annot)
             hll.consume_string(contig.sequence)
             gc_len += contig.sequence.count('C')
             gc_len += contig.sequence.count('G')
-        S = pd.Series(lens, index=names)
+        df = pd.DataFrame({'length': lens, 'annotations': annots}, index=names)
         try:
-            S.sort_values()
+            df.sort_values('length', inplace=True)
         except AttributeError:
-            S.sort()
-        gc_perc = float(gc_len) / S.sum()
-        return S, hll.estimate_cardinality(), gc_perc
+            df.sort('length', inplace=True)
+        gc_perc = float(gc_len) / df['length'].sum()
+        return df, hll.estimate_cardinality(), gc_perc
 
     def calc_NX(lens, X):
         N = lens.sum()
@@ -703,34 +726,93 @@ def get_transcriptome_stats_task(transcriptome, output_fn):
                 break
         return NXlen, NXpos
 
-    def cmd():
-        lens, uniq_kmers, gc_perc = parse(transcriptome)
-        
-        exp_kmers = (lens - (K+1)).sum()
+    def stats():
+        len_df, uniq_kmers, gc_perc = parse(transcriptome)
+
+        exp_kmers = (len_df['length'] - (K+1)).sum()
         redundancy = float(exp_kmers - uniq_kmers) / exp_kmers
         if redundancy < 0:
             redundancy = 0.0
 
-        N50len, N50pos = calc_NX(lens, 50)
-        stats = {'N': len(lens),
-                 'sum': lens.sum(),
-                 'min': lens.min(),
-                 'max': lens.max(),
-                 'med': lens.median(),
-                 'mean': lens.mean(),
+        N50len, N50pos = calc_NX(len_df['length'], 50)
+        data = {'N': len(len_df),
+                 'sum': len_df['length'].sum(),
+                 'min': len_df['length'].min(),
+                 'max': len_df['length'].max(),
+                 'med': len_df['length'].median(),
+                 'mean': len_df['length'].mean(),
                  'N50len': N50len,
                  'N50pos': N50pos,
                  '25_mers': exp_kmers,
                  '25_mers_unique': uniq_kmers,
                  'redundancy': redundancy,
                  'GCperc': gc_perc}
-        
+        return len_df, data
+
+    def cmd():
+        len_df, stats_summary = stats()
+        name_map_df = pd.read_csv(name_map_fn)
+        busco_summary = parsers.parse_busco_summary(busco_summary_fn)
+        transcript_df = pd.merge(name_map_df, len_df,
+                                 left_on='renamed',
+                                 right_index=True).rename(columns={'renamed': 'seqid'})
+
+
+        run_summary = {'work_dir': work_dir,
+                       'fasta': transcriptome,
+                       'gff3': final_gff3_fn,
+                       'busco': busco_summary,
+                       'stats': stats_summary}
+        #
+        transcript_df.to_csv(transcript_info_fn)
+
         with open(output_fn, 'wb') as fp:
-            json.dump(stats, fp, indent=4)
+            json.dump(run_summary, fp, indent=4)
 
     return {'name': name,
             'title': title_with_actions,
             'actions': [(cmd, [])],
-            'file_dep': [transcriptome],
-            'targets': [output_fn],
+            'file_dep': [transcriptome,
+                         name_map_fn,
+                         final_gff3_fn,
+                         busco_summary_fn],
+            'targets': [output_fn, transcript_info_fn],
+            'clean': [clean_targets]}
+
+
+@create_task_object
+def get_create_zodb_task(gff3_fn, transcript_info_fn, database_fn):
+    from ZODB import FileStorage, DB
+    from flask.ext.zodb import Dict as zdict
+    import transaction
+
+    name = 'create-zodb:' + os.path.basename(database_fn)
+
+    def cmd():
+        db = DB(FileStorage.FileStorage(database_fn))
+        con = db.open()
+        root = con.root()
+
+        root['transcripts'] =  zdict()
+
+        def func(row):
+            root['transcripts'][row.seqid] = zdict()
+            root['transcripts'][row.seqid]['length'] = row.length
+            root['transcripts'][row.seqid]['short_annot'] = row.annotations
+            transaction.commit()
+        transcript_df = pd.read_csv(transcript_info_fn).apply(func, axis=1)
+
+        gff3_df = pd.concat(parsers.parse_gff3(gff3_fn))
+        for transcript, group in gff3_df.groupby('seqid'):
+            root['transcripts'][transcript]['annotations'] = group
+            transaction.commit()
+
+        con.close()
+
+    return {'name': name,
+            'title': title_with_actions,
+            'actions': ['rm -f {0}'.format(database_fn),
+                        cmd],
+            'file_dep': [gff3_fn, transcript_info_fn],
+            'targets': [database_fn],
             'clean': [clean_targets]}

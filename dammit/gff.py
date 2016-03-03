@@ -28,11 +28,12 @@ def write_gff3_df(df, fp):
               index=False, header=False, quoting=csv.QUOTE_NONE)
 
 
-def maf_to_gff3_df(maf_df, tag, database=''):
+def maf_to_gff3_df(maf_df, tag='', database=''):
 
     gff3_df = pd.DataFrame()
     gff3_df['seqid'] = maf_df['q_name']
-    gff3_df['source'] = ['LAST'] * len(maf_df)
+    source = '{0}.LAST'.format(tag) if tag else 'LAST'
+    gff3_df['source'] = [source] * len(maf_df)
     gff3_df['type'] = ['translated_nucleotide_match'] * len(maf_df)
     gff3_df['start'] = maf_df['q_start'] + 1
     gff3_df['end'] = maf_df['q_start'] + maf_df['q_aln_len'] + 1
@@ -43,7 +44,7 @@ def maf_to_gff3_df(maf_df, tag, database=''):
     def build_attr(row):
         data = []
         data.append('ID=homology:{0}'.format(next(ID_GEN)))
-        data.append('Name={0}:{1}'.format(row.s_name, tag))
+        data.append('Name={0}'.format(row.s_name))
         data.append('Target={0} {1} {2} {3}'.format(row.s_name, row.s_start,
                                                  row.s_start + row.s_aln_len,
                                                  row.s_strand))
@@ -53,49 +54,16 @@ def maf_to_gff3_df(maf_df, tag, database=''):
         return ';'.join(data)
 
     gff3_df['attributes'] = maf_df.apply(build_attr, axis=1)
-    
+
     return gff3_df
 
 
-def blast_to_gff3_df(blast_df, prog, RBH=False, database=''):
-
-    assert prog in ['BLASTX', 'TBLASTN', 'BLASTP']
-
-    gff3_df = pd.DataFrame()
-    gff3_df['seqid'] = blast_df['qseqid']
-    gff3_df['source'] = [prog] * len(blast_df)
-
-    ftype = 'protein_match'
-    if prog in ['BLASTX', 'TBLASTN']:
-        ftype = 'translated_nucleotide_match'
-    gff3_df['type'] = [ftype] * len(blast_df)
-
-    gff3_df['start'] = blast_df['qstart'] + 1
-    gff3_df['end'] = blast_df['qend']
-    gff3_df['score'] = blast_df['evalue']
-    gff3_df['strand'] = blast_df['qstrand']
-    gff3_df['phase'] = ['.'] * len(blast_df)
-
-    def build_attr(row):
-        data = []
-        data.append('ID=homology:{0}'.format(next(ID_GEN)))
-        data.append('Name={0}:{1}'.format(row.sseqid, tag))
-        data.append('Target={0} {1} {2} {3}'.format(row.sseqid, row.sstart,
-                                                    row.send, row.sstrand))
-        if database:
-            data.append('database={0}'.format(database))
-
-        return ';'.join(data)
-
-    gff3_df['attributes'] = blast_df.apply(build_attr, axis=1)
-    return gff3_df
-
-
-def crb_to_gff3_df(crb_df, tag, database=''):
+def crb_to_gff3_df(crb_df, tag='', database=''):
 
     gff3_df = pd.DataFrame()
     gff3_df['seqid'] = crb_df['query']
-    gff3_df['source'] = ['crb-blast'] * len(crb_df)
+    source = '{0}.crb-blast'.format(tag) if tag else 'crb-blast'
+    gff3_df['source'] = [source] * len(crb_df)
     gff3_df['type'] = ['translated_nucleotide_match'] * len(crb_df)
     gff3_df['start'] = crb_df['qstart'] + 1
     gff3_df['end'] = crb_df['qend']
@@ -106,7 +74,7 @@ def crb_to_gff3_df(crb_df, tag, database=''):
     def build_attr(row):
         data = []
         data.append('ID=homology:{0}'.format(next(ID_GEN)))
-        data.append('Name={0}:{1}'.format(row.subject, tag))
+        data.append('Name={0}'.format(row.subject))
         data.append('Target={0} {1} {2} {3}'.format(row.subject, row.sstart,
                                                     row.send, row.sstrand))
 
@@ -119,11 +87,12 @@ def crb_to_gff3_df(crb_df, tag, database=''):
     return gff3_df
 
 
-def hmmscan_to_gff3_df(hmmscan_df, tag, database=''):
-    
+def hmmscan_to_gff3_df(hmmscan_df, tag='', database=''):
+
     gff3_df = pd.DataFrame()
     gff3_df['seqid'] = hmmscan_df['query_name']
-    gff3_df['source'] = ['HMMER'] * len(hmmscan_df)
+    source = '{0}.HMMER'.format(tag) if tag else 'HMMER'
+    gff3_df['source'] = [source] * len(hmmscan_df)
     gff3_df['type'] = ['protein_hmm_match'] * len(hmmscan_df)
 
     gff3_df['start'] = hmmscan_df['env_coord_from']
@@ -133,11 +102,11 @@ def hmmscan_to_gff3_df(hmmscan_df, tag, database=''):
     gff3_df['score'] = hmmscan_df['domain_i_evalue']
     gff3_df['strand'] = ['.'] * len(hmmscan_df)
     gff3_df['phase'] = ['.'] * len(hmmscan_df)
-    
+
     def build_attr(row):
         data = []
         data.append('ID=homology:{0}'.format(next(ID_GEN)))
-        data.append('Name={0}:{1}'.format(row.target_name, tag))
+        data.append('Name={0}'.format(row.target_name))
         data.append('Target={0} {1} {2} +'.format(row.target_name,
                                                     row.hmm_coord_from,
                                                     row.hmm_coord_to))
@@ -153,11 +122,12 @@ def hmmscan_to_gff3_df(hmmscan_df, tag, database=''):
     return gff3_df
 
 
-def cmscan_to_gff3_df(cmscan_df, tag, database=''):
-    
+def cmscan_to_gff3_df(cmscan_df, tag='', database=''):
+
     gff3_df = pd.DataFrame()
     gff3_df['seqid'] = cmscan_df['query_name']
-    gff3_df['source'] = ['Infernal'] * len(cmscan_df)
+    source = '{0}.Infernal'.format(tag) if tag else 'Infernal'
+    gff3_df['source'] = [source] * len(cmscan_df)
 
     # For now, using:
     #  http://www.sequenceontology.org/browser/current_svn/term/SO:0000122
@@ -174,7 +144,7 @@ def cmscan_to_gff3_df(cmscan_df, tag, database=''):
     def build_attr(row):
         data = []
         data.append('ID=homology:{0}'.format(next(ID_GEN)))
-        data.append('Name={0}:{1}'.format(row.target_name, tag))
+        data.append('Name={0}'.format(row.target_name))
         data.append('Target={0} {1} {2} +'.format(row.target_name,
                                                     row.mdl_from,
                                                     row.mdl_to))
@@ -190,4 +160,3 @@ def cmscan_to_gff3_df(cmscan_df, tag, database=''):
     gff3_df['attributes'] = cmscan_df.apply(build_attr, axis=1)
 
     return gff3_df
-

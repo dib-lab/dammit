@@ -1,0 +1,38 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>Annotation Report, Dammit</title>
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.1/themes/ui-lightness/jquery-ui.min.css" type="text/css" media="all" />
+    <script src="http://code.jquery.com/jquery-2.1.1.min.js" type="text/javascript"></script>
+    <script src="http://code.jquery.com/ui/1.11.1/jquery-ui.min.js" type="text/javascript"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.16/d3.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-tip/0.6.7/d3-tip.js"></script>
+    <script src="{{ url_for('static', filename='mygene_autocomplete_jqueryui.js') }}" type="text/javascript"></script>
+
+    <style>
+      body {
+        overflow: hidden;
+        margin: 0;
+        font-size: 14px;
+        font-family: "Helvetica Neue", Helvetica;
+      }
+
+      #circularchart {
+        position: absolute;
+        top: 0px;
+        left: 125px;
+      }
+    </style>
+    <link href="{{ url_for('static', filename='tracks.css') }}" rel="stylesheet">
+</head>
+
+<body class="ui-widget">
+    <div>
+        <h1> Annotation Report, Dammit </h1>
+        <h2> <em><small>for</small></em> {{ name }}</h2>
+    </div>
+
+    {% include 'transcript_model.html' %}
+
+</body>

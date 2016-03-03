@@ -7,16 +7,18 @@ logger = log.DammitLogger()
 from .hits import BestHits
 from .crbl import CRBL
 
-import parsers
-import gff
-import blast
-import tasks
+import fileio
 
-import annotate
-import databases
-import dependencies
-import common
-import report
+from . import parsers
+from . import gff
+from . import blast
+from . import tasks
+
+from . import annotate
+from . import databases
+from . import dependencies
+from . import common
+from . import report
 
 import os
 rel_path = os.path.dirname(__file__)
