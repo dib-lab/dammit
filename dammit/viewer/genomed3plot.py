@@ -1,15 +1,18 @@
 import pandas as pd
 
+sources = ['HMMER',
+           'LAST',
+           'transdecoder',
+           'crb-blast',
+           'Infernal']
 
-def create_tracks(transcript, df, sources, track_start=100, track_width=40, track_sep=10,
-                  trackname_func=lambda name: name.partition('.')[2]):
-
-    transcript_df = df.query('seqid == "{0}"'.format(transcript))
+def create_tracks(transcript, transcript_df, track_start=100, track_width=40, track_sep=10):
     tracks = []
-    for src, source_df in [(src,df.query('source == "{0}"'.format(src))) for src in sources]:
-        if src in transcript_df.source.values:
+    for source in sources:
+        if source in transcript_df.source.values:
+            source_df = transcript_df.query('source == "{0}"'.format(source))
             track = {}
-            track['trackName'] = trackname_func(src) if trackname_func is not None else src
+            track['trackName'] = source
             track['trackType'] = "track"
             track['trackFeatures'] = "complex"
             track['visible'] = True

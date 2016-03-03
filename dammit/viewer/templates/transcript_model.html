@@ -4,9 +4,6 @@
 </div>
 
 <script type="text/javascript"
-        src="{{ url_for('static', filename='test_tracks.js') }}"></script>
-
-<script type="text/javascript"
         src="{{ url_for('static', filename='rgbcolor.js') }}"></script>
 <script type="text/javascript"
         src="{{ url_for('static', filename='canvg.js') }}"></script>
@@ -28,9 +25,10 @@
 // the genome size, the div container to put the
 // SVG object in, what function to call during a
 // double click and the initial chart size.
-d3.json("{{ url_for('tracks', key=transcript_name) }}", function(error, tracks) {
-    
-    var genomesize = 5664;
+
+d3.json("{{ url_for('transcript_pane.tracks', transcript='Transcript_0') }}", function(error, result) {
+
+    var genomesize = result.data.length;
     var circularlayout = {genomesize: genomesize,
                   spacing: 100,
                   container: "#circularchart",
@@ -42,7 +40,7 @@ d3.json("{{ url_for('tracks', key=transcript_name) }}", function(error, tracks) 
     // parameters, the layout (above) for the plot and
     // the dataset to visualize (from data.js, a json
     // data structure)
-    var cTrack = new circularTrack(circularlayout, tracks);
+    var cTrack = new circularTrack(circularlayout, result.data.tracks);
 
     // If we're showing both a circular and linear chart,
     // and have a linear brush, attach it (see combo plot demo)
@@ -61,50 +59,6 @@ d3.json("{{ url_for('tracks', key=transcript_name) }}", function(error, tracks) 
 
     // Attached to the onchange callback for the GC Plot checkbox,
     // call the plot to add/remove the GC Plot as needed
-    function updateGC(cb) {
-        if(cb.checked) {
-        cTrack.showTrack("gcplot");
-        } else {
-        cTrack.hideTrack("gcplot");
-        }
-    }
-
-    // Attached to strand track checkbox, call the plot to
-    // add/remove the inner stranded track
-    function updateStrand(cb) {
-        if(cb.checked) {
-        cTrack.showTrack("track1");
-        } else {
-        cTrack.hideTrack("track1");
-        }
-    }
-
-    // Attached to the contig gap checkbox, call the plot to
-    // add/remove the contig gap squiggles
-    function updateGaps(cb) {
-        if(cb.checked) {
-        cTrack.showTrack("gapTrack");
-        } else {
-        cTrack.hideTrack("gapTrack");
-        }
-    }
-
-    // Attached to the ADB glyph checkbox, call the plot to
-    // add/remove only the ADB type of glyph
-    function updateAdb(cb) {
-        if(cb.checked) {
-        cTrack.showGlyphTrackType("track5", "adb");
-        } else {
-        cTrack.hideGlyphTrackType("track5", "adb");
-        }
-    }
-
-    // Attached to the resize plot button, call the plot to
-    // resize the plot to 650px diameter
-    function resizePlot() {
-        cTrack.resize(650);
-    }
-
     function saveImage() {
         cTrack.savePlot(4.0, "islandviewer.png", "tracks.css", 'png');
     }
@@ -155,25 +109,6 @@ d3.json("{{ url_for('tracks', key=transcript_name) }}", function(error, tracks) 
     }
 })
 </script>
-
-
-<!-- Controls on the demo -->
 <div id="demo-controls">
-  <div class="control-item"><input type="checkbox" name="showGC" onchange="updateGC(this); return false" checked>Show GC plot</div>
-
-  <div class="control-item"><input type="checkbox" name="showStrand" onchange="updateStrand(this); return false" checked>Show stranded track</div>
-
-  <div class="control-item"><input type="checkbox" name="showvfdb" onchange="updateAdb(this); return false" checked>Show ADB glyph type</div>
-
-  <div class="control-item"><input type="checkbox" name="showgaps" onchange="updateGaps(this); return false" checked>Show contig gap region type</div>
-
   <div class="control-item"><button name="saveImage" onclick="saveImage(); return false">Save Image</button></div>
-
-  <div class="control-item"><input type="button" onClick="resizePlot(); return false;" value="Resize plot diameter"></button></div>
-
 </div>
-
-<script type="text/javascript">
-  // Hack to make this example display correctly in an iframe on bl.ocks.org
-  d3.select(self.frameElement).style("height", "650px");
-</script>
