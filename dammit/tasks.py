@@ -765,8 +765,8 @@ def get_summary_task(transcriptome, name_map_fn, work_dir, final_gff3_fn,
                        'fasta': transcriptome,
                        'gff3': final_gff3_fn,
                        'busco': busco_summary,
-                       'stats': stats_summary,
-                       'transcripts': transcript_df.to_dict(orient='records')}
+                       'stats': stats_summary}
+        #               'transcripts': transcript_df.to_dict(orient='records')}
 
         with open(output_fn, 'wb') as fp:
             json.dump(run_summary, fp, indent=4)
@@ -779,4 +779,34 @@ def get_summary_task(transcriptome, name_map_fn, work_dir, final_gff3_fn,
                          final_gff3_fn,
                          busco_summary_fn],
             'targets': [output_fn],
+            'clean': [clean_targets]}
+
+
+@create_task_object
+def get_create_zodb_task(gff3_fn, database_fn):
+    from ZODB import FileStorage, DB
+    from flask.ext.zodb import Dict as zdict
+    import transaction
+
+    name = 'create-zodb:' + os.path.basename(database_fn)
+
+    def cmd():
+        db = DB(FileStorage.FileStorage(database_fn))
+        con = db.open()
+        root = con.root()
+
+        root['annotations'] =  zdict()
+        gff3_df = pd.concat(parsers.parse_gff3(gff3_fn))
+        for transcript, group in gff3_df.groupby('seqid'):
+            root['annotations'][transcript] = group
+            transaction.commit()
+
+        con.close()
+
+    return {'name': name,
+            'title': title_with_actions,
+            'actions': ['rm -f {0}'.format(database_fn),
+                        cmd],
+            'file_dep': [gff3_fn],
+            'targets': [database_fn],
             'clean': [clean_targets]}
