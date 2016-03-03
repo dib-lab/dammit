@@ -522,8 +522,7 @@ def get_maf_gff3_task(input_filename, output_filename, database):
 
         with open(output_filename, 'a') as fp:
             for group in it:
-                gff_group = gff.maf_to_gff3_df(group, 'dammit',
-                                               database)
+                gff_group = gff.maf_to_gff3_df(group, database=database)
                 gff.write_gff3_df(gff_group, fp)
 
     return {'name': name,
@@ -544,7 +543,7 @@ def get_crb_gff3_task(input_filename, output_filename, database):
         with open(output_filename, 'a') as fp:
             for group in parsers.crb_to_df_iter(input_filename,
                                                 remap=True):
-                gff_group = gff.crb_to_gff3_df(group, 'dammit', database)
+                gff_group = gff.crb_to_gff3_df(group, database=database)
                 gff.write_gff3_df(gff_group, fp)
 
     return {'name': name,
@@ -564,8 +563,7 @@ def get_hmmscan_gff3_task(input_filename, output_filename, database):
     def cmd():
         with open(output_filename, 'a') as fp:
             for group in pd.read_csv(input_filename, chunksize=10000):
-                gff_group = gff.hmmscan_to_gff3_df(group, 'dammit',
-                                                   database)
+                gff_group = gff.hmmscan_to_gff3_df(group, database=database)
                 gff.write_gff3_df(gff_group, fp)
 
     return {'name': name,
@@ -585,8 +583,7 @@ def get_cmscan_gff3_task(input_filename, output_filename, database):
     def cmd():
         with open(output_filename, 'a') as fp:
             for group in parsers.cmscan_to_df_iter(input_filename):
-                gff_group = gff.cmscan_to_gff3_df(group, 'dammit',
-                                                  database)
+                gff_group = gff.cmscan_to_gff3_df(group, database=database)
                 gff.write_gff3_df(gff_group, fp)
 
     return {'name': name,
@@ -687,7 +684,7 @@ def get_annotate_fasta_task(transcriptome_fn, gff3_fn, output_fn):
 
 @create_task_object
 def get_summary_task(transcriptome, name_map_fn, work_dir, final_gff3_fn,
-                     busco_summary_fn, output_fn):
+                     busco_summary_fn, output_fn, transcript_info_fn):
 
     name = 'json_summary:' + os.path.basename(transcriptome)
     K = 25
@@ -758,7 +755,7 @@ def get_summary_task(transcriptome, name_map_fn, work_dir, final_gff3_fn,
         busco_summary = parsers.parse_busco_summary(busco_summary_fn)
         transcript_df = pd.merge(name_map_df, len_df,
                                  left_on='renamed',
-                                 right_index=True).rename(columns={'renamed': 'name'})
+                                 right_index=True).rename(columns={'renamed': 'seqid'})
 
 
         run_summary = {'work_dir': work_dir,
@@ -766,7 +763,8 @@ def get_summary_task(transcriptome, name_map_fn, work_dir, final_gff3_fn,
                        'gff3': final_gff3_fn,
                        'busco': busco_summary,
                        'stats': stats_summary}
-        #               'transcripts': transcript_df.to_dict(orient='records')}
+        #
+        transcript_df.to_csv(transcript_info_fn)
 
         with open(output_fn, 'wb') as fp:
             json.dump(run_summary, fp, indent=4)
@@ -778,12 +776,12 @@ def get_summary_task(transcriptome, name_map_fn, work_dir, final_gff3_fn,
                          name_map_fn,
                          final_gff3_fn,
                          busco_summary_fn],
-            'targets': [output_fn],
+            'targets': [output_fn, transcript_info_fn],
             'clean': [clean_targets]}
 
 
 @create_task_object
-def get_create_zodb_task(gff3_fn, database_fn):
+def get_create_zodb_task(gff3_fn, transcript_info_fn, database_fn):
     from ZODB import FileStorage, DB
     from flask.ext.zodb import Dict as zdict
     import transaction
@@ -795,10 +793,18 @@ def get_create_zodb_task(gff3_fn, database_fn):
         con = db.open()
         root = con.root()
 
-        root['annotations'] =  zdict()
+        root['transcripts'] =  zdict()
+
+        def func(row):
+            root['transcripts'][row.seqid] = zdict()
+            root['transcripts'][row.seqid]['length'] = row.length
+            root['transcripts'][row.seqid]['short_annot'] = row.annotations
+            transaction.commit()
+        transcript_df = pd.read_csv(transcript_info_fn).apply(func, axis=1)
+
         gff3_df = pd.concat(parsers.parse_gff3(gff3_fn))
         for transcript, group in gff3_df.groupby('seqid'):
-            root['annotations'][transcript] = group
+            root['transcripts'][transcript]['annotations'] = group
             transaction.commit()
 
         con.close()
@@ -807,6 +813,6 @@ def get_create_zodb_task(gff3_fn, database_fn):
             'title': title_with_actions,
             'actions': ['rm -f {0}'.format(database_fn),
                         cmd],
-            'file_dep': [gff3_fn],
+            'file_dep': [gff3_fn, transcript_info_fn],
             'targets': [database_fn],
             'clean': [clean_targets]}

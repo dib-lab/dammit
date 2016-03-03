@@ -92,6 +92,7 @@ class AnnotateHandler(object):
         self.final_gff3_fn = '{0}.dammit.gff3'.format(self.transcriptome_fn)
         self.final_fasta_fn = '{0}.dammit.fasta'.format(self.transcriptome_fn)
         self.final_transcript_fn = '{0}.dammit.json'.format(self.transcriptome_fn)
+        self.transcript_info_fn = '{0}.dammit.info.csv'.format(self.transcriptome_fn)
         self.summary_fn = common.CONFIG['settings']['summary_filename']
         self.database_fn = common.CONFIG['settings']['database_filename']
 
@@ -259,10 +260,13 @@ class AnnotateHandler(object):
                                 self.directory,
                                 self.final_gff3_fn,
                                 self.busco_summary_fn,
-                                self.summary_fn)
+                                self.summary_fn,
+                                self.transcript_info_fn)
 
     def create_zodb_task(self):
-        return get_create_zodb_task(self.final_gff3_fn, self.database_fn)
+        return get_create_zodb_task(self.final_gff3_fn,
+                                    self.transcript_info_fn,
+                                    self.database_fn)
 
     def get_tasks(self):
 
