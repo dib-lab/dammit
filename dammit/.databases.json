@@ -43,6 +43,13 @@
         "url": "ftp://cegg.unige.ch/OrthoDB8/Eukaryotes/Genes_to_OGs/ODB8_EukOGs_genes_ALL_levels.txt.gz"
     },
 
+    "ncbi.tax": {
+        "access": "download",
+        "db_type": "json",
+        "filename": "ncbi_taxonomy.json",
+        "url": "https://s3-us-west-1.amazonaws.com/json-taxonomies/ncbi_taxonomy.json"
+    },
+
     "busco": {
 
         "metazoa": {

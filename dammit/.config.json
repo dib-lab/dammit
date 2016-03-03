@@ -9,7 +9,9 @@
 		"dammit_dir": ".dammit",
 		"dep_dir": "dependencies",
         "db_dir": "databases",
-        
+        "summary_filename": "dammit.summary.json",
+        "database_filename": "dammit.database.fs",
+
         "blast": {
             "evalue": 0.000001,
             "params": ""
