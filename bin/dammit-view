@@ -4,7 +4,9 @@ from __future__ import print_function
 import argparse
 from flask import Flask, g
 from dammit import common
-from dammit import viewer
+from dammit.viewer import transcript_pane
+from dammit.viewer.database import db
+from dammit.viewer import static_folder, template_folder
 import os
 
 DIRECTORY = None
@@ -18,5 +20,9 @@ if __name__ == '__main__':
     DIRECTORY = os.path.abspath(args.directory)
     ZODB_STORAGE = 'file://' + os.path.join(DIRECTORY, common.CONFIG['settings']['database_filename'])
 
-    app = Flask(__name__)
+    app = Flask(__name__, static_folder=static_folder, template_folder=template_folder)
     app.config.from_object(__name__)
+    app.register_blueprint(transcript_pane.views)
+    db.init_app(app)
+
+    app.run(host='0.0.0.0', port=5001, debug=True)
