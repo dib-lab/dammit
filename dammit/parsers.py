@@ -12,7 +12,7 @@ spake by Saint Dijkstra (structured programs be upon Him) on the 397868400th
 integer of Our Unix and observed by all pious and good followers of the Code.
 Beware, fellow bioinformaticians! Heisenbugs and untyped Lambda Calculus be
 upon ye who break from this most holy writ! Wretched followers of the 1,
-demon peddlers of the fully closed and fully open intervals, sewers of discord!
+demon peddlers of the fully closed and fully open intervals, sowers of discord!
 Doom and damnation, dammit!
 '''
 
