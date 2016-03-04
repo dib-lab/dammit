@@ -75,12 +75,6 @@ database.</p>
 <code class="descname">handle</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dammit.annotate.AnnotateHandler.handle" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="dammit.annotate.AnnotateHandler.logger">
-<code class="descname">logger</code><em class="property"> = None</em><a class="headerlink" href="#dammit.annotate.AnnotateHandler.logger" title="Permalink to this definition">¶</a></dt>
-<dd><p>Output file attributes.</p>
-</dd></dl>
-
 <dl class="method">
 <dt id="dammit.annotate.AnnotateHandler.orthodb_task">
 <code class="descname">orthodb_task</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dammit.annotate.AnnotateHandler.orthodb_task" title="Permalink to this definition">¶</a></dt>
@@ -129,6 +123,11 @@ model for prediction of gene features.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="dammit.annotate.AnnotateHandler.uniref_task">
+<code class="descname">uniref_task</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dammit.annotate.AnnotateHandler.uniref_task" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
 <dt id="dammit.annotate.AnnotateHandler.user_crb_tasks">
 <code class="descname">user_crb_tasks</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dammit.annotate.AnnotateHandler.user_crb_tasks" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run conditional recipricol best hits LAST (CRBL) against the
@@ -141,31 +140,8 @@ user-supplied databases.</p>
 <div class="section" id="module-dammit.blast">
 <span id="dammit-blast-module"></span><h2>dammit.blast module<a class="headerlink" href="#module-dammit.blast" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
-<dt id="dammit.blast.best_hits">
-<code class="descclassname">dammit.blast.</code><code class="descname">best_hits</code><span class="sig-paren">(</span><em>df</em>, <em>comp_col='evalue'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/blast.html#best_hits"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.blast.best_hits" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="dammit.blast.get_orthologies">
-<code class="descclassname">dammit.blast.</code><code class="descname">get_orthologies</code><span class="sig-paren">(</span><em>A</em>, <em>B</em>, <em>idx</em>, <em>comp_col='evalue'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/blast.html#get_orthologies"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.blast.get_orthologies" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="dammit.blast.remap_blast_coords_df">
-<code class="descclassname">dammit.blast.</code><code class="descname">remap_blast_coords_df</code><span class="sig-paren">(</span><em>df</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/blast.html#remap_blast_coords_df"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.blast.remap_blast_coords_df" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</div>
-<div class="section" id="module-dammit.cblast">
-<span id="dammit-cblast-module"></span><h2>dammit.cblast module<a class="headerlink" href="#module-dammit.cblast" title="Permalink to this headline">¶</a></h2>
-<p>Optimized functions for remapping BLAST coordinates.</p>
-<p>By default, BLAST outputs coordinates in 1-indexed fully open intervals.
-Most programming languages and other programs use 0-index, half-open intervals.
-This remapping can take a fair amount of time in pure python; with the help of
-cython and numpy, it can be super fast.</p>
-<dl class="function">
-<dt id="dammit.cblast.fix_blast_coords">
-<code class="descclassname">dammit.cblast.</code><code class="descname">fix_blast_coords</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dammit.cblast.fix_blast_coords" title="Permalink to this definition">¶</a></dt>
+<dt id="dammit.blast.fix_blast_coords">
+<code class="descclassname">dammit.blast.</code><code class="descname">fix_blast_coords</code><span class="sig-paren">(</span><em>sstart</em>, <em>send</em>, <em>qstart</em>, <em>qend</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/blast.html#fix_blast_coords"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.blast.fix_blast_coords" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fix BLAST coordinates of many hits.</p>
 <p>Expects each column of attributes separately as numpy arrays.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -184,6 +160,41 @@ cython and numpy, it can be super fast.</p>
 </table>
 </dd></dl>
 
+<dl class="function">
+<dt id="dammit.blast.fix_coords_single">
+<code class="descclassname">dammit.blast.</code><code class="descname">fix_coords_single</code><span class="sig-paren">(</span><em>sstart</em>, <em>send</em>, <em>qstart</em>, <em>qend</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/blast.html#fix_coords_single"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.blast.fix_coords_single" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fix BLAST coordinates for the parameters from a singe hit.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>sstart</strong> (<em>long</em>) &#8211; Subject start.</li>
+<li><strong>send</strong> (<em>long</em>) &#8211; Subject end.</li>
+<li><strong>qstart</strong> (<em>long</em>) &#8211; Query start.</li>
+<li><strong>qend</strong> (<em>long</em>) &#8211; Query end.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Numpy array with values [sstart, send, qstart, qend, sstrand, qstrand],
+where sstrand and qstrand are the subject and query strands as a 1 or -1.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">ndarray</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="dammit.blast.remap_blast_coords_df">
+<code class="descclassname">dammit.blast.</code><code class="descname">remap_blast_coords_df</code><span class="sig-paren">(</span><em>df</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/blast.html#remap_blast_coords_df"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.blast.remap_blast_coords_df" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="dammit-cblast-module">
+<h2>dammit.cblast module<a class="headerlink" href="#dammit-cblast-module" title="Permalink to this headline">¶</a></h2>
 </div>
 <div class="section" id="module-dammit.common">
 <span id="dammit-common-module"></span><h2>dammit.common module<a class="headerlink" href="#module-dammit.common" title="Permalink to this headline">¶</a></h2>
@@ -266,19 +277,10 @@ Current bundled databases are:</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>self.directory</strong> (<em>str</em>) &#8211; Directory where the databases will be stored.</li>
-<li><strong>busco_db</strong> (<em>str</em>) &#8211; The BUSCO group to use.</li>
-<li><strong>full</strong> (<em>bool</em>) &#8211; Whether to do a full run and get UNIREF90 as well.</li>
-</ul>
-</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A dictionary of the final database paths.
+list: A list of the doit tasks.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A dictionary of the final database paths.
-list: A list of the doit tasks.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">dict</p>
-</td>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">dict</td>
 </tr>
 </tbody>
 </table>
@@ -299,13 +301,33 @@ list: A list of the doit tasks.</p>
 <em class="property">class </em><code class="descclassname">dammit.dependencies.</code><code class="descname">DependencyHandler</code><a class="reference internal" href="_modules/dammit/dependencies.html#DependencyHandler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.dependencies.DependencyHandler" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 <dl class="method">
+<dt id="dammit.dependencies.DependencyHandler.add_dependency_check">
+<code class="descname">add_dependency_check</code><span class="sig-paren">(</span><em>name</em>, <em>function</em><span class="sig-paren">)</span><a class="headerlink" href="#dammit.dependencies.DependencyHandler.add_dependency_check" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a new dependency to the handler.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>name</strong> (<em>str</em>) &#8211; The name of the dependency.</li>
+<li><strong>function</strong> (<em>callable</em>) &#8211; A function which returns a tuple
+of (boolean, string) for the status and a message, and
+takes a Logger object.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="dammit.dependencies.DependencyHandler.check_or_fail">
 <code class="descname">check_or_fail</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dammit.dependencies.DependencyHandler.check_or_fail" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
-<dt id="dammit.dependencies.DependencyHandler.check_system_path">
-<code class="descname">check_system_path</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dammit.dependencies.DependencyHandler.check_system_path" title="Permalink to this definition">¶</a></dt>
+<dt id="dammit.dependencies.DependencyHandler.clear_dependency_checks">
+<code class="descname">clear_dependency_checks</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dammit.dependencies.DependencyHandler.clear_dependency_checks" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -313,35 +335,86 @@ list: A list of the doit tasks.</p>
 <code class="descname">handle</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dammit.dependencies.DependencyHandler.handle" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
+<dl class="method">
+<dt id="dammit.dependencies.DependencyHandler.run_checks">
+<code class="descname">run_checks</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dammit.dependencies.DependencyHandler.run_checks" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </dd></dl>
+
+<dl class="function">
+<dt id="dammit.dependencies.check_blast">
+<code class="descclassname">dammit.dependencies.</code><code class="descname">check_blast</code><span class="sig-paren">(</span><em>logger</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/dependencies.html#check_blast"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.dependencies.check_blast" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="dammit.dependencies.check_busco">
+<code class="descclassname">dammit.dependencies.</code><code class="descname">check_busco</code><span class="sig-paren">(</span><em>logger</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/dependencies.html#check_busco"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.dependencies.check_busco" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="dammit.dependencies.check_crb_blast">
+<code class="descclassname">dammit.dependencies.</code><code class="descname">check_crb_blast</code><span class="sig-paren">(</span><em>logger</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/dependencies.html#check_crb_blast"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.dependencies.check_crb_blast" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="dammit.dependencies.check_hmmer">
+<code class="descclassname">dammit.dependencies.</code><code class="descname">check_hmmer</code><span class="sig-paren">(</span><em>logger</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/dependencies.html#check_hmmer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.dependencies.check_hmmer" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="dammit.dependencies.check_infernal">
+<code class="descclassname">dammit.dependencies.</code><code class="descname">check_infernal</code><span class="sig-paren">(</span><em>logger</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/dependencies.html#check_infernal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.dependencies.check_infernal" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="dammit.dependencies.check_last">
+<code class="descclassname">dammit.dependencies.</code><code class="descname">check_last</code><span class="sig-paren">(</span><em>logger</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/dependencies.html#check_last"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.dependencies.check_last" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="dammit.dependencies.check_transdecoder">
+<code class="descclassname">dammit.dependencies.</code><code class="descname">check_transdecoder</code><span class="sig-paren">(</span><em>logger</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/dependencies.html#check_transdecoder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.dependencies.check_transdecoder" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 </div>
 <div class="section" id="module-dammit.gff">
 <span id="dammit-gff-module"></span><h2>dammit.gff module<a class="headerlink" href="#module-dammit.gff" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
-<dt id="dammit.gff.blast_to_gff3_df">
-<code class="descclassname">dammit.gff.</code><code class="descname">blast_to_gff3_df</code><span class="sig-paren">(</span><em>blast_df</em>, <em>prog</em>, <em>RBH=False</em>, <em>database=''</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/gff.html#blast_to_gff3_df"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.gff.blast_to_gff3_df" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
 <dt id="dammit.gff.cmscan_to_gff3_df">
-<code class="descclassname">dammit.gff.</code><code class="descname">cmscan_to_gff3_df</code><span class="sig-paren">(</span><em>cmscan_df</em>, <em>tag</em>, <em>database=''</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/gff.html#cmscan_to_gff3_df"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.gff.cmscan_to_gff3_df" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">dammit.gff.</code><code class="descname">cmscan_to_gff3_df</code><span class="sig-paren">(</span><em>cmscan_df</em>, <em>tag=''</em>, <em>database=''</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/gff.html#cmscan_to_gff3_df"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.gff.cmscan_to_gff3_df" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="dammit.gff.crb_to_gff3_df">
-<code class="descclassname">dammit.gff.</code><code class="descname">crb_to_gff3_df</code><span class="sig-paren">(</span><em>crb_df</em>, <em>tag</em>, <em>database=''</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/gff.html#crb_to_gff3_df"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.gff.crb_to_gff3_df" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">dammit.gff.</code><code class="descname">crb_to_gff3_df</code><span class="sig-paren">(</span><em>crb_df</em>, <em>tag=''</em>, <em>database=''</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/gff.html#crb_to_gff3_df"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.gff.crb_to_gff3_df" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="dammit.gff.hmmscan_to_gff3_df">
-<code class="descclassname">dammit.gff.</code><code class="descname">hmmscan_to_gff3_df</code><span class="sig-paren">(</span><em>hmmscan_df</em>, <em>tag</em>, <em>database=''</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/gff.html#hmmscan_to_gff3_df"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.gff.hmmscan_to_gff3_df" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">dammit.gff.</code><code class="descname">hmmscan_to_gff3_df</code><span class="sig-paren">(</span><em>hmmscan_df</em>, <em>tag=''</em>, <em>database=''</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/gff.html#hmmscan_to_gff3_df"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.gff.hmmscan_to_gff3_df" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="dammit.gff.maf_to_gff3_df">
-<code class="descclassname">dammit.gff.</code><code class="descname">maf_to_gff3_df</code><span class="sig-paren">(</span><em>maf_df</em>, <em>tag</em>, <em>database=''</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/gff.html#maf_to_gff3_df"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.gff.maf_to_gff3_df" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">dammit.gff.</code><code class="descname">maf_to_gff3_df</code><span class="sig-paren">(</span><em>maf_df</em>, <em>tag=''</em>, <em>database=''</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/gff.html#maf_to_gff3_df"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.gff.maf_to_gff3_df" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="function">
+<dt id="dammit.gff.mangle_coordinates">
+<code class="descclassname">dammit.gff.</code><code class="descname">mangle_coordinates</code><span class="sig-paren">(</span><em>gff3_df</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/gff.html#mangle_coordinates"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.gff.mangle_coordinates" title="Permalink to this definition">¶</a></dt>
+<dd><p>Although 1-based fully closed intervals are of the Beast,
+we will respect the convention in the interest of peace between
+worlds and compatibility.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>gff3_df</strong> (<em>DataFrame</em>) &#8211; The DataFrame to &#8220;fix&#8221;.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="dammit.gff.version_line">
@@ -358,9 +431,13 @@ list: A list of the doit tasks.</p>
 <span id="dammit-parsers-module"></span><h2>dammit.parsers module<a class="headerlink" href="#module-dammit.parsers" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="dammit.parsers.blast_to_df_iter">
-<code class="descclassname">dammit.parsers.</code><code class="descname">blast_to_df_iter</code><span class="sig-paren">(</span><em>fn</em>, <em>delimiter='\t'</em>, <em>chunksize=10000</em>, <em>remap=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/parsers.html#blast_to_df_iter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.parsers.blast_to_df_iter" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">dammit.parsers.</code><code class="descname">blast_to_df_iter</code><span class="sig-paren">(</span><em>fn</em>, <em>delimiter='\t'</em>, <em>chunksize=10000</em>, <em>remap=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/parsers.html#blast_to_df_iter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.parsers.blast_to_df_iter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Iterator of DataFrames of length chunksize parsed from an
 NCBI BLAST+ <cite>-outfmt6</cite> file.</p>
+<p>Native BLAST+ uses an interval of the form [start,end), start &gt;= 1. This
+changes to [end,start) when on the negative strand, apparently soley
+to make other bioinformaticians suffer.</p>
+<p>We convert to proper 0-based, half-open intervals.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -408,6 +485,8 @@ an appropriately multi-indexed DataFrame of the results.</p>
 <code class="descclassname">dammit.parsers.</code><code class="descname">cmscan_to_df_iter</code><span class="sig-paren">(</span><em>fn</em>, <em>chunksize=10000</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/parsers.html#cmscan_to_df_iter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.parsers.cmscan_to_df_iter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Iterator over DataFrames of length chunksize from a given
 cmscan result file.</p>
+<p>1-based, fully open intervals. Truly Infernal.</p>
+<p>We convert to proper 0-based, half-open intervals.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -446,9 +525,12 @@ in the given dictionary, inplace.</p>
 
 <dl class="function">
 <dt id="dammit.parsers.crb_to_df_iter">
-<code class="descclassname">dammit.parsers.</code><code class="descname">crb_to_df_iter</code><span class="sig-paren">(</span><em>fn</em>, <em>chunksize=10000</em>, <em>remap=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/parsers.html#crb_to_df_iter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.parsers.crb_to_df_iter" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">dammit.parsers.</code><code class="descname">crb_to_df_iter</code><span class="sig-paren">(</span><em>fn</em>, <em>chunksize=10000</em>, <em>remap=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/parsers.html#crb_to_df_iter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.parsers.crb_to_df_iter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Iterator of DataFrames of length chunksize parsed from
 the results from CRBB version crb-blast 0.6.6.</p>
+<p>crb-blast is given the same treatment as BLAST+, as that&#8217;s what
+it uses under the hood.</p>
+<p>We convert to proper 0-based, half-open intervals.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -467,32 +549,12 @@ the results from CRBB version crb-blast 0.6.6.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="dammit.parsers.gff3_transdecoder_to_df_iter">
-<code class="descclassname">dammit.parsers.</code><code class="descname">gff3_transdecoder_to_df_iter</code><span class="sig-paren">(</span><em>fn</em>, <em>chunksize=10000</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/parsers.html#gff3_transdecoder_to_df_iter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.parsers.gff3_transdecoder_to_df_iter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Iterator yeilding DataFrames of length chunksize
-from a given TransDecoder GFF file.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>fn</strong> (<em>str</em>) &#8211; Path to the TransDecoder gff file.</li>
-<li><strong>chunksize</strong> (<em>int</em>) &#8211; Rows per iteration.</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Yields:</th><td class="field-body"><p class="first last"><em>DataFrame</em> &#8211; Pandas DataFrame with the predict gene features.</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
 <dt id="dammit.parsers.hmmscan_to_df_iter">
 <code class="descclassname">dammit.parsers.</code><code class="descname">hmmscan_to_df_iter</code><span class="sig-paren">(</span><em>fn</em>, <em>chunksize=10000</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/parsers.html#hmmscan_to_df_iter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.parsers.hmmscan_to_df_iter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Iterator over DataFrames of length chunksize from a given
 hmmscan result file.</p>
+<p>HMMER uses 1-based, fully open intervals. Another format of the devil.</p>
+<p>We convert to proper 0-based, half-open intervals.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -505,49 +567,6 @@ hmmscan result file.</p>
 </tr>
 <tr class="field-even field"><th class="field-name">Yields:</th><td class="field-body"><p class="first last"><em>DataFrame</em> &#8211; Pandas DataFrame with the hmmscan hits.</p>
 </td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="dammit.parsers.maf_to_df_iter">
-<code class="descclassname">dammit.parsers.</code><code class="descname">maf_to_df_iter</code><span class="sig-paren">(</span><em>fn</em>, <em>chunksize=10000</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/parsers.html#maf_to_df_iter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.parsers.maf_to_df_iter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Iterator yielding DataFrames of length chunksize holding MAF alignments.</p>
-<dl class="docutils">
-<dt>An extra column is added for bitscore, using the equation described here:</dt>
-<dd><a class="reference external" href="http://last.cbrc.jp/doc/last-evalues.html">http://last.cbrc.jp/doc/last-evalues.html</a></dd>
-</dl>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>fn</strong> (<em>str</em>) &#8211; Path to the MAF alignment file.</li>
-<li><strong>chunksize</strong> (<em>int</em>) &#8211; Alignments to parse per iteration.</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Yields:</th><td class="field-body"><p class="first last"><em>DataFrame</em> &#8211; Pandas DataFrame with the alignments.</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="dammit.parsers.parse_busco">
-<code class="descclassname">dammit.parsers.</code><code class="descname">parse_busco</code><span class="sig-paren">(</span><em>fn</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/parsers.html#parse_busco"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.parsers.parse_busco" title="Permalink to this definition">¶</a></dt>
-<dd><p>Parse a single BUSCO summary file to a dictionary.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fn</strong> (<em>str</em>) &#8211; The results file.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The parsed results.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">dict</td>
 </tr>
 </tbody>
 </table>
@@ -620,6 +639,8 @@ dictionary.</p>
 <code class="descclassname">dammit.parsers.</code><code class="descname">parse_gff3</code><span class="sig-paren">(</span><em>fn</em>, <em>chunksize=10000</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/parsers.html#parse_gff3"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.parsers.parse_gff3" title="Permalink to this definition">¶</a></dt>
 <dd><p>Iterator over DataFrames of length chunksize from a given
 GTF/GFF file.</p>
+<p>GFF3 uses a 1-based, fully closed interval. Truly the devil&#8217;s format.</p>
+<p>We convert to proper 0-based, half-open intervals.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -772,6 +793,11 @@ objects</p>
 <dd></dd></dl>
 
 <dl class="function">
+<dt id="dammit.tasks.get_remap_hmmer_task">
+<code class="descclassname">dammit.tasks.</code><code class="descname">get_remap_hmmer_task</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/tasks.html#get_remap_hmmer_task"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.tasks.get_remap_hmmer_task" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
 <dt id="dammit.tasks.get_rename_transcriptome_task">
 <code class="descclassname">dammit.tasks.</code><code class="descname">get_rename_transcriptome_task</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/tasks.html#get_rename_transcriptome_task"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.tasks.get_rename_transcriptome_task" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -837,7 +863,7 @@ objects</p>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
 <li><a class="reference internal" href="#module-dammit.annotate">dammit.annotate module</a></li>
 <li><a class="reference internal" href="#module-dammit.blast">dammit.blast module</a></li>
-<li><a class="reference internal" href="#module-dammit.cblast">dammit.cblast module</a></li>
+<li><a class="reference internal" href="#dammit-cblast-module">dammit.cblast module</a></li>
 <li><a class="reference internal" href="#module-dammit.common">dammit.common module</a></li>
 <li><a class="reference internal" href="#module-dammit.databases">dammit.databases module</a></li>
 <li><a class="reference internal" href="#module-dammit.dependencies">dammit.dependencies module</a></li>

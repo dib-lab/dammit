@@ -74,9 +74,19 @@
     <span class="p">)</span>
     <span class="n">outputs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">orthodb_gff3</span><span class="p">)</span>
 
-    <span class="n">pfam_gff3</span> <span class="o">=</span> <span class="n">annotator</span><span class="o">.</span><span class="n">transdecoder_pfam_fn</span> <span class="o">+</span> <span class="s">&#39;.gff3&#39;</span>
+    <span class="k">if</span> <span class="n">annotator</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">full</span><span class="p">:</span>
+        <span class="n">uniref_best_hits</span> <span class="o">=</span> <span class="n">annotator</span><span class="o">.</span><span class="n">uniref_fn</span> <span class="o">+</span> <span class="s">&#39;.best.csv&#39;</span>
+        <span class="n">uniref_gff3</span> <span class="o">=</span> <span class="n">uniref_best_hits</span> <span class="o">+</span> <span class="s">&#39;.gff3&#39;</span>
+        <span class="n">tasks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">get_maf_best_hits_task</span><span class="p">(</span><span class="n">annotator</span><span class="o">.</span><span class="n">uniref_fn</span><span class="p">,</span>
+                                            <span class="n">uniref_best_hits</span><span class="p">))</span>
+        <span class="n">tasks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">get_maf_gff3_task</span><span class="p">(</span><span class="n">uniref_best_hits</span><span class="p">,</span>
+                                       <span class="n">uniref_gff3</span><span class="p">,</span> <span class="s">&#39;uniref90&#39;</span><span class="p">))</span>
+        <span class="n">outputs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">uniref_gff3</span><span class="p">)</span>
+
+
+    <span class="n">pfam_gff3</span> <span class="o">=</span> <span class="n">annotator</span><span class="o">.</span><span class="n">pfam_fn</span> <span class="o">+</span> <span class="s">&#39;.gff3&#39;</span>
     <span class="n">tasks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-        <span class="n">get_hmmscan_gff3_task</span><span class="p">(</span><span class="n">annotator</span><span class="o">.</span><span class="n">transdecoder_pfam_fn</span><span class="p">,</span>
+        <span class="n">get_hmmscan_gff3_task</span><span class="p">(</span><span class="n">annotator</span><span class="o">.</span><span class="n">pfam_fn</span><span class="p">,</span>
                               <span class="n">pfam_gff3</span><span class="p">,</span> 
                               <span class="s">&#39;Pfam&#39;</span><span class="p">)</span>
     <span class="p">)</span>
