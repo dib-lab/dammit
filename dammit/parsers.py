@@ -1,20 +1,26 @@
 #!/usr/bin/env python
-import csv
-import sys
-import numpy as np
-import pandas as pd
-
-from blast import remap_blast_coords_df as remap_blast
-
-'''
-dammit uses 0-based, half-open intervals as its internal representation, as
+'''dammit uses 0-based, half-open intervals as its internal representation, as
 spake by Saint Dijkstra (structured programs be upon Him) on the 397868400th
 integer of Our Unix and observed by all pious and good followers of the Code.
 Beware, fellow bioinformaticians! Heisenbugs and untyped Lambda Calculus be
 upon ye who break from this most holy writ! Wretched followers of the 1,
 demon peddlers of the fully closed and fully open intervals, sowers of discord!
 Doom and damnation, dammit!
+
+Example:
+    (for those wishing to attain holiness)
+
+    from dammit import parsers
+    for group_df in parsers.cmscan_to_df_iter(filename):
+        do_stuff(group_df)
+
 '''
+import csv
+import sys
+import numpy as np
+import pandas as pd
+
+from blast import remap_blast_coords_df as remap_blast
 
 
 blast_cols = [('qseqid', str),
@@ -116,7 +122,7 @@ def blast_to_df_iter(fn, delimiter='\t', chunksize=10000, remap=True):
     NCBI BLAST+ `-outfmt6` file.
 
     Native BLAST+ uses an interval of the form [start,end), start >= 1. This
-    changes to [end,start) when on the negative strand, apparently soley
+    changes to [end,start) when on the negative strand, apparently solely
     to make other bioinformaticians suffer.
 
     We convert to proper 0-based, half-open intervals.
