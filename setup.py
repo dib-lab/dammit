@@ -33,7 +33,7 @@ def main():
             license = 'BSD',
             test_suite = 'nose.collector',
             tests_require = ['nose'],
-            packages = ['dammit'],
+            packages = find_packages(),
             scripts = glob('bin/*'),
             install_requires = ['setuptools>=0.6.35',
                                 'pandas>=0.17',
@@ -49,6 +49,6 @@ def main():
                                 'numexpr>=2.3.1'],
             include_package_data = True,
             zip_safe = False,  )
-        
+
 if __name__ == "__main__":
     main()
