@@ -22,7 +22,7 @@ class DammitApp(object):
         self.meta = '{0}\n{1} {2}'.format(common.CONFIG['meta']['description'],
                                           ', '.join(common.CONFIG['meta']['authors']),
                                           common.CONFIG['meta']['date'])
-        
+
         self.parser = self.get_parser()
         self.args = self.parser.parse_args(arg_src)
 
@@ -40,8 +40,8 @@ class DammitApp(object):
                      )
 
         parser.add_argument('--debug', action='store_true', default=False)
-        parser.add_argument('--version', action='version', 
-                            version='%(prog)s ' +__version__)
+        parser.add_argument('--version', action='version',
+                            version='%(prog)s ' + __version__)
         subparsers = parser.add_subparsers(title='dammit subcommands')
 
         def add_common_args(parser):
@@ -53,16 +53,16 @@ class DammitApp(object):
             Args:
                 parser (object): The parser to which arguments will be added.
             '''
-            parser.add_argument('--database-dir', 
-                                default=None, 
+            parser.add_argument('--database-dir',
+                                default=None,
                                 help='Directory to store databases. Existing'\
                                      ' databases will not be overwritten.'\
                                      ' By default, the database directory is'\
                                      ' $HOME/.dammit/databases.'
                                 )
 
-            parser.add_argument('--full', 
-                                action='store_true', 
+            parser.add_argument('--full',
+                                action='store_true',
                                 default=False,
                                 help='Do complete run with uniref90. By default'\
                                      ' uniref90 is left out, as it is huge '\
@@ -70,7 +70,7 @@ class DammitApp(object):
                                      ' time.'
                                 )
 
-            parser.add_argument('--busco-group', 
+            parser.add_argument('--busco-group',
                                 default='metazoa',
                                 choices=['metazoa', 'eukaryota', 'vertebrata',
                                          'arthropoda'],
@@ -86,7 +86,7 @@ class DammitApp(object):
         '''
         Add the databases subcommand.
         '''
-        desc = '''Check for databases and optionally download and prepare them 
+        desc = '''Check for databases and optionally download and prepare them
                for use. By default, only check their status.'''
         databases_parser = subparsers.add_parser(
                                'databases',
@@ -94,7 +94,7 @@ class DammitApp(object):
                                 help=desc
                                 )
 
-        databases_parser.add_argument('--install', 
+        databases_parser.add_argument('--install',
                                       action='store_true',
                                       default=False,
                                       help='Install missing databases. Downloads'
@@ -107,8 +107,8 @@ class DammitApp(object):
         '''
         Add the dependencies subcommand.
         '''
-        desc = '''Checks for dependencies on system PATH. Unlike with the 
-               databases, dependencies are not downloaded when missing and must 
+        desc = '''Checks for dependencies on system PATH. Unlike with the
+               databases, dependencies are not downloaded when missing and must
                be installed by the user.'''
         dependencies_parser = subparsers.add_parser(
                                   'dependencies',
@@ -120,10 +120,10 @@ class DammitApp(object):
         '''
         Add the annotation subcommand.
         '''
-        desc = '''The main annotation pipeline. Calculates assembly stats; 
-               runs BUSCO; runs LAST against OrthoDB (and optionally uniref90), 
-               HMMER against Pfam, Inferal against Rfam, and Conditional Reciprocal 
-               Best-hit Blast against user databases; and aggregates all results in 
+        desc = '''The main annotation pipeline. Calculates assembly stats;
+               runs BUSCO; runs LAST against OrthoDB (and optionally uniref90),
+               HMMER against Pfam, Inferal against Rfam, and Conditional Reciprocal
+               Best-hit Blast against user databases; and aggregates all results in
                a properly formatted GFF3 file.'''
         annotate_parser = subparsers.add_parser(
                               'annotate',
@@ -132,7 +132,7 @@ class DammitApp(object):
                               help=desc
                               )
 
-        annotate_parser.add_argument('transcriptome', 
+        annotate_parser.add_argument('transcriptome',
                                      help='FASTA file with the transcripts to be'\
                                           ' annotated.'
                                      )
@@ -154,22 +154,22 @@ class DammitApp(object):
                                           ' searches.'
                                      )
 
-        annotate_parser.add_argument('-o', '--output-dir', 
+        annotate_parser.add_argument('-o', '--output-dir',
                                      default=None,
                                      help='Output directory. By default this will'\
                                           ' be the name of the transcriptome file'\
                                           ' with `.dammit` appended'
                                      )
 
-        annotate_parser.add_argument('--n_threads', 
-                                     type=int, 
+        annotate_parser.add_argument('--n_threads',
+                                     type=int,
                                      default=1,
                                      help='Number of threads to pass to programs'\
                                           ' supporting multithreading'
                                      )
 
-        annotate_parser.add_argument('--user-databases', 
-                                     nargs='+', 
+        annotate_parser.add_argument('--user-databases',
+                                     nargs='+',
                                      default=[],
                                      help='Optional additional protein databases. '\
                                           ' These will be searched with CRB-blast.'
@@ -187,7 +187,7 @@ class DammitApp(object):
 
         databases.DatabaseHandler(self.args).handle()
 
-        
+
     def handle_dependencies(self):
         common.print_header('submodule: dependencies', level=1)
 
@@ -203,5 +203,3 @@ class DammitApp(object):
         db_handler.check_or_fail()
 
         annotate.AnnotateHandler(self.args, db_handler.databases).handle()
-
-

@@ -1,3 +1,11 @@
+2015-03-03  Camille Scott  <camille.scott.w@gmail.com>
+
+	* Unify internal coordinates as 0-based half-open.
+	* First iteration of refactored parsers, MafParser.
+	* Switch to using ali_coord for HMMER.
+	* Fix the TaskError associated with HMMER remapping
+	  once and for all.
+
 2015-02-25  Camille Scott  <camille.scott.w@gmail.com>
 
 	* Add missing acceptance test data.

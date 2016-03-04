@@ -15,3 +15,5 @@ distribute-*.egg
 dammit.egg-info/
 *.so
 *~
+
+*.tags*
