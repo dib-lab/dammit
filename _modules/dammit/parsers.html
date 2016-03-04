@@ -49,41 +49,52 @@
 
 <span class="kn">from</span> <span class="nn">blast</span> <span class="kn">import</span> <span class="n">remap_blast_coords_df</span> <span class="k">as</span> <span class="n">remap_blast</span>
 
-<span class="n">blast_cols</span> <span class="o">=</span> <span class="p">[(</span><span class="s">&#39;qseqid&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">),</span> 
-              <span class="p">(</span><span class="s">&#39;sseqid&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">),</span> 
-              <span class="p">(</span><span class="s">&#39;pident&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span> 
-              <span class="p">(</span><span class="s">&#39;length&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span> 
-              <span class="p">(</span><span class="s">&#39;mismatch&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span> 
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">dammit uses 0-based, half-open intervals as its internal representation, as</span>
+<span class="sd">spake by Saint Dijkstra (structured programs be upon Him) on the 397868400th</span>
+<span class="sd">integer of Our Unix and observed by all pious and good followers of the Code.</span>
+<span class="sd">Beware, fellow bioinformaticians! Heisenbugs and untyped Lambda Calculus be</span>
+<span class="sd">upon ye who break from this most holy writ! Wretched followers of the 1,</span>
+<span class="sd">demon peddlers of the fully closed and fully open intervals, sewers of discord!</span>
+<span class="sd">Doom and damnation, dammit!</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+
+<span class="n">blast_cols</span> <span class="o">=</span> <span class="p">[(</span><span class="s">&#39;qseqid&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">),</span>
+              <span class="p">(</span><span class="s">&#39;sseqid&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">),</span>
+              <span class="p">(</span><span class="s">&#39;pident&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span>
+              <span class="p">(</span><span class="s">&#39;length&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span>
+              <span class="p">(</span><span class="s">&#39;mismatch&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span>
               <span class="p">(</span><span class="s">&#39;gapopen&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span>
-              <span class="p">(</span><span class="s">&#39;qstart&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span> 
-              <span class="p">(</span><span class="s">&#39;qend&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span> 
-              <span class="p">(</span><span class="s">&#39;sstart&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span> 
-              <span class="p">(</span><span class="s">&#39;send&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span> 
-              <span class="p">(</span><span class="s">&#39;evalue&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span> 
+              <span class="p">(</span><span class="s">&#39;qstart&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span>
+              <span class="p">(</span><span class="s">&#39;qend&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span>
+              <span class="p">(</span><span class="s">&#39;sstart&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span>
+              <span class="p">(</span><span class="s">&#39;send&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span>
+              <span class="p">(</span><span class="s">&#39;evalue&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span>
               <span class="p">(</span><span class="s">&#39;bitscore&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">)]</span>
 
-<span class="n">hmmscan_cols</span> <span class="o">=</span> <span class="p">[(</span><span class="s">&#39;target_name&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">),</span> 
-                <span class="p">(</span><span class="s">&#39;target_accession&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">),</span> 
+<span class="n">hmmscan_cols</span> <span class="o">=</span> <span class="p">[(</span><span class="s">&#39;target_name&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">),</span>
+                <span class="p">(</span><span class="s">&#39;target_accession&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">),</span>
                 <span class="p">(</span><span class="s">&#39;tlen&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span>
-                <span class="p">(</span><span class="s">&#39;query_name&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">),</span> 
-                <span class="p">(</span><span class="s">&#39;query_accession&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">),</span> 
+                <span class="p">(</span><span class="s">&#39;query_name&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">),</span>
+                <span class="p">(</span><span class="s">&#39;query_accession&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">),</span>
                 <span class="p">(</span><span class="s">&#39;query_len&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span>
-                <span class="p">(</span><span class="s">&#39;full_evalue&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span> 
-                <span class="p">(</span><span class="s">&#39;full_score&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span> 
-                <span class="p">(</span><span class="s">&#39;full_bias&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span> 
-                <span class="p">(</span><span class="s">&#39;domain_num&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span> 
-                <span class="p">(</span><span class="s">&#39;domain_total&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span> 
-                <span class="p">(</span><span class="s">&#39;domain_c_evalue&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span> 
+                <span class="p">(</span><span class="s">&#39;full_evalue&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span>
+                <span class="p">(</span><span class="s">&#39;full_score&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span>
+                <span class="p">(</span><span class="s">&#39;full_bias&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span>
+                <span class="p">(</span><span class="s">&#39;domain_num&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span>
+                <span class="p">(</span><span class="s">&#39;domain_total&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span>
+                <span class="p">(</span><span class="s">&#39;domain_c_evalue&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span>
                 <span class="p">(</span><span class="s">&#39;domain_i_evalue&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span>
-                <span class="p">(</span><span class="s">&#39;domain_score&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span> 
-                <span class="p">(</span><span class="s">&#39;domain_bias&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span> 
-                <span class="p">(</span><span class="s">&#39;hmm_coord_from&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span> 
-                <span class="p">(</span><span class="s">&#39;hmm_coord_to&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span> 
-                <span class="p">(</span><span class="s">&#39;ali_coord_from&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span> 
-                <span class="p">(</span><span class="s">&#39;ali_coord_to&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span> 
-                <span class="p">(</span><span class="s">&#39;env_coord_from&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span> 
-                <span class="p">(</span><span class="s">&#39;env_coord_to&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span> 
-                <span class="p">(</span><span class="s">&#39;accuracy&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span> 
+                <span class="p">(</span><span class="s">&#39;domain_score&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span>
+                <span class="p">(</span><span class="s">&#39;domain_bias&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span>
+                <span class="p">(</span><span class="s">&#39;hmm_coord_from&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span>
+                <span class="p">(</span><span class="s">&#39;hmm_coord_to&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span>
+                <span class="p">(</span><span class="s">&#39;ali_coord_from&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span>
+                <span class="p">(</span><span class="s">&#39;ali_coord_to&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span>
+                <span class="p">(</span><span class="s">&#39;env_coord_from&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span>
+                <span class="p">(</span><span class="s">&#39;env_coord_to&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span>
+                <span class="p">(</span><span class="s">&#39;accuracy&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span>
                 <span class="p">(</span><span class="s">&#39;description&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">)]</span>
 
 <span class="n">cmscan_cols</span> <span class="o">=</span> <span class="p">[(</span><span class="s">&#39;target_name&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">),</span>
@@ -95,8 +106,8 @@
                <span class="p">(</span><span class="s">&#39;mdl_to&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span>
                <span class="p">(</span><span class="s">&#39;seq_from&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span>
                <span class="p">(</span><span class="s">&#39;seq_to&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span>
-               <span class="p">(</span><span class="s">&#39;strand&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">),</span> 
-               <span class="p">(</span><span class="s">&#39;trunc&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">),</span> 
+               <span class="p">(</span><span class="s">&#39;strand&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">),</span>
+               <span class="p">(</span><span class="s">&#39;trunc&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">),</span>
                <span class="p">(</span><span class="s">&#39;pass&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">),</span>
                <span class="p">(</span><span class="s">&#39;gc&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span>
                <span class="p">(</span><span class="s">&#39;bias&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span>
@@ -104,12 +115,6 @@
                <span class="p">(</span><span class="s">&#39;e_value&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span>
                <span class="p">(</span><span class="s">&#39;inc&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">),</span>
                <span class="p">(</span><span class="s">&#39;description&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">)]</span>
-
-<span class="n">gff3_transdecoder_cols</span> <span class="o">=</span> <span class="p">[(</span><span class="s">&#39;seqid&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">),</span> 
-                          <span class="p">(</span><span class="s">&#39;feature_type&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">),</span> 
-                          <span class="p">(</span><span class="s">&#39;start&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span> 
-                          <span class="p">(</span><span class="s">&#39;end&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span> 
-                          <span class="p">(</span><span class="s">&#39;strand&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">)]</span>
 
 <span class="n">gff_cols</span> <span class="o">=</span> <span class="p">[(</span><span class="s">&#39;seqid&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">),</span>
             <span class="p">(</span><span class="s">&#39;source&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">),</span>
@@ -143,12 +148,21 @@
 <span class="sd">    &#39;&#39;&#39;</span>
 
     <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
-        <span class="n">df</span><span class="p">[</span><span class="n">c</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">c</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">dtypes</span><span class="p">[</span><span class="n">c</span><span class="p">])</span></div>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">df</span><span class="p">[</span><span class="n">c</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">c</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">dtypes</span><span class="p">[</span><span class="n">c</span><span class="p">])</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="blast_to_df_iter"><a class="viewcode-back" href="../../dammit.html#dammit.parsers.blast_to_df_iter">[docs]</a><span class="k">def</span> <span class="nf">blast_to_df_iter</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s">&#39;</span><span class="se">\t</span><span class="s">&#39;</span><span class="p">,</span> <span class="n">chunksize</span><span class="o">=</span><span class="mi">10000</span><span class="p">,</span> <span class="n">remap</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+<div class="viewcode-block" id="blast_to_df_iter"><a class="viewcode-back" href="../../dammit.html#dammit.parsers.blast_to_df_iter">[docs]</a><span class="k">def</span> <span class="nf">blast_to_df_iter</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s">&#39;</span><span class="se">\t</span><span class="s">&#39;</span><span class="p">,</span> <span class="n">chunksize</span><span class="o">=</span><span class="mi">10000</span><span class="p">,</span> <span class="n">remap</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Iterator of DataFrames of length chunksize parsed from an</span>
 <span class="sd">    NCBI BLAST+ `-outfmt6` file.</span>
+
+<span class="sd">    Native BLAST+ uses an interval of the form [start,end), start &gt;= 1. This</span>
+<span class="sd">    changes to [end,start) when on the negative strand, apparently soley</span>
+<span class="sd">    to make other bioinformaticians suffer.</span>
+
+<span class="sd">    We convert to proper 0-based, half-open intervals.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        fn (str): The results file.</span>
@@ -241,6 +255,10 @@
     <span class="sd">&#39;&#39;&#39;Iterator over DataFrames of length chunksize from a given</span>
 <span class="sd">    GTF/GFF file.</span>
 
+<span class="sd">    GFF3 uses a 1-based, fully closed interval. Truly the devil&#39;s format.</span>
+
+<span class="sd">    We convert to proper 0-based, half-open intervals.</span>
+
 <span class="sd">    Args:</span>
 <span class="sd">        fn (str): Path to the file.</span>
 <span class="sd">        chunksize (int): Rows per iteration.</span>
@@ -257,7 +275,7 @@
 
 
     <span class="c"># Read everything into a DataFrame</span>
-    <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span>  <span class="n">pd</span><span class="o">.</span><span class="n">read_table</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s">&#39;</span><span class="se">\t</span><span class="s">&#39;</span><span class="p">,</span> <span class="n">comment</span><span class="o">=</span><span class="s">&#39;#&#39;</span><span class="p">,</span> 
+    <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span>  <span class="n">pd</span><span class="o">.</span><span class="n">read_table</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s">&#39;</span><span class="se">\t</span><span class="s">&#39;</span><span class="p">,</span> <span class="n">comment</span><span class="o">=</span><span class="s">&#39;#&#39;</span><span class="p">,</span>
                                 <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">_</span> <span class="ow">in</span> <span class="n">gff_cols</span><span class="p">],</span> <span class="n">na_values</span><span class="o">=</span><span class="s">&#39;.&#39;</span><span class="p">,</span>
                                 <span class="n">converters</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;attributes&#39;</span><span class="p">:</span> <span class="n">attr_col_func</span><span class="p">},</span>
                                 <span class="n">chunksize</span><span class="o">=</span><span class="n">chunksize</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
@@ -268,17 +286,21 @@
                           <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">attributes</span><span class="p">)),</span>
                           <span class="n">left_index</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">right_index</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
         <span class="k">del</span> <span class="n">gtf_df</span><span class="p">[</span><span class="s">&#39;attributes&#39;</span><span class="p">]</span>
-    
-        <span class="c"># Switch from [start, end] to [start, end)</span>
-        <span class="n">gtf_df</span><span class="o">.</span><span class="n">end</span> <span class="o">=</span> <span class="n">gtf_df</span><span class="o">.</span><span class="n">end</span> <span class="o">+</span> <span class="mi">1</span>
-        <span class="c">#convert_dtypes(gtf_df, dict(gff_cols))</span>
+
+        <span class="c"># Repent, repent!</span>
+        <span class="n">gtf_df</span><span class="o">.</span><span class="n">start</span> <span class="o">=</span> <span class="n">gtf_df</span><span class="o">.</span><span class="n">start</span> <span class="o">-</span> <span class="mi">1</span>
 
         <span class="k">yield</span> <span class="n">gtf_df</span></div>
 
 
-<div class="viewcode-block" id="crb_to_df_iter"><a class="viewcode-back" href="../../dammit.html#dammit.parsers.crb_to_df_iter">[docs]</a><span class="k">def</span> <span class="nf">crb_to_df_iter</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">chunksize</span><span class="o">=</span><span class="mi">10000</span><span class="p">,</span> <span class="n">remap</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+<div class="viewcode-block" id="crb_to_df_iter"><a class="viewcode-back" href="../../dammit.html#dammit.parsers.crb_to_df_iter">[docs]</a><span class="k">def</span> <span class="nf">crb_to_df_iter</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">chunksize</span><span class="o">=</span><span class="mi">10000</span><span class="p">,</span> <span class="n">remap</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Iterator of DataFrames of length chunksize parsed from</span>
 <span class="sd">    the results from CRBB version crb-blast 0.6.6.</span>
+
+<span class="sd">    crb-blast is given the same treatment as BLAST+, as that&#39;s what</span>
+<span class="sd">    it uses under the hood.</span>
+
+<span class="sd">    We convert to proper 0-based, half-open intervals.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        fn (str): The results file.</span>
@@ -301,41 +323,9 @@
         <span class="n">group</span><span class="p">[</span><span class="s">&#39;send&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">srange</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
         <span class="k">del</span> <span class="n">group</span><span class="p">[</span><span class="s">&#39;srange&#39;</span><span class="p">]</span>
 
-
         <span class="k">if</span> <span class="n">remap</span><span class="p">:</span>
             <span class="n">remap_blast</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
         <span class="k">yield</span> <span class="n">group</span></div>
-
-
-<div class="viewcode-block" id="parse_busco"><a class="viewcode-back" href="../../dammit.html#dammit.parsers.parse_busco">[docs]</a><span class="k">def</span> <span class="nf">parse_busco</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;Parse a single BUSCO summary file to a dictionary.</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        fn (str): The results file.</span>
-<span class="sd">    Returns:</span>
-<span class="sd">        dict: The parsed results.</span>
-<span class="sd">    &#39;&#39;&#39;</span>
-
-    <span class="n">res</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">ln</span> <span class="ow">in</span> <span class="n">fp</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">ln</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;C:&#39;</span><span class="p">):</span>
-                <span class="n">tokens</span> <span class="o">=</span> <span class="n">ln</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;,&#39;</span><span class="p">)</span>
-                <span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">tokens</span><span class="p">:</span>
-                    <span class="n">key</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">val</span> <span class="o">=</span> <span class="n">token</span><span class="o">.</span><span class="n">partition</span><span class="p">(</span><span class="s">&#39;:&#39;</span><span class="p">)</span>
-                    <span class="n">key</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-                    <span class="n">val</span> <span class="o">=</span> <span class="n">val</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s">&#39;%&#39;</span><span class="p">)</span>
-                    <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s">&#39;C&#39;</span><span class="p">:</span>
-                        <span class="n">valc</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">vald</span> <span class="o">=</span> <span class="n">val</span><span class="o">.</span><span class="n">partition</span><span class="p">(</span><span class="s">&#39;%&#39;</span><span class="p">)</span>
-                        <span class="n">valc</span> <span class="o">=</span> <span class="n">valc</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-                        <span class="n">vald</span> <span class="o">=</span> <span class="n">vald</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s">&#39;D:][%&#39;</span><span class="p">)</span>
-                        <span class="n">res</span><span class="p">[</span><span class="s">&#39;C(%)&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">valc</span>
-                        <span class="n">res</span><span class="p">[</span><span class="s">&#39;D(%)&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">vald</span>
-                    <span class="k">else</span><span class="p">:</span>
-                        <span class="k">if</span> <span class="n">key</span> <span class="o">!=</span> <span class="s">&#39;n&#39;</span><span class="p">:</span>
-                           <span class="n">key</span> <span class="o">+=</span> <span class="s">&#39;(%)&#39;</span>
-                        <span class="n">res</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s">&#39;%&#39;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">res</span></div>
 
 
 <div class="viewcode-block" id="busco_to_df"><a class="viewcode-back" href="../../dammit.html#dammit.parsers.busco_to_df">[docs]</a><span class="k">def</span> <span class="nf">busco_to_df</span><span class="p">(</span><span class="n">fn_list</span><span class="p">,</span> <span class="n">dbs</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;metazoa&#39;</span><span class="p">,</span> <span class="s">&#39;vertebrata&#39;</span><span class="p">]):</span>
@@ -367,6 +357,10 @@
     <span class="sd">&#39;&#39;&#39;Iterator over DataFrames of length chunksize from a given</span>
 <span class="sd">    hmmscan result file.</span>
 
+<span class="sd">    HMMER uses 1-based, fully open intervals. Another format of the devil.</span>
+
+<span class="sd">    We convert to proper 0-based, half-open intervals.</span>
+
 <span class="sd">    Args:</span>
 <span class="sd">        fn (str): Path to the hmmscan file.</span>
 <span class="sd">        chunksize (int): Hits per iteration.</span>
@@ -382,6 +376,9 @@
         <span class="n">convert_dtypes</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="nb">dict</span><span class="p">(</span><span class="n">hmmscan_cols</span><span class="p">))</span>
         <span class="n">df</span><span class="p">[</span><span class="s">&#39;full_query_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">query_name</span>
         <span class="n">df</span><span class="p">[</span><span class="s">&#39;query_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">query_name</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">split_query</span><span class="p">)</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">hmm_coord_from</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">hmm_coord_from</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">ali_coord_from</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">ali_coord_from</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">env_coord_from</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">env_coord_from</span> <span class="o">-</span><span class="mi">1</span>
         <span class="k">return</span> <span class="n">df</span>
 
     <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
@@ -405,6 +402,10 @@
     <span class="sd">&#39;&#39;&#39;Iterator over DataFrames of length chunksize from a given</span>
 <span class="sd">    cmscan result file.</span>
 
+<span class="sd">    1-based, fully open intervals. Truly Infernal.</span>
+
+<span class="sd">    We convert to proper 0-based, half-open intervals.</span>
+
 <span class="sd">    Args:</span>
 <span class="sd">        fn (str): Path to the cmscan file.</span>
 <span class="sd">        chunksize (int): Hits per iteration.</span>
@@ -415,6 +416,8 @@
     <span class="k">def</span> <span class="nf">build_df</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
         <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">cmscan_cols</span><span class="p">])</span>
         <span class="n">convert_dtypes</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="nb">dict</span><span class="p">(</span><span class="n">cmscan_cols</span><span class="p">))</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">mdl_from</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">mdl_from</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">seq_from</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">seq_from</span> <span class="o">-</span> <span class="mi">1</span>
         <span class="k">return</span> <span class="n">df</span>
 
     <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
@@ -433,125 +436,6 @@
 
     <span class="k">if</span> <span class="n">data</span><span class="p">:</span>
         <span class="k">yield</span> <span class="n">build_df</span><span class="p">(</span><span class="n">data</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="gff3_transdecoder_to_df_iter"><a class="viewcode-back" href="../../dammit.html#dammit.parsers.gff3_transdecoder_to_df_iter">[docs]</a><span class="k">def</span> <span class="nf">gff3_transdecoder_to_df_iter</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">chunksize</span><span class="o">=</span><span class="mi">10000</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;Iterator yeilding DataFrames of length chunksize</span>
-<span class="sd">    from a given TransDecoder GFF file.</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        fn (str): Path to the TransDecoder gff file.</span>
-<span class="sd">        chunksize (int): Rows per iteration.</span>
-<span class="sd">    Yields:</span>
-<span class="sd">        DataFrame: Pandas DataFrame with the predict gene features.</span>
-<span class="sd">    &#39;&#39;&#39;</span>
-
-    <span class="k">def</span> <span class="nf">build_df</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
-        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">gff3_transdecoder_cols</span><span class="p">])</span>
-        <span class="n">convert_dtype</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="nb">dict</span><span class="p">(</span><span class="n">gff3_transdecoder_cols</span><span class="p">))</span>
-        <span class="k">return</span> <span class="n">df</span>
-    
-    <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">ln</span> <span class="ow">in</span> <span class="n">fp</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">ln</span> <span class="o">==</span> <span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">:</span>
-                <span class="k">continue</span>
-            <span class="n">tokens</span> <span class="o">=</span> <span class="n">ln</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\t</span><span class="s">&#39;</span><span class="p">)</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">tokens</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">+</span> <span class="n">tokens</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="mi">5</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="n">tokens</span><span class="p">[</span><span class="mi">6</span><span class="p">]])</span>
-            <span class="k">except</span> <span class="ne">IndexError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                <span class="k">print</span> <span class="n">e</span>
-                <span class="k">print</span> <span class="n">tokens</span>
-                <span class="k">break</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">chunksize</span><span class="p">:</span>
-                <span class="k">yield</span> <span class="n">build_df</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-                <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
-
-    <span class="k">if</span> <span class="n">data</span><span class="p">:</span>
-        <span class="k">yield</span> <span class="n">build_df</span><span class="p">(</span><span class="n">data</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="maf_to_df_iter"><a class="viewcode-back" href="../../dammit.html#dammit.parsers.maf_to_df_iter">[docs]</a><span class="k">def</span> <span class="nf">maf_to_df_iter</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">chunksize</span><span class="o">=</span><span class="mi">10000</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;Iterator yielding DataFrames of length chunksize holding MAF alignments.</span>
-
-<span class="sd">    An extra column is added for bitscore, using the equation described here:</span>
-<span class="sd">        http://last.cbrc.jp/doc/last-evalues.html</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        fn (str): Path to the MAF alignment file.</span>
-<span class="sd">        chunksize (int): Alignments to parse per iteration.</span>
-<span class="sd">    Yields:</span>
-<span class="sd">        DataFrame: Pandas DataFrame with the alignments.</span>
-<span class="sd">    &#39;&#39;&#39;</span>
-
-    <span class="k">def</span> <span class="nf">fix_sname</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
-        <span class="n">new</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">partition</span><span class="p">(</span><span class="s">&#39;,&#39;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">new</span>
-
-    <span class="k">def</span> <span class="nf">build_df</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">LAMBDA</span><span class="p">,</span> <span class="n">K</span><span class="p">):</span>
-        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-        <span class="n">df</span><span class="p">[</span><span class="s">&#39;s_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s">&#39;s_name&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">fix_sname</span><span class="p">)</span>
-        <span class="nb">setattr</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s">&#39;LAMBDA&#39;</span><span class="p">,</span> <span class="n">LAMBDA</span><span class="p">)</span>
-        <span class="nb">setattr</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s">&#39;K&#39;</span><span class="p">,</span> <span class="n">K</span><span class="p">)</span>
-        <span class="n">df</span><span class="p">[</span><span class="s">&#39;bitscore&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">LAMBDA</span> <span class="o">*</span> <span class="n">df</span><span class="p">[</span><span class="s">&#39;score&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">K</span><span class="p">))</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">df</span>
-
-    <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">LAMBDA</span> <span class="o">=</span> <span class="bp">None</span>
-    <span class="n">K</span> <span class="o">=</span> <span class="bp">None</span>
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
-        <span class="k">while</span> <span class="p">(</span><span class="bp">True</span><span class="p">):</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">line</span> <span class="o">=</span> <span class="n">fp</span><span class="o">.</span><span class="n">next</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-            <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
-                <span class="k">break</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span><span class="p">:</span>
-                <span class="k">continue</span>
-            <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;#&#39;</span><span class="p">):</span>
-                <span class="k">if</span> <span class="s">&#39;lambda&#39;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
-                    <span class="n">meta</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s">&#39; #&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
-                    <span class="n">meta</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span><span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">partition</span><span class="p">(</span><span class="s">&#39;=&#39;</span><span class="p">),</span> <span class="n">meta</span><span class="p">)}</span>
-                    <span class="n">LAMBDA</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">meta</span><span class="p">[</span><span class="s">&#39;lambda&#39;</span><span class="p">])</span>
-                    <span class="n">K</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">meta</span><span class="p">[</span><span class="s">&#39;K&#39;</span><span class="p">])</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="k">continue</span>
-            <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;a&#39;</span><span class="p">):</span>
-                <span class="n">cur_aln</span> <span class="o">=</span> <span class="p">{}</span>
-
-                <span class="c"># Alignment info</span>
-                <span class="n">tokens</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
-                <span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">tokens</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
-                    <span class="n">key</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">val</span> <span class="o">=</span> <span class="n">token</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">partition</span><span class="p">(</span><span class="s">&#39;=&#39;</span><span class="p">)</span>
-                    <span class="n">cur_aln</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
-                
-                <span class="c"># First sequence info</span>
-                <span class="n">line</span> <span class="o">=</span> <span class="n">fp</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
-                <span class="n">tokens</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
-                <span class="n">cur_aln</span><span class="p">[</span><span class="s">&#39;s_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">tokens</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-                <span class="n">cur_aln</span><span class="p">[</span><span class="s">&#39;s_start&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">tokens</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
-                <span class="n">cur_aln</span><span class="p">[</span><span class="s">&#39;s_aln_len&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">tokens</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
-                <span class="n">cur_aln</span><span class="p">[</span><span class="s">&#39;s_strand&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">tokens</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span>
-                <span class="n">cur_aln</span><span class="p">[</span><span class="s">&#39;s_len&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">tokens</span><span class="p">[</span><span class="mi">5</span><span class="p">])</span>
-                
-                <span class="c"># First sequence info</span>
-                <span class="n">line</span> <span class="o">=</span> <span class="n">fp</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
-                <span class="n">tokens</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
-                <span class="n">cur_aln</span><span class="p">[</span><span class="s">&#39;q_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">tokens</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-                <span class="n">cur_aln</span><span class="p">[</span><span class="s">&#39;q_start&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">tokens</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
-                <span class="n">cur_aln</span><span class="p">[</span><span class="s">&#39;q_aln_len&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">tokens</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
-                <span class="n">cur_aln</span><span class="p">[</span><span class="s">&#39;q_strand&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">tokens</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span>
-                <span class="n">cur_aln</span><span class="p">[</span><span class="s">&#39;q_len&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">tokens</span><span class="p">[</span><span class="mi">5</span><span class="p">])</span>
-
-                <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cur_aln</span><span class="p">)</span>
-                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">chunksize</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="n">LAMBDA</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-                        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;old version of lastal; please update&quot;</span><span class="p">)</span>
-                    <span class="k">yield</span> <span class="n">build_df</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">LAMBDA</span><span class="p">,</span> <span class="n">K</span><span class="p">)</span>
-                    <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
-
-    <span class="k">if</span> <span class="n">data</span><span class="p">:</span>
-        <span class="k">yield</span> <span class="n">build_df</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">LAMBDA</span><span class="p">,</span> <span class="n">K</span><span class="p">)</span></div>
-    
 </pre></div>
 
           </div>

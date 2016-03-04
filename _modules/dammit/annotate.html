@@ -60,6 +60,7 @@
                    <span class="n">get_transdecoder_predict_task</span><span class="p">,</span> \
                    <span class="n">get_transdecoder_orf_task</span><span class="p">,</span> \
                    <span class="n">get_hmmscan_task</span><span class="p">,</span> \
+                   <span class="n">get_remap_hmmer_task</span><span class="p">,</span> \
                    <span class="n">get_cmscan_task</span><span class="p">,</span> \
                    <span class="n">get_lastal_task</span><span class="p">,</span> \
                    <span class="n">get_crb_blast_task</span><span class="p">,</span> \
@@ -76,20 +77,38 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="n">args</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">)</span>
 
-        <span class="sd">&#39;&#39;&#39; Output file attributes.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_init_filenames</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">doit_config</span> <span class="o">=</span> <span class="p">{</span>
+                        <span class="s">&#39;reporter&#39;</span><span class="p">:</span> <span class="n">LogReporter</span><span class="p">(</span><span class="n">logger</span><span class="p">),</span>
+                        <span class="s">&#39;backend&#39;</span><span class="p">:</span> <span class="n">common</span><span class="o">.</span><span class="n">DOIT_BACKEND</span><span class="p">,</span>
+                        <span class="s">&#39;verbosity&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">verbosity</span><span class="p">,</span>
+                        <span class="s">&#39;continue&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
+                        <span class="s">&#39;dep_file&#39;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">directory</span><span class="p">,</span> <span class="s">&#39;.&#39;</span> <span class="o">+</span>
+                                                 <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">transcriptome_fn</span><span class="p">)</span> <span class="o">+</span>
+                                                 <span class="s">&#39;.doit.db&#39;</span><span class="p">)</span>
+                      <span class="p">}</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">database_dict</span> <span class="o">=</span> <span class="n">database_dict</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tasks</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_tasks</span><span class="p">())</span>
+
+    <span class="k">def</span> <span class="nf">_init_filenames</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Initialize all the input/output filename atributes.</span>
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">input_transcriptome_fn</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">transcriptome</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_transcriptome_fn</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">transcriptome</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">transcriptome_fn</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_transcriptome_fn</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">names_fn</span> <span class="o">=</span> <span class="s">&#39;{0}.names.csv&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">transcriptome_fn</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">output_dir</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="n">out_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_transcriptome</span><span class="p">)</span> <span class="o">+</span> <span class="s">&#39;.dammit&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">names_fn</span> <span class="o">=</span> <span class="s">&#39;{0}.dammit.names.csv&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">transcriptome_fn</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">output_dir</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">out_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_transcriptome_fn</span><span class="p">)</span> <span class="o">+</span> <span class="s">&#39;.dammit&#39;</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">out_dir</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">output_dir</span>
+            <span class="n">out_dir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">output_dir</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">directory</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">out_dir</span><span class="p">)</span>
         
         <span class="bp">self</span><span class="o">.</span><span class="n">stats_fn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transcriptome_fn</span> <span class="o">+</span> <span class="s">&#39;.stats.json&#39;</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">busco_basename</span> <span class="o">=</span> <span class="s">&#39;{0}.busco.results&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">transcriptome_fn</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">busco_basename</span> <span class="o">=</span> <span class="s">&#39;{0}.{1}.busco.results&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">transcriptome_fn</span><span class="p">,</span>
+                                                             <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">busco_group</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">busco_dir</span> <span class="o">=</span> <span class="s">&#39;run_{0}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">busco_basename</span><span class="p">)</span>
         <span class="n">busco_summary_fn</span> <span class="o">=</span> <span class="s">&#39;short_summary_{0}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">transcriptome_fn</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">busco_summary_fn</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">busco_dir</span><span class="p">,</span>
@@ -100,29 +119,20 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">transdecoder_dir</span> <span class="o">=</span> <span class="s">&#39;{0}.transdecoder_dir&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">transcriptome_fn</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">transdecoder_orf_fn</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">transdecoder_dir</span><span class="p">,</span>
                                                 <span class="s">&#39;longest_orfs.pep&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">transdecoder_orf_gff3_fn</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">transdecoder_dir</span><span class="p">,</span>
+                                                     <span class="s">&#39;longest_orfs.gff3&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">transdecoder_pfam_fn</span> <span class="o">=</span> <span class="s">&#39;{0}.pfam.tbl&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">transdecoder_orf_fn</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">transdecoder_pep_fn</span> <span class="o">=</span> <span class="s">&#39;{0}.transdecoder.pep&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">transcriptome_fn</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">transdecoder_gff3_fn</span> <span class="o">=</span> <span class="s">&#39;{0}.transdecoder.gff3&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">transcriptome_fn</span><span class="p">)</span>
         
-        <span class="bp">self</span><span class="o">.</span><span class="n">pfam_fn</span> <span class="o">=</span> <span class="s">&#39;{0}.pfam.tbl&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">transcriptome_fn</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pfam_fn</span> <span class="o">=</span> <span class="s">&#39;{0}.pfam.csv&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">transcriptome_fn</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">rfam_fn</span> <span class="o">=</span> <span class="s">&#39;{0}.rfam.tbl&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">transcriptome_fn</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">orthodb_fn</span> <span class="o">=</span> <span class="s">&#39;{0}.x.orthodb.maf&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">transcriptome_fn</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">uniref_fn</span> <span class="o">=</span> <span class="s">&#39;{0}.x.uniref.maf&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">transcriptome_fn</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">user_pep_fn_dict</span> <span class="o">=</span> <span class="p">{}</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">doit_config</span> <span class="o">=</span> <span class="p">{</span>
-                        <span class="s">&#39;reporter&#39;</span><span class="p">:</span> <span class="n">LogReporter</span><span class="p">(</span><span class="n">logger</span><span class="p">),</span>
-                        <span class="s">&#39;backend&#39;</span><span class="p">:</span> <span class="n">common</span><span class="o">.</span><span class="n">DOIT_BACKEND</span><span class="p">,</span>
-                        <span class="s">&#39;verbosity&#39;</span><span class="p">:</span> <span class="n">common</span><span class="o">.</span><span class="n">DOIT_VERBOSITY</span><span class="p">,</span>
-                        <span class="s">&#39;continue&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
-                        <span class="s">&#39;dep_file&#39;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">directory</span><span class="p">,</span> <span class="s">&#39;.&#39;</span> <span class="o">+</span>
-                                                 <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">transcriptome_fn</span><span class="p">)</span> <span class="o">+</span>
-                                                 <span class="s">&#39;.doit.db&#39;</span><span class="p">)</span>
-                      <span class="p">}</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">database_dict</span> <span class="o">=</span> <span class="n">database_dict</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tasks</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_tasks</span><span class="p">())</span>
 
     <span class="k">def</span> <span class="nf">handle</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 
@@ -213,6 +223,10 @@
                                <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">n_threads</span><span class="p">,</span> 
                                <span class="n">common</span><span class="o">.</span><span class="n">CONFIG</span><span class="p">[</span><span class="s">&#39;settings&#39;</span><span class="p">][</span><span class="s">&#39;hmmer&#39;</span><span class="p">][</span><span class="s">&#39;hmmscan&#39;</span><span class="p">])</span>
 
+        <span class="k">yield</span> <span class="n">get_remap_hmmer_task</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">transdecoder_pfam_fn</span><span class="p">,</span>
+                                   <span class="bp">self</span><span class="o">.</span><span class="n">transdecoder_orf_gff3_fn</span><span class="p">,</span>
+                                   <span class="bp">self</span><span class="o">.</span><span class="n">pfam_fn</span><span class="p">)</span>
+
         <span class="n">predict_cfg</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">CONFIG</span><span class="p">[</span><span class="s">&#39;settings&#39;</span><span class="p">][</span><span class="s">&#39;transdecoder&#39;</span><span class="p">][</span><span class="s">&#39;predict&#39;</span><span class="p">]</span>
         <span class="k">yield</span> <span class="n">get_transdecoder_predict_task</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">transcriptome_fn</span><span class="p">,</span> 
                                             <span class="bp">self</span><span class="o">.</span><span class="n">transdecoder_pfam_fn</span><span class="p">,</span>
@@ -247,6 +261,18 @@
                                <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">n_threads</span><span class="p">,</span> 
                                <span class="n">lastal_cfg</span><span class="p">)</span>
 
+    <span class="k">def</span> <span class="nf">uniref_task</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="n">lastal_cfg</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">CONFIG</span><span class="p">[</span><span class="s">&#39;settings&#39;</span><span class="p">][</span><span class="s">&#39;last&#39;</span><span class="p">][</span><span class="s">&#39;lastal&#39;</span><span class="p">]</span>
+        <span class="n">uniref</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">database_dict</span><span class="p">[</span><span class="s">&#39;UNIREF&#39;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">get_lastal_task</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">transcriptome_fn</span><span class="p">,</span>
+                               <span class="n">uniref</span><span class="p">,</span>
+                               <span class="bp">self</span><span class="o">.</span><span class="n">uniref_fn</span><span class="p">,</span>
+                               <span class="bp">True</span><span class="p">,</span>
+                               <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">evalue</span><span class="p">,</span>
+                               <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">n_threads</span><span class="p">,</span>
+                               <span class="n">lastal_cfg</span><span class="p">)</span>
+
     <span class="k">def</span> <span class="nf">user_crb_tasks</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Run conditional recipricol best hits LAST (CRBL) against the</span>
 <span class="sd">        user-supplied databases.</span>
@@ -272,11 +298,13 @@
         <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">rename_task</span><span class="p">()</span>
         <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">stats_task</span><span class="p">()</span>
         <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">busco_task</span><span class="p">()</span>
-        <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">transeq_task</span><span class="p">()</span>
+        <span class="c">#yield self.transeq_task()</span>
         <span class="k">for</span> <span class="n">task</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">transdecoder_tasks</span><span class="p">():</span>
             <span class="k">yield</span> <span class="n">task</span>
         <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">cmscan_task</span><span class="p">()</span>
         <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">orthodb_task</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">full</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">uniref_task</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">task</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">user_crb_tasks</span><span class="p">():</span>
             <span class="k">yield</span> <span class="n">task</span>
 

@@ -83,7 +83,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">doit_config</span> <span class="o">=</span> <span class="p">{</span>
                             <span class="s">&#39;reporter&#39;</span><span class="p">:</span> <span class="n">LogReporter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">),</span>
                             <span class="s">&#39;backend&#39;</span><span class="p">:</span> <span class="n">common</span><span class="o">.</span><span class="n">DOIT_BACKEND</span><span class="p">,</span>
-                            <span class="s">&#39;verbosity&#39;</span><span class="p">:</span> <span class="n">common</span><span class="o">.</span><span class="n">DOIT_VERBOSITY</span><span class="p">,</span>
+                            <span class="s">&#39;verbosity&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">verbosity</span><span class="p">,</span>
                             <span class="s">&#39;continue&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
                             <span class="s">&#39;dep_file&#39;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">directory</span><span class="p">,</span> <span class="s">&#39;databases.doit.db&#39;</span><span class="p">)</span>
                            <span class="p">}</span>
@@ -109,11 +109,16 @@
                 <span class="n">common</span><span class="o">.</span><span class="n">run_tasks</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tasks</span><span class="p">,</span> <span class="n">doit_args</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">doit_config</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">common</span><span class="o">.</span><span class="n">print_header</span><span class="p">(</span><span class="s">&#39;Nothing to install&#39;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">missing</span><span class="p">:</span>
+                <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">check_or_fail</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">missing</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">check</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">missing</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&#39;Install databases to continue; exiting&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&#39;Install databases to continue.&#39;</span><span class="p">)</span>
+            <span class="n">common</span><span class="o">.</span><span class="n">print_header</span><span class="p">(</span><span class="s">&#39;to prepare databases, run: dammit databases&#39;</span>\
+                                <span class="s">&#39; --install&#39;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
             <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">check</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -135,9 +140,7 @@
         <span class="n">common</span><span class="o">.</span><span class="n">print_header</span><span class="p">(</span><span class="s">&#39;Database results&#39;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">missing</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s">&#39;Database prep incomplete&#39;</span><span class="p">)</span>
-            <span class="n">common</span><span class="o">.</span><span class="n">print_header</span><span class="p">(</span><span class="s">&#39;to prepare databases, run: dammit databases&#39;</span>\
-                                <span class="s">&#39; --install&#39;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s">&#39;Database prep incomplete...&#39;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&#39;All databases prepared!&#39;</span><span class="p">)</span>
 
@@ -155,11 +158,6 @@
 <span class="sd">            * uniref90 (protiens, if --full selected)</span>
 <span class="sd">        </span>
 <span class="sd">        User-supplied databases are downloaded separately.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            self.directory (str): Directory where the databases will be stored.</span>
-<span class="sd">            busco_db (str): The BUSCO group to use.</span>
-<span class="sd">            full (bool): Whether to do a full run and get UNIREF90 as well.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            dict: A dictionary of the final database paths.</span>
@@ -224,14 +222,15 @@
 
         <span class="c"># Get uniref90 if the user specifies</span>
         <span class="c"># Ignoring this until we have working CRBL</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">full</span> <span class="ow">and</span> <span class="bp">False</span><span class="p">:</span>
-            <span class="n">UNIREF</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">common</span><span class="o">.</span><span class="n">DATABASES</span><span class="p">[</span><span class="s">&#39;uniref90&#39;</span><span class="p">][</span><span class="s">&#39;filename&#39;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">full</span><span class="p">:</span>
+            <span class="n">UNIREF</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">directory</span><span class="p">,</span> 
+                                  <span class="n">common</span><span class="o">.</span><span class="n">DATABASES</span><span class="p">[</span><span class="s">&#39;uniref90&#39;</span><span class="p">][</span><span class="s">&#39;filename&#39;</span><span class="p">])</span>
             <span class="n">tasks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                <span class="n">get_download_and_gunzip_task</span><span class="p">(</span><span class="n">common</span><span class="o">.</span><span class="n">DATABASES</span><span class="p">[</span><span class="s">&#39;uniref90&#39;</span><span class="p">][</span><span class="s">&#39;url&#39;</span><span class="p">],</span> <span class="n">UNIREF</span><span class="p">)</span>
+                <span class="n">get_download_and_gunzip_task</span><span class="p">(</span><span class="n">common</span><span class="o">.</span><span class="n">DATABASES</span><span class="p">[</span><span class="s">&#39;uniref90&#39;</span><span class="p">][</span><span class="s">&#39;url&#39;</span><span class="p">],</span> 
+                                             <span class="n">UNIREF</span><span class="p">)</span>
             <span class="p">)</span>
             <span class="n">tasks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                <span class="n">get_blast_format_task</span><span class="p">(</span><span class="n">UNIREF</span><span class="p">,</span> <span class="n">UNIREF</span> <span class="o">+</span> <span class="s">&#39;.db&#39;</span><span class="p">,</span>
-                                      <span class="n">common</span><span class="o">.</span><span class="n">DATABASES</span><span class="p">[</span><span class="s">&#39;uniref90&#39;</span><span class="p">][</span><span class="s">&#39;db_type&#39;</span><span class="p">])</span>
+                <span class="n">get_lastdb_task</span><span class="p">(</span><span class="n">UNIREF</span><span class="p">,</span> <span class="n">UNIREF</span> <span class="o">+</span> <span class="s">&#39;.db&#39;</span><span class="p">,</span> <span class="n">lastdb_cfg</span><span class="p">,</span> <span class="bp">True</span><span class="p">)</span>
             <span class="p">)</span>
             <span class="n">UNIREF</span> <span class="o">+=</span> <span class="s">&#39;.db&#39;</span>
             <span class="n">databases</span><span class="p">[</span><span class="s">&#39;UNIREF&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">UNIREF</span><span class="p">)</span>
