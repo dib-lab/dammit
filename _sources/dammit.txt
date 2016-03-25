@@ -20,14 +20,6 @@ dammit.blast module
     :undoc-members:
     :show-inheritance:
 
-dammit.cblast module
---------------------
-
-.. automodule:: dammit.cblast
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 dammit.common module
 --------------------
 
@@ -83,15 +75,6 @@ dammit.tasks module
     :members:
     :undoc-members:
     :show-inheritance:
-
-dammit.taxonomy module
-----------------------
-
-.. automodule:: dammit.taxonomy
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 
 Module contents
 ---------------
