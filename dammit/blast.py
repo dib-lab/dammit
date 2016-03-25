@@ -65,5 +65,5 @@ def remap_blast_coords_df(df):
     df['send'] = coords[:,1]
     df['qstart'] = coords[:,2]
     df['qend'] = coords[:,3]
-    df['sstrand'] = coords[coords:,4]
+    df['sstrand'] = coords[:,4]
     df['qstrand'] = coords[:,5]
