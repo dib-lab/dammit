@@ -40,7 +40,7 @@ def run_tasks(tasks, args, config={'verbosity': 0}):
         def load_tasks(cmd, opt_values, pos_args):
             return tasks, config
    
-    DoitMain(Loader()).run(args)
+    return DoitMain(Loader()).run(args)
 
 
 def which(program):
