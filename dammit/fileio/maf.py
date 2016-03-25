@@ -4,15 +4,16 @@ from .base import ChunkParser
 
 class MafParser(ChunkParser):
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, filename, aln_strings=False, chunksize=10000, **kwargs):
+        self.aln_strings = aln_strings
         self.LAMBDA = None
         self.K = None
-        super(MafParser, self).__init__(*args, **kwargs)
+        super(MafParser, self).__init__(filename, chunksize=chunksize, **kwargs)
 
     def read(self):
         '''Read the entire file at once and return as a single DataFrame.
         '''
-        return pd.concat(self)
+        return pd.concat(self, ignore_index=True)
 
     def __iter__(self):
         '''Iterator yielding DataFrames of length chunksize holding MAF alignments.
@@ -60,6 +61,8 @@ class MafParser(ChunkParser):
                     cur_aln['s_aln_len'] = int(tokens[3])
                     cur_aln['s_strand'] = tokens[4]
                     cur_aln['s_len'] = int(tokens[5])
+                    if self.aln_strings:
+                        cur_aln['s_aln'] = tokens[6]
 
                     # First sequence info
                     line = fp.next()
@@ -69,6 +72,8 @@ class MafParser(ChunkParser):
                     cur_aln['q_aln_len'] = int(tokens[3])
                     cur_aln['q_strand'] = tokens[4]
                     cur_aln['q_len'] = int(tokens[5])
+                    if self.aln_strings:
+                        cur_aln['q_aln'] = tokens[6]
 
                     data.append(cur_aln)
                     if len(data) >= self.chunksize:
