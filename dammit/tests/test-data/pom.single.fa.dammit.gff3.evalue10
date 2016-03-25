@@ -1,7 +1,7 @@
 ##gff-version 3.2.1
 Transcript_0	HMMER	protein_hmm_match	1111	1203	0.13	.	.	ID=homology:7;Name=Poxvirus_B22R_N;Target=Poxvirus_B22R_N 33 63 +;Note=Poxvirus B22R protein N-terminal;accuracy=0.8;env_coords=1045 1227;Dbxref="Pfam:PF13169.2"
 Transcript_0	HMMER	protein_hmm_match	2428	2499	3900.0	.	.	ID=homology:8;Name=Poxvirus_B22R_N;Target=Poxvirus_B22R_N 53 77 +;Note=Poxvirus B22R protein N-terminal;accuracy=0.78;env_coords=2407 2514;Dbxref="Pfam:PF13169.2"
-Transcript_0	HMMER	protein_hmm_match	3604	4089	2.1000000000000002e-10	.	.	ID=homology:3;Name=DEAD;Target=DEAD 10 174 +;Note=DEAD/DEAH box helicase;accuracy=0.75;env_coords=3580 4092;Dbxref="Pfam:PF00270.25"
+Transcript_0	HMMER	protein_hmm_match	3604	4089	2.1e-10	.	.	ID=homology:3;Name=DEAD;Target=DEAD 10 174 +;Note=DEAD/DEAH box helicase;accuracy=0.75;env_coords=3580 4092;Dbxref="Pfam:PF00270.25"
 Transcript_0	HMMER	protein_hmm_match	4207	4548	3.2e-18	.	.	ID=homology:1;Name=Helicase_C;Target=Helicase_C 8 105 +;Note=Helicase conserved C-terminal domain;accuracy=0.87;env_coords=4186 4548;Dbxref="Pfam:PF00271.27"
 Transcript_0	HMMER	protein_hmm_match	5218	5274	11000.0	.	.	ID=homology:2;Name=Helicase_C;Target=Helicase_C 16 34 +;Note=Helicase conserved C-terminal domain;accuracy=0.78;env_coords=5203 5307;Dbxref="Pfam:PF00271.27"
 Transcript_0	HMMER	protein_hmm_match	5413	5460	0.067	.	.	ID=homology:5;Name=zf-CCHC;Target=zf-CCHC 2 17 +;Note=Zinc knuckle;accuracy=0.93;env_coords=5410 5463;Dbxref="Pfam:PF00098.19"

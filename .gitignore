@@ -6,6 +6,8 @@
 *.fasta
 *.fasta.gz
 *.dammit
+*.dammit.evalue10
+*.dammit.udb
 .eggs/
 deps/
 build/

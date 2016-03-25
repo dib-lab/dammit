@@ -187,10 +187,19 @@ class TestDammit(TestCase):
 
         with TemporaryDirectory() as td,\
              TestData('pom.single.fa', td) as transcripts,\
-             TestData('pep.fa', td) as pep:
+             TestData('pep.fa', td) as pep, \
+             TestData('pom.single.fa.dammit.gff3.udb', td) as exp_gff3,\
+             TestData('pom.single.fa.dammit.fasta.udb', td) as exp_fasta:
 
             args = ['annotate', transcripts, '--user-databases', pep]
             status, out, err = run(args, in_directory=td)
+
+            outdir = '{0}.dammit'.format(transcripts)
+            gff3_fn = os.path.join(outdir, 'pom.single.fa.dammit.gff3')
+            fasta_fn = os.path.join(outdir, 'pom.single.fa.dammit.fasta')
+
+            self.assertEquals(open(gff3_fn).read(), open(exp_gff3).read())
+            self.assertEquals(open(fasta_fn).read(), open(exp_fasta).read())
 
     def test_annotate_name(self):
         '''Test the --name argument.

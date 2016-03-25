@@ -662,18 +662,25 @@ def get_annotate_fasta_task(transcriptome_fn, gff3_fn, output_fn):
 @create_task_object
 def get_transcriptome_stats_task(transcriptome, output_fn):
 
+    import re
+
     name = 'transcriptome_stats:' + os.path.basename(transcriptome)
     K = 25
+    DNA = re.compile(r'[ACGT]*$', flags=re.IGNORECASE)
 
     def parse(fn):
         hll = HLLCounter(.01, K)
         lens = []
         names = []
         gc_len = 0
+        n_ambiguous = 0
         for contig in ReadParser(fn):
             lens.append(len(contig.sequence))
             names.append(contig.name)
-            hll.consume_string(contig.sequence)
+            if DNA.match(contig.sequence) is None:
+                n_bad += 1
+            else:
+                hll.consume_string(contig.sequence)
             gc_len += contig.sequence.count('C')
             gc_len += contig.sequence.count('G')
         S = pd.Series(lens, index=names)
@@ -682,7 +689,7 @@ def get_transcriptome_stats_task(transcriptome, output_fn):
         except AttributeError:
             S.sort()
         gc_perc = float(gc_len) / S.sum()
-        return S, hll.estimate_cardinality(), gc_perc
+        return S, hll.estimate_cardinality(), gc_perc, n_ambiguous
 
     def calc_NX(lens, X):
         N = lens.sum()
@@ -700,7 +707,7 @@ def get_transcriptome_stats_task(transcriptome, output_fn):
         return NXlen, NXpos
 
     def cmd():
-        lens, uniq_kmers, gc_perc = parse(transcriptome)
+        lens, uniq_kmers, gc_perc, n_amb = parse(transcriptome)
 
         exp_kmers = (lens - (K+1)).sum()
         redundancy = float(exp_kmers - uniq_kmers) / exp_kmers
@@ -718,6 +725,7 @@ def get_transcriptome_stats_task(transcriptome, output_fn):
                  'N50pos': N50pos,
                  '25_mers': exp_kmers,
                  '25_mers_unique': uniq_kmers,
+                 'n_ambiguous': n_amb,
                  'redundancy': redundancy,
                  'GCperc': gc_perc}
 
