@@ -1,3 +1,10 @@
+2015-03-25  Camille Scott  <camille.scott.w@gmail.com>
+
+    * Add handling for non-RNA bases in transcriptome stats task (#49)
+	* Fix broken verbosity argument
+	* Fix typo breaking blast remap (#51)
+	* Add better tests for --user-databases (#51)
+
 2015-03-03  Camille Scott  <camille.scott.w@gmail.com>
 
 	* Unify internal coordinates as 0-based half-open.
