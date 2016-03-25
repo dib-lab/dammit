@@ -79,6 +79,7 @@ class DammitApp(object):
                                 )
             parser.add_argument('--verbosity',
                                 default=0,
+                                type=int,
                                 choices=[0,1,2],
                                 help='Verbosity level for doit tasks.'
                                 )
