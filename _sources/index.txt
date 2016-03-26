@@ -30,16 +30,17 @@ programs with nonfree licenses *or* programs which are overly difficult to insta
 and configure -- we believe that access is a part of openness.
 
 Details
-=======
+-------
 
 :Authors: Camille Scott
 :Contact: camille.scott.w@gmail.com
 :GitHub: https://github.com/camillescott/dammit
 :License: BSD
+:Citation: :download:`bibtex <_static/CITATION>`
 .. :Build: .. image:: https://drone.io/github.com/camillescott/dammit/status.png
 
 Topics
-======
+------
 
 .. toctree::
     :maxdepth: 1
