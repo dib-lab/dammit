@@ -8,11 +8,11 @@ demon peddlers of the fully closed and fully open intervals, sowers of discord!
 Doom and damnation, dammit!
 
 Example:
-    (for those wishing to attain holiness)
+    (for those wishing to attain holiness)::
 
-    from dammit import parsers
-    for group_df in parsers.cmscan_to_df_iter(filename):
-        do_stuff(group_df)
+        from dammit import parsers
+        for group_df in parsers.cmscan_to_df_iter(filename):
+            do_stuff(group_df)
 
 '''
 import csv
