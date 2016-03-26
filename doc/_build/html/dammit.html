@@ -27,6 +27,7 @@
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="author" title="About these documents" href="about.html" />
     <link rel="top" title="dammit 0.2.8 documentation" href="index.html" />
+    <link rel="prev" title="Databases" href="databases.html" />
    
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
@@ -434,11 +435,12 @@ upon ye who break from this most holy writ! Wretched followers of the 1,
 demon peddlers of the fully closed and fully open intervals, sowers of discord!
 Doom and damnation, dammit!</p>
 <p class="rubric">Example</p>
-<p>(for those wishing to attain holiness)</p>
-<p>from dammit import parsers
-for group_df in parsers.cmscan_to_df_iter(filename):</p>
-<blockquote>
-<div>do_stuff(group_df)</div></blockquote>
+<p>(for those wishing to attain holiness):</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">dammit</span> <span class="kn">import</span> <span class="n">parsers</span>
+<span class="k">for</span> <span class="n">group_df</span> <span class="ow">in</span> <span class="n">parsers</span><span class="o">.</span><span class="n">cmscan_to_df_iter</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+    <span class="n">do_stuff</span><span class="p">(</span><span class="n">group_df</span><span class="p">)</span>
+</pre></div>
+</div>
 <dl class="function">
 <dt id="dammit.parsers.blast_to_df_iter">
 <code class="descclassname">dammit.parsers.</code><code class="descname">blast_to_df_iter</code><span class="sig-paren">(</span><em>fn</em>, <em>delimiter='\t'</em>, <em>chunksize=10000</em>, <em>remap=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/parsers.html#blast_to_df_iter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.parsers.blast_to_df_iter" title="Permalink to this definition">¶</a></dt>
@@ -885,6 +887,7 @@ objects</p>
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="databases.html" title="previous chapter">Databases</a></li>
   </ul></li>
 </ul>
 </div>

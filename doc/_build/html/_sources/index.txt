@@ -38,7 +38,8 @@ Details
 :License: BSD
 .. :Build: .. image:: https://drone.io/github.com/camillescott/dammit/status.png
 
-Contents:
+Topics
+======
 
 .. toctree::
     :maxdepth: 1
@@ -47,12 +48,5 @@ Contents:
     tutorial
     usage
     databases
-
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+    dammit
 
