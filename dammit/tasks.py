@@ -284,7 +284,7 @@ def get_lastal_task(query, db, out_fn, cfg, translate=False,
     if translate:
         lastal_cmd.append('-F' + str(cfg['frameshift']))
     if cutoff is not None:
-        cutoff = round(1.0 / cutoff)
+        cutoff = round(1.0 / cutoff, 2)
         lastal_cmd.append('-D' + str(cutoff))
     lastal_cmd.append(db)
     lastal_cmd = '"{0}"'.format(' '.join(lastal_cmd))
