@@ -29,7 +29,8 @@ First get packages from the Ubuntu archives::
     sudo apt-get update
     sudo apt-get install python-pip python-dev python-numpy git ruby hmmer unzip \
         infernal ncbi-blast+ liburi-escape-xs-perl emboss liburi-perl \
-        python-sklearn build-essential libsm6 libxrender1 libfontconfig1
+        python-sklearn build-essential libsm6 libxrender1 libfontconfig1 \
+        parallel
     sudo gem install crb-blast
 
 Install some packages manually::
@@ -38,20 +39,21 @@ Install some packages manually::
     curl -LO https://github.com/TransDecoder/TransDecoder/archive/2.0.1.tar.gz
     tar -xvzf 2.0.1.tar.gz
     cd TransDecoder-2.0.1; make
-    export PATH=$PATH:$HOME/TransDecoder-2.0.1
+    export PATH=$HOME/TransDecoder-2.0.1:$PATH
 
     cd
     curl -LO http://last.cbrc.jp/last-658.zip
     unzip last-658.zip
     cd last-658
     make
-    export PATH=$PATH:$HOME/last-658/src
+    export PATH=$HOME/last-658/src:$PATH
+    export PATH=$HOME/last-658/scripts:$PATH
 
     cd
     curl -LO http://busco.ezlab.org/files/BUSCO_v1.1b1.tar.gz
     tar -xvzf BUSCO_v1.1b1.tar.gz
     chmod +x BUSCO_v1.1b1/*.py
-    export PATH=$PATH:$HOME/BUSCO_v1.1b1
+    export PATH=$HOME/BUSCO_v1.1b1:$PATH
     cd
 
 To add these to your environment permanently::

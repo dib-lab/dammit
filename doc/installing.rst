@@ -21,7 +21,7 @@ First, let's get packages from the Ubuntu PPAs::
     sudo apt-get update
     sudo apt-get install git ruby hmmer unzip build-essential \
         infernal ncbi-blast+ liburi-escape-xs-perl emboss liburi-perl \
-        libsm6 libxrender1 libfontconfig1
+        libsm6 libxrender1 libfontconfig1 parallel
  
 If you're on Ubuntu 15.10, you can also install TransDecoder and LAST through aptitude::
 
@@ -35,7 +35,7 @@ terminal::
     curl -LO https://github.com/TransDecoder/TransDecoder/archive/2.0.1.tar.gz
     tar -xvzf 2.0.1.tar.gz
     cd TransDecoder-2.0.1; make
-    export PATH=$PATH:$HOME/TransDecoder-2.0.1
+    export PATH=$HOME/TransDecoder-2.0.1:$PATH
 
 To get LAST::
 
@@ -44,14 +44,15 @@ To get LAST::
     unzip last-658.zip
     cd last-658
     make
-    export PATH=$PATH:$HOME/last-658/src
-
+    export PATH=$HOME/last-658/src:$PATH
+    export PATH=$HOME/last-658/scripts:$PATH
 
 The above commands will only install them for the current session; to
 keep it installed, append the exports to your bash profile::
 
-    echo 'export PATH=$PATH:$HOME/TransDecoder-2.0.1' >> $HOME/.bashrc
-    echo 'export PATH=$PATH:$HOME/last-658/src' >> $HOME/.bashrc
+    echo 'export PATH=$HOME/TransDecoder-2.0.1:$PATH' >> $HOME/.bashrc
+    echo 'export PATH=$HOME/last-658/src:$PATH' >> $HOME/.bashrc
+    echo 'export PATH=$HOME/last-658/scripts:$PATH' >> $HOME/.bashrc
 
 Next, we need to install Conditional Reciprocal Best-hits Blast (CRBB). The algorithm is 
 described in `Aubry et al. <http://journals.plos.org/plosgenetics/article?id=10.1371/journal.pgen.1004365>`__,
@@ -67,11 +68,11 @@ commands::
     curl -LO http://busco.ezlab.org/files/BUSCO_v1.1b1.tar.gz
     tar -xvzf BUSCO_v1.1b1.tar.gz
     chmod +x BUSCO_v1.1b1/*.py
-    export PATH=$PATH:$HOME/BUSCO_v1.1b1
+    export PATH=$HOME/BUSCO_v1.1b1:$PATH
 
 ...and once again, to install it permanently::
 
-    echo 'export PATH=$PATH:$HOME/BUSCO_v1.1b1' >> $HOME/.bashrc
+    echo 'export PATH=$HOME/BUSCO_v1.1b1:$PATH' >> $HOME/.bashrc
 
 Python Dependencies
 --------------------

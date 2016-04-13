@@ -1,3 +1,9 @@
+2015-04-12  Camille Scott  <camille.scott.w@gmail.com>
+
+    * Make use of LAST's parallel-fasta script to
+	  efficiently parallelize both lastal and hmmscan.
+	* Update installation docs.
+
 2015-03-25  Camille Scott  <camille.scott.w@gmail.com>
 
     * Add handling for non-RNA bases in transcriptome stats task (#49)
