@@ -420,7 +420,6 @@ def get_hmmpress_task(db_filename, hmmer_cfg):
             'uptodate': [True],
             'clean': [clean_targets]}
 
-
 @create_task_object
 def get_hmmscan_task(input_filename, output_filename, db_filename,
                      cutoff, n_threads, hmmer_cfg):
@@ -428,10 +427,15 @@ def get_hmmscan_task(input_filename, output_filename, db_filename,
     name = 'hmmscan:' + os.path.basename(input_filename) + '.x.' + \
                 os.path.basename(db_filename)
 
-    exc = which('hmmscan')
+    hmmscan_exc = which('hmmscan')
+    parallel_exc = which('parallel-fasta')
+
     stat = output_filename + '.out'
-    cmd = '{exc} --cpu {n_threads} --domtblout {output_filename} -E {cutoff}'\
-          ' -o {stat} {db_filename} {input_filename}'.format(**locals())
+    hmmscan_cmd = [hmmscan_exc, '--cpu', '1', '--domtblout', output_filename, 
+                   '-E', str(cutoff), '-o', stat, db_filename, '-']
+    hmmscan_cmd = '"{0}"'.format(' '.join(hmmscan_cmd))
+    cmd = ' '.join([parallel_exc, '-j', str(n_threads), hmmscan_cmd, '<',
+                    input_filename])
 
     return {'name': name,
             'title': title_with_actions,
