@@ -289,7 +289,7 @@ def get_lastal_task(query, db, out_fn, cfg, translate=False,
     lastal_cmd.append(db)
     lastal_cmd = '"{0}"'.format(' '.join(lastal_cmd))
 
-    cmd = [parallel_exc, '-j', str(n_threads), lastal_cmd, 
+    cmd = [parallel_exc, '--no-notice', '-j', str(n_threads), lastal_cmd, 
            '<', query, '>', out_fn]
     cmd = ' '.join(cmd)
 
@@ -434,7 +434,7 @@ def get_hmmscan_task(input_filename, output_filename, db_filename,
     hmmscan_cmd = [hmmscan_exc, '--cpu', '1', '--domtblout', output_filename, 
                    '-E', str(cutoff), '-o', stat, db_filename, '-']
     hmmscan_cmd = '"{0}"'.format(' '.join(hmmscan_cmd))
-    cmd = ' '.join([parallel_exc, '-j', str(n_threads), hmmscan_cmd, '<',
+    cmd = ' '.join([parallel_exc, '--no-notice' ,'-j', str(n_threads), hmmscan_cmd, '<',
                     input_filename])
 
     return {'name': name,
