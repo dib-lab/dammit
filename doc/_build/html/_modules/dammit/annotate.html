@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>dammit.annotate &mdash; dammit 0.2.8 documentation</title>
+    <title>dammit.annotate &mdash; dammit 0.2.9 documentation</title>
     
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.2.8',
+        VERSION:     '0.2.9',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,7 +26,7 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="author" title="About these documents" href="../../about.html" />
-    <link rel="top" title="dammit 0.2.8 documentation" href="../../index.html" />
+    <link rel="top" title="dammit 0.2.9 documentation" href="../../index.html" />
     <link rel="up" title="Module code" href="../index.html" />
    
   
@@ -51,7 +51,6 @@
 
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">common</span>
 <span class="kn">from</span> <span class="nn">.log</span> <span class="kn">import</span> <span class="n">LogReporter</span>
-<span class="c">#from .crbl import CRBL</span>
 <span class="kn">from</span> <span class="nn">.report</span> <span class="kn">import</span> <span class="n">get_report_tasks</span>
 <span class="kn">from</span> <span class="nn">.tasks</span> <span class="kn">import</span> <span class="n">get_transcriptome_stats_task</span><span class="p">,</span> \
                    <span class="n">get_busco_task</span><span class="p">,</span> \
@@ -256,10 +255,10 @@
         <span class="k">return</span> <span class="n">get_lastal_task</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">transcriptome_fn</span><span class="p">,</span> 
                                <span class="n">orthodb</span><span class="p">,</span> 
                                <span class="bp">self</span><span class="o">.</span><span class="n">orthodb_fn</span><span class="p">,</span> 
-                               <span class="bp">True</span><span class="p">,</span>
-                               <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">evalue</span><span class="p">,</span>
-                               <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">n_threads</span><span class="p">,</span> 
-                               <span class="n">lastal_cfg</span><span class="p">)</span>
+                               <span class="n">lastal_cfg</span><span class="p">,</span>
+                               <span class="n">translate</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+                               <span class="n">cutoff</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">evalue</span><span class="p">,</span>
+                               <span class="n">n_threads</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">n_threads</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">uniref_task</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 
@@ -268,10 +267,10 @@
         <span class="k">return</span> <span class="n">get_lastal_task</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">transcriptome_fn</span><span class="p">,</span>
                                <span class="n">uniref</span><span class="p">,</span>
                                <span class="bp">self</span><span class="o">.</span><span class="n">uniref_fn</span><span class="p">,</span>
-                               <span class="bp">True</span><span class="p">,</span>
-                               <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">evalue</span><span class="p">,</span>
-                               <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">n_threads</span><span class="p">,</span>
-                               <span class="n">lastal_cfg</span><span class="p">)</span>
+                               <span class="n">lastal_cfg</span><span class="p">,</span>
+                               <span class="n">translate</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+                               <span class="n">cutoff</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">evalue</span><span class="p">,</span>
+                               <span class="n">n_threads</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">n_threads</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">user_crb_tasks</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Run conditional recipricol best hits LAST (CRBL) against the</span>
