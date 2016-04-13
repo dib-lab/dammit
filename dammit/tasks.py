@@ -261,7 +261,8 @@ def get_lastdb_task(db_fn, db_out_prefix, lastdb_cfg, prot=True):
 
 
 @create_task_object
-def get_lastal_task(query, db, out_fn, translate, cutoff, n_threads, lastal_cfg):
+def get_lastal_task(query, db, out_fn, cfg, translate=False, 
+                    cutoff=0.00001, n_threads=1):
     '''Create a pydoit task to run lastal
 
     Args:
@@ -270,22 +271,29 @@ def get_lastal_task(query, db, out_fn, translate, cutoff, n_threads, lastal_cfg)
         out_fn (str): Destination file for alignments.
         translate (bool): True if query is a nucleotide FASTA.
         n_threads (int): Number of threads to run with.
-        lastal_cfg (dict): Config, must contain key params holding str.
+        cfg (dict): Config, must contain key params holding str.
     Returns:
         dict: A pydoit task.
     '''
 
-    exc = which('lastal')
-    params = lastal_cfg['params']
+    lastal_exc = which('lastal')
+    parallel_exc = which('parallel-fasta')
 
+    params = cfg['params']
+    lastal_cmd = [lastal_exc]
     if translate:
-        params += ' -F' + str(lastal_cfg['frameshift'])
+        lastal_cmd.append('-F' + str(cfg['frameshift']))
     if cutoff is not None:
-        cutoff = 1.0 / cutoff
-        params += ' -D' + str(cutoff)
-    cmd = '{exc} {params} {db} {query} > {out_fn}'.format(**locals())
+        cutoff = round(1.0 / cutoff, 2)
+        lastal_cmd.append('-D' + str(cutoff))
+    lastal_cmd.append(db)
+    lastal_cmd = '"{0}"'.format(' '.join(lastal_cmd))
 
-    name = 'lastal:' + os.path.join(out_fn)
+    cmd = [parallel_exc, '-j', str(n_threads), lastal_cmd, 
+           '<', query, '>', out_fn]
+    cmd = ' '.join(cmd)
+
+    name = 'lastal:{0}'.format(os.path.join(out_fn))
 
     return {'name': name,
             'title': title_with_actions,
@@ -313,7 +321,6 @@ def get_maf_best_hits_task(maf_fn, output_fn):
             'targets': [output_fn],
             'file_dep': [maf_fn],
             'clean': [clean_targets]}
-
 
 
 @create_task_object
@@ -413,7 +420,6 @@ def get_hmmpress_task(db_filename, hmmer_cfg):
             'uptodate': [True],
             'clean': [clean_targets]}
 
-
 @create_task_object
 def get_hmmscan_task(input_filename, output_filename, db_filename,
                      cutoff, n_threads, hmmer_cfg):
@@ -421,10 +427,15 @@ def get_hmmscan_task(input_filename, output_filename, db_filename,
     name = 'hmmscan:' + os.path.basename(input_filename) + '.x.' + \
                 os.path.basename(db_filename)
 
-    exc = which('hmmscan')
+    hmmscan_exc = which('hmmscan')
+    parallel_exc = which('parallel-fasta')
+
     stat = output_filename + '.out'
-    cmd = '{exc} --cpu {n_threads} --domtblout {output_filename} -E {cutoff}'\
-          ' -o {stat} {db_filename} {input_filename}'.format(**locals())
+    hmmscan_cmd = [hmmscan_exc, '--cpu', '1', '--domtblout', output_filename, 
+                   '-E', str(cutoff), '-o', stat, db_filename, '-']
+    hmmscan_cmd = '"{0}"'.format(' '.join(hmmscan_cmd))
+    cmd = ' '.join([parallel_exc, '-j', str(n_threads), hmmscan_cmd, '<',
+                    input_filename])
 
     return {'name': name,
             'title': title_with_actions,

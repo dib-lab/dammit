@@ -8,7 +8,6 @@ import sys
 
 from . import common
 from .log import LogReporter
-#from .crbl import CRBL
 from .report import get_report_tasks
 from .tasks import get_transcriptome_stats_task, \
                    get_busco_task, \
@@ -213,10 +212,10 @@ class AnnotateHandler(object):
         return get_lastal_task(self.transcriptome_fn, 
                                orthodb, 
                                self.orthodb_fn, 
-                               True,
-                               self.args.evalue,
-                               self.args.n_threads, 
-                               lastal_cfg)
+                               lastal_cfg,
+                               translate=True,
+                               cutoff=self.args.evalue,
+                               n_threads=self.args.n_threads)
 
     def uniref_task(self):
 
@@ -225,10 +224,10 @@ class AnnotateHandler(object):
         return get_lastal_task(self.transcriptome_fn,
                                uniref,
                                self.uniref_fn,
-                               True,
-                               self.args.evalue,
-                               self.args.n_threads,
-                               lastal_cfg)
+                               lastal_cfg,
+                               translate=True,
+                               cutoff=self.args.evalue,
+                               n_threads=self.args.n_threads)
 
     def user_crb_tasks(self):
         '''Run conditional recipricol best hits LAST (CRBL) against the
