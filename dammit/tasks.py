@@ -46,6 +46,17 @@ def clean_folder(target):
         pass
 
 
+def parallel_fasta(input_filename, n_jobs):
+    file_size = os.path.getsize(input_filename)
+    block_size = file_size / n_jobs
+
+    exc = which('parallel')
+    cmd = ['cat', input_filename, '|', exc, '--block', block_size,
+           '--pipe', '--recstart', '>', '--gnu', '-j', str(n_jobs)]
+
+    return ' '.join(cmd)
+
+
 seq_ext = re.compile(r'(.fasta)|(.fa)|(.fastq)|(.fq)')
 def strip_seq_extension(fn):
     return seq_ext.split(fn)[0]
@@ -420,6 +431,9 @@ def get_hmmpress_task(db_filename, hmmer_cfg):
             'uptodate': [True],
             'clean': [clean_targets]}
 
+# cat pep.faa | parallel --block 4000 --gnu -j 8 --pipe --recstart '>' hmmscan
+# -o stat --domtblout /dev/stdout --noali --notextw -E 1e-05 --cpu 1
+# db/Pfam-A.hmm /dev/stdin > pfam.tbl 2> pfam.err
 @create_task_object
 def get_hmmscan_task(input_filename, output_filename, db_filename,
                      cutoff, n_threads, hmmer_cfg):
@@ -428,14 +442,14 @@ def get_hmmscan_task(input_filename, output_filename, db_filename,
                 os.path.basename(db_filename)
 
     hmmscan_exc = which('hmmscan')
-    parallel_exc = which('parallel-fasta')
+    parallel_cmd = parallel_fasta(input_filename, n_threads)
 
     stat = output_filename + '.out'
-    hmmscan_cmd = [hmmscan_exc, '--cpu', '1', '--domtblout', output_filename, 
-                   '-E', str(cutoff), '-o', stat, db_filename, '-']
-    hmmscan_cmd = '"{0}"'.format(' '.join(hmmscan_cmd))
-    cmd = ' '.join([parallel_exc, '--no-notice' ,'-j', str(n_threads), hmmscan_cmd, '<',
-                    input_filename])
+    cmd = [parallel_cmd, hmmscan_exc, '--cpu', '1', '--domtblout', '/dev/stdout', 
+           '-E', str(cutoff), '-o', stat, db_filename, '/dev/stdin',
+           '>', output_filename]
+    cmd = ' '.join(hmmscan_cmd)
+    
 
     return {'name': name,
             'title': title_with_actions,
