@@ -404,9 +404,13 @@ def get_cmscan_task(input_filename, output_filename, db_filename,
            os.path.basename(db_filename)
 
     exc = which('cmscan')
-    cmd = '{exc} --cpu {n_threads} --rfam --nohmmonly -E {cutoff}'\
-          ' --tblout {output_filename} {db_filename} {input_filename}'\
-          ' > {output_filename}.cmscan'.format(**locals())
+    parallel_cmd = parallel_fasta(input_filename, n_threads)
+
+    stat = output_filename + '.out'
+    cmd = [parallel_cmd, exc, '--cpu', '1', '--rfam', '--nohmmonly',
+           '-E', str(cutoff), '--tblout', '/dev/stdout', '-o', stat,
+           db_filename, '/dev/stdin', '>', output_filename]
+    cmd = ' '.join(cmd)
 
     return {'name': name,
             'title': title_with_actions,
