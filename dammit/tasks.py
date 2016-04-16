@@ -47,12 +47,11 @@ def clean_folder(target):
 
 
 def parallel_fasta(input_filename, n_jobs):
-    file_size = os.path.getsize(input_filename)
-    block_size = file_size / n_jobs
-
+    file_size = 'S=`stat -c "%%s" {0}`; B=`expr $S / {1}`;'.format(input_filename,
+                                                                 n_jobs)
     exc = which('parallel')
-    cmd = ['cat', input_filename, '|', exc, '--block', block_size,
-           '--pipe', '--recstart', '>', '--gnu', '-j', str(n_jobs)]
+    cmd = [file_size, 'cat', input_filename, '|', exc, '--block', '$B',
+           '--pipe', '--recstart', '">"', '--gnu', '-j', str(n_jobs)]
 
     return ' '.join(cmd)
 
@@ -448,7 +447,7 @@ def get_hmmscan_task(input_filename, output_filename, db_filename,
     cmd = [parallel_cmd, hmmscan_exc, '--cpu', '1', '--domtblout', '/dev/stdout', 
            '-E', str(cutoff), '-o', stat, db_filename, '/dev/stdin',
            '>', output_filename]
-    cmd = ' '.join(hmmscan_cmd)
+    cmd = ' '.join(cmd)
     
 
     return {'name': name,
