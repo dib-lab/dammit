@@ -11,14 +11,47 @@ import stat
 import sys
 import warnings as _warnings
 from pkg_resources import Requirement, resource_filename, ResolutionError
-
 from tempfile import mkdtemp
+
+from dammit.common import run_tasks
+from doit.dependency import Dependency, DbmDB
+
+
+'''
+BATCH EFFECTS -- The Notorious A.T.G.
+-------------------------------------
+
+Shit your 'scripts ain't differential -
+they're preferential
+(-ly selected!)
+from you read seq
+to your DEseq
+your biases are your analyses fallacies
+your matrices
+are make-believe
+your shallow e-values swallowing your logic and your counts bouncin' --
+you got BATCH EFFECTS
+(*batch effects*)
+BATCH EFFECTS
+(*batch effects*)
+
+'''
 
 
 try:
-        from StringIO import StringIO
+    from StringIO import StringIO
 except ImportError:
-        from io import StringIO
+    from io import StringIO
+
+
+def check_status(task, dep_file='.doit.db'):
+    mgr = Dependency(DbmDB, os.path.abspath(dep_file))
+    status = mgr.get_status(task, [task])
+    return status
+
+
+def run_task(task, cmd='run', verbosity=2):
+    return run_tasks([task], [cmd], config={'verbosity': verbosity})
 
 
 def touch(filename):
