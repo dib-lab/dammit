@@ -6,13 +6,14 @@ import os
 import sys
 
 from unittest import TestCase
-from doit.dependency import Dependency, DbmDB
+import pandas as pd
 
 from utils import TemporaryDirectory, Move, TestData, touch, TemporaryFile
 from utils import run_task, check_status
 from dammit import common
 from dammit import tasks
 from dammit.common import run_tasks
+from dammit.parsers import cmscan_to_df_iter
 
 
 class TestInfernalTasks(TestCase):
@@ -70,5 +71,32 @@ class TestInfernalTasks(TestCase):
                     # TODO: better correctness check
                     self.assertEquals(aln.count('accession'), 2)
                     self.assertIn('E-value', aln)
+
+    def test_cmscan_task_multithreaded(self):
+        with TemporaryDirectory() as td:
+            with Move(td):
+                with TestData('rnaseP-bsu.fa', td) as transcript, \
+                     TestData('rnaseP-eubact.c.cm', td) as cm, \
+                     TemporaryFile(td) as out_single,\
+                     TemporaryFile(td) as out_multi:
+
+                    for n_threads in (2,3,4,5):
+                            
+                        db_task = tasks.get_cmpress_task(cm, self.cmpress_cfg)
+                        aln_task_single = tasks.get_cmscan_task(transcript, out_single, 
+                                                                cm, 1.0, 1,
+                                                                self.cmscan_cfg)
+                        aln_task_multi = tasks.get_cmscan_task(transcript, out_multi, 
+                                                                cm, 1.0,
+                                                                n_threads,
+                                                                self.cmscan_cfg)
+                        run_tasks([db_task, aln_task_single], ['run'])
+                        run_task(aln_task_multi)
+
+                        alns_single = pd.concat(cmscan_to_df_iter(out_single))
+                        alns_multi = pd.concat(cmscan_to_df_iter(out_multi))
+
+                        self.assertTrue(all(alns_single['e_value'].sort_values() == \
+                                            alns_multi['e_value'].sort_values()))
 
 
