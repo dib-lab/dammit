@@ -130,27 +130,28 @@ class TestLASTTasks(TestCase):
                      TemporaryFile(td) as out_single,\
                      TemporaryFile(td) as out_multi:
                         
-                    print(os.listdir(td), file=sys.stderr)
+                    for n_threads in (3,4,5):
+                        print(os.listdir(td), file=sys.stderr)
 
-                    db_task = tasks.get_lastdb_task(prot, prot, self.lastdb_cfg)
-                    aln_task_single = tasks.get_lastal_task(tr, prot, out_single, 
-                                                            self.lastal_cfg, 
-                                                            translate=True, 
-                                                            cutoff=None)
+                        db_task = tasks.get_lastdb_task(prot, prot, self.lastdb_cfg)
+                        aln_task_single = tasks.get_lastal_task(tr, prot, out_single, 
+                                                                self.lastal_cfg, 
+                                                                translate=True, 
+                                                                cutoff=None)
 
-                    aln_task_multi = tasks.get_lastal_task(tr, prot, out_multi, 
-                                                            self.lastal_cfg, 
-                                                            translate=True, 
-                                                            cutoff=None,
-                                                            n_threads=4)
-                    run_tasks([db_task, aln_task_single, aln_task_multi], 
-                              ['run'])
+                        aln_task_multi = tasks.get_lastal_task(tr, prot, out_multi, 
+                                                                self.lastal_cfg, 
+                                                                translate=True, 
+                                                                cutoff=None,
+                                                                n_threads=n_threads)
+                        run_tasks([db_task, aln_task_single, aln_task_multi], 
+                                  ['run'])
 
-                    alns_single = MafParser(out_single).read()
-                    alns_multi = MafParser(out_multi).read()
+                        alns_single = MafParser(out_single).read()
+                        alns_multi = MafParser(out_multi).read()
 
-                    self.assertTrue(all(alns_single['E'].sort_values() == \
-                                    alns_multi['E'].sort_values()))
+                        self.assertTrue(all(alns_single['E'].sort_values() == \
+                                        alns_multi['E'].sort_values()))
 
     def test_lastal_task_uptodate(self):
         with TemporaryDirectory() as td:
