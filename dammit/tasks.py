@@ -55,6 +55,23 @@ def parallel_fasta(input_filename, n_jobs):
 
     return ' '.join(cmd)
 
+def multinode_parallel_fasta(input_filename, nodes, ppn):
+    file_size = 'S=`stat -c "%%s" {0}`; B=`expr $S / {1}`;'.format(input_filename,
+                                                                   nodes * ppn)
+    exports = 'export PARALLEL="--workdir . --env PATH --env LD_LIBRARY_PATH '\
+              '--env LOADEDMODULES --env _LMFILES_ --env MODULE_VERSION '\
+              '--env MODULEPATH --env MODULEVERSION_STACK --env MODULESHOME '\
+              '--env OMP_DYNAMICS --env OMP_MAX_ACTIVE_LEVELS --env OMP_NESTED '\
+              '--env OMP_NUM_THREADS --env OMP_SCHEDULE --env OMP_STACKSIZE '\
+              '--env OMP_THREAD_LIMIT --env OMP_WAIT_POLICY";'
+
+    exc = which('parallel')
+    cmd = [exports, file_size, 'cat', input_filename, '|', exc, '--block', '$B',
+           '--pipe', '--recstart', '">"', '--gnu', '--jobs 1', 
+           '--sshloginfile $PBS_NODEFILE', '--workdir $PWD']
+
+    return ' '.join(cmd)
+
 
 seq_ext = re.compile(r'(.fasta)|(.fa)|(.fastq)|(.fq)')
 def strip_seq_extension(fn):
@@ -272,7 +289,7 @@ def get_lastdb_task(db_fn, db_out_prefix, lastdb_cfg, prot=True):
 
 @create_task_object
 def get_lastal_task(query, db, out_fn, cfg, translate=False, 
-                    cutoff=0.00001, n_threads=1):
+                    cutoff=0.00001, n_threads=1, n_nodes=None):
     '''Create a pydoit task to run lastal
 
     Args:
@@ -287,7 +304,6 @@ def get_lastal_task(query, db, out_fn, cfg, translate=False,
     '''
 
     lastal_exc = which('lastal')
-    parallel_exc = which('parallel-fasta')
 
     params = cfg['params']
     lastal_cmd = [lastal_exc]
@@ -299,8 +315,12 @@ def get_lastal_task(query, db, out_fn, cfg, translate=False,
     lastal_cmd.append(db)
     lastal_cmd = '"{0}"'.format(' '.join(lastal_cmd))
 
-    cmd = [parallel_exc, '--no-notice', '-j', str(n_threads), lastal_cmd, 
-           '<', query, '>', out_fn]
+    if n_nodes is None:
+        parallel = parallel_fasta(query, n_threads)
+    else:
+        parallel = multinode_parallel_fasta(query, n_threads, n_nodes)
+
+    cmd = [parallel, lastal_cmd, '<', query, '>', out_fn]
     cmd = ' '.join(cmd)
 
     name = 'lastal:{0}'.format(os.path.join(out_fn))
@@ -439,7 +459,7 @@ def get_hmmpress_task(db_filename, hmmer_cfg):
 # db/Pfam-A.hmm /dev/stdin > pfam.tbl 2> pfam.err
 @create_task_object
 def get_hmmscan_task(input_filename, output_filename, db_filename,
-                     cutoff, n_threads, hmmer_cfg):
+                     cutoff, n_threads, hmmer_cfg, n_nodes=None):
 
     name = 'hmmscan:' + os.path.basename(input_filename) + '.x.' + \
                 os.path.basename(db_filename)

@@ -215,7 +215,8 @@ class AnnotateHandler(object):
                                lastal_cfg,
                                translate=True,
                                cutoff=self.args.evalue,
-                               n_threads=self.args.n_threads)
+                               n_threads=self.args.n_threads,
+                               n_nodes=self.args.n_nodes)
 
     def uniref_task(self):
 
