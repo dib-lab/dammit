@@ -29,7 +29,7 @@ First get packages from the Ubuntu archives::
     sudo apt-get update
     sudo apt-get install python-pip python-dev python-numpy git ruby hmmer unzip \
         infernal ncbi-blast+ liburi-escape-xs-perl emboss liburi-perl \
-        python-sklearn build-essential libsm6 libxrender1 libfontconfig1 \
+        build-essential libsm6 libxrender1 libfontconfig1 \
         parallel
     sudo gem install crb-blast
 
@@ -67,7 +67,7 @@ Now, install dammit::
     sudo pip install -U setuptools
     sudo pip install dammit
 
-This will spend a bit of time compiling and installing pandas and scikit-learn if you don't 
+This will spend a bit of time compiling and installing pandas if you don't 
 already have a recent versions installed; the ones available in the Ubuntu 14.04 archives are
 just too old.
 
