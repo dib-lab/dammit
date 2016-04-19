@@ -17,6 +17,7 @@ def run(args, **kwargs):
     return runscript('dammit', args, **kwargs)
 
 
+@attr('long')
 class TestDammitAnnotate(TestCase):
 
     def setUp(self):

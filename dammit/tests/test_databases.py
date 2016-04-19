@@ -64,7 +64,7 @@ class TestDammitDatabases(TestCase):
             self.assertIn('prep incomplete', err)
             self.assertEquals(status, 1)
 
-    @attr('long')
+    @attr('huge')
     def test_dammit_database_install_full(self):
         '''Run a full database installation (very long).
         '''
