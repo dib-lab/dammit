@@ -55,7 +55,7 @@ def parallel_fasta(input_filename, n_jobs):
 
     return ' '.join(cmd)
 
-def multinode_parallel_fasta(input_filename, nodes, ppn):
+def multinode_parallel_fasta(input_filename, ppn, nodes):
     file_size = 'S=`stat -c "%%s" {0}`; B=`expr $S / {1}`;'.format(input_filename,
                                                                    nodes * ppn)
     exports = 'export PARALLEL="--workdir . --env PATH --env LD_LIBRARY_PATH '\
@@ -418,13 +418,17 @@ def get_cmpress_task(db_filename, infernal_cfg):
 
 @create_task_object
 def get_cmscan_task(input_filename, output_filename, db_filename,
-                    cutoff, n_threads, infernal_cfg):
+                    cutoff, n_threads, infernal_cfg, n_nodes=None):
 
     name = 'cmscan:' + os.path.basename(input_filename) + '.x.' + \
            os.path.basename(db_filename)
 
     exc = which('cmscan')
-    parallel_cmd = parallel_fasta(input_filename, n_threads)
+    if n_nodes is None:
+        parallel_cmd = parallel_fasta(input_filename, n_threads)
+    else:
+        parallel_cmd = multinode_parallel_fasta(input_filename, n_threads,
+                                                n_nodes)
 
     stat = output_filename + '.out'
     cmd = [parallel_cmd, exc, '--cpu', '1', '--rfam', '--nohmmonly',
@@ -454,9 +458,7 @@ def get_hmmpress_task(db_filename, hmmer_cfg):
             'uptodate': [True],
             'clean': [clean_targets]}
 
-# cat pep.faa | parallel --block 4000 --gnu -j 8 --pipe --recstart '>' hmmscan
-# -o stat --domtblout /dev/stdout --noali --notextw -E 1e-05 --cpu 1
-# db/Pfam-A.hmm /dev/stdin > pfam.tbl 2> pfam.err
+
 @create_task_object
 def get_hmmscan_task(input_filename, output_filename, db_filename,
                      cutoff, n_threads, hmmer_cfg, n_nodes=None):
@@ -465,7 +467,12 @@ def get_hmmscan_task(input_filename, output_filename, db_filename,
                 os.path.basename(db_filename)
 
     hmmscan_exc = which('hmmscan')
-    parallel_cmd = parallel_fasta(input_filename, n_threads)
+    
+    if n_nodes is None:
+        parallel_cmd = parallel_fasta(input_filename, n_threads)
+    else:
+        parallel_cmd = multinode_parallel_fasta(input_filename, n_threads,
+                                                n_nodes)
 
     stat = output_filename + '.out'
     cmd = [parallel_cmd, hmmscan_exc, '--cpu', '1', '--domtblout', '/dev/stdout', 
@@ -473,7 +480,6 @@ def get_hmmscan_task(input_filename, output_filename, db_filename,
            '>', output_filename]
     cmd = ' '.join(cmd)
     
-
     return {'name': name,
             'title': title_with_actions,
             'actions': [cmd],
