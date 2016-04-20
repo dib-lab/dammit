@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>dammit.tasks &mdash; dammit 0.2.9 documentation</title>
+    <title>dammit.tasks &mdash; dammit 0.3 documentation</title>
     
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.2.9',
+        VERSION:     '0.3',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,7 +26,7 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="author" title="About these documents" href="../../about.html" />
-    <link rel="top" title="dammit 0.2.9 documentation" href="../../index.html" />
+    <link rel="top" title="dammit 0.3 documentation" href="../../index.html" />
     <link rel="up" title="Module code" href="../index.html" />
    
   
@@ -87,6 +87,33 @@
         <span class="n">rmtree</span><span class="p">(</span><span class="n">target</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
         <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="parallel_fasta"><a class="viewcode-back" href="../../dammit.html#dammit.tasks.parallel_fasta">[docs]</a><span class="k">def</span> <span class="nf">parallel_fasta</span><span class="p">(</span><span class="n">input_filename</span><span class="p">,</span> <span class="n">n_jobs</span><span class="p">):</span>
+    <span class="n">file_size</span> <span class="o">=</span> <span class="s">&#39;S=`stat -c &quot;</span><span class="si">%%</span><span class="s">s&quot; {0}`; B=`expr $S / {1}`;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">input_filename</span><span class="p">,</span>
+                                                                 <span class="n">n_jobs</span><span class="p">)</span>
+    <span class="n">exc</span> <span class="o">=</span> <span class="n">which</span><span class="p">(</span><span class="s">&#39;parallel&#39;</span><span class="p">)</span>
+    <span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span><span class="n">file_size</span><span class="p">,</span> <span class="s">&#39;cat&#39;</span><span class="p">,</span> <span class="n">input_filename</span><span class="p">,</span> <span class="s">&#39;|&#39;</span><span class="p">,</span> <span class="n">exc</span><span class="p">,</span> <span class="s">&#39;--block&#39;</span><span class="p">,</span> <span class="s">&#39;$B&#39;</span><span class="p">,</span>
+           <span class="s">&#39;--pipe&#39;</span><span class="p">,</span> <span class="s">&#39;--recstart&#39;</span><span class="p">,</span> <span class="s">&#39;&quot;&gt;&quot;&#39;</span><span class="p">,</span> <span class="s">&#39;--gnu&#39;</span><span class="p">,</span> <span class="s">&#39;-j&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">n_jobs</span><span class="p">)]</span>
+
+    <span class="k">return</span> <span class="s">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="multinode_parallel_fasta"><a class="viewcode-back" href="../../dammit.html#dammit.tasks.multinode_parallel_fasta">[docs]</a><span class="k">def</span> <span class="nf">multinode_parallel_fasta</span><span class="p">(</span><span class="n">input_filename</span><span class="p">,</span> <span class="n">ppn</span><span class="p">,</span> <span class="n">nodes</span><span class="p">):</span>
+    <span class="n">file_size</span> <span class="o">=</span> <span class="s">&#39;S=`stat -c &quot;</span><span class="si">%%</span><span class="s">s&quot; {0}`; B=`expr $S / {1}`;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">input_filename</span><span class="p">,</span>
+                                                                   <span class="n">nodes</span> <span class="o">*</span> <span class="n">ppn</span><span class="p">)</span>
+    <span class="n">exports</span> <span class="o">=</span> <span class="s">&#39;export PARALLEL=&quot;--workdir . --env PATH --env LD_LIBRARY_PATH &#39;</span>\
+              <span class="s">&#39;--env LOADEDMODULES --env _LMFILES_ --env MODULE_VERSION &#39;</span>\
+              <span class="s">&#39;--env MODULEPATH --env MODULEVERSION_STACK --env MODULESHOME &#39;</span>\
+              <span class="s">&#39;--env OMP_DYNAMICS --env OMP_MAX_ACTIVE_LEVELS --env OMP_NESTED &#39;</span>\
+              <span class="s">&#39;--env OMP_NUM_THREADS --env OMP_SCHEDULE --env OMP_STACKSIZE &#39;</span>\
+              <span class="s">&#39;--env OMP_THREAD_LIMIT --env OMP_WAIT_POLICY&quot;;&#39;</span>
+
+    <span class="n">exc</span> <span class="o">=</span> <span class="n">which</span><span class="p">(</span><span class="s">&#39;parallel&#39;</span><span class="p">)</span>
+    <span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span><span class="n">exports</span><span class="p">,</span> <span class="n">file_size</span><span class="p">,</span> <span class="s">&#39;cat&#39;</span><span class="p">,</span> <span class="n">input_filename</span><span class="p">,</span> <span class="s">&#39;|&#39;</span><span class="p">,</span> <span class="n">exc</span><span class="p">,</span> <span class="s">&#39;--block&#39;</span><span class="p">,</span> <span class="s">&#39;$B&#39;</span><span class="p">,</span>
+           <span class="s">&#39;--pipe&#39;</span><span class="p">,</span> <span class="s">&#39;--recstart&#39;</span><span class="p">,</span> <span class="s">&#39;&quot;&gt;&quot;&#39;</span><span class="p">,</span> <span class="s">&#39;--gnu&#39;</span><span class="p">,</span> <span class="s">&#39;--jobs 1&#39;</span><span class="p">,</span> 
+           <span class="s">&#39;--sshloginfile $PBS_NODEFILE&#39;</span><span class="p">,</span> <span class="s">&#39;--workdir $PWD&#39;</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="s">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span></div>
 
 
 <span class="n">seq_ext</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s">r&#39;(.fasta)|(.fa)|(.fastq)|(.fq)&#39;</span><span class="p">)</span>
@@ -305,7 +332,7 @@
 
 <span class="nd">@create_task_object</span>
 <div class="viewcode-block" id="get_lastal_task"><a class="viewcode-back" href="../../dammit.html#dammit.tasks.get_lastal_task">[docs]</a><span class="k">def</span> <span class="nf">get_lastal_task</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="n">out_fn</span><span class="p">,</span> <span class="n">cfg</span><span class="p">,</span> <span class="n">translate</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> 
-                    <span class="n">cutoff</span><span class="o">=</span><span class="mf">0.00001</span><span class="p">,</span> <span class="n">n_threads</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+                    <span class="n">cutoff</span><span class="o">=</span><span class="mf">0.00001</span><span class="p">,</span> <span class="n">n_threads</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_nodes</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Create a pydoit task to run lastal</span>
 
 <span class="sd">    Args:</span>
@@ -320,7 +347,6 @@
 <span class="sd">    &#39;&#39;&#39;</span>
 
     <span class="n">lastal_exc</span> <span class="o">=</span> <span class="n">which</span><span class="p">(</span><span class="s">&#39;lastal&#39;</span><span class="p">)</span>
-    <span class="n">parallel_exc</span> <span class="o">=</span> <span class="n">which</span><span class="p">(</span><span class="s">&#39;parallel-fasta&#39;</span><span class="p">)</span>
 
     <span class="n">params</span> <span class="o">=</span> <span class="n">cfg</span><span class="p">[</span><span class="s">&#39;params&#39;</span><span class="p">]</span>
     <span class="n">lastal_cmd</span> <span class="o">=</span> <span class="p">[</span><span class="n">lastal_exc</span><span class="p">]</span>
@@ -332,8 +358,12 @@
     <span class="n">lastal_cmd</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">db</span><span class="p">)</span>
     <span class="n">lastal_cmd</span> <span class="o">=</span> <span class="s">&#39;&quot;{0}&quot;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lastal_cmd</span><span class="p">))</span>
 
-    <span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span><span class="n">parallel_exc</span><span class="p">,</span> <span class="s">&#39;-j&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">n_threads</span><span class="p">),</span> <span class="n">lastal_cmd</span><span class="p">,</span> 
-           <span class="s">&#39;&lt;&#39;</span><span class="p">,</span> <span class="n">query</span><span class="p">,</span> <span class="s">&#39;&gt;&#39;</span><span class="p">,</span> <span class="n">out_fn</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">n_nodes</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">parallel</span> <span class="o">=</span> <span class="n">parallel_fasta</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">n_threads</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">parallel</span> <span class="o">=</span> <span class="n">multinode_parallel_fasta</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">n_threads</span><span class="p">,</span> <span class="n">n_nodes</span><span class="p">)</span>
+
+    <span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span><span class="n">parallel</span><span class="p">,</span> <span class="n">lastal_cmd</span><span class="p">,</span> <span class="s">&#39;&lt;&#39;</span><span class="p">,</span> <span class="n">query</span><span class="p">,</span> <span class="s">&#39;&gt;&#39;</span><span class="p">,</span> <span class="n">out_fn</span><span class="p">]</span>
     <span class="n">cmd</span> <span class="o">=</span> <span class="s">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span>
 
     <span class="n">name</span> <span class="o">=</span> <span class="s">&#39;lastal:{0}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">out_fn</span><span class="p">))</span>
@@ -431,15 +461,23 @@
 
 <span class="nd">@create_task_object</span>
 <div class="viewcode-block" id="get_cmscan_task"><a class="viewcode-back" href="../../dammit.html#dammit.tasks.get_cmscan_task">[docs]</a><span class="k">def</span> <span class="nf">get_cmscan_task</span><span class="p">(</span><span class="n">input_filename</span><span class="p">,</span> <span class="n">output_filename</span><span class="p">,</span> <span class="n">db_filename</span><span class="p">,</span>
-                    <span class="n">cutoff</span><span class="p">,</span> <span class="n">n_threads</span><span class="p">,</span> <span class="n">infernal_cfg</span><span class="p">):</span></div>
+                    <span class="n">cutoff</span><span class="p">,</span> <span class="n">n_threads</span><span class="p">,</span> <span class="n">infernal_cfg</span><span class="p">,</span> <span class="n">n_nodes</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span></div>
 
     <span class="n">name</span> <span class="o">=</span> <span class="s">&#39;cmscan:&#39;</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">input_filename</span><span class="p">)</span> <span class="o">+</span> <span class="s">&#39;.x.&#39;</span> <span class="o">+</span> \
            <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">db_filename</span><span class="p">)</span>
 
     <span class="n">exc</span> <span class="o">=</span> <span class="n">which</span><span class="p">(</span><span class="s">&#39;cmscan&#39;</span><span class="p">)</span>
-    <span class="n">cmd</span> <span class="o">=</span> <span class="s">&#39;{exc} --cpu {n_threads} --rfam --nohmmonly -E {cutoff}&#39;</span>\
-          <span class="s">&#39; --tblout {output_filename} {db_filename} {input_filename}&#39;</span>\
-          <span class="s">&#39; &gt; {output_filename}.cmscan&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="nb">locals</span><span class="p">())</span>
+    <span class="k">if</span> <span class="n">n_nodes</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">parallel_cmd</span> <span class="o">=</span> <span class="n">parallel_fasta</span><span class="p">(</span><span class="n">input_filename</span><span class="p">,</span> <span class="n">n_threads</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">parallel_cmd</span> <span class="o">=</span> <span class="n">multinode_parallel_fasta</span><span class="p">(</span><span class="n">input_filename</span><span class="p">,</span> <span class="n">n_threads</span><span class="p">,</span>
+                                                <span class="n">n_nodes</span><span class="p">)</span>
+
+    <span class="n">stat</span> <span class="o">=</span> <span class="n">output_filename</span> <span class="o">+</span> <span class="s">&#39;.out&#39;</span>
+    <span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span><span class="n">parallel_cmd</span><span class="p">,</span> <span class="n">exc</span><span class="p">,</span> <span class="s">&#39;--cpu&#39;</span><span class="p">,</span> <span class="s">&#39;1&#39;</span><span class="p">,</span> <span class="s">&#39;--rfam&#39;</span><span class="p">,</span> <span class="s">&#39;--nohmmonly&#39;</span><span class="p">,</span>
+           <span class="s">&#39;-E&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">cutoff</span><span class="p">),</span> <span class="s">&#39;--tblout&#39;</span><span class="p">,</span> <span class="s">&#39;/dev/stdout&#39;</span><span class="p">,</span> <span class="s">&#39;-o&#39;</span><span class="p">,</span> <span class="n">stat</span><span class="p">,</span>
+           <span class="n">db_filename</span><span class="p">,</span> <span class="s">&#39;/dev/stdin&#39;</span><span class="p">,</span> <span class="s">&#39;&gt;&#39;</span><span class="p">,</span> <span class="n">output_filename</span><span class="p">]</span>
+    <span class="n">cmd</span> <span class="o">=</span> <span class="s">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="p">{</span><span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span>
             <span class="s">&#39;title&#39;</span><span class="p">:</span> <span class="n">title_with_actions</span><span class="p">,</span>
@@ -463,23 +501,28 @@
             <span class="s">&#39;uptodate&#39;</span><span class="p">:</span> <span class="p">[</span><span class="bp">True</span><span class="p">],</span>
             <span class="s">&#39;clean&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">clean_targets</span><span class="p">]}</span>
 
+
 <span class="nd">@create_task_object</span>
 <div class="viewcode-block" id="get_hmmscan_task"><a class="viewcode-back" href="../../dammit.html#dammit.tasks.get_hmmscan_task">[docs]</a><span class="k">def</span> <span class="nf">get_hmmscan_task</span><span class="p">(</span><span class="n">input_filename</span><span class="p">,</span> <span class="n">output_filename</span><span class="p">,</span> <span class="n">db_filename</span><span class="p">,</span>
-                     <span class="n">cutoff</span><span class="p">,</span> <span class="n">n_threads</span><span class="p">,</span> <span class="n">hmmer_cfg</span><span class="p">):</span></div>
+                     <span class="n">cutoff</span><span class="p">,</span> <span class="n">n_threads</span><span class="p">,</span> <span class="n">hmmer_cfg</span><span class="p">,</span> <span class="n">n_nodes</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span></div>
 
     <span class="n">name</span> <span class="o">=</span> <span class="s">&#39;hmmscan:&#39;</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">input_filename</span><span class="p">)</span> <span class="o">+</span> <span class="s">&#39;.x.&#39;</span> <span class="o">+</span> \
                 <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">db_filename</span><span class="p">)</span>
 
     <span class="n">hmmscan_exc</span> <span class="o">=</span> <span class="n">which</span><span class="p">(</span><span class="s">&#39;hmmscan&#39;</span><span class="p">)</span>
-    <span class="n">parallel_exc</span> <span class="o">=</span> <span class="n">which</span><span class="p">(</span><span class="s">&#39;parallel-fasta&#39;</span><span class="p">)</span>
+    
+    <span class="k">if</span> <span class="n">n_nodes</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">parallel_cmd</span> <span class="o">=</span> <span class="n">parallel_fasta</span><span class="p">(</span><span class="n">input_filename</span><span class="p">,</span> <span class="n">n_threads</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">parallel_cmd</span> <span class="o">=</span> <span class="n">multinode_parallel_fasta</span><span class="p">(</span><span class="n">input_filename</span><span class="p">,</span> <span class="n">n_threads</span><span class="p">,</span>
+                                                <span class="n">n_nodes</span><span class="p">)</span>
 
     <span class="n">stat</span> <span class="o">=</span> <span class="n">output_filename</span> <span class="o">+</span> <span class="s">&#39;.out&#39;</span>
-    <span class="n">hmmscan_cmd</span> <span class="o">=</span> <span class="p">[</span><span class="n">hmmscan_exc</span><span class="p">,</span> <span class="s">&#39;--cpu&#39;</span><span class="p">,</span> <span class="s">&#39;1&#39;</span><span class="p">,</span> <span class="s">&#39;--domtblout&#39;</span><span class="p">,</span> <span class="n">output_filename</span><span class="p">,</span> 
-                   <span class="s">&#39;-E&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">cutoff</span><span class="p">),</span> <span class="s">&#39;-o&#39;</span><span class="p">,</span> <span class="n">stat</span><span class="p">,</span> <span class="n">db_filename</span><span class="p">,</span> <span class="s">&#39;-&#39;</span><span class="p">]</span>
-    <span class="n">hmmscan_cmd</span> <span class="o">=</span> <span class="s">&#39;&quot;{0}&quot;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">hmmscan_cmd</span><span class="p">))</span>
-    <span class="n">cmd</span> <span class="o">=</span> <span class="s">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">parallel_exc</span><span class="p">,</span> <span class="s">&#39;-j&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">n_threads</span><span class="p">),</span> <span class="n">hmmscan_cmd</span><span class="p">,</span> <span class="s">&#39;&lt;&#39;</span><span class="p">,</span>
-                    <span class="n">input_filename</span><span class="p">])</span>
-
+    <span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span><span class="n">parallel_cmd</span><span class="p">,</span> <span class="n">hmmscan_exc</span><span class="p">,</span> <span class="s">&#39;--cpu&#39;</span><span class="p">,</span> <span class="s">&#39;1&#39;</span><span class="p">,</span> <span class="s">&#39;--domtblout&#39;</span><span class="p">,</span> <span class="s">&#39;/dev/stdout&#39;</span><span class="p">,</span> 
+           <span class="s">&#39;-E&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">cutoff</span><span class="p">),</span> <span class="s">&#39;-o&#39;</span><span class="p">,</span> <span class="n">stat</span><span class="p">,</span> <span class="n">db_filename</span><span class="p">,</span> <span class="s">&#39;/dev/stdin&#39;</span><span class="p">,</span>
+           <span class="s">&#39;&gt;&#39;</span><span class="p">,</span> <span class="n">output_filename</span><span class="p">]</span>
+    <span class="n">cmd</span> <span class="o">=</span> <span class="s">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span>
+    
     <span class="k">return</span> <span class="p">{</span><span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span>
             <span class="s">&#39;title&#39;</span><span class="p">:</span> <span class="n">title_with_actions</span><span class="p">,</span>
             <span class="s">&#39;actions&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">cmd</span><span class="p">],</span>
