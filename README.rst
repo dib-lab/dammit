@@ -98,6 +98,8 @@ databases.
 Known Issues
 ------------
 
+* On some systems, installation of the ConfigParser package can get borked, which will cause
+  and exception to be thrown. This can be fixed by following the directions at #33.
 * There can be errors resuming runs which were interrupted on the BUSCO stage. If the task fails on
   resume, delete the BUSCO results folder within your dammit results folder, which will have a name
   of the form `run_<name>.busco_results`.
