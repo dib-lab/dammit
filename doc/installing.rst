@@ -126,6 +126,10 @@ and allow dammit to install its own version via PyPI::
 
     conda remove sphinx
 
+Get the latest versions of some packages::
+
+    conda update pandas numexpr
+
 .. _Ubuntu-instructions:
 
 Ubuntu / Pip Instructions
