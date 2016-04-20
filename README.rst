@@ -71,6 +71,13 @@ This will spend a bit of time compiling and installing pandas if you don't
 already have a recent versions installed; the ones available in the Ubuntu 14.04 archives are
 just too old.
 
+Dev Version
+===========
+
+If you want the latest features (and bugs), you can install dammit from github::
+
+    pip install git+https://github.com/camillescott/dammit.git
+
 Usage
 -----
 
