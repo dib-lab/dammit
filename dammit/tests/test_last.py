@@ -12,6 +12,8 @@ from utils import TemporaryDirectory, Move, TestData, touch, TemporaryFile
 from utils import run_task, check_status
 from dammit import common
 from dammit import tasks
+from dammit.last import get_lastdb_task as lastdb_task
+from dammit.last import get_lastal_task as lastal_task
 from dammit.common import run_tasks
 from dammit.fileio.maf import MafParser
 
@@ -28,7 +30,7 @@ class TestLASTTasks(TestCase):
         with TemporaryDirectory() as td:
             with Move(td):
                 with TestData('test-transcript.fa', td) as tf:
-                    task = tasks.get_lastdb_task(tf, tf, self.lastdb_cfg,
+                    task = lastdb_task(tf, tf, self.lastdb_cfg,
                                                  prot=False)
                     run_tasks([task], ['run'])
                     status = check_status(task)
@@ -45,7 +47,7 @@ class TestLASTTasks(TestCase):
         with TemporaryDirectory() as td:
             with Move(td):
                 with TestData('test-protein.fa', td) as tf:
-                    task = tasks.get_lastdb_task(tf, tf, self.lastdb_cfg,
+                    task = lastdb_task(tf, tf, self.lastdb_cfg,
                                                  prot=True)
                     run_tasks([task], ['run'])
                     status = check_status(task)
@@ -63,7 +65,7 @@ class TestLASTTasks(TestCase):
                     for ext in self.extensions:
                         touch(tf + ext)
 
-                    task = tasks.get_lastdb_task(tf, tf, self.lastdb_cfg,
+                    task = lastdb_task(tf, tf, self.lastdb_cfg,
                                                  prot=True)
                     run_tasks([task], ['run'])
                     print(os.listdir(td), file=sys.stderr)
@@ -80,8 +82,8 @@ class TestLASTTasks(TestCase):
                      TemporaryFile(td) as out:
                         
                     print(os.listdir(td), file=sys.stderr)
-                    db_task = tasks.get_lastdb_task(prot, prot, self.lastdb_cfg)
-                    aln_task = tasks.get_lastal_task(tr, prot, out, self.lastal_cfg, 
+                    db_task = lastdb_task(prot, prot, self.lastdb_cfg)
+                    aln_task = lastal_task(tr, prot, out, self.lastal_cfg, 
                                                      translate=True, 
                                                      cutoff=None)
                     run_tasks([db_task, aln_task], ['run'])
@@ -104,8 +106,8 @@ class TestLASTTasks(TestCase):
                      TemporaryFile(td) as out:
                         
                     print(os.listdir(td), file=sys.stderr)
-                    db_task = tasks.get_lastdb_task(prot, prot, self.lastdb_cfg)
-                    aln_task = tasks.get_lastal_task(prot, prot, out,
+                    db_task = lastdb_task(prot, prot, self.lastdb_cfg)
+                    aln_task = lastal_task(prot, prot, out,
                                                      self.lastal_cfg,
                                                      translate=False,
                                                      cutoff=None)
@@ -133,13 +135,13 @@ class TestLASTTasks(TestCase):
                     for n_threads in (3,4,5):
                         print(os.listdir(td), file=sys.stderr)
 
-                        db_task = tasks.get_lastdb_task(prot, prot, self.lastdb_cfg)
-                        aln_task_single = tasks.get_lastal_task(tr, prot, out_single, 
+                        db_task = lastdb_task(prot, prot, self.lastdb_cfg)
+                        aln_task_single = lastal_task(tr, prot, out_single, 
                                                                 self.lastal_cfg, 
                                                                 translate=True, 
                                                                 cutoff=None)
 
-                        aln_task_multi = tasks.get_lastal_task(tr, prot, out_multi, 
+                        aln_task_multi = lastal_task(tr, prot, out_multi, 
                                                                 self.lastal_cfg, 
                                                                 translate=True, 
                                                                 cutoff=None,
@@ -160,8 +162,8 @@ class TestLASTTasks(TestCase):
                      TemporaryFile(td) as out:
                         
                     print(os.listdir(td), file=sys.stderr)
-                    db_task = tasks.get_lastdb_task(prot, prot, self.lastdb_cfg)
-                    aln_task = tasks.get_lastal_task(prot, prot, out,
+                    db_task = lastdb_task(prot, prot, self.lastdb_cfg)
+                    aln_task = lastal_task(prot, prot, out,
                                                      self.lastal_cfg,
                                                      translate=False,
                                                      cutoff=None)

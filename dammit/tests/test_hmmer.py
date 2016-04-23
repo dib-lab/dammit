@@ -11,7 +11,9 @@ import pandas as pd
 from utils import TemporaryDirectory, Move, TestData, touch, TemporaryFile
 from utils import run_task, check_status
 from dammit import common
-from dammit import tasks
+from dammit.hmmer import get_hmmscan_task as hmmscan_task
+from dammit.hmmer import get_hmmpress_task as hmmpress_task
+from dammit.hmmer import hmmscan
 from dammit.common import run_tasks
 from dammit.parsers import hmmscan_to_df_iter
 
@@ -27,7 +29,7 @@ class TestHMMERTasks(TestCase):
         with TemporaryDirectory() as td:
             with Move(td):
                 with TestData('test-profile.hmm', td) as tf:
-                    task = tasks.get_hmmpress_task(tf, self.hmmpress_cfg)
+                    task = hmmpress_task(tf, self.hmmpress_cfg)
                     run_tasks([task], ['run'])
                     status = check_status(task)
                     print(os.listdir(td), file=sys.stderr)
@@ -44,7 +46,7 @@ class TestHMMERTasks(TestCase):
                     for ext in self.extensions:
                         touch(tf + ext)
 
-                    task = tasks.get_hmmpress_task(tf, self.hmmpress_cfg)
+                    task = hmmpress_task(tf, self.hmmpress_cfg)
                     run_tasks([task], ['run'])
                     print(os.listdir(td), file=sys.stderr)
                     print(task, file=sys.stderr)
@@ -59,10 +61,10 @@ class TestHMMERTasks(TestCase):
                      TestData('test-profile.hmm', td) as hmm, \
                      TemporaryFile(td) as out:
                         
-                    db_task = tasks.get_hmmpress_task(hmm, self.hmmpress_cfg)
-                    aln_task = tasks.get_hmmscan_task(prot, out, hmm, 1.0, 1,
-                                                      self.hmmscan_cfg)
-                    run_tasks([db_task, aln_task], ['run'])
+                    db_task = hmmpress_task(hmm, self.hmmpress_cfg)
+                    aln_tasks = hmmscan(prot, out, hmm, 1.0, 1)
+
+                    run_tasks([db_task] + list(aln_tasks), ['run'])
                     print(os.listdir(td), file=sys.stderr)
                     aln = open(out).read()
                     print(aln)
@@ -79,15 +81,13 @@ class TestHMMERTasks(TestCase):
                      TemporaryFile(td) as out_multi:
                     
                     for n_threads in (2,3,4,5):
-                        db_task = tasks.get_hmmpress_task(hmm, self.hmmpress_cfg)
-                        aln_task_single = tasks.get_hmmscan_task(prot, out_single, 
-                                                                 hmm, 1.0, 1,
-                                                                 self.hmmscan_cfg)
-                        aln_task_multi = tasks.get_hmmscan_task(prot, out_multi,
-                                                                hmm, 1.0, n_threads,
-                                                                self.hmmscan_cfg)
-                        run_tasks([db_task, aln_task_single], ['run'])
-                        run_task(aln_task_multi)
+                        db_task = hmmpress_task(hmm, self.hmmpress_cfg)
+                        aln_tasks_single = hmmscan(prot, out_single, 
+                                                   hmm, 1.0, 1)
+                        aln_tasks_multi = hmmscan(prot, out_multi,
+                                                  hmm, 1.0, n_threads)
+                        run_tasks([db_task] + list(aln_tasks_single), ['run'])
+                        run_tasks(list(aln_tasks_multi), ['run'])
                         print(os.listdir(td), file=sys.stderr)
 
                         print(open(out_single).read())
