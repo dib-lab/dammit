@@ -15,15 +15,14 @@ from .tasks import get_transcriptome_stats_task, \
                    get_link_file_task, \
                    get_transdecoder_predict_task, \
                    get_transdecoder_orf_task, \
-                   get_hmmscan_task, \
-                   get_remap_hmmer_task, \
-                   get_cmscan_task, \
-                   get_lastal_task, \
                    get_crb_blast_task, \
                    get_sanitize_fasta_task, \
                    get_rename_transcriptome_task, \
                    get_transeq_task, \
                    print_tasks
+from .hmmer import hmmscan, get_remap_hmmer_task
+from .infernal import get_cmscan_task
+from .last import get_lastal_task
 
 logger = logging.getLogger(__name__)
 
@@ -172,13 +171,13 @@ class AnnotateHandler(object):
         yield get_transdecoder_orf_task(self.transcriptome_fn, 
                                         orf_cfg)
 
-        yield get_hmmscan_task(self.transdecoder_orf_fn, 
+        for task in hmmscan(self.transdecoder_orf_fn, 
                                self.transdecoder_pfam_fn,
                                self.database_dict['PFAM'], 
                                self.args.evalue,
-                               self.args.n_threads, 
-                               common.CONFIG['settings']['hmmer']['hmmscan'],
-                               n_nodes=self.args.n_nodes)
+                               self.args.n_threads,
+                               n_nodes=self.args.n_nodes):
+            yield task
 
         yield get_remap_hmmer_task(self.transdecoder_pfam_fn,
                                    self.transdecoder_orf_gff3_fn,

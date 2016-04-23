@@ -9,13 +9,12 @@ from doit.dependency import Dependency, SqliteDB
 
 from . import common
 from .log import LogReporter
+from .hmmer import hmmpress
+from .infernal import get_cmpress_task
+from .last import get_lastdb_task
 from .tasks import get_download_and_gunzip_task, \
-                   get_hmmpress_task, \
-                   get_cmpress_task, \
                    get_download_and_untar_task, \
-                   get_lastdb_task, \
                    print_tasks
-
 
 class DatabaseHandler(object):
 
@@ -131,7 +130,7 @@ class DatabaseHandler(object):
             get_download_and_gunzip_task(common.DATABASES['pfam']['url'], PFAM)
         )
         tasks.append(
-            get_hmmpress_task(PFAM, common.CONFIG['settings']['hmmer'])
+            hmmpress(PFAM)
         )
         databases['PFAM'] = os.path.abspath(PFAM)
 

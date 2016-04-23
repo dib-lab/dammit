@@ -11,6 +11,7 @@ from shutil import rmtree
 import shutil
 import sys
 
+from doit.action import CmdAction
 from doit.tools import run_once, create_folder, title_with_actions, LongRunning
 from doit.task import clean_targets, dict_to_task
 
@@ -46,40 +47,12 @@ def clean_folder(target):
         pass
 
 
-def parallel_fasta(input_filename, n_jobs):
-    file_size = 'S=`stat -c "%%s" {0}`; B=`expr $S / {1}`;'.format(input_filename,
-                                                                 n_jobs)
-    exc = which('parallel')
-    cmd = [file_size, 'cat', input_filename, '|', exc, '--block', '$B',
-           '--pipe', '--recstart', '">"', '--gnu', '-j', str(n_jobs)]
-
-    return ' '.join(cmd)
-
-def multinode_parallel_fasta(input_filename, ppn, nodes):
-    file_size = 'S=`stat -c "%%s" {0}`; B=`expr $S / {1}`;'.format(input_filename,
-                                                                   nodes * ppn)
-    '''
-    exports = 'export PARALLEL="--workdir . --env PATH --env LD_LIBRARY_PATH '\
-              '--env LOADEDMODULES --env _LMFILES_ --env MODULE_VERSION '\
-              '--env MODULEPATH --env MODULEVERSION_STACK --env MODULESHOME '\
-              '--env OMP_DYNAMICS --env OMP_MAX_ACTIVE_LEVELS --env OMP_NESTED '\
-              '--env OMP_NUM_THREADS --env OMP_SCHEDULE --env OMP_STACKSIZE '\
-              '--env OMP_THREAD_LIMIT --env OMP_WAIT_POLICY";'
-    '''
-    exc = which('parallel')
-    cmd = [exports, file_size, 'cat', input_filename, '|', exc, '--block', '$B',
-           '--pipe', '--recstart', '">"', '--gnu', '--jobs 1', 
-           '--sshloginfile $PBS_NODEFILE', '--workdir $PWD']
-
-    return ' '.join(cmd)
-
-
 seq_ext = re.compile(r'(.fasta)|(.fa)|(.fastq)|(.fq)')
 def strip_seq_extension(fn):
     return seq_ext.split(fn)[0]
 
 
-def create_task_object(task_dict_func):
+def doit_task(task_dict_func):
     '''Wrapper to decorate functions returning pydoit
     Task dictionaries and have them return pydoit Task
     objects
@@ -90,15 +63,15 @@ def create_task_object(task_dict_func):
     return d_to_t
 
 
-@create_task_object
+@doit_task
 def get_group_task(group_name, tasks):
 
     return {'name': group_name,
             'actions': None,
             'task_dep': [t.name for t in tasks]}
 
-
-@create_task_object
+    
+@doit_task
 def get_download_task(url, target_fn, label='default'):
 
     cmd = 'curl -o {target_fn} {url}'.format(**locals())
@@ -112,7 +85,7 @@ def get_download_task(url, target_fn, label='default'):
             'uptodate': [True]}
 
 
-@create_task_object
+@doit_task
 def get_download_and_gunzip_task(url, target_fn):
     cmd = 'curl {url} | gunzip -c > {target_fn}'.format(**locals())
 
@@ -126,7 +99,7 @@ def get_download_and_gunzip_task(url, target_fn):
             'uptodate': [True]}
 
 
-@create_task_object
+@doit_task
 def get_download_and_untar_task(url, target_dir, label):
 
     cmd1 = 'mkdir -p {target_dir}; curl {url} | tar -xz -C {target_dir}'.format(**locals())
@@ -143,7 +116,7 @@ def get_download_and_untar_task(url, target_dir, label):
             'uptodate': [True]}
 
 
-@create_task_object
+@doit_task
 def get_create_folder_task(folder):
 
     name = 'create_folder:{folder}'.format(**locals())
@@ -156,7 +129,7 @@ def get_create_folder_task(folder):
             'clean': [clean_targets] }
 
 
-@create_task_object
+@doit_task
 def get_sanitize_fasta_task(input_fn, output_fn):
 
     import re
@@ -177,7 +150,7 @@ def get_sanitize_fasta_task(input_fn, output_fn):
             'clean': [clean_targets]}
 
 
-@create_task_object
+@doit_task
 def get_rename_transcriptome_task(transcriptome_fn, output_fn, names_fn,
                                   transcript_basename, split_regex=None):
 
@@ -215,7 +188,7 @@ def get_rename_transcriptome_task(transcriptome_fn, output_fn, names_fn,
             'clean': [clean_targets]}
 
 
-@create_task_object
+@doit_task
 def get_transeq_task(input_fn, output_fn, clean=True, frame=6):
 
     name = 'transeq:{0}'.format(os.path.basename(input_fn))
@@ -235,7 +208,7 @@ def get_transeq_task(input_fn, output_fn, clean=True, frame=6):
             'clean': [clean_targets]}
 
 
-@create_task_object
+@doit_task
 def get_crb_blast_task(query, target, output, cutoff, crb_blast_cfg,
                        n_threads):
 
@@ -252,89 +225,7 @@ def get_crb_blast_task(query, target, output, cutoff, crb_blast_cfg,
             'clean': [clean_targets]}
 
 
-@create_task_object
-def get_lastdb_task(db_fn, db_out_prefix, lastdb_cfg, prot=True):
-    '''Create a pydoit task to run lastdb.
-
-    WARNING: This does not define a file_dep, to make sure it doesn't
-    get executed when the dependency and targets already exist. This means
-    that if a task acquires the database, it MUST be defined before the
-    lastdb task.
-
-    Args:
-        db_fn (str): The FASTA file to format.
-        db_out_prefix (str): Prefix for the database files.
-        lastdb_cfg (dict): Config for the command. Shoud contain an entry
-        named "params" storing a str.
-        prot (bool): True if a protein FASTA, False otherwise.
-    Returns:
-        dict: A pydoit task.
-    '''
-
-    exc = which('lastdb')
-    params = lastdb_cfg['params']
-    if prot:
-        params += ' -p'
-
-    cmd = '{exc} {params} {db_out_prefix} {db_fn}'.format(**locals())
-
-    name = 'lastdb:' + os.path.basename(db_out_prefix)
-
-    return {'name': name,
-            'title': title_with_actions,
-            'actions': [cmd],
-            'targets': ['{0}.prj'.format(db_out_prefix)],
-            'uptodate': [True],
-            'clean': [clean_targets]}
-
-
-@create_task_object
-def get_lastal_task(query, db, out_fn, cfg, translate=False, 
-                    cutoff=0.00001, n_threads=1, n_nodes=None):
-    '''Create a pydoit task to run lastal
-
-    Args:
-        query (str): The file with the query sequences.
-        db (str): The database file prefix.
-        out_fn (str): Destination file for alignments.
-        translate (bool): True if query is a nucleotide FASTA.
-        n_threads (int): Number of threads to run with.
-        cfg (dict): Config, must contain key params holding str.
-    Returns:
-        dict: A pydoit task.
-    '''
-
-    lastal_exc = which('lastal')
-
-    params = cfg['params']
-    lastal_cmd = [lastal_exc]
-    if translate:
-        lastal_cmd.append('-F' + str(cfg['frameshift']))
-    if cutoff is not None:
-        cutoff = round(1.0 / cutoff, 2)
-        lastal_cmd.append('-D' + str(cutoff))
-    lastal_cmd.append(db)
-    lastal_cmd = '"{0}"'.format(' '.join(lastal_cmd))
-
-    if n_nodes is None:
-        parallel = parallel_fasta(query, n_threads)
-    else:
-        parallel = multinode_parallel_fasta(query, n_threads, n_nodes)
-
-    cmd = [parallel, lastal_cmd, '<', query, '>', out_fn]
-    cmd = ' '.join(cmd)
-
-    name = 'lastal:{0}'.format(os.path.join(out_fn))
-
-    return {'name': name,
-            'title': title_with_actions,
-            'actions': [cmd],
-            'targets': [out_fn],
-            'file_dep': [db + '.prj'],
-            'clean': [clean_targets]}
-
-
-@create_task_object
+@doit_task
 def get_maf_best_hits_task(maf_fn, output_fn):
 
     hits_mgr = BestHits()
@@ -354,7 +245,7 @@ def get_maf_best_hits_task(maf_fn, output_fn):
             'clean': [clean_targets]}
 
 
-@create_task_object
+@doit_task
 def get_link_file_task(src, dst=''):
     ''' Soft-link file to the current directory
     '''
@@ -368,7 +259,7 @@ def get_link_file_task(src, dst=''):
             'clean': [clean_targets]}
 
 
-@create_task_object
+@doit_task
 def get_cat_task(file_list, target_fn):
 
     cmd = 'cat {files} > {t}'.format(files=' '.join(file_list), t=target_fn)
@@ -381,7 +272,7 @@ def get_cat_task(file_list, target_fn):
             'clean': [clean_targets]}
 
 
-@create_task_object
+@doit_task
 def get_busco_task(input_filename, output_name, busco_db_dir, input_type,
                    n_threads, busco_cfg):
 
@@ -403,93 +294,7 @@ def get_busco_task(input_filename, output_name, busco_db_dir, input_type,
             'clean': [(clean_folder, ['run_' + output_name])]}
 
 
-@create_task_object
-def get_cmpress_task(db_filename, infernal_cfg):
-
-    exc = which('cmpress')
-    cmd = '{exc} {db_filename}'.format(**locals())
-
-    return {'name': 'cmpress:' + os.path.basename(db_filename),
-            'title': title_with_actions,
-            'actions': [cmd],
-            'targets': [db_filename + ext for ext in ['.i1f', '.i1i', '.i1m', '.i1p']],
-            'uptodate': [True],
-            'clean': [clean_targets]}
-
-
-@create_task_object
-def get_cmscan_task(input_filename, output_filename, db_filename,
-                    cutoff, n_threads, infernal_cfg, n_nodes=None):
-
-    name = 'cmscan:' + os.path.basename(input_filename) + '.x.' + \
-           os.path.basename(db_filename)
-
-    exc = which('cmscan')
-    if n_nodes is None:
-        parallel_cmd = parallel_fasta(input_filename, n_threads)
-    else:
-        parallel_cmd = multinode_parallel_fasta(input_filename, n_threads,
-                                                n_nodes)
-
-    stat = output_filename + '.out'
-    cmd = [parallel_cmd, exc, '--cpu', '1', '--rfam', '--nohmmonly',
-           '-E', str(cutoff), '--tblout', '/dev/stdout', '-o', stat,
-           db_filename, '/dev/stdin', '>', output_filename]
-    cmd = ' '.join(cmd)
-
-    return {'name': name,
-            'title': title_with_actions,
-            'actions': [cmd],
-            'file_dep': [input_filename, db_filename, db_filename + '.i1p'],
-            'targets': [output_filename, output_filename + '.cmscan'],
-            'clean': [clean_targets]}
-
-
-@create_task_object
-def get_hmmpress_task(db_filename, hmmer_cfg):
-
-    name = 'hmmpress:' + os.path.basename(db_filename)
-    exc = which('hmmpress')
-    cmd = '{exc} {db_filename}'.format(**locals())
-
-    return {'name': name,
-            'title': title_with_actions,
-            'actions': [cmd],
-            'targets': [db_filename + ext for ext in ['.h3f', '.h3i', '.h3m', '.h3p']],
-            'uptodate': [True],
-            'clean': [clean_targets]}
-
-
-@create_task_object
-def get_hmmscan_task(input_filename, output_filename, db_filename,
-                     cutoff, n_threads, hmmer_cfg, n_nodes=None):
-
-    name = 'hmmscan:' + os.path.basename(input_filename) + '.x.' + \
-                os.path.basename(db_filename)
-
-    hmmscan_exc = which('hmmscan')
-    
-    if n_nodes is None:
-        parallel_cmd = parallel_fasta(input_filename, n_threads)
-    else:
-        parallel_cmd = multinode_parallel_fasta(input_filename, n_threads,
-                                                n_nodes)
-
-    stat = output_filename + '.out'
-    cmd = [parallel_cmd, hmmscan_exc, '--cpu', '1', '--domtblout', '/dev/stdout', 
-           '-E', str(cutoff), '-o', stat, db_filename, '/dev/stdin',
-           '>', output_filename]
-    cmd = ' '.join(cmd)
-    
-    return {'name': name,
-            'title': title_with_actions,
-            'actions': [cmd],
-            'file_dep': [input_filename, db_filename, db_filename+'.h3p'],
-            'targets': [output_filename, stat],
-            'clean': [clean_targets]}
-
-
-@create_task_object
+@doit_task
 def get_transdecoder_orf_task(input_filename, transdecoder_cfg):
 
     name = 'TransDecoder.LongOrfs:' + os.path.basename(input_filename)
@@ -506,37 +311,7 @@ def get_transdecoder_orf_task(input_filename, transdecoder_cfg):
             'clean': [(clean_folder, [input_filename + '.transdecoder_dir'])]}
 
 
-@create_task_object
-def get_remap_hmmer_task(hmmer_filename, remap_gff_filename, output_filename):
-
-    name = 'remap_hmmer:{0}'.format(os.path.basename(hmmer_filename))
-
-    def cmd():
-        gff_df = pd.concat(parsers.parse_gff3(remap_gff_filename))
-        hmmer_df = pd.concat(parsers.hmmscan_to_df_iter(hmmer_filename))
-
-        merged_df = pd.merge(hmmer_df, gff_df, left_on='full_query_name', right_on='ID')
-
-        hmmer_df['env_coord_from'] = (merged_df.start + \
-                                      (3 * merged_df.env_coord_from)).astype(int)
-        hmmer_df['env_coord_to'] = (merged_df.start + \
-                                    (3 * merged_df.env_coord_to)).astype(int)
-        hmmer_df['ali_coord_from'] = (merged_df.start + \
-                                      (3 * merged_df.ali_coord_from)).astype(int)
-        hmmer_df['ali_coord_to'] = (merged_df.start + \
-                                    (3 * merged_df.ali_coord_to)).astype(int)
-
-        hmmer_df.to_csv(output_filename, header=True, index=False)
-
-    return {'name': name,
-            'title': title_with_actions,
-            'actions': [cmd],
-            'file_dep': [hmmer_filename, remap_gff_filename],
-            'targets': [output_filename],
-            'clean': [clean_targets]}
-
-
-@create_task_object
+@doit_task
 def get_transdecoder_predict_task(input_filename, db_filename, transdecoder_cfg):
 
     name = 'TransDecoder.Predict:' + os.path.basename(input_filename)
@@ -558,7 +333,7 @@ def get_transdecoder_predict_task(input_filename, db_filename, transdecoder_cfg)
                      (clean_folder, [input_filename + '.transdecoder_dir'])]}
 
 
-@create_task_object
+@doit_task
 def get_maf_gff3_task(input_filename, output_filename, database):
 
     name = 'maf-gff3:' + os.path.basename(output_filename)
@@ -583,7 +358,7 @@ def get_maf_gff3_task(input_filename, output_filename, database):
             'clean': [clean_targets]}
 
 
-@create_task_object
+@doit_task
 def get_crb_gff3_task(input_filename, output_filename, database):
 
     name = 'crbb-gff3:' + os.path.basename(output_filename)
@@ -604,7 +379,7 @@ def get_crb_gff3_task(input_filename, output_filename, database):
             'clean': [clean_targets]}
 
 
-@create_task_object
+@doit_task
 def get_hmmscan_gff3_task(input_filename, output_filename, database):
 
     name = 'hmmscan-gff3:' + os.path.basename(output_filename)
@@ -624,7 +399,7 @@ def get_hmmscan_gff3_task(input_filename, output_filename, database):
             'clean': [clean_targets]}
 
 
-@create_task_object
+@doit_task
 def get_cmscan_gff3_task(input_filename, output_filename, database):
 
     name = 'cmscan-gff3:' + os.path.basename(output_filename)
@@ -644,7 +419,7 @@ def get_cmscan_gff3_task(input_filename, output_filename, database):
             'clean': [clean_targets]}
 
 
-@create_task_object
+@doit_task
 def get_gff3_merge_task(gff3_filenames, output_filename):
 
     name = 'gff3-merge:{0}'.format(os.path.basename(output_filename))
@@ -661,7 +436,7 @@ def get_gff3_merge_task(gff3_filenames, output_filename):
             'clean': [clean_targets]}
 
 
-@create_task_object
+@doit_task
 def get_annotate_fasta_task(transcriptome_fn, gff3_fn, output_fn):
 
     name = 'fasta-annotate:{0}'.format(output_fn)
@@ -714,7 +489,7 @@ def get_annotate_fasta_task(transcriptome_fn, gff3_fn, output_fn):
                 'clean': [clean_targets]}
 
 
-@create_task_object
+@doit_task
 def get_transcriptome_stats_task(transcriptome, output_fn):
 
     import re

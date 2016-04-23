@@ -15,6 +15,8 @@ import annotate
 import databases
 import dependencies
 import common
+import parallel
+import hmmer
 import report
 
 import os
