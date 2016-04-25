@@ -72,7 +72,7 @@ already have a recent versions installed; the ones available in the Ubuntu 14.04
 just too old.
 
 Dev Version
-===========
+~~~~~~~~~~~
 
 If you want the latest features (and bugs), you can install dammit from github::
 
@@ -106,7 +106,7 @@ Known Issues
 ------------
 
 * On some systems, installation of the ConfigParser package can get borked, which will cause
-  and exception to be thrown. This can be fixed by following the directions at #33.
+  and exception to be thrown. This can be fixed by following the directions at issue #33: https://github.com/camillescott/dammit/issues/33.
 * There can be errors resuming runs which were interrupted on the BUSCO stage. If the task fails on
   resume, delete the BUSCO results folder within your dammit results folder, which will have a name
   of the form `run_<name>.busco_results`.
