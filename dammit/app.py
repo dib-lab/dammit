@@ -175,9 +175,9 @@ class DammitApp(object):
                                      help='Optional additional protein databases. '\
                                           ' These will be searched with CRB-blast.'
                                      )
-        annotate_parser.add_argument('--n-nodes',
+        annotate_parser.add_argument('--n_nodes',
                                      type=int,
-                                     help='Experimental support for Portable'\
+                                     help='EXPERIMENTAL support for Portable'\
                                           ' Batch System. `--n-threads` will'\
                                           ' be assumed as the ppn parameter.')
                                     
