@@ -88,9 +88,8 @@ you can skip this step and move on to the final stage::
     nose==1.3.4
     ficus>=0.1
     matplotlib>=1.0
-    scikit-learn>=0.16
 
-Otherwise, we will have to install them. Pandas, numpy, matplotlib, and scikit-learn
+Otherwise, we will have to install them. Pandas, numpy, and matplotlib
 are quite hefty, mostly because they require a lot of compilation. To get around this,
 you can either install them via Anaconda, which I recommend, or you can install those
 which are available through the Ubuntu PPAs. If you wish to do things the slow
@@ -127,6 +126,10 @@ and allow dammit to install its own version via PyPI::
 
     conda remove sphinx
 
+Get the latest versions of some packages::
+
+    conda update pandas numexpr
+
 .. _Ubuntu-instructions:
 
 Ubuntu / Pip Instructions
@@ -137,9 +140,9 @@ installed the python packages with pip, and have installed the non-python depend
 you can install them through the Ubuntu PPAs as follows::
 
     sudo apt-get update
-    sudo apt-get install python-pip python-dev python-numpy python-sklearn
+    sudo apt-get install python-pip python-dev python-numpy 
 
-Unfortunately, you'll still have to install Pandas and scikit-learn through pip, as
+Unfortunately, you'll still have to install Pandas  through pip, as
 the versions in the Ubuntu 14.04 PPAs are quite old. These will be installed automatically
 along with dammit.
 

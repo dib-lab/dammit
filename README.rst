@@ -29,7 +29,7 @@ First get packages from the Ubuntu archives::
     sudo apt-get update
     sudo apt-get install python-pip python-dev python-numpy git ruby hmmer unzip \
         infernal ncbi-blast+ liburi-escape-xs-perl emboss liburi-perl \
-        python-sklearn build-essential libsm6 libxrender1 libfontconfig1 \
+        build-essential libsm6 libxrender1 libfontconfig1 \
         parallel
     sudo gem install crb-blast
 
@@ -67,9 +67,16 @@ Now, install dammit::
     sudo pip install -U setuptools
     sudo pip install dammit
 
-This will spend a bit of time compiling and installing pandas and scikit-learn if you don't 
+This will spend a bit of time compiling and installing pandas if you don't 
 already have a recent versions installed; the ones available in the Ubuntu 14.04 archives are
 just too old.
+
+Dev Version
+~~~~~~~~~~~
+
+If you want the latest features (and bugs), you can install dammit from github::
+
+    pip install git+https://github.com/camillescott/dammit.git
 
 Usage
 -----
@@ -98,13 +105,11 @@ databases.
 Known Issues
 ------------
 
-* Currently, the `--full` option is a no-op; it will be reactivated in a future release.
+* On some systems, installation of the ConfigParser package can get borked, which will cause
+  and exception to be thrown. This can be fixed by following the directions at issue #33: https://github.com/camillescott/dammit/issues/33.
 * There can be errors resuming runs which were interrupted on the BUSCO stage. If the task fails on
   resume, delete the BUSCO results folder within your dammit results folder, which will have a name
   of the form `run_<name>.busco_results`.
-* The GFF3 coordinates for the `hmmscan`/Pfam-A results are currently being reported incorrectly --
-  they are relative to the predicted ORFs, and should be relative to the transcripts. This is a
-  top-priority issue.
 * The `dependencies` subcommand doesn't search for all subdependencies; for example, BUSCO relies on
   EMBOSS, which is not searched for. Although the installation instructions cover these
   dependencies, users who *cough* don't read the directions *cough* might be confused that a
