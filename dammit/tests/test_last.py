@@ -7,16 +7,15 @@ import sys
 
 from unittest import TestCase
 
-
 from utils import TemporaryDirectory, Move, TestData, touch, TemporaryFile
 from utils import run_task, check_status
 from dammit import common
-from dammit import tasks
-from dammit.last import get_lastdb_task as lastdb_task
+from dammit.tasks import print_tasks
+from dammit.last import lastal
 from dammit.last import get_lastal_task as lastal_task
+from dammit.last import get_lastdb_task as lastdb_task
 from dammit.common import run_tasks
 from dammit.fileio.maf import MafParser
-
 
 class TestLASTTasks(TestCase):
 
@@ -83,10 +82,10 @@ class TestLASTTasks(TestCase):
                         
                     print(os.listdir(td), file=sys.stderr)
                     db_task = lastdb_task(prot, prot, self.lastdb_cfg)
-                    aln_task = lastal_task(tr, prot, out, self.lastal_cfg, 
-                                                     translate=True, 
-                                                     cutoff=None)
-                    run_tasks([db_task, aln_task], ['run'])
+                    aln_tasks = list(lastal(tr, prot, out,  
+                                            translate=True, 
+                                            cutoff=None))
+                    run_tasks([db_task] + aln_tasks, ['run'])
 
                     aln = ''.join(open(out).readlines())
                     print(aln, file=sys.stderr)
@@ -107,11 +106,10 @@ class TestLASTTasks(TestCase):
                         
                     print(os.listdir(td), file=sys.stderr)
                     db_task = lastdb_task(prot, prot, self.lastdb_cfg)
-                    aln_task = lastal_task(prot, prot, out,
-                                                     self.lastal_cfg,
-                                                     translate=False,
-                                                     cutoff=None)
-                    run_tasks([db_task, aln_task], ['run'])
+                    aln_tasks = list(lastal(prot, prot, out,
+                                            translate=False,
+                                            cutoff=None))
+                    run_tasks([db_task] + aln_tasks, ['run'])
 
                     aln = ''.join(open(out).readlines())
                     print(aln, file=sys.stderr)
@@ -127,26 +125,26 @@ class TestLASTTasks(TestCase):
     def test_lastal_task_multithreaded(self):
         with TemporaryDirectory() as td:
             with Move(td):
-                with TestData('test-protein.fa', td) as prot, \
-                     TestData('pom.50.fa', td) as tr, \
-                     TemporaryFile(td) as out_single,\
-                     TemporaryFile(td) as out_multi:
+                for n_threads in (3,4,5):
+                    with TestData('test-protein.fa', td) as prot, \
+                         TestData('pom.50.fa', td) as tr, \
+                         TemporaryFile(td) as out_single,\
+                         TemporaryFile(td) as out_multi:
                         
-                    for n_threads in (3,4,5):
+
                         print(os.listdir(td), file=sys.stderr)
 
                         db_task = lastdb_task(prot, prot, self.lastdb_cfg)
-                        aln_task_single = lastal_task(tr, prot, out_single, 
-                                                                self.lastal_cfg, 
-                                                                translate=True, 
-                                                                cutoff=None)
+                        aln_tasks_single = list(lastal(tr, prot, out_single, 
+                                                       translate=True, 
+                                                       cutoff=None))
 
-                        aln_task_multi = lastal_task(tr, prot, out_multi, 
-                                                                self.lastal_cfg, 
-                                                                translate=True, 
-                                                                cutoff=None,
-                                                                n_threads=n_threads)
-                        run_tasks([db_task, aln_task_single, aln_task_multi], 
+                        aln_task_multi = lastal_task(tr, prot, out_multi,
+                                                     self.lastal_cfg,
+                                                     translate=True, 
+                                                     cutoff=None,
+                                                     n_threads=n_threads)
+                        run_tasks([db_task, aln_task_multi] + aln_tasks_single, 
                                   ['run'])
 
                         alns_single = MafParser(out_single).read()
@@ -160,17 +158,16 @@ class TestLASTTasks(TestCase):
             with Move(td):
                 with TestData('test-protein.fa', td) as prot, \
                      TemporaryFile(td) as out:
-                        
-                    print(os.listdir(td), file=sys.stderr)
-                    db_task = lastdb_task(prot, prot, self.lastdb_cfg)
-                    aln_task = lastal_task(prot, prot, out,
-                                                     self.lastal_cfg,
-                                                     translate=False,
-                                                     cutoff=None)
-                    # Run it once
-                    run_tasks([db_task, aln_task], ['run'])
 
+                    db_task = lastdb_task(prot, prot, self.lastdb_cfg)
+                    aln_tasks = list(lastal(prot, prot, out,
+                                            translate=False,
+                                            cutoff=None))
+                    # Run it once
+                    run_tasks([db_task] + aln_tasks, ['run'])
+                    print(os.listdir(td), file=sys.stderr)
                     # Now run again and check the status
-                    run_tasks([aln_task], ['run'])
-                    status = check_status(aln_task)
+                    #run_tasks(aln_tasks, ['run'])
+                    print_tasks(aln_tasks)
+                    status = check_status(aln_tasks[-1], tasks=aln_tasks + [db_task])
                     self.assertEquals(status.status, 'up-to-date')

@@ -1,14 +1,15 @@
-#/usr/bin/env python
+#!/usr/bin/env python
 import os
 
 from doit.action import CmdAction
 from doit.tools import title_with_actions
 from doit.task import clean_targets
 
-from .common import which
+from .common import which, CONFIG
 from .tasks import doit_task
-from .parallel import parallel_fasta, multinode_parallel_fasta
+from .parallel import parallel_fasta, multinode_parallel_fasta, get_filesize_task
 
+config = CONFIG['settings']['last']
 
 @doit_task
 def get_lastdb_task(db_fn, db_out_prefix, lastdb_cfg, prot=True):
@@ -63,33 +64,52 @@ def get_lastal_task(query, db, out_fn, cfg, translate=False,
     '''
 
     lastal_exc = which('lastal')
-
-    params = cfg['params']
-    lastal_cmd = [lastal_exc]
-    if translate:
-        lastal_cmd.append('-F' + str(cfg['frameshift']))
-    if cutoff is not None:
-        cutoff = round(1.0 / cutoff, 2)
-        lastal_cmd.append('-D' + str(cutoff))
-    lastal_cmd.append(db)
-    lastal_cmd = '"{0}"'.format(' '.join(lastal_cmd))
-
-    if n_nodes is None:
-        parallel = parallel_fasta(query, n_threads)
-    else:
-        parallel = multinode_parallel_fasta(query, n_threads, n_nodes)
-
-    cmd = [parallel, lastal_cmd, '<', query, '>', out_fn]
-    cmd = ' '.join(cmd)
-
     name = 'lastal:{0}'.format(os.path.join(out_fn))
+    params = cfg['params']
+
+    def lastal_cmd(file_size, cutoff=cutoff):
+        cmd = [lastal_exc]
+        if translate:
+            cmd.append('-F' + str(cfg['frameshift']))
+        if cutoff is not None:
+            cutoff = round(1.0 / cutoff, 2)
+            cmd.append('-D' + str(cutoff))
+        cmd.append(db)
+        cmd = '"{0}"'.format(' '.join(cmd))
+
+        if n_nodes is None:
+            parallel = parallel_fasta(query, n_threads, file_size)
+        else:
+            parallel = multinode_parallel_fasta(query, n_threads, n_nodes,
+                                                file_size)
+
+        cmd = [parallel, cmd, '<', query, '>', out_fn]
+        return ' '.join(cmd)
 
     return {'name': name,
             'title': title_with_actions,
-            'actions': [cmd],
+            'actions': [CmdAction(lastal_cmd)],
             'targets': [out_fn],
             'file_dep': [db + '.prj'],
+            'getargs': {'file_size': ('get_filesize:{0}'.format(query),
+                                      'size')},
             'clean': [clean_targets]}
 
 
+def lastdb(db_fn, db_out_prefix, prot=True, cfg=None):
 
+    if cfg is None:
+        cfg = config['lastdb']
+
+    return get_lastdb_task(db_fn, db_out_prefix, cfg, prot=prot)
+
+
+def lastal(query, db, out_fn, translate=False, cutoff=0.00001,
+           n_threads=1, n_nodes=None, cfg=None):
+
+    if cfg is None:
+        cfg = config['lastal']
+        
+    yield get_filesize_task(query)
+    yield get_lastal_task(query, db, out_fn, cfg, translate=translate, cutoff=cutoff,
+                          n_threads=n_threads, n_nodes=n_nodes)

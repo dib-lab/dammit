@@ -21,8 +21,8 @@ from .tasks import get_transcriptome_stats_task, \
                    get_transeq_task, \
                    print_tasks
 from .hmmer import hmmscan, get_remap_hmmer_task
-from .infernal import get_cmscan_task
-from .last import get_lastal_task
+from .infernal import cmscan
+from .last import lastal
 
 logger = logging.getLogger(__name__)
 
@@ -188,48 +188,46 @@ class AnnotateHandler(object):
                                             self.transdecoder_pfam_fn,
                                             predict_cfg)
 
-    def cmscan_task(self):
+    def cmscan_tasks(self):
         '''Run Infernal. Infernal uses covariance models to detect
         RNA secondary structures. Here we use Rfam as our reference
         database.
         '''
 
-        cmscan_cfg = common.CONFIG['settings']['infernal']['cmscan']
-        return get_cmscan_task(self.transcriptome_fn, 
+
+        for task in cmscan(self.transcriptome_fn, 
                                self.rfam_fn,
                                self.database_dict['RFAM'], 
                                self.args.evalue,
                                self.args.n_threads, 
-                               cmscan_cfg,
-                               n_nodes=self.args.n_nodes)
+                               n_nodes=self.args.n_nodes):
+            yield task
 
     def orthodb_task(self):
         '''Run LAST to get homologies with OrthoDB. We use LAST here because
         it is much faster than BLAST+, and OrthoDB is pretty huge.
         '''
         
-        lastal_cfg = common.CONFIG['settings']['last']['lastal']
         orthodb = self.database_dict['ORTHODB']
-        return get_lastal_task(self.transcriptome_fn, 
-                               orthodb, 
-                               self.orthodb_fn, 
-                               lastal_cfg,
-                               translate=True,
-                               cutoff=self.args.evalue,
-                               n_threads=self.args.n_threads,
-                               n_nodes=self.args.n_nodes)
+        for task in lastal(self.transcriptome_fn, 
+                           orthodb, 
+                           self.orthodb_fn, 
+                           translate=True,
+                           cutoff=self.args.evalue,
+                           n_threads=self.args.n_threads,
+                           n_nodes=self.args.n_nodes):
+            yield task
 
     def uniref_task(self):
 
-        lastal_cfg = common.CONFIG['settings']['last']['lastal']
         uniref = self.database_dict['UNIREF']
-        return get_lastal_task(self.transcriptome_fn,
-                               uniref,
-                               self.uniref_fn,
-                               lastal_cfg,
-                               translate=True,
-                               cutoff=self.args.evalue,
-                               n_threads=self.args.n_threads)
+        for task in lastal(self.transcriptome_fn,
+                           uniref,
+                           self.uniref_fn,
+                           translate=True,
+                           cutoff=self.args.evalue,
+                           n_threads=self.args.n_threads):
+            yield task
 
     def user_crb_tasks(self):
         '''Run conditional recipricol best hits LAST (CRBL) against the
@@ -256,13 +254,15 @@ class AnnotateHandler(object):
         yield self.rename_task()
         yield self.stats_task()
         yield self.busco_task()
-        #yield self.transeq_task()
         for task in self.transdecoder_tasks():
             yield task
-        yield self.cmscan_task()
-        yield self.orthodb_task()
+        for task in self.cmscan_tasks():
+            yield task
+        for task in self.orthodb_task():
+            yield task
         if self.args.full:
-            yield self.uniref_task()
+            for task in self.uniref_task():
+                yield task
         for task in self.user_crb_tasks():
             yield task
 

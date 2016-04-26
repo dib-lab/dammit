@@ -44,9 +44,11 @@ except ImportError:
     from io import StringIO
 
 
-def check_status(task, dep_file='.doit.db'):
+def check_status(task, tasks=None, dep_file='.doit.db'):
+    if tasks is None:
+        tasks = [task]
     mgr = Dependency(DbmDB, os.path.abspath(dep_file))
-    status = mgr.get_status(task, [task])
+    status = mgr.get_status(task, tasks)
     return status
 
 

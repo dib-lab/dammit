@@ -30,10 +30,22 @@ def get_dammit_dir():
                         CONFIG['settings']['dammit_dir'])
 
 
+def uniqify_tasks(tasks):
+    seen = set()
+    uniqified = []
+    for task in tasks:
+        if task.name not in seen:
+            uniqified.append(task)
+            seen.add(task.name)
+    return uniqified
+
+
 def run_tasks(tasks, args, config={'verbosity': 0}):
     
     if type(tasks) is not list:
         raise TypeError('tasks must be a list')
+
+    tasks = uniqify_tasks(tasks)
    
     class Loader(TaskLoader):
         @staticmethod
