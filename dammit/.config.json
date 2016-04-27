@@ -9,6 +9,7 @@
 		"dammit_dir": ".dammit",
 		"dep_dir": "dependencies",
         "db_dir": "databases",
+        "doit_backend": "sqlite3",
         
         "blast": {
             "evalue": 0.000001,
