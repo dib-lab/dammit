@@ -3,6 +3,7 @@ from __future__ import print_function
 
 import logging
 import os
+from os import path
 import sys
 
 from doit.dependency import Dependency, SqliteDB
@@ -16,48 +17,114 @@ from .tasks import get_download_and_gunzip_task, \
                    get_download_and_untar_task, \
                    print_tasks
 
-class DatabaseHandler(object):
+def get_handler(args, config):
 
-    def __init__(self, args):
+    logger = logging.getLogger('DatabaseHandler')
 
-        self.args = args
-        self.logger = logging.getLogger(self.__class__.__name__)
-
-        if args.database_dir is None:
-            try:
-                directory = os.environ['DAMMIT_DB_DIR']
-                self.logger.debug('found DAMMIT_DB_DIR env variable')
-            except KeyError:
-                self.logger.debug('no DAMMIT_DB_DIR or --database-dir, using'\
-                                  ' default')
-                directory = os.path.join(common.get_dammit_dir(), 
-                                         common.CONFIG['settings']['db_dir'])
-        else:
-            directory = args.database_dir
-        self.directory = os.path.abspath(directory)
-
-        self.doit_config = {
-                            'reporter': LogReporter(self.logger),
-                            'backend': common.DOIT_BACKEND,
-                            'verbosity': self.args.verbosity,
-                            'continue': True,
-                            'dep_file': os.path.join(self.directory, 'databases.doit.db')
-                           }
-        self.logger.debug('doit_config:{0}'.format(self.doit_config))
-
-        self.logger.debug('database dir: {0}'.format(self.directory))
+    if args.database_dir is None:
         try:
-            os.mkdir(self.directory)
-        except OSError:
-            self.logger.debug('database dir already exists')
+            directory = os.environ['DAMMIT_DB_DIR']
+            logger.debug('found DAMMIT_DB_DIR env variable')
+        except KeyError:
+            logger.debug('no DAMMIT_DB_DIR or --database-dir, using'\
+                              ' default')
+            directory = path.join(config['settings']['dammit_dir'],
+                                  config['settings']['db_dir'])
+    else:
+        directory = args.database_dir
+    directory = path.abspath(directory)
+    doit_db = path.join(directory, 'databases.doit.db')
 
-        self.databases, self.tasks = self.get_tasks()
+    handler = TaskHandler(doit_db, logger, config=config,
+                          reporter=LogReporter(logger), 
+                          backend=config['settings']['doit_backend'],
+                          verbosity=args.verbosity,
+                          continue=True)
+    return handler
 
+
+def register_builtin_tasks(handler, config, databases):
+
+    settings = config['settings']
+
+    register_pfam_tasks(handler, settings, databases)
+    register_rfam_tasks(handler, settings, databases)
+    register_orthodb_tasks(handler, settings, databases)
+    register_busco_tasks(handler, settings, databases)
+    register_uniref90_tasks(handler, settings, databases)
+                          
+
+def register_pfam_tasks(handler, settings, databases):
+    pfam_A = databases['Pfam-A']
+    handler.register_task('download:Pfam-A',
+                          get_download_and_gunzip_task(pfam_A['url'],
+                                                       pfam_A['filename']),
+                          files={'Pfam-A': pfam_A['filename']})
+    handler.register_task('hmmpress:Pfam-A',
+                          get_hmmpress_task(pfam_A['filename'], settings['hmmer']))
+
+
+def register_rfam_tasks(handler, settings, databases):
+    rfam = databases['Rfam']
+    handler.register_task('download:Rfam',
+                           get_download_and_gunzip_task(rfam['url'], 
+                                                        rfam['filename']),
+                           files={'Rfam': rfam['filename']})
+    handler.register_task('cmpress:Rfam',
+                          get_cmpress_task(rfam['filename'], settings['infernal']))
+
+
+def register_orthodb_tasks(handler, settings, databases):
+    orthodb = databases['OrthoDB']
+    handler.register_task('download:OrthoDB',
+                          get_download_and_gunzip_task(orthodb['url'], 
+                                                       orthodb['filename']),
+                          files={'OrthoDB': orthodb['filename']})
+    handler.register_task('lastdb:OrthoDB',
+                          get_lastdb_task(orthodb['filename'], 
+                                          orthodb['filename'], 
+                                          settings['last']['lastdb'], 
+                                          prot=True))
+
+
+def register_busco_tasks(handler, settings, databases):
+    busco = databases['busco']
+    busco_dir = 'buscodb'
+    for group_name in busco:
+        group = busco[group_name]
+        files = {'BUSCO-{0}'.format(group_name): path.join(busco_dir, group_name)}
+        handler.register_task('download:BUSCO-{0}'.format(group_name),
+                              get_downlod_and_untar_task(group['url'],
+                                                         busco_dir,
+                                                         label=group_name),
+                              files=files)
+
+
+def register_uniref90_tasks(handler, settings, databases):
+    uniref90 = databases['uniref90']
+    handler.register_task('download:uniref90',
+                          get_download_and_gunzip_task(uniref90['url'],
+                                                       uniref90['filename']),
+                          files={'uniref90': uniref90['filename']})
+    handler.register_task('lastdb:uniref90',
+                          get_lastdb_task(uniref['filename'],
+                                          uniref['filename'],
+                                          settings['last']['lastdb'],
+                                          prot=True))
+
+
+def install(handler):
+    uptodate, missing = handler.check_uptodate()
+    if not uptodate:
+
+
+
+
+class DatabaseHandler(object):
 
     def handle(self, doit_args=['run']):
 
         missing = self.check()
-        print_tasks(self.tasks, logger=self.logger)
         
         if self.args.install:
             if missing:
@@ -101,95 +168,4 @@ class DatabaseHandler(object):
             self.logger.info('All databases prepared!')
 
         return missing
-
-    def get_tasks(self):
-        '''Generate tasks for installing the bundled databases. 
-        
-        These tasks download the databases, unpack them, and format them for use.
-        Current bundled databases are:
-
-            * Pfam-A (protein domans)
-            * Rfam (RNA models)
-            * OrthoDB8 (conserved ortholog groups)
-            * uniref90 (protiens, if --full selected)
-        
-        User-supplied databases are downloaded separately.
-
-        Returns:
-            dict: A dictionary of the final database paths.
-            list: A list of the doit tasks.
-
-        '''
-
-        tasks = []
-        databases = {}
-
-        # Get Pfam-A and prepare it for use with hmmer
-        PFAM = os.path.join(self.directory, common.DATABASES['pfam']['filename'])
-        tasks.append(
-            get_download_and_gunzip_task(common.DATABASES['pfam']['url'], PFAM)
-        )
-        tasks.append(
-            hmmpress(PFAM)
-        )
-        databases['PFAM'] = os.path.abspath(PFAM)
-
-        # Get Rfam and prepare it for use with Infernal
-        RFAM = os.path.join(self.directory, common.DATABASES['rfam']['filename'])
-        tasks.append(
-            get_download_and_gunzip_task(common.DATABASES['rfam']['url'], RFAM)
-        )
-        tasks.append(
-            get_cmpress_task(RFAM, common.CONFIG['settings']['infernal'])
-        )
-        databases['RFAM'] = os.path.abspath(RFAM)
-
-        # Get OrthoDB and prepare it for BLAST use
-        ORTHODB = os.path.join(self.directory, common.DATABASES['orthodb']['filename'])
-        tasks.append(
-            get_download_and_gunzip_task(common.DATABASES['orthodb']['url'], ORTHODB)
-        )
-
-        lastdb_cfg = common.CONFIG['settings']['last']['lastdb']
-        tasks.append(
-            get_lastdb_task(ORTHODB, ORTHODB + '.db', lastdb_cfg, prot=True)
-        )
-        ORTHODB += '.db'
-        databases['ORTHODB'] = os.path.abspath(ORTHODB)
-
-        ORTHODB_GENES = os.path.join(self.directory,
-                                     common.DATABASES['orthodb_genes']['filename'])
-        tasks.append(
-            get_download_and_gunzip_task(common.DATABASES['orthodb_genes']['url'],
-                                         ORTHODB_GENES)
-        )
-        databases['ORTHODB_GENES'] = os.path.abspath(ORTHODB_GENES)
-
-        # A little confusing. First, we get the top-level BUSCO path:
-        BUSCO = os.path.join(self.directory, 'buscodb')
-        tasks.append(
-            # That top-level path is given to the download task:
-            get_download_and_untar_task(common.DATABASES['busco'][self.args.busco_group]['url'], 
-                                        BUSCO,
-                                        label=self.args.busco_group)
-        )
-        # The untarred arhive has a folder named after the group:
-        databases['BUSCO'] = os.path.abspath(os.path.join(BUSCO, self.args.busco_group))
-
-        # Get uniref90 if the user specifies
-        # Ignoring this until we have working CRBL
-        if self.args.full:
-            UNIREF = os.path.join(self.directory, 
-                                  common.DATABASES['uniref90']['filename'])
-            tasks.append(
-                get_download_and_gunzip_task(common.DATABASES['uniref90']['url'], 
-                                             UNIREF)
-            )
-            tasks.append(
-                get_lastdb_task(UNIREF, UNIREF + '.db', lastdb_cfg, True)
-            )
-            UNIREF += '.db'
-            databases['UNIREF'] = os.path.abspath(UNIREF)
-
-        return databases, tasks
 
