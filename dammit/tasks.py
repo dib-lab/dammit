@@ -58,17 +58,9 @@ def parallel_fasta(input_filename, n_jobs):
 def multinode_parallel_fasta(input_filename, ppn, nodes):
     file_size = 'S=`stat -c "%%s" {0}`; B=`expr $S / {1}`;'.format(input_filename,
                                                                    nodes * ppn)
-    '''
-    exports = 'export PARALLEL="--workdir . --env PATH --env LD_LIBRARY_PATH '\
-              '--env LOADEDMODULES --env _LMFILES_ --env MODULE_VERSION '\
-              '--env MODULEPATH --env MODULEVERSION_STACK --env MODULESHOME '\
-              '--env OMP_DYNAMICS --env OMP_MAX_ACTIVE_LEVELS --env OMP_NESTED '\
-              '--env OMP_NUM_THREADS --env OMP_SCHEDULE --env OMP_STACKSIZE '\
-              '--env OMP_THREAD_LIMIT --env OMP_WAIT_POLICY";'
-    '''
     exc = which('parallel')
-    cmd = [exports, file_size, 'cat', input_filename, '|', exc, '--block', '$B',
-           '--pipe', '--recstart', '">"', '--gnu', '--jobs 1', 
+    cmd = [file_size, 'cat', input_filename, '|', exc, '--block', '$B',
+           '--pipe', '--recstart', '">"', '--gnu', '--jobs', str(ppn),
            '--sshloginfile $PBS_NODEFILE', '--workdir $PWD']
 
     return ' '.join(cmd)
