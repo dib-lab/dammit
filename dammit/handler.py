@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+import os
+
 from doit.cmd_base import TaskLoader
 from doit.doit_cmd import DoitMain
 from doit.dependency import Dependency, SqliteDB
@@ -15,7 +17,7 @@ class TaskHandler(TaskLoader):
 
         if files is None:
             self.files = {}
-        if type(files) is not dict:
+        elif type(files) is not dict:
             raise TypeError('files must be of type dict')
         else:
             self.files = files
@@ -23,14 +25,20 @@ class TaskHandler(TaskLoader):
         self.tasks = {}
 
         self.directory = os.path.abspath(directory)
+
+        try:
+            os.mkdir(self.directory)
+        except OSError:
+            logger.debug('database dir already exists')
+
         dep_file = os.path.join(self.directory, 'doit.db')
         self.doit_config = dict(dep_file=dep_file, **doit_config_kwds)
         self.doit_dep_mgr = Dependency(SqliteDB, dep_file)
         self.logger = logger
 
-    def register_task(name, task, files=None):
+    def register_task(self, name, task, files=None):
         if files is None:
-            self.files = {}
+            files = {}
         if type(files) is not dict:
             raise TypeError('files must be of type dict')
         
@@ -39,6 +47,10 @@ class TaskHandler(TaskLoader):
         self.logger.debug('registered task {0}: {1}\n'
                           '  with files {2}'.format(name, task, files))
 
+    def clear_tasks(self):
+        self.logger.debug('Clearing {0} tasks'.format(len(self.tasks)))
+        self.tasks = {}
+
     def get_status(self, task):
         if type(task) is str:
             try:
@@ -46,16 +58,16 @@ class TaskHandler(TaskLoader):
             except KeyError:
                 self.logger.error('Task not found:{0}'.format(task))
                 raise
-        status = self.doit_dep_mgr.get_status(task, self.tasks.values())
+        status = self.doit_dep_mgr.get_status(task, self.tasks.values()).status
         self.logger.debug('Task {0} had status {1}'.format(task, status))
         return status
 
     def print_uptodate(self):
         uptodate, outofdate = self.check_uptodate()
         if uptodate:
-            print('All tasks up-to-date!')
+            print(ui.paragrap('All tasks up-to-date!'))
         else:
-            print('Out-of-date tasks:')
+            print('\nOut-of-date tasks:')
             print(ui.listing(outofdate))
         return uptodate, outofdate
 
@@ -63,7 +75,8 @@ class TaskHandler(TaskLoader):
         outofdate_tasks = {}
         outofdate = False
         for task_name, task in self.tasks.items():
-            if self.get_status(task) != 'up-to-date':
+            status = self.get_status(task)
+            if status != 'up-to-date':
                 outofdate_tasks[task_name] = status
                 outofdate = True
         return not outofdate, outofdate_tasks
