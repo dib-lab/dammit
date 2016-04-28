@@ -53,8 +53,8 @@ def install(handler):
 
 def check_or_fail(handler):
     print(ui.header('Database Check', level=3))
-    upofdate, missing = handler.print_uptodate()
-    if outofdate:
+    uptodate, missing = handler.print_uptodate()
+    if not uptodate:
         print(ui.paragraph('Must install databases to continue. To do so,'
                            ' run `dammit databases --install`. If you have'
                            ' already installed them, make sure you\'ve given'
