@@ -19,10 +19,10 @@ import pandas as pd
 from khmer import HLLCounter, ReadParser
 
 from .utils import which, doit_task
-import .parsers
+from . import parsers
 from .hits import BestHits
 from .fileio import maf
-import .gff
+from . import gff
 
 
 def clean_folder(target):
