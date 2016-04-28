@@ -14,7 +14,6 @@ import tasks
 import annotate
 import databases
 import dependencies
-import common
 import parallel
 import hmmer
 import report
@@ -22,3 +21,6 @@ import report
 import os
 rel_path = os.path.dirname(__file__)
 __version__ = open(os.path.join(rel_path, 'VERSION')).read().strip()
+__authors__ = ['Camille Scott']
+__description__ = 'a tool for easy de novo transcriptome annotation'
+__date__ = 2016

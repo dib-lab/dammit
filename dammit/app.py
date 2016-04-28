@@ -6,28 +6,31 @@ import logging
 import os
 import sys
 
-from dammit import __version__
-from dammit import common
+from dammit import __version__, __authors__, __description__, __date__, rel_path
+from dammit import util
+from dammit import ui
 from dammit import annotate
 from dammit import databases
 from dammit import dependencies
 from dammit import log
-from dammit.tasks import print_tasks
 
 
 class DammitApp(object):
 
     def __init__(self, arg_src=sys.argv[1:]):
         self.logger = logging.getLogger(self.__class__.__name__)
-        self.meta = '{0}\n{1} {2}'.format(common.CONFIG['meta']['description'],
-                                          ', '.join(common.CONFIG['meta']['authors']),
-                                          common.CONFIG['meta']['date'])
-
         self.parser = self.get_parser()
         self.args = self.parser.parse_args(arg_src)
 
+        with open(self.args.config_file) as fp:
+            self.config_d = json.load(fp)
+        with open(os.path.join(rel_path, '.databases.json'), 'r') as fp:
+            self.databases_d = json.load(fp)
+
     def run(self):
-        common.print_header(self.meta, 0)
+        print(ui.header('dammit'))
+        print(ui.header(__description), level=2)
+        print(', '.join(__authors__), __date__)
         self.args.func()
 
     def get_parser(self):
@@ -35,7 +38,7 @@ class DammitApp(object):
         Build the main parser.
         '''
         parser = argparse.ArgumentParser(
-                     description=common.add_header(self.meta, 0),
+                     description=ui.header('dammit: ' + __description__),
                      formatter_class=argparse.RawDescriptionHelpFormatter
                      )
 
@@ -77,6 +80,8 @@ class DammitApp(object):
                                 help='Which BUSCO group to use. Depends on'\
                                      ' the organism being annotated.'
                                 )
+            parser.add_argument('--config',
+                                default=os.path.join(rel_path, '.config.json'))
             parser.add_argument('--verbosity',
                                 default=0,
                                 type=int,
@@ -188,21 +193,25 @@ class DammitApp(object):
         return parser
 
     def handle_databases(self):
-        common.print_header('submodule: databases', level=1)
+        log.logger.run()
+        print(ui.header('submodule: databases', level=2))
 
-        dependencies.DependencyHandler().check_or_fail()
+        #dependencies.DependencyHandler().check_or_fail()
 
-        databases.DatabaseHandler(self.args).handle()
-
+        handler = databases.get_handler(self.args, self.config)
+        if self.args.install:
+            databases.install(handler)
+        else:
+            databases.check_or_fail(handler)
 
     def handle_dependencies(self):
-        common.print_header('submodule: dependencies', level=1)
+        log.logger.run()
+        print(ui.header('submodule: dependencies', level=2))
 
         dependencies.DependencyHandler().handle()
 
     def handle_annotate(self):
-
-        common.print_header('submodule: annotate', level=1)
+        print(ui.header('submodule: annotate', level=2))
 
         dependencies.DependencyHandler().check_or_fail()
 

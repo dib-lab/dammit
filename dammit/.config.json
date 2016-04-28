@@ -1,10 +1,4 @@
 {
-    "meta" : {
-	    "authors": ["Camille Scott"],
-	    "description": "dammit! a tool for easy de novo transcriptome annotation",
-	    "date": 2015
-    },
-
     "settings": {
 		"dammit_dir": ".dammit",
 		"dep_dir": "dependencies",
