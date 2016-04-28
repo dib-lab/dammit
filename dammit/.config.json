@@ -1,57 +1,35 @@
 {
-    "settings": {
-		"dammit_dir": ".dammit",
-		"dep_dir": "dependencies",
-        "db_dir": "databases",
-        "doit_backend": "sqlite3",
-        
-        "blast": {
-            "evalue": 0.000001,
-            "params": ""
-        },
+    "dammit_dir": ".dammit",
+    "dep_dir": "dependencies",
+    "db_dir": "databases",
+    "doit_backend": "sqlite3",
+    
+    "last": {
+        "lastal": [],
+        "lastdb": ["-w3"]
+    },
 
-        "last": {
-            "lastal": {
-                "params": "",
-                "frameshift": 15
-            },
-            "lastdb": {
-                "params": "-w3"
-            }
-        },
+    "crb-blast": {
+        "evalue": 1e-5
+    },
 
-        "crb-blast": {
-            "evalue": 1e-5
-        },
+    "busco": {
+        "db_dir": "busco_db",
+        "output_suffix": ".busco.results"
+    },
 
-        "busco": {
-            "db_dir": "busco_db",
-            "output_suffix": ".busco.results"
-        },
+    "hmmer": {
+        "hmmscan": [],
+        "hmmpress": []
+    },
 
-		"hmmer": {
-			"hmmscan": {
-			},
+    "infernal": {
+        "cmscan": [],
+        "cmpress": []
+    },
 
-			"hmmpress": {
-			}
-		},
-
-		"infernal": {
-			"cmscan": {
-			},
-
-			"cmpress": {
-			}
-		},
-
-        "transdecoder": {
-			"longorfs": {
-				"min_prot_len": 80
-			},
-			"predict": {
-				"orf_cutoff": 600
-			}
-        }
+    "transdecoder": {
+        "longorfs":["-m 80"],
+        "predict": ["--retain_long_orfs 600"]
     }
 }

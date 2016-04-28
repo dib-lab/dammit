@@ -2,20 +2,21 @@
 import os
 
 from doit.action import CmdAction
-from doit.tools import title_with_actions
+from doit.tools import title_with_actions, LongRunning
 from doit.task import clean_targets
 
-from .common import which, CONFIG
+from .utils import which, doit_task
 from .parallel import parallel_fasta, multinode_parallel_fasta, get_filesize_task
-from .tasks import doit_task
 
-config = CONFIG['settings']['infernal']
 
 @doit_task
-def get_cmpress_task(db_filename, infernal_cfg):
+def get_cmpress_task(db_filename, params=None):
 
-    exc = which('cmpress')
-    cmd = '{exc} {db_filename}'.format(**locals())
+    cmd = [which('cmpress')]
+    if params is not None:
+        cmd.extend([str(p) for p in params])
+    cmd.append(db_filename)
+    cmd = ' '.join(cmd)
 
     return {'name': 'cmpress:' + os.path.basename(db_filename),
             'title': title_with_actions,
@@ -27,11 +28,11 @@ def get_cmpress_task(db_filename, infernal_cfg):
 
 @doit_task
 def get_cmscan_task(input_filename, output_filename, db_filename,
-                    cutoff, n_threads, infernal_cfg, n_nodes=None):
+                    cutoff=0.00001, n_threads=1, n_nodes=None, params=None):
 
     name = 'cmscan:' + os.path.basename(input_filename) + '.x.' + \
            os.path.basename(db_filename)
-    stat = output_filename + '.out'
+    stat = output_filename + '.cmscan.out'
 
     def cmscan_cmd(file_size):
         exc = which('cmscan')
@@ -42,14 +43,17 @@ def get_cmscan_task(input_filename, output_filename, db_filename,
                                                     n_nodes, file_size)
 
 
-        cmd = [parallel_cmd, exc, '--cpu', '1', '--rfam', '--nohmmonly',
+        cmd = [parallel_cmd, exc]
+        if params is not None:
+            cmd.extend([str(p) for p in params])
+        cmd.extned(['--cpu', '1', '--rfam', '--nohmmonly',
                '-E', str(cutoff), '--tblout', '/dev/stdout', '-o', stat,
-               db_filename, '/dev/stdin', '>', output_filename]
+               db_filename, '/dev/stdin', '>', output_filename])
         return ' '.join(cmd)
 
     return {'name': name,
             'title': title_with_actions,
-            'actions': [CmdAction(cmscan_cmd)],
+            'actions': [LongRunning(cmscan_cmd)],
             'file_dep': [input_filename, db_filename, db_filename + '.i1p'],
             'targets': [output_filename, output_filename + '.cmscan'],
             'getargs': {'file_size': ('get_filesize:{0}'.format(input_filename),
@@ -57,18 +61,10 @@ def get_cmscan_task(input_filename, output_filename, db_filename,
             'clean': [clean_targets]}
 
 
-def cmpress(db_filename, infernal_cfg=None):
-    if infernal_cfg is None:
-        infernal_cfg = config['cmpress']
-    return get_cmpress_task(db_filename, infernal_cfg)
+def cmscan(input_filename, output_filename, db_filename, **cmscan_kwds):
 
 
-def cmscan(input_filename, output_filename, db_filename, cutoff,
-           n_threads, n_nodes=None, infernal_cfg=None):
-
-    if infernal_cfg is None:
-        infernal_cfg = config['cmscan']
 
     yield get_filesize_task(input_filename)
     yield get_cmscan_task(input_filename, output_filename, db_filename,
-                          cutoff, n_threads, infernal_cfg, n_nodes=n_nodes)
+                          **cmscan_kwds)

@@ -67,42 +67,41 @@ def check_or_fail(handler):
         sys.exit(2)
 
 
-def register_builtin_tasks(handler, config, databases):
+def register_builtin_tasks(handler, config, databases, with_uniref=False):
 
-    settings = config['settings']
-
-    register_pfam_tasks(handler, settings, databases)
-    register_rfam_tasks(handler, settings, databases)
-    register_orthodb_tasks(handler, settings, databases)
-    register_busco_tasks(handler, settings, databases)
-    register_uniref90_tasks(handler, settings, databases)
+    register_pfam_tasks(handler, config['hmmer']['hmmpress'], databases)
+    register_rfam_tasks(handler, config['infernal']['cmpress'], databases)
+    register_orthodb_tasks(handler, config['last']['lastdb'], databases)
+    register_busco_tasks(handler, config['busco'], databases)
+    if with_uniref:
+        register_uniref90_tasks(handler, config['last']['lastdb'], databases)
 
     return handler
                           
 
-def register_pfam_tasks(handler, settings, databases):
+def register_pfam_tasks(handler, params, databases):
     pfam_A = databases['Pfam-A']
     handler.register_task('download:Pfam-A',
                           get_download_and_gunzip_task(pfam_A['url'],
                                                        pfam_A['filename']),
                           files={'Pfam-A': pfam_A['filename']})
     handler.register_task('hmmpress:Pfam-A',
-                          get_hmmpress_task(pfam_A['filename'], settings['hmmer']))
+                          get_hmmpress_task(pfam_A['filename'], params=params))
     return handler
 
 
-def register_rfam_tasks(handler, settings, databases):
+def register_rfam_tasks(handler, params, databases):
     rfam = databases['Rfam']
     handler.register_task('download:Rfam',
                            get_download_and_gunzip_task(rfam['url'], 
                                                         rfam['filename']),
                            files={'Rfam': rfam['filename']})
     handler.register_task('cmpress:Rfam',
-                          get_cmpress_task(rfam['filename'], settings['infernal']))
+                          get_cmpress_task(rfam['filename'], params=params))
     return handler
 
 
-def register_orthodb_tasks(handler, settings, databases):
+def register_orthodb_tasks(handler, params, databases):
     orthodb = databases['OrthoDB']
     handler.register_task('download:OrthoDB',
                           get_download_and_gunzip_task(orthodb['url'], 
@@ -111,14 +110,14 @@ def register_orthodb_tasks(handler, settings, databases):
     handler.register_task('lastdb:OrthoDB',
                           get_lastdb_task(orthodb['filename'], 
                                           orthodb['filename'], 
-                                          settings['last']['lastdb'], 
-                                          prot=True))
+                                          prot=True,
+                                          params=params))
     return handler
 
 
-def register_busco_tasks(handler, settings, databases):
+def register_busco_tasks(handler, config, databases):
     busco = databases['busco']
-    busco_dir = 'buscodb'
+    busco_dir = config['db_dir']
     for group_name in busco:
         group = busco[group_name]
         files = {'BUSCO-{0}'.format(group_name): path.join(busco_dir, group_name)}
@@ -130,7 +129,7 @@ def register_busco_tasks(handler, settings, databases):
     return handler
 
 
-def register_uniref90_tasks(handler, settings, databases):
+def register_uniref90_tasks(handler, params, databases):
     uniref90 = databases['uniref90']
     handler.register_task('download:uniref90',
                           get_download_and_gunzip_task(uniref90['url'],
@@ -139,7 +138,7 @@ def register_uniref90_tasks(handler, settings, databases):
     handler.register_task('lastdb:uniref90',
                           get_lastdb_task(uniref['filename'],
                                           uniref['filename'],
-                                          settings['last']['lastdb'],
-                                          prot=True))
+                                          prot=True,
+                                          params=params))
     return handler
 
