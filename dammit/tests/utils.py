@@ -13,7 +13,6 @@ import warnings as _warnings
 from pkg_resources import Requirement, resource_filename, ResolutionError
 from tempfile import mkdtemp
 
-from dammit.common import run_tasks
 from doit.dependency import Dependency, DbmDB
 
 
@@ -50,6 +49,19 @@ def check_status(task, tasks=None, dep_file='.doit.db'):
     mgr = Dependency(DbmDB, os.path.abspath(dep_file))
     status = mgr.get_status(task, tasks)
     return status
+
+
+def run_tasks(tasks, args, config={'verbosity': 0}):
+    
+    if type(tasks) is not list:
+        raise TypeError('tasks must be a list')
+   
+    class Loader(TaskLoader):
+        @staticmethod
+        def load_tasks(cmd, opt_values, pos_args):
+            return tasks, config
+   
+    return DoitMain(Loader()).run(args)
 
 
 def run_task(task, cmd='run', verbosity=2):

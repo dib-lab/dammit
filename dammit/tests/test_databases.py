@@ -39,11 +39,22 @@ def run(args, **kwargs):
     return runscript('dammit', args, **kwargs)
 
 
-class TestDammitDatabases(TestCase):
+class TestDatabases(TestCase):
+    '''Tests for the dammit databases subcommand and the
+    databases module. Assumes that DAMMIT_DB_DIR has been exported
+    and a full install has already been performed.
+    '''
 
     def setUp(self):
-        from itertools import count
-        gff.ID_GEN = count()
+        class Args(object):
+            pass
+        self.args = Args()
+        self.args.database_dir = None
+        self.args.verbosity = 2
+        self.args.full = False
+        self.config, self.databases = get_config()
+        self.handler = databases.get_handler(self.args, self.config,
+                                             self.databases)
 
     def test_dammit_databases_check(self):
         '''Test the database check subcommand.
@@ -55,7 +66,6 @@ class TestDammitDatabases(TestCase):
     def test_dammit_databases_check_fail(self):
         '''Test that the database check fails properly.
         '''
-
         with TemporaryDirectory() as td:
             
             args = ['databases', '--database-dir', td]
@@ -64,12 +74,25 @@ class TestDammitDatabases(TestCase):
             self.assertEquals(status, 1)
 
     @attr('huge')
-    def test_dammit_database_install_full(self):
-        '''Run a full database installation (very long).
+    def test_dammit_database_install(self):
+        '''Run a database installation (very long).
         '''
-
         with TemporaryDirectory() as td:
             args = ['databases', '--install', '--database-dir', td]
             status, out, err = run(args)
 
+    def test_check_or_fail_succeed(self):
+        '''Check that check_or_fail succeeds properly.
+        '''
+        try:
+            databases.check_or_fail(self.handler)
+        except SystemExit:
+            assert False, 'Should not have exited'
 
+    def test_check_or_fail_fail(self):
+        with TemporaryDirectory() as td:
+            self.args.database_dir = td
+            handler = databases.get_handler(self.args, self.config,
+                                                 self.databases)
+            with self.assertRaises(SystemExit):
+                databases.check_or_fail(handler)
