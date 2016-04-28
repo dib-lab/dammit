@@ -18,26 +18,11 @@ from doit.task import clean_targets, dict_to_task
 import pandas as pd
 from khmer import HLLCounter, ReadParser
 
-from common import which
-from . import parsers
+from .utils import which, doit_task
+import .parsers
 from .hits import BestHits
 from .fileio import maf
-import gff
-
-
-def task_str(task):
-    return '{{ Task: {0}\n  actions: {1}\n  file_dep: {2}'\
-           '\n  task_dep: {3}\n  targets: {4} }}'.format(task.name, task.actions,
-                                                         task.file_dep, task.task_dep,
-                                                         task.targets)
-
-
-def print_tasks(tasks, logger=None, level=logging.DEBUG):
-    for task in tasks:
-        if logger:
-            logger.log(level, task_str(task))
-        else:
-            print(task, file=sys.stderr)
+import .gff
 
 
 def clean_folder(target):
@@ -50,17 +35,6 @@ def clean_folder(target):
 seq_ext = re.compile(r'(.fasta)|(.fa)|(.fastq)|(.fq)')
 def strip_seq_extension(fn):
     return seq_ext.split(fn)[0]
-
-
-def doit_task(task_dict_func):
-    '''Wrapper to decorate functions returning pydoit
-    Task dictionaries and have them return pydoit Task
-    objects
-    '''
-    def d_to_t(*args, **kwargs):
-        ret_dict = task_dict_func(*args, **kwargs)
-        return dict_to_task(ret_dict)
-    return d_to_t
 
 
 @doit_task
