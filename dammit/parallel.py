@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 from __future__ import print_function
 
-from .common import which
-from .tasks import doit_task
+from .utils import which, doit_task
 
 import os
 
@@ -11,7 +10,7 @@ def parallel_fasta(input_filename, n_jobs, file_size=10000):
     exc = which('parallel')
     block_size = int(file_size) / int(n_jobs)
     cmd = ['cat', input_filename, '|', exc, '--block', str(block_size),
-           '--pipe', '--recstart', '">"', '--gnu', '-j', str(n_jobs)]
+           '--pipe', '--eta', '--recstart', '">"', '--gnu', '-j', str(n_jobs)]
 
     return ' '.join(cmd)
 
@@ -27,7 +26,7 @@ def multinode_parallel_fasta(input_filename, ppn, nodes, file_size):
     exc = which('parallel')
     block_size = int(file_size) / int(ppn * nodes)
     cmd = ['cat', input_filename, '|', exc, '--block', str(block_size),
-           '--pipe', '--recstart', '">"', '--gnu', '--jobs 1', 
+           '--pipe', '--eta', '--recstart', '">"', '--gnu', '--jobs 1', 
            '--sshloginfile $PBS_NODEFILE', '--workdir $PWD']
 
     return ' '.join(cmd)
