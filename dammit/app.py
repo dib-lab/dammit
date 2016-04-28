@@ -196,7 +196,7 @@ class DammitApp(object):
         log.logger.run()
         print(ui.header('submodule: databases', level=2))
 
-        #dependencies.DependencyHandler().check_or_fail()
+        dependencies.get_handler().check_or_fail()
 
         handler = databases.get_handler(self.args, self.config)
         if self.args.install:
@@ -208,14 +208,14 @@ class DammitApp(object):
         log.logger.run()
         print(ui.header('submodule: dependencies', level=2))
 
-        dependencies.DependencyHandler().handle()
+        dependencies.get_handler().print_all_statuses()
 
     def handle_annotate(self):
         print(ui.header('submodule: annotate', level=2))
 
-        dependencies.DependencyHandler().check_or_fail()
+        dependencies.get_handler().check_or_fail()
 
-        db_handler = databases.DatabaseHandler(self.args)
-        db_handler.check_or_fail()
+        db_handler = databases.get_handler(self.args, self.config)
+        databases.check_or_fail(db_handler)
 
         annotate.AnnotateHandler(self.args, db_handler.databases).handle()

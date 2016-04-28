@@ -8,15 +8,14 @@ import sys
 
 from doit.dependency import Dependency, SqliteDB
 
-import .ui
+from . import ui
 from .handler import TaskHandler
 from .log import LogReporter
-from .hmmer import hmmpress
+from .hmmer import get_hmmpress_task
 from .infernal import get_cmpress_task
 from .last import get_lastdb_task
 from .tasks import get_download_and_gunzip_task, \
-                   get_download_and_untar_task, \
-                   print_tasks
+                   get_download_and_untar_task
 
 def get_handler(args, config, databases):
 
@@ -33,20 +32,18 @@ def get_handler(args, config, databases):
     else:
         directory = args.database_dir
     directory = path.abspath(directory)
-    doit_db = path.join(directory, 'databases.doit.db')
 
-    handler = TaskHandler(doit_db, logger, config=config,
-                          backend=config['settings']['doit_backend'],
-                          verbosity=args.verbosity,
-                          continue=True)
+    handler = TaskHandler(directory, logger, config=config,
+                          backend=config['doit_backend'],
+                          verbosity=args.verbosity)
 
-    return register_builtin_tasks(handler, config, databases)
+    return register_builtin_tasks(handler, config, databases,
+                                  with_uniref=args.full)
 
 
 def install(handler):
-    uptodate, missing = handler.check_uptodate()
+    uptodate, missing = handler.print_uptodate()
     if not uptodate:
-        handler.print_outofdate()
         print('Installing...')
         handler.run(move=True)
     else:
@@ -56,7 +53,7 @@ def install(handler):
 
 def check_or_fail(handler):
     print(ui.header('Database Check', level=3))
-    upofdate, missing = handler.check_uptodate()
+    upofdate, missing = handler.print_uptodate()
     if outofdate:
         print(ui.paragraph('Must install databases to continue. To do so,'
                            ' run `dammit databases --install`. If you have'

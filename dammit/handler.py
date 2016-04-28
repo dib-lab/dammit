@@ -4,12 +4,12 @@ from doit.cmd_base import TaskLoader
 from doit.doit_cmd import DoitMain
 from doit.dependency import Dependency, SqliteDB
 
-from .util import Move
-from .tasks import print_tasks
+from .utils import Move
+from . import ui
 
 class TaskHandler(TaskLoader):
 
-    def __init__(self, doit_db, logger, config=None, files=None, **doit_config_kwds):
+    def __init__(self, directory, logger, config=None, files=None, **doit_config_kwds):
 
         super(TaskHandler, self).__init__()
 
@@ -21,9 +21,11 @@ class TaskHandler(TaskLoader):
             self.files = files
 
         self.tasks = {}
-        self.doit_config = dict(dep_file=doit_db, **doit_config_kwds)
-        self.doit_dir = os.path.dirname(doit_db)
-        self.doit_dep_mgr = Dependency(SqliteDB, doit_db)
+
+        self.directory = os.path.abspath(directory)
+        dep_file = os.path.join(self.directory, 'doit.db')
+        self.doit_config = dict(dep_file=dep_file, **doit_config_kwds)
+        self.doit_dep_mgr = Dependency(SqliteDB, dep_file)
         self.logger = logger
 
     def register_task(name, task, files=None):
@@ -54,13 +56,14 @@ class TaskHandler(TaskLoader):
             print('All tasks up-to-date!')
         else:
             print('Out-of-date tasks:')
-            print(listing(outofdate))
+            print(ui.listing(outofdate))
+        return uptodate, outofdate
 
     def check_uptodate(self):
         outofdate_tasks = {}
         outofdate = False
         for task_name, task in self.tasks.items():
-            if self.get_status(task) != 'up-to-date'):
+            if self.get_status(task) != 'up-to-date':
                 outofdate_tasks[task_name] = status
                 outofdate = True
         return not outofdate, outofdate_tasks
@@ -74,7 +77,7 @@ class TaskHandler(TaskLoader):
             doit_args = ['run']
         runner = DoitMain(self())
         if move:
-            with Move(self.doit_dir):
+            with Move(self.directory):
                 return runner.run(doit_args)
         else:
             return runner.run(doit_args)

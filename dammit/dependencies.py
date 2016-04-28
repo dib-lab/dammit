@@ -8,8 +8,8 @@ import sys
 
 from doit.dependency import Dependency, SqliteDB
 
-from .common import which
-from . import common
+from . import ui
+from .utils import which
 from .tasks import get_download_and_untar_task
 
 
@@ -17,15 +17,9 @@ class DependencyHandler(object):
 
     def __init__(self):
         self.logger = logging.getLogger(self.__class__.__name__)
-        self.checks = [('HMMER', check_hmmer),
-                       ('Infernal', check_infernal),
-                       ('BLAST+', check_blast),
-                       ('BUSCO', check_busco),
-                       ('TransDecoder', check_transdecoder),
-                       ('LAST', check_last),
-                       ('crb-blast', check_crb_blast)]
+        self.checks = {}
 
-    def add_dependency_check(self, name, function):
+    def register_dependency_check(self, name, function):
         '''Add a new dependency to the handler.
 
         Args:
@@ -35,47 +29,69 @@ class DependencyHandler(object):
                 takes a Logger object.
         '''
         self.logger.debug('Add check function for {0}'.format(name))
-        self.checks.append((name, function))
+        self.checks[name] = function
 
     def clear_dependency_checks(self):
         self.logger.debug('Clearing {0} dependency checks from'\
                           ' handler'.format(len(self.checks)))
-        self.checks = []
+        self.checks = {}
 
-    def run_checks(self):
+    def get_status(self, name):
+        self.logger.debug('Run dependency function on {0}'.format(name))
+        try:
+            check_function = self.checks[name]
+        except KeyError:
+            self.logger.error('Check not found: {0}'.format(name))
+        status, msg = check_function(self.logger)
+        self.logger.debug('{0} has status {1}, msg: {2}'.format(name, status, msg))
 
-        for name, function in self.checks:
-            self.logger.debug('Run dependency function on {0}'.format(name))
-            status, msg = function(self.logger)
-            self.logger.debug('{0} has status {1}, msg: {2}'.format(name, status, msg))
-            yield name, status, msg
+        return status, msg
 
-    def handle(self):
-
-        common.print_header('Checking PATH for dependencies', level=2)
-
-        missing = []
-        for name, status, msg in self.run_checks():
+    def get_all_statuses(self):
+        fulfilled = True
+        unfulfilled = {}
+        for name, _ in self.checks.items():
+            status, msg = get_status(name)
             if status is False:
-                missing.append(name)
-                self.logger.warning('[ ] {0}... {1}'.format(name, msg))
-            else:
-                self.logger.info('[x] {0}'.format(name))
+                fulfilled = False
+                unfulfilled[name] = msg
+        return fulfilled, unfulfilled
 
-        common.print_header('Dependency results', level=2)
-
-        if missing:
-            self.logger.warning('{0} missing'.format(', '.join(missing)))
+    def print_all_statuses(self):
+        is_fulfilled, unfulfilled = self.get_all_statuses()
+        if is_fulfilled:
+            print('All dependencies fulfilled!')
         else:
-            self.logger.info('All dependencies satisfied!')
-
-        return missing
-
+            print('Some dependencies unfulfilled:')
+            print(ui.listing(unfilfilled))
+        return is_fulfilled, unfulfilled
+            
     def check_or_fail(self):
-        missing = self.handle()
-        if missing:
-            self.logger.error('Install dependencies to continue; exiting')
+        print(ui.header('Dependency Check', level=3))
+        is_fulfilled, unfulfilled = self.print_all_statuses()
+        if not is_fulfilled:
+            print(ui.paragraph('Must install dependencies to continue.'\
+                              ' to do so, follow the directions in the'\
+                              ' documentation at '\
+                              'http://www.camillescott.org/dammit/installing.html'))
             sys.exit(1)
+
+
+def get_handler():
+    return register_builtin_checks(DependencyHandler())
+
+
+def register_builtin_checks(handler):
+    checks = {'HMMER': check_hmmer,
+               'Infernal': check_infernal,
+               'BLAST+': check_blast,
+               'BUSCO': check_busco,
+               'TransDecoder': check_transdecoder,
+               'LAST': check_last,
+               'crb-blast': check_crb_blast}
+    for name, func in checks:
+        handler.register_dependency_check(name, func)
+    return handler
 
 
 def check_hmmer(logger):
