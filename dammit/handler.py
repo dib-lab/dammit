@@ -34,6 +34,8 @@ class TaskHandler(TaskLoader):
         
         self.tasks[name] = task
         self.files.update(files)
+        self.logger.debug('registered task {0}: {1}\n'
+                          '  with files {2}'.format(name, task, files))
 
     def get_status(self, task):
         if type(task) is str:
@@ -42,19 +44,29 @@ class TaskHandler(TaskLoader):
             except KeyError:
                 self.logger.error('Task not found:{0}'.format(task))
                 raise
-        return self.doit_dep_mgr.get_status(task, self.tasks.values())
+        status = self.doit_dep_mgr.get_status(task, self.tasks.values())
+        self.logger.debug('Task {0} had status {1}'.format(task, status))
+        return status
+
+    def print_uptodate(self):
+        uptodate, outofdate = self.check_uptodate()
+        if uptodate:
+            print('All tasks up-to-date!')
+        else:
+            print('Out-of-date tasks:')
+            print(listing(outofdate))
 
     def check_uptodate(self):
         outofdate_tasks = {}
         outofdate = False
         for task_name, task in self.tasks.items():
             if self.get_status(task) != 'up-to-date'):
-                outofdate_tasks[task_name] = task
+                outofdate_tasks[task_name] = status
                 outofdate = True
         return not outofdate, outofdate_tasks
     
     def load_tasks(self, cmd, opt_values, pos_args):
-        print_tasks(self.tasks.values(), logger=self.logger)
+        self.logger.debug('loading {0} tasks'.format(len(self.tasks)))
         return self.tasks.values()
 
     def run(self, doit_args=None, move=False):
