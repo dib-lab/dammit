@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 
-import logging
 import log
-logger = log.DammitLogger()
 
 from .hits import BestHits
 
@@ -18,9 +16,4 @@ import parallel
 import hmmer
 import report
 
-import os
-rel_path = os.path.dirname(__file__)
-__version__ = open(os.path.join(rel_path, 'VERSION')).read().strip()
-__authors__ = ['Camille Scott']
-__description__ = 'a tool for easy de novo transcriptome annotation'
-__date__ = 2016
+from meta import *

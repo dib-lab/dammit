@@ -5,6 +5,45 @@ import logging
 import os
 import sys
 import textwrap
+ 
+
+def init_default_logger():
+    log_dir = os.path.join(os.environ['HOME'], '.dammit', 'log')
+    try:
+        os.makedirs(log_dir)
+    except OSError:
+        pass
+    log_file = os.path.join(log_dir, 'dammit-all.log')
+
+    config = { 'format': '%(asctime)s %(name)s:%(funcName)s:%(lineno)d '\
+                              '[%(levelname)s] \n%(message)s\n-----',
+                    'datefmt': '%m-%d %H:%M:%S',
+                    'filename': log_file,
+                    'filemode': 'a' }
+
+    # By default, only log errors (to the console)
+    logger = logging.getLogger(__name__)
+    noop = logging.NullHandler()
+    logger.addHandler(noop)
+
+    def run(filename=None):
+        if filename is None:
+            filename = log_file
+        logging.basicConfig(level=logging.DEBUG, **config)
+
+        run_handler = logging.FileHandler(filename)
+        run_handler.setLevel(logging.INFO)
+        formatter = LogFormatter()
+        run_handler.setFormatter(formatter)
+        logging.getLogger('').addHandler(run_handler)
+
+        logging.getLogger('').debug('*** dammit BEGIN ***')
+
+    return run
+
+
+start_logging = init_default_logger()
+
 
 class LogFormatter(logging.Formatter):
 
@@ -28,46 +67,6 @@ class LogFormatter(logging.Formatter):
             res = record.msg + extra
 
         return res
-
-
-class DammitLogger(object):
-    '''Set up logging for the dammit application. We insulate it
-    in a class to let us choose to only activate it when the program itself
-    is run, effectively keeping the tests and any use of the API from
-    being noisy.
-    '''
-
-    def __init__(self):
-        self.log_dir = os.path.join(os.environ['HOME'], '.dammit', 'log')
-        try:
-            os.makedirs(self.log_dir)
-        except OSError:
-            pass
-        self.log_file = os.path.join(self.log_dir, 'dammit-all.log')
-
-        self.config = { 'format': '%(asctime)s %(name)s:%(funcName)s:%(lineno)d '\
-                                  '[%(levelname)s] \n%(message)s\n-----',
-                        'datefmt': '%m-%d %H:%M:%S',
-                        'filename': self.log_file,
-                        'filemode': 'a' }
-
-        # By default, only log errors (to the console)
-        self.logger = logging.getLogger(__name__)
-        noop = logging.NullHandler()
-        self.logger.addHandler(noop)
-
-    def run(self, filename=None):
-        if filename is None:
-            filename = self.log_file
-        logging.basicConfig(level=logging.DEBUG, **self.config)
-
-        self.run_handler = logging.FileHandler(filename)
-        self.run_handler.setLevel(logging.INFO)
-        self.formatter = LogFormatter()
-        self.run_handler.setFormatter(self.formatter)
-        logging.getLogger('').addHandler(self.run_handler)
-
-        logging.getLogger('').debug('*** dammit BEGIN ***')
 
 
 class LogReporter(object):

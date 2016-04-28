@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 from __future__ import print_function
+
 import os
 from doit.task import Task
 
@@ -11,7 +12,7 @@ class DammitTask(Task):
                '\n    actions: {actions}'\
                '\n   file_dep: {file_dep}'\
                '\n   task_dep: {task_dep}'\
-               '\n    targets: {targets} }}'.format(vars(self))
+               '\n    targets: {targets} }}'.format(actions=self.actions, **vars(self))
 
 
 def dict_to_task(task_dict):

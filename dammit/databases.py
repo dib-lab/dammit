@@ -113,13 +113,13 @@ def register_orthodb_tasks(handler, params, databases):
 
 
 def register_busco_tasks(handler, config, databases):
-    busco = databases['busco']
+    busco = databases['BUSCO']
     busco_dir = config['db_dir']
     for group_name in busco:
         group = busco[group_name]
         files = {'BUSCO-{0}'.format(group_name): path.join(busco_dir, group_name)}
         handler.register_task('download:BUSCO-{0}'.format(group_name),
-                              get_downlod_and_untar_task(group['url'],
+                              get_download_and_untar_task(group['url'],
                                                          busco_dir,
                                                          label=group_name),
                               files=files)

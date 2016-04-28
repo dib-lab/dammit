@@ -5,9 +5,8 @@ import os
 import stat
 import pandas as pd
 
-from dammit.app import DammitApp
-from dammit import dependencies
-from dammit import gff
+from dammit import databases
+from dammit.meta import get_config
 
 from utils import TemporaryDirectory, TestData, runscript
 

@@ -4,4 +4,4 @@ include LICENSE
 include distribute_setup.py
 include dammit/VERSION
 include bin/dammit
-recursive-include dammit .*.json
+recursive-include dammit *.json

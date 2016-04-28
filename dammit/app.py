@@ -6,8 +6,8 @@ import logging
 import os
 import sys
 
-from dammit import __version__, __authors__, __description__, __date__, rel_path
-from dammit import util
+from dammit.meta import __version__, __authors__, __description__, __date__, get_config
+from dammit import utils
 from dammit import ui
 from dammit import annotate
 from dammit import databases
@@ -22,15 +22,15 @@ class DammitApp(object):
         self.parser = self.get_parser()
         self.args = self.parser.parse_args(arg_src)
 
-        with open(self.args.config_file) as fp:
-            self.config_d = json.load(fp)
-        with open(os.path.join(rel_path, '.databases.json'), 'r') as fp:
-            self.databases_d = json.load(fp)
-
+        self.config_d, self.databases_d = get_config()
+        if self.args.config_file is not None:
+            with open(self.args.config_file) as fp:
+                self.config_d.update(json.load(fp))
+ 
     def run(self):
         print(ui.header('dammit'))
-        print(ui.header(__description), level=2)
-        print(', '.join(__authors__), __date__)
+        print(ui.header(__description__, level=2))
+        print(ui.paragraph('{0} {1}'.format(', '.join(__authors__),  __date__)))
         self.args.func()
 
     def get_parser(self):
@@ -80,8 +80,7 @@ class DammitApp(object):
                                 help='Which BUSCO group to use. Depends on'\
                                      ' the organism being annotated.'
                                 )
-            parser.add_argument('--config',
-                                default=os.path.join(rel_path, '.config.json'))
+            parser.add_argument('--config-file')
             parser.add_argument('--verbosity',
                                 default=0,
                                 type=int,
@@ -192,30 +191,32 @@ class DammitApp(object):
 
         return parser
 
+    def handle_dependencies(self):
+        log.start_logging()
+        print(ui.header('submodule: dependencies', level=2))
+
+        dependencies.get_handler().print_all_statuses()
+
     def handle_databases(self):
-        log.logger.run()
+        log.start_logging()
         print(ui.header('submodule: databases', level=2))
 
         dependencies.get_handler().check_or_fail()
 
-        handler = databases.get_handler(self.args, self.config)
+        handler = databases.get_handler(self.args, self.config_d,
+                                        self.databases_d)
         if self.args.install:
             databases.install(handler)
         else:
             databases.check_or_fail(handler)
-
-    def handle_dependencies(self):
-        log.logger.run()
-        print(ui.header('submodule: dependencies', level=2))
-
-        dependencies.get_handler().print_all_statuses()
 
     def handle_annotate(self):
         print(ui.header('submodule: annotate', level=2))
 
         dependencies.get_handler().check_or_fail()
 
-        db_handler = databases.get_handler(self.args, self.config)
+        db_handler = databases.get_handler(self.args, self.config_d,
+                                           self.databases_d)
         databases.check_or_fail(db_handler)
 
         annotate.AnnotateHandler(self.args, db_handler.databases).handle()
