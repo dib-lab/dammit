@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 from __future__ import print_function
 
-from .common import get_dammit_dir
-
 import logging
 import os
 import sys
@@ -40,7 +38,7 @@ class DammitLogger(object):
     '''
 
     def __init__(self):
-        self.log_dir = os.path.join(get_dammit_dir(), 'log')
+        self.log_dir = os.path.join(os.environ['HOME'], '.dammit', 'log')
         try:
             os.makedirs(self.log_dir)
         except OSError:
@@ -58,15 +56,18 @@ class DammitLogger(object):
         noop = logging.NullHandler()
         self.logger.addHandler(noop)
 
-    def run(self):
+    def run(self, filename=None):
+        if filename is None:
+            filename = self.log_file
         logging.basicConfig(level=logging.DEBUG, **self.config)
 
-        self.console = logging.StreamHandler(sys.stderr)
-        self.console.setLevel(logging.INFO)
+        self.run_handler = logging.FileHandler(filename)
+        self.run_handler.setLevel(logging.INFO)
         self.formatter = LogFormatter()
-        self.console.setFormatter(self.formatter)
-        logging.getLogger('').addHandler(self.console)
-        logging.getLogger('').debug('*** dammit! begin ***')
+        self.run_handler.setFormatter(self.formatter)
+        logging.getLogger('').addHandler(self.run_handler)
+
+        logging.getLogger('').debug('*** dammit BEGIN ***')
 
 
 class LogReporter(object):

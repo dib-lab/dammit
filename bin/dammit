@@ -6,5 +6,4 @@ from dammit import app
 import sys
 
 if __name__ == '__main__':
-    dammit.logger.run()
     app.DammitApp(arg_src=sys.argv[1:]).run()
