@@ -27,8 +27,9 @@ def paragraph(msg, wrap=80):
  
 def listing(d):
     if type(d) is dict:
-        return '\n'.join(['* {k}: {v}'.format(k=key,v=val) for key, val in d.items()])
+        keys = sorted(d.keys())
+        return '\n'.join(['* {k}: {v}'.format(k=key,v=d[key]) for key in keys])
     elif type(d) is list:
-        return '\n'.join(['* {0}'.format(e) for e in d])
+        return '\n'.join(['* {0}'.format(e) for e in sorted(d)])
     else:
         raise TypeError('Cannot make {0} into listing'.format(d))

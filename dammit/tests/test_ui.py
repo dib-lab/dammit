@@ -18,8 +18,8 @@ class TestUIFunctions(TestCase):
         self.assertEquals(header('test', level=2), '## test')
 
     def test_paragraph(self):
-        long_text = 'damn' * 160
-        self.assertEquals(paragraph(long_test), 'damn' * 80 + 'n' + 'damn' * 80)
+        long_text = 'damn' * 40
+        self.assertEquals(paragraph(long_text), 'damn' * 20 + '\n' + 'damn' * 20)
 
     def test_listing(self):
         d = {'a': 2, 'b': 5, 'c': 10}
