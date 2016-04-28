@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-
+from __future__ import print_function
 import os
 from doit.task import Task
 
@@ -7,10 +7,10 @@ from doit.task import Task
 class DammitTask(Task):
 
     def __repr__(self):
-        return '{{ DammitTask: {name}'
-               '\n    actions: {actions}'
-               '\n   file_dep: {file_dep}'
-               '\n   task_dep: {task_dep}'
+        return '{{ DammitTask: {name}'\
+               '\n    actions: {actions}'\
+               '\n   file_dep: {file_dep}'\
+               '\n   task_dep: {task_dep}'\
                '\n    targets: {targets} }}'.format(vars(self))
 
 
