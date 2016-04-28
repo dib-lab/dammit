@@ -22,14 +22,14 @@ def checkbox(msg, checked=False):
 
 
 def paragraph(msg, wrap=80):
-    return '\n'.join(textwrap.wrap(msg, wrap))
+    return '\n' + '\n'.join(textwrap.wrap(msg, wrap)) + '\n'
 
  
 def listing(d):
     if type(d) is dict:
         keys = sorted(d.keys())
-        return '\n'.join(['* {k}: {v}'.format(k=key,v=d[key]) for key in keys])
+        return '\n'.join(['* {k}: {v}'.format(k=key,v=d[key]) for key in keys]) + '\n'
     elif type(d) is list:
-        return '\n'.join(['* {0}'.format(e) for e in sorted(d)])
+        return '\n'.join(['* {0}'.format(e) for e in sorted(d)]) + '\n'
     else:
         raise TypeError('Cannot make {0} into listing'.format(d))

@@ -18,8 +18,7 @@ from .tasks import get_transcriptome_stats_task, \
                    get_crb_blast_task, \
                    get_sanitize_fasta_task, \
                    get_rename_transcriptome_task, \
-                   get_transeq_task, \
-                   print_tasks
+                   get_transeq_task
 from .hmmer import hmmscan, get_remap_hmmer_task
 from .infernal import cmscan
 from .last import lastal
