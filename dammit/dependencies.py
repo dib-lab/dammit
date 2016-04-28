@@ -51,7 +51,7 @@ class DependencyHandler(object):
         fulfilled = True
         unfulfilled = {}
         for name, _ in self.checks.items():
-            status, msg = get_status(name)
+            status, msg = self.get_status(name)
             if status is False:
                 fulfilled = False
                 unfulfilled[name] = msg
@@ -60,9 +60,9 @@ class DependencyHandler(object):
     def print_all_statuses(self):
         is_fulfilled, unfulfilled = self.get_all_statuses()
         if is_fulfilled:
-            print('All dependencies fulfilled!')
+            print(ui.paragraph('All dependencies fulfilled!'))
         else:
-            print('Some dependencies unfulfilled:')
+            print('\nSome dependencies unfulfilled:')
             print(ui.listing(unfilfilled))
         return is_fulfilled, unfulfilled
             
@@ -89,7 +89,7 @@ def register_builtin_checks(handler):
                'TransDecoder': check_transdecoder,
                'LAST': check_last,
                'crb-blast': check_crb_blast}
-    for name, func in checks:
+    for name, func in checks.items():
         handler.register_dependency_check(name, func)
     return handler
 
