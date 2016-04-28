@@ -8,7 +8,8 @@ import sys
 
 from doit.dependency import Dependency, SqliteDB
 
-from . import common
+import .ui
+from .handler import TaskHandler
 from .log import LogReporter
 from .hmmer import hmmpress
 from .infernal import get_cmpress_task
@@ -17,7 +18,7 @@ from .tasks import get_download_and_gunzip_task, \
                    get_download_and_untar_task, \
                    print_tasks
 
-def get_handler(args, config):
+def get_handler(args, config, databases):
 
     logger = logging.getLogger('DatabaseHandler')
 
@@ -28,19 +29,42 @@ def get_handler(args, config):
         except KeyError:
             logger.debug('no DAMMIT_DB_DIR or --database-dir, using'\
                               ' default')
-            directory = path.join(config['settings']['dammit_dir'],
-                                  config['settings']['db_dir'])
+            directory = path.join(os.environ['HOME'], '.dammit', 'databases')
     else:
         directory = args.database_dir
     directory = path.abspath(directory)
     doit_db = path.join(directory, 'databases.doit.db')
 
     handler = TaskHandler(doit_db, logger, config=config,
-                          reporter=LogReporter(logger), 
                           backend=config['settings']['doit_backend'],
                           verbosity=args.verbosity,
                           continue=True)
-    return handler
+
+    return register_builtin_tasks(handler, config, databases)
+
+
+def install(handler):
+    uptodate, missing = handler.check_uptodate()
+    if not uptodate:
+        handler.print_outofdate()
+        print('Installing...')
+        handler.run(move=True)
+    else:
+        print('Nothing to install!')
+        sys.exit(0)
+
+
+def check_or_fail(handler):
+    print(ui.header('Database Check', level=3))
+    upofdate, missing = handler.check_uptodate()
+    if outofdate:
+        print(ui.paragraph('Must install databases to continue. To do so,'
+                           ' run `dammit databases --install`. If you have'
+                           ' already installed them, make sure you\'ve given'
+                           ' the correct location to `--database-dir` or have'
+                           ' exported the $DAMMIT_DB_DIR environment'
+                           ' variable.'))
+        sys.exit(2)
 
 
 def register_builtin_tasks(handler, config, databases):
@@ -52,6 +76,8 @@ def register_builtin_tasks(handler, config, databases):
     register_orthodb_tasks(handler, settings, databases)
     register_busco_tasks(handler, settings, databases)
     register_uniref90_tasks(handler, settings, databases)
+
+    return handler
                           
 
 def register_pfam_tasks(handler, settings, databases):
@@ -62,6 +88,7 @@ def register_pfam_tasks(handler, settings, databases):
                           files={'Pfam-A': pfam_A['filename']})
     handler.register_task('hmmpress:Pfam-A',
                           get_hmmpress_task(pfam_A['filename'], settings['hmmer']))
+    return handler
 
 
 def register_rfam_tasks(handler, settings, databases):
@@ -72,6 +99,7 @@ def register_rfam_tasks(handler, settings, databases):
                            files={'Rfam': rfam['filename']})
     handler.register_task('cmpress:Rfam',
                           get_cmpress_task(rfam['filename'], settings['infernal']))
+    return handler
 
 
 def register_orthodb_tasks(handler, settings, databases):
@@ -85,6 +113,7 @@ def register_orthodb_tasks(handler, settings, databases):
                                           orthodb['filename'], 
                                           settings['last']['lastdb'], 
                                           prot=True))
+    return handler
 
 
 def register_busco_tasks(handler, settings, databases):
@@ -98,6 +127,7 @@ def register_busco_tasks(handler, settings, databases):
                                                          busco_dir,
                                                          label=group_name),
                               files=files)
+    return handler
 
 
 def register_uniref90_tasks(handler, settings, databases):
@@ -111,61 +141,5 @@ def register_uniref90_tasks(handler, settings, databases):
                                           uniref['filename'],
                                           settings['last']['lastdb'],
                                           prot=True))
-
-
-def install(handler):
-    uptodate, missing = handler.check_uptodate()
-    if not uptodate:
-
-
-
-
-class DatabaseHandler(object):
-
-    def handle(self, doit_args=['run']):
-
-        missing = self.check()
-        
-        if self.args.install:
-            if missing:
-                common.print_header('Installing databases', level=2)
-                common.run_tasks(self.tasks, doit_args, config=self.doit_config)
-            else:
-                common.print_header('Nothing to install', level=2)
-        else:
-            if missing:
-                sys.exit(1)
-
-    def check_or_fail(self):
-        missing = self.check()
-        if missing:
-            self.logger.error('Install databases to continue.')
-            common.print_header('to prepare databases, run: dammit databases'\
-                                ' --install', level=2)
-            sys.exit(1)
-
-    def check(self):
-
-        common.print_header('Checking for database prep (dir: {0})'.format(self.directory),
-                            level=2)
-
-        dep_manager = Dependency(SqliteDB, self.doit_config['dep_file'])
-        missing = False
-        for task in self.tasks:
-            status = dep_manager.get_status(task, self.tasks)
-            self.logger.debug('{0}:{1}'.format(task.name, status.status))
-            if status.status != 'up-to-date':
-                missing = True
-                self.logger.warning('[ ] {0}'.format(task.name))
-            else:
-                self.logger.info('[x] {0}'.format(task.name))
-
-        common.print_header('Database results', level=2)
-
-        if missing:
-            self.logger.warning('Database prep incomplete...')
-        else:
-            self.logger.info('All databases prepared!')
-
-        return missing
+    return handler
 
