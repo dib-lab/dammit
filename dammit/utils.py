@@ -1,6 +1,44 @@
 #!/usr/bin/env python
 
 import os
+from doit.task import Task
+
+
+class DammitTask(Task):
+
+    def __repr__(self):
+        return '{{ DammitTask: {name}'
+               '\n    actions: {actions}'
+               '\n   file_dep: {file_dep}'
+               '\n   task_dep: {task_dep}'
+               '\n    targets: {targets} }}'.format(vars(self))
+
+
+def dict_to_task(task_dict):
+    if 'actions' not in task_dict:
+        raise InvalidTask("Task %s must contain 'actions' field. %s" %
+                          (task_dict['name'], task_dict))
+
+    task_attrs = list(task_dict.keys())
+    valid_attrs = set(Task.valid_attr.keys())
+    for key in task_attrs:
+        if key not in valid_attrs:
+            raise InvalidTask("Task %s contains invalid field: '%s'"%
+                              (task_dict['name'], key))
+
+    return DammitTask(**task_dict)
+
+
+def doit_task(task_dict_func):
+    '''Wrapper to decorate functions returning pydoit
+    Task dictionaries and have them return pydoit Task
+    objects
+    '''
+    def d_to_t(*args, **kwargs):
+        task_dict = task_dict_func(*args, **kwargs)
+        return dict_to_task(task_dict)
+    return d_to_t
+
 
 class Move(object):
 
