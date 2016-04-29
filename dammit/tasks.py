@@ -423,7 +423,7 @@ def get_cmscan_task(input_filename, output_filename, db_filename,
         parallel_cmd = multinode_parallel_fasta(input_filename, n_threads,
                                                 n_nodes)
 
-    stat = output_filename + '.out'
+    stat = output_filename + '.cmscan.out'
     cmd = [parallel_cmd, exc, '--cpu', '1', '--rfam', '--nohmmonly',
            '-E', str(cutoff), '--tblout', '/dev/stdout', '-o', stat,
            db_filename, '/dev/stdin', '>', output_filename]
@@ -433,7 +433,7 @@ def get_cmscan_task(input_filename, output_filename, db_filename,
             'title': title_with_actions,
             'actions': [cmd],
             'file_dep': [input_filename, db_filename, db_filename + '.i1p'],
-            'targets': [output_filename, output_filename + '.cmscan'],
+            'targets': [output_filename, stat],
             'clean': [clean_targets]}
 
 
