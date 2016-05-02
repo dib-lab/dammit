@@ -10,7 +10,7 @@ from .parallel import parallel_fasta, multinode_parallel_fasta, get_filesize_tas
 
 
 @doit_task
-def get_cmpress_task(db_filename, params=None):
+def get_cmpress_task(db_filename, params=None, task_dep=None):
 
     cmd = [which('cmpress')]
     if params is not None:
@@ -18,12 +18,16 @@ def get_cmpress_task(db_filename, params=None):
     cmd.append(db_filename)
     cmd = ' '.join(cmd)
 
-    return {'name': 'cmpress:' + os.path.basename(db_filename),
-            'title': title_with_actions,
-            'actions': [cmd],
-            'targets': [db_filename + ext for ext in ['.i1f', '.i1i', '.i1m', '.i1p']],
-            'uptodate': [True],
-            'clean': [clean_targets]}
+    task_d = {'name': 'cmpress:' + os.path.basename(db_filename),
+              'title': title_with_actions,
+              'actions': [cmd],
+              'targets': [db_filename + ext for ext in ['.i1f', '.i1i', '.i1m', '.i1p']],
+              'uptodate': [True],
+              'clean': [clean_targets]}
+    if task_dep is not None:
+        task_d['task_dep'] = task_dep
+
+    return task_d
 
 
 @doit_task

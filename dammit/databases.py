@@ -78,37 +78,45 @@ def register_builtin_tasks(handler, config, databases, with_uniref=False):
 
 def register_pfam_tasks(handler, params, databases):
     pfam_A = databases['Pfam-A']
+    task = get_download_and_gunzip_task(pfam_A['url'],
+                                        pfam_A['filename'])
     handler.register_task('download:Pfam-A',
-                          get_download_and_gunzip_task(pfam_A['url'],
-                                                       pfam_A['filename']),
+                          task,
                           files={'Pfam-A': pfam_A['filename']})
     handler.register_task('hmmpress:Pfam-A',
-                          get_hmmpress_task(pfam_A['filename'], params=params))
+                          get_hmmpress_task(pfam_A['filename'], 
+                                            params=params,
+                                            task_dep=[task.name]))
     return handler
 
 
 def register_rfam_tasks(handler, params, databases):
     rfam = databases['Rfam']
+    task = get_download_and_gunzip_task(rfam['url'], 
+                                        rfam['filename'])
     handler.register_task('download:Rfam',
-                           get_download_and_gunzip_task(rfam['url'], 
-                                                        rfam['filename']),
+                           task,
                            files={'Rfam': rfam['filename']})
     handler.register_task('cmpress:Rfam',
-                          get_cmpress_task(rfam['filename'], params=params))
+                          get_cmpress_task(rfam['filename'],
+                                           task_dep=[task.name],
+                                           params=params))
     return handler
 
 
 def register_orthodb_tasks(handler, params, databases):
     orthodb = databases['OrthoDB']
+    task = get_download_and_gunzip_task(orthodb['url'], 
+                                        orthodb['filename'])
     handler.register_task('download:OrthoDB',
-                          get_download_and_gunzip_task(orthodb['url'], 
-                                                       orthodb['filename']),
+                          task,
                           files={'OrthoDB': orthodb['filename']})
     handler.register_task('lastdb:OrthoDB',
                           get_lastdb_task(orthodb['filename'], 
                                           orthodb['filename'], 
                                           prot=True,
-                                          params=params))
+                                          params=params,
+                                          task_dep=[task.name]))
     return handler
 
 
@@ -128,14 +136,16 @@ def register_busco_tasks(handler, config, databases):
 
 def register_uniref90_tasks(handler, params, databases):
     uniref90 = databases['uniref90']
+    task = get_download_and_gunzip_task(uniref90['url'],
+                                        uniref90['filename'])
     handler.register_task('download:uniref90',
-                          get_download_and_gunzip_task(uniref90['url'],
-                                                       uniref90['filename']),
+                          task,
                           files={'uniref90': uniref90['filename']})
     handler.register_task('lastdb:uniref90',
                           get_lastdb_task(uniref['filename'],
                                           uniref['filename'],
                                           prot=True,
-                                          params=params))
+                                          params=params,
+                                          task_dep=[task.name]))
     return handler
 

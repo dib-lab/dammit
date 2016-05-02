@@ -2,6 +2,8 @@
 from __future__ import print_function
 
 import os
+import sys
+
 from doit.task import Task
 
 

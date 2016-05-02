@@ -15,7 +15,8 @@ from .utils import doit_task, which
 
 @doit_task
 def get_hmmscan_task(input_filename, output_filename, db_filename,
-                     cutoff=0.00001, n_threads=1, n_nodes=None, params=None):
+                     cutoff=0.00001, n_threads=1, n_nodes=None, 
+                     params=None):
 
     name = 'hmmscan:' + os.path.basename(input_filename) + '.x.' + \
                     os.path.basename(db_filename)
@@ -50,7 +51,7 @@ def get_hmmscan_task(input_filename, output_filename, db_filename,
 
 
 @doit_task
-def get_hmmpress_task(db_filename, params=None):
+def get_hmmpress_task(db_filename, params=None, task_dep=None):
 
     name = 'hmmpress:' + os.path.basename(db_filename)
     exc = which('hmmpress')
@@ -62,12 +63,16 @@ def get_hmmpress_task(db_filename, params=None):
 
     cmd = ' '.join(cmd)
 
-    return {'name': name,
-            'title': title_with_actions,
-            'actions': [cmd],
-            'targets': [db_filename + ext for ext in ['.h3f', '.h3i', '.h3m', '.h3p']],
-            'uptodate': [True],
-            'clean': [clean_targets]}
+    task_d =  {'name': name,
+              'title': title_with_actions,
+              'actions': [cmd],
+              'targets': [db_filename + ext for ext in ['.h3f', '.h3i', '.h3m', '.h3p']],
+              'uptodate': [True],
+              'clean': [clean_targets]}
+    if task_dep is not None:
+        task_d['task_dep'] = task_dep
+
+    return task_d
 
 
 @doit_task

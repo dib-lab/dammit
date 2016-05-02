@@ -10,7 +10,8 @@ from .parallel import parallel_fasta, multinode_parallel_fasta, get_filesize_tas
 
 
 @doit_task
-def get_lastdb_task(db_fn, db_out_prefix=None, prot=True, params=None):
+def get_lastdb_task(db_fn, db_out_prefix=None, prot=True, params=None,
+                    task_dep=None):
     '''Create a pydoit task to run lastdb.
 
     WARNING: This does not define a file_dep, to make sure it doesn't
@@ -40,12 +41,16 @@ def get_lastdb_task(db_fn, db_out_prefix=None, prot=True, params=None):
 
     name = 'lastdb:' + os.path.basename(db_out_prefix)
 
-    return {'name': name,
-            'title': title_with_actions,
-            'actions': [cmd],
-            'targets': ['{0}.prj'.format(db_out_prefix)],
-            'uptodate': [True],
-            'clean': [clean_targets]}
+    task_d =  {'name': name,
+              'title': title_with_actions,
+              'actions': [cmd],
+              'targets': ['{0}.prj'.format(db_out_prefix)],
+              'uptodate': [True],
+              'clean': [clean_targets]}
+    if task_dep is not None:
+        task_d['task_dep'] = task_dep
+
+    return task_d
 
 
 @doit_task

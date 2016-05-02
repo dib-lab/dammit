@@ -83,12 +83,12 @@ class TaskHandler(TaskLoader):
     
     def load_tasks(self, cmd, opt_values, pos_args):
         self.logger.debug('loading {0} tasks'.format(len(self.tasks)))
-        return self.tasks.values()
+        return self.tasks.values(), self.doit_config
 
     def run(self, doit_args=None, move=False):
         if doit_args is None:
             doit_args = ['run']
-        runner = DoitMain(self())
+        runner = DoitMain(self)
         if move:
             with Move(self.directory):
                 return runner.run(doit_args)
