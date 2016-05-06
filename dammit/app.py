@@ -30,7 +30,9 @@ class DammitApp(object):
     def run(self):
         print(ui.header('dammit'))
         print(ui.header(__description__, level=2))
-        print(ui.paragraph('{0} {1}'.format(', '.join(__authors__),  __date__)))
+        about = '\nby {0}\nv{1}, {2}\n'.format(', '.join(__authors__),
+                                           __version__, __date__)
+        print(about)
         self.args.func()
 
     def get_parser(self):
