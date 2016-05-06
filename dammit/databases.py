@@ -34,6 +34,7 @@ def get_handler(args, config, databases):
     directory = path.abspath(directory)
 
     handler = TaskHandler(directory, logger, config=config,
+                          db='databases',
                           backend=config['doit_backend'],
                           verbosity=args.verbosity)
 
@@ -42,6 +43,7 @@ def get_handler(args, config, databases):
 
 
 def install(handler):
+    print(ui.header('Database Install', level=3))
     uptodate, missing = handler.print_uptodate()
     if not uptodate:
         print('Installing...')
@@ -53,6 +55,8 @@ def install(handler):
 
 def check_or_fail(handler):
     print(ui.header('Database Check', level=3))
+    print('Database Directory: {0}'.format(handler.directory))
+    print('Doit Database: {0}'.format(handler.dep_file))
     uptodate, missing = handler.print_uptodate()
     if not uptodate:
         print(ui.paragraph('Must install databases to continue. To do so,'
@@ -78,13 +82,13 @@ def register_builtin_tasks(handler, config, databases, with_uniref=False):
 
 def register_pfam_tasks(handler, params, databases):
     pfam_A = databases['Pfam-A']
+    filename = handler.pathjoin(pfam_A['filename'])
     task = get_download_and_gunzip_task(pfam_A['url'],
-                                        pfam_A['filename'])
-    handler.register_task('download:Pfam-A',
-                          task,
-                          files={'Pfam-A': pfam_A['filename']})
+                                        filename)
+    handler.register_task('download:Pfam-A', task,
+                          files={'Pfam-A': filename})
     handler.register_task('hmmpress:Pfam-A',
-                          get_hmmpress_task(pfam_A['filename'], 
+                          get_hmmpress_task(filename, 
                                             params=params,
                                             task_dep=[task.name]))
     return handler
@@ -92,13 +96,13 @@ def register_pfam_tasks(handler, params, databases):
 
 def register_rfam_tasks(handler, params, databases):
     rfam = databases['Rfam']
+    filename = handler.pathjoin(rfam['filename'])
     task = get_download_and_gunzip_task(rfam['url'], 
-                                        rfam['filename'])
-    handler.register_task('download:Rfam',
-                           task,
-                           files={'Rfam': rfam['filename']})
+                                        filename)
+    handler.register_task('download:Rfam', task,
+                           files={'Rfam': filename})
     handler.register_task('cmpress:Rfam',
-                          get_cmpress_task(rfam['filename'],
+                          get_cmpress_task(filename,
                                            task_dep=[task.name],
                                            params=params))
     return handler
@@ -106,14 +110,14 @@ def register_rfam_tasks(handler, params, databases):
 
 def register_orthodb_tasks(handler, params, databases):
     orthodb = databases['OrthoDB']
+    filename = handler.pathjoin(orthodb['filename'])
     task = get_download_and_gunzip_task(orthodb['url'], 
-                                        orthodb['filename'])
-    handler.register_task('download:OrthoDB',
-                          task,
-                          files={'OrthoDB': orthodb['filename']})
+                                        filename)
+    handler.register_task('download:OrthoDB', task,
+                          files={'OrthoDB': filename})
     handler.register_task('lastdb:OrthoDB',
-                          get_lastdb_task(orthodb['filename'], 
-                                          orthodb['filename'], 
+                          get_lastdb_task(filename, 
+                                          filename, 
                                           prot=True,
                                           params=params,
                                           task_dep=[task.name]))
