@@ -11,7 +11,8 @@ from . import ui
 
 class TaskHandler(TaskLoader):
 
-    def __init__(self, directory, logger, config=None, files=None, **doit_config_kwds):
+    def __init__(self, directory, logger, config=None, files=None, 
+                 db=None, **doit_config_kwds):
 
         super(TaskHandler, self).__init__()
 
@@ -31,7 +32,11 @@ class TaskHandler(TaskLoader):
         except OSError:
             logger.debug('database dir already exists')
 
-        dep_file = os.path.join(self.directory, 'doit.db')
+        if db is None:
+            dep_file = os.path.join(self.directory, 'doit.db')
+        else:
+            dep_file = os.path.join(self.directory, db + '.doit.db')
+        self.dep_file = dep_file
         self.doit_config = dict(dep_file=dep_file, **doit_config_kwds)
         self.doit_dep_mgr = Dependency(SqliteDB, dep_file)
         self.logger = logger
@@ -46,6 +51,9 @@ class TaskHandler(TaskLoader):
         self.files.update(files)
         self.logger.debug('registered task {0}: {1}\n'
                           '  with files {2}'.format(name, task, files))
+
+    def pathjoin(self, filename):
+        return os.path.join(self.directory, filename)
 
     def clear_tasks(self):
         self.logger.debug('Clearing {0} tasks'.format(len(self.tasks)))
@@ -65,7 +73,7 @@ class TaskHandler(TaskLoader):
     def print_uptodate(self):
         uptodate, outofdate = self.check_uptodate()
         if uptodate:
-            print(ui.paragrap('All tasks up-to-date!'))
+            print(ui.paragraph('All tasks up-to-date!'))
         else:
             print('\nOut-of-date tasks:')
             print(ui.listing(outofdate))
