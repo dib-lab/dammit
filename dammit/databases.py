@@ -126,7 +126,7 @@ def register_orthodb_tasks(handler, params, databases):
 
 def register_busco_tasks(handler, config, databases):
     busco = databases['BUSCO']
-    busco_dir = config['db_dir']
+    busco_dir = handler.pathjoin(config['db_dir'])
     for group_name in busco:
         group = busco[group_name]
         files = {'BUSCO-{0}'.format(group_name): path.join(busco_dir, group_name)}
@@ -142,12 +142,13 @@ def register_uniref90_tasks(handler, params, databases):
     uniref90 = databases['uniref90']
     task = get_download_and_gunzip_task(uniref90['url'],
                                         uniref90['filename'])
+    filename = handler.pathjoin(uniref90['filename'])
     handler.register_task('download:uniref90',
                           task,
-                          files={'uniref90': uniref90['filename']})
+                          files={'uniref90': filename})
     handler.register_task('lastdb:uniref90',
-                          get_lastdb_task(uniref['filename'],
-                                          uniref['filename'],
+                          get_lastdb_task(filename,
+                                          filename,
                                           prot=True,
                                           params=params,
                                           task_dep=[task.name]))

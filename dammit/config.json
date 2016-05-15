@@ -14,7 +14,7 @@
     },
 
     "busco": {
-        "db_dir": "busco_db",
+        "db_dir": "buscodb",
         "output_suffix": ".busco.results"
     },
 
