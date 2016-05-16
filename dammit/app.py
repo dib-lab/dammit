@@ -122,6 +122,7 @@ class DammitApp(object):
                                   description=desc,
                                   help=desc
                                   )
+        dependencies_parser.add_argument('--config-file')
         dependencies_parser.set_defaults(func=self.handle_dependencies)
 
         '''

@@ -108,6 +108,18 @@ class TestDependencies(TestCase):
         self.assertFalse(is_fulfilled)
         self.assertIn('Some dependencies unfulfilled', output)
 
+    def test_print_all_statuses_default_alldeps(self):
+        handler = dependencies.get_handler()
+        with TemporaryDirectory() as tempdir:
+            TestDependencies.add_execs_to_path(tempdir)
+            out = StringIO()
+
+            is_fulfilled, unfulfilled = handler.print_all_statuses(out=out)
+            print(unfulfilled)
+            output = out.getvalue()
+
+            self.assertTrue(is_fulfilled)
+            self.assertIn('All dependencies fulfilled!', output)
 
 class TestDammitDependencies(TestCase):
 
