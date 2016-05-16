@@ -11,6 +11,11 @@ from dammit import gff
 
 from utils import TemporaryDirectory, TestData, runscript
 
+try:
+    from StringIO import StringIO
+except ImportError:
+    from io import StringIO
+
 names = ['TransDecoder',
          'crb-blast',
          'LAST',
@@ -30,7 +35,6 @@ execs = ['hmmscan',
          'BUSCO_v1.1b1.py',
          'TransDecoder.LongOrfs',
          'TransDecoder.Predict',
-         'lastal',
          'lastdb',
          'crb-blast']
 
@@ -38,6 +42,14 @@ PATH_BACKUP = os.environ['PATH']
 
 def run(args, **kwargs):
     return runscript('dammit', args, **kwargs)
+
+
+def mock_last(directory):
+    fn = os.path.join(directory, 'lastal')
+    with open(fn, 'w') as fp:
+        fp.write('#!/bin/sh\n\necho "lastal 611"')
+    os.chmod(fn, os.stat(fn).st_mode | stat.S_IEXEC)
+    print('added mock lastal to', fn)
 
 
 class TestDependencies(TestCase):
@@ -60,32 +72,32 @@ class TestDependencies(TestCase):
             open(fn, 'a').close()
             os.chmod(fn, stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
         os.environ['PATH'] += os.pathsep + tempdir
+        mock_last(tempdir)
         print('Added execs:', os.environ['PATH'])
         print('dir:', os.listdir(tempdir))
 
-    def test_check_default_deps_nodeps(self):
-        '''Test run_checks() when the dependencies aren't on the PATH.
-        '''
+
+    def test_get_all_statuses_default_nodeps(self):
 
         os.environ['PATH'] = ''
-        handler = dependencies.DependencyHandler()
-        for name, stat, msg in handler.run_checks():
+        handler = dependencies.get_handler()
+        is_fulfilled, unfulfilled = handler.get_all_statuses()
+        self.assertFalse(is_fulfilled)
+        for name, msg in unfulfilled.items():
             self.assertIn(name, names)
-            self.assertFalse(stat)
 
-    def test_check_system_path_alldeps(self):
-        '''Test run_checks() when the dependencies are on the PATH.
-        '''
-        handler = dependencies.DependencyHandler()
+    def test_get_all_statuses_default_alldeps(self):
+        handler = dependencies.get_handler()
         with TemporaryDirectory() as tempdir:
             TestDependencies.add_execs_to_path(tempdir)
 
-            for name, stat, msg in handler.run_checks():
+            is_fulfilled, unfulfilled = handler.get_all_statuses()
+            print(unfulfilled)
+            self.assertTrue(is_fulfilled)
+            for name, msg in unfulfilled.items():
                 self.assertIn(name, names)
-                if name != 'LAST':
-                    self.assertTrue(stat, msg=name + ' ' + msg)
-    
-    def test_handle_nodeps(self):
+
+    def test_print_all_statuses_default_no_deps(self):
         os.environ['PATH'] = ''
         handler = dependencies.DependencyHandler()
         missing = handler.handle()
@@ -102,10 +114,8 @@ class TestDependencies(TestCase):
 
 class TestDammitDependencies(TestCase):
 
-    def setUp(self):
-        from itertools import count
-        gff.ID_GEN = count()
 
+class TestDammitDependencies(TestCase):
 
     def test_dammit_dependencies(self):
         '''Test the dependencies subcommand.

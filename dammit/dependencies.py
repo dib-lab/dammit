@@ -57,13 +57,13 @@ class DependencyHandler(object):
                 unfulfilled[name] = msg
         return fulfilled, unfulfilled
 
-    def print_all_statuses(self):
+    def print_all_statuses(self, out=sys.stdout):
         is_fulfilled, unfulfilled = self.get_all_statuses()
         if is_fulfilled:
-            print(ui.paragraph('All dependencies fulfilled!'))
+            print(ui.paragraph('All dependencies fulfilled!'), file=out)
         else:
-            print('\nSome dependencies unfulfilled:')
-            print(ui.listing(unfilfilled))
+            print('\nSome dependencies unfulfilled:', file=out)
+            print(ui.listing(unfilfilled), file=out)
         return is_fulfilled, unfulfilled
             
     def check_or_fail(self):
