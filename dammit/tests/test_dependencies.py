@@ -99,20 +99,14 @@ class TestDependencies(TestCase):
 
     def test_print_all_statuses_default_no_deps(self):
         os.environ['PATH'] = ''
-        handler = dependencies.DependencyHandler()
-        missing = handler.handle()
-        for name in missing:
-            self.assertIn(name, names)
-        self.assertEquals(set(missing) - set(names), set())
+        handler = dependencies.get_handler()
+        out = StringIO()
 
-    def test_do_check_alldeps(self):
-        handler = dependencies.DependencyHandler()
-        with TemporaryDirectory() as tempdir:
-            TestDependencies.add_execs_to_path(tempdir)
-            missing = handler.handle()
-            self.assertEquals(missing, ['LAST'])
+        is_fulfilled, unfulfilled = handler.print_all_statuses(out=out)
+        output = out.getvalue()
 
-class TestDammitDependencies(TestCase):
+        self.assertFalse(is_fulfilled)
+        self.assertIn('Some dependencies unfulfilled', output)
 
 
 class TestDammitDependencies(TestCase):

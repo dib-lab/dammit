@@ -63,7 +63,7 @@ class DependencyHandler(object):
             print(ui.paragraph('All dependencies fulfilled!'), file=out)
         else:
             print('\nSome dependencies unfulfilled:', file=out)
-            print(ui.listing(unfilfilled), file=out)
+            print(ui.listing(unfulfilled), file=out)
         return is_fulfilled, unfulfilled
             
     def check_or_fail(self):
