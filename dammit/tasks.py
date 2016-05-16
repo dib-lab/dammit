@@ -53,7 +53,7 @@ def get_download_task(url, target_fn, label='default'):
 
     return {'title': title_with_actions,
             'name': name,
-            'actions': [cmd],
+            'actions': [LongRunning(cmd)],
             'targets': [target_fn],
             'clean': [clean_targets],
             'uptodate': [True]}
@@ -67,7 +67,7 @@ def get_download_and_gunzip_task(url, target_fn):
 
     return {'title': title_with_actions,
             'name': name,
-            'actions': [cmd],
+            'actions': [LongRunning(cmd)],
             'targets': [target_fn],
             'clean': [clean_targets],
             'uptodate': [True]}
@@ -84,7 +84,7 @@ def get_download_and_untar_task(url, target_dir, label):
 
     return {'name': name,
             'title': title_with_actions,
-            'actions': [cmd1, cmd2],
+            'actions': [LongRunning(cmd1), cmd2],
             'targets': [done],
             'clean': [(clean_folder, [target_dir])],
             'uptodate': [True]}
