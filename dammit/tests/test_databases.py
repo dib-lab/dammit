@@ -61,7 +61,7 @@ class TestDatabases(TestCase):
         '''
 
         status, out, err = run(['databases'])
-        self.assertIn('All databases prepared!', err)
+        self.assertIn('All tasks up-to-date!', out)
 
     def test_dammit_databases_check_fail(self):
         '''Test that the database check fails properly.
@@ -70,8 +70,8 @@ class TestDatabases(TestCase):
             
             args = ['databases', '--database-dir', td]
             status, out, err = run(args, fail_ok=True)
-            self.assertIn('prep incomplete', err)
-            self.assertEquals(status, 1)
+            self.assertIn('Out-of-date tasks', out)
+            self.assertEquals(status, 2)
 
     @attr('huge')
     def test_dammit_database_install(self):
