@@ -22,7 +22,7 @@ class TestDammitApp(TestCase):
         '''Test the dammit --version command.
         '''
 
-        from dammit import __version__
+        from dammit.meta import __version__
         status, out, err = run(['--version'])
         self.assertEquals(status, 0)
         self.assertEquals(err.strip(), 'dammit {0}'.format(__version__))
