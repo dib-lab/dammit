@@ -66,14 +66,15 @@ class DependencyHandler(object):
             print(ui.listing(unfulfilled), file=out)
         return is_fulfilled, unfulfilled
             
-    def check_or_fail(self):
-        print(ui.header('Dependency Check', level=3))
-        is_fulfilled, unfulfilled = self.print_all_statuses()
+    def check_or_fail(self, out=sys.stdout):
+        print(ui.header('Dependency Check', level=3), file=out)
+        is_fulfilled, unfulfilled = self.print_all_statuses(out=out)
         if not is_fulfilled:
             print(ui.paragraph('Must install dependencies to continue.'\
                               ' to do so, follow the directions in the'\
                               ' documentation at '\
-                              'http://www.camillescott.org/dammit/installing.html'))
+                              'http://www.camillescott.org/dammit/installing.html'),
+                 file=out)
             sys.exit(1)
 
 
