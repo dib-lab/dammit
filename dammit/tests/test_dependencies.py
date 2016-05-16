@@ -76,7 +76,6 @@ class TestDependencies(TestCase):
         print('Added execs:', os.environ['PATH'])
         print('dir:', os.listdir(tempdir))
 
-
     def test_get_all_statuses_default_nodeps(self):
 
         os.environ['PATH'] = ''
@@ -121,13 +120,36 @@ class TestDependencies(TestCase):
             self.assertTrue(is_fulfilled)
             self.assertIn('All dependencies fulfilled!', output)
 
+    def test_check_or_fail_default_no_deps(self):
+        os.environ['PATH'] = ''
+        handler = dependencies.get_handler()
+        out = StringIO()
+        with self.assertRaises(SystemExit):
+            handler.check_or_fail(out=out)
+        output = out.getvalue()
+        self.assertIn('Must install', output)
+
+    def test_check_or_fail_default_alldeps(self):
+        handler = dependencies.get_handler()
+        with TemporaryDirectory() as tempdir:
+            TestDependencies.add_execs_to_path(tempdir)
+            out = StringIO()
+            
+            try:
+                handler.check_or_fail(out=out)
+            except SystemExit:
+                assert False, 'check should have succeeded'
+
 class TestDammitDependencies(TestCase):
+
+    @classmethod
+    def teardown_class(cls):
+        os.environ['PATH'] = PATH_BACKUP
 
     def test_dammit_dependencies(self):
         '''Test the dependencies subcommand.
         '''
-
+        print(os.environ['PATH'])
         status, out, err = run(['dependencies'])
         self.assertEquals(status, 0)
-
 
