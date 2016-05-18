@@ -5,6 +5,7 @@ from __future__ import absolute_import
 import nose
 import os
 from io import StringIO
+import logging
 import traceback
 import shutil
 import stat
@@ -15,6 +16,9 @@ from tempfile import mkdtemp
 
 from doit.dependency import Dependency, DbmDB
 
+from dammit import log
+log.start_logging(test=True)
+logger = logging.getLogger('Tests')
 
 '''
 BATCH EFFECTS -- The Notorious A.T.G.
