@@ -10,10 +10,11 @@ import pandas as pd
 from .parallel import parallel_fasta, multinode_parallel_fasta
 from .parallel import get_filesize_task
 from . import parsers
-from .utils import doit_task, which
+from .utils import doit_task, which, convert_pathlib
 
 
 @doit_task
+@convert_pathlib
 def get_hmmscan_task(input_filename, output_filename, db_filename,
                      cutoff=0.00001, n_threads=1, n_nodes=None, 
                      params=None):
@@ -51,6 +52,7 @@ def get_hmmscan_task(input_filename, output_filename, db_filename,
 
 
 @doit_task
+@convert_pathlib
 def get_hmmpress_task(db_filename, params=None, task_dep=None):
 
     name = 'hmmpress:' + os.path.basename(db_filename)

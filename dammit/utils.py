@@ -4,6 +4,11 @@ from __future__ import print_function
 import os
 import sys
 
+try:
+    from pathlib import Path
+except ImportError:
+    from pathlib2 import Path
+
 from doit.task import Task
 
 
@@ -41,6 +46,22 @@ def doit_task(task_dict_func):
         task_dict = task_dict_func(*args, **kwargs)
         return dict_to_task(task_dict)
     return d_to_t
+
+
+def convert_pathlib(func):
+    def converted(*args, **kwargs):
+        new_args = []
+        for a in args:
+            if isinstance(a, Path):
+                a = str(a)
+            new_args.append(a)
+        new_kwargs = {}
+        for k, v in kwargs.items():
+            if isinstance(v, Path):
+                v = str(v)
+            new_kwargs[k] = v
+        return func(*new_args, **new_kwargs)
+    return converted
 
 
 class Move(object):

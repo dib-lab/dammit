@@ -2,13 +2,19 @@ from unittest import TestCase
 
 from nose.plugins.attrib import attr
 import os
+import logging
 import stat
 import pandas as pd
+
+try:
+    from pathlib import Path
+except ImportError:
+    from pathlib2 import Path
 
 from dammit import databases
 from dammit.meta import get_config
 
-from utils import TemporaryDirectory, TestData, runscript
+from utils import TemporaryDirectory, TestData, runscript, logger
 
 names = ['TransDecoder',
          'crb-blast',
@@ -46,15 +52,40 @@ class TestDatabases(TestCase):
     '''
 
     def setUp(self):
+        self.logger = logging.getLogger('TestCase.TestDatabases')
         class Args(object):
             pass
         self.args = Args()
-        self.args.database_dir = None
+        self.args.database_dir = databases.default_database_dir(self.logger)
         self.args.verbosity = 2
         self.args.full = False
         self.config, self.databases = get_config()
         self.handler = databases.get_handler(self.args, self.config,
                                              self.databases)
+
+
+    def test_default_database_dir_noenv(self):
+        saved_env = os.environ.get('DAMMIT_DB_DIR', None)
+        try:
+            del os.environ['DAMMIT_DB_DIR']
+        except KeyError:
+            pass
+
+        result = databases.default_database_dir(self.logger)
+        expected = Path.home() / '.dammit/databases'
+        self.assertTrue(result == expected)
+
+        if saved_env is not None:
+            os.environ['DAMMIT_DB_DIR'] = saved_env
+
+    def test_default_database_dir_env(self):
+        os.environ['DAMMIT_DB_DIR'] = str(Path.home() / '.dammit/databases')
+
+        result = databases.default_database_dir(self.logger)
+        expected = Path.home() / '.dammit/databases'
+        self.assertTrue(result == expected)
+
+        del os.environ['DAMMIT_DB_DIR']
 
     def test_dammit_databases_check(self):
         '''Test the database check subcommand.
@@ -91,7 +122,7 @@ class TestDatabases(TestCase):
 
     def test_check_or_fail_fail(self):
         with TemporaryDirectory() as td:
-            self.args.database_dir = td
+            self.args.database_dir = Path(td)
             handler = databases.get_handler(self.args, self.config,
                                                  self.databases)
             with self.assertRaises(SystemExit):

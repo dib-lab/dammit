@@ -25,20 +25,17 @@ class TaskHandler(TaskLoader):
 
         self.tasks = {}
 
-        self.directory = os.path.abspath(directory)
-
-        try:
-            os.mkdir(self.directory)
-        except OSError:
-            logger.debug('database dir already exists')
+        self.directory = directory.resolve()
+        self.directory.mkdir(exist_ok=True)
 
         if db is None:
-            dep_file = os.path.join(self.directory, 'doit.db')
+            dep_file = self.directory / 'doit.db'
         else:
-            dep_file = os.path.join(self.directory, db + '.doit.db')
+            dep_file = self.directory / (db + '.doit.db')
         self.dep_file = dep_file
-        self.doit_config = dict(dep_file=dep_file, **doit_config_kwds)
-        self.doit_dep_mgr = Dependency(SqliteDB, dep_file)
+        print(str(dep_file))
+        self.doit_config = dict(dep_file=str(dep_file), **doit_config_kwds)
+        self.doit_dep_mgr = Dependency(SqliteDB, str(dep_file))
         self.logger = logger
 
     def register_task(self, name, task, files=None):
@@ -52,9 +49,6 @@ class TaskHandler(TaskLoader):
         self.logger.debug('registered task {0}: {1}\n'
                           '  with files {2}'.format(name, task, files))
 
-    def pathjoin(self, filename):
-        return os.path.join(self.directory, filename)
-
     def clear_tasks(self):
         self.logger.debug('Clearing {0} tasks'.format(len(self.tasks)))
         self.tasks = {}
@@ -66,6 +60,7 @@ class TaskHandler(TaskLoader):
             except KeyError:
                 self.logger.error('Task not found:{0}'.format(task))
                 raise
+        self.logger.debug('Getting status for task {0}'.format(task.name))
         status = self.doit_dep_mgr.get_status(task, self.tasks.values()).status
         self.logger.debug('Task {0} had status {1}'.format(task, status))
         return status

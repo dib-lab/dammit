@@ -5,11 +5,12 @@ from doit.action import CmdAction
 from doit.tools import title_with_actions, LongRunning
 from doit.task import clean_targets
 
-from .utils import which, doit_task
+from .utils import which, doit_task, convert_pathlib
 from .parallel import parallel_fasta, multinode_parallel_fasta, get_filesize_task
 
 
 @doit_task
+@convert_pathlib
 def get_cmpress_task(db_filename, params=None, task_dep=None):
 
     cmd = [which('cmpress')]
@@ -31,6 +32,7 @@ def get_cmpress_task(db_filename, params=None, task_dep=None):
 
 
 @doit_task
+@convert_pathlib
 def get_cmscan_task(input_filename, output_filename, db_filename,
                     cutoff=0.00001, n_threads=1, n_nodes=None, params=None):
 

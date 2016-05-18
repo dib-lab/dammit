@@ -6,11 +6,15 @@ import os
 from os import path
 import sys
 
+try:
+    from pathlib import Path
+except ImportError:
+    from pathlib2 import Path
+
 from doit.dependency import Dependency, SqliteDB
 
 from . import ui
 from .handler import TaskHandler
-from .log import LogReporter
 from .hmmer import get_hmmpress_task
 from .infernal import get_cmpress_task
 from .last import get_lastdb_task
@@ -20,26 +24,26 @@ from .tasks import get_download_and_gunzip_task, \
 def get_handler(args, config, databases):
 
     logger = logging.getLogger('DatabaseHandler')
+    logger.debug('get_handler')
 
-    if args.database_dir is None:
-        try:
-            directory = os.environ['DAMMIT_DB_DIR']
-            logger.debug('found DAMMIT_DB_DIR env variable')
-        except KeyError:
-            logger.debug('no DAMMIT_DB_DIR or --database-dir, using'\
-                              ' default')
-            directory = path.join(os.environ['HOME'], '.dammit', 'databases')
-    else:
-        directory = args.database_dir
-    directory = path.abspath(directory)
-
-    handler = TaskHandler(directory, logger, config=config,
+    handler = TaskHandler(args.database_dir, logger, config=config,
                           db='databases',
                           backend=config['doit_backend'],
                           verbosity=args.verbosity)
 
     return register_builtin_tasks(handler, config, databases,
                                   with_uniref=args.full)
+
+
+def default_database_dir(logger):
+    try:
+        directory = os.environ['DAMMIT_DB_DIR']
+        logger.debug('found DAMMIT_DB_DIR env variable')
+    except KeyError:
+        logger.debug('no DAMMIT_DB_DIR or --database-dir, using'\
+                          ' default')
+        directory = path.join(os.environ['HOME'], '.dammit', 'databases')
+    return Path(directory)
 
 
 def install(handler):
@@ -82,7 +86,7 @@ def register_builtin_tasks(handler, config, databases, with_uniref=False):
 
 def register_pfam_tasks(handler, params, databases):
     pfam_A = databases['Pfam-A']
-    filename = handler.pathjoin(pfam_A['filename'])
+    filename = handler.directory / pfam_A['filename']
     task = get_download_and_gunzip_task(pfam_A['url'],
                                         filename)
     handler.register_task('download:Pfam-A', task,
@@ -96,7 +100,7 @@ def register_pfam_tasks(handler, params, databases):
 
 def register_rfam_tasks(handler, params, databases):
     rfam = databases['Rfam']
-    filename = handler.pathjoin(rfam['filename'])
+    filename = handler.directory / rfam['filename']
     task = get_download_and_gunzip_task(rfam['url'], 
                                         filename)
     handler.register_task('download:Rfam', task,
@@ -110,7 +114,7 @@ def register_rfam_tasks(handler, params, databases):
 
 def register_orthodb_tasks(handler, params, databases):
     orthodb = databases['OrthoDB']
-    filename = handler.pathjoin(orthodb['filename'])
+    filename = handler.directory / orthodb['filename']
     task = get_download_and_gunzip_task(orthodb['url'], 
                                         filename)
     handler.register_task('download:OrthoDB', task,
@@ -126,10 +130,10 @@ def register_orthodb_tasks(handler, params, databases):
 
 def register_busco_tasks(handler, config, databases):
     busco = databases['BUSCO']
-    busco_dir = handler.pathjoin(config['db_dir'])
+    busco_dir = handler.directory / config['db_dir']
     for group_name in busco:
         group = busco[group_name]
-        files = {'BUSCO-{0}'.format(group_name): path.join(busco_dir, group_name)}
+        files = {'BUSCO-{0}'.format(group_name): busco_dir / group_name}
         handler.register_task('download:BUSCO-{0}'.format(group_name),
                               get_download_and_untar_task(group['url'],
                                                          busco_dir,
@@ -142,7 +146,7 @@ def register_uniref90_tasks(handler, params, databases):
     uniref90 = databases['uniref90']
     task = get_download_and_gunzip_task(uniref90['url'],
                                         uniref90['filename'])
-    filename = handler.pathjoin(uniref90['filename'])
+    filename = handler.directory / uniref90['filename']
     handler.register_task('download:uniref90',
                           task,
                           files={'uniref90': filename})

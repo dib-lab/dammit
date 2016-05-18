@@ -18,7 +18,7 @@ from doit.task import clean_targets, dict_to_task
 import pandas as pd
 from khmer import HLLCounter, ReadParser
 
-from .utils import which, doit_task
+from .utils import which, doit_task, convert_pathlib
 from . import parsers
 from .hits import BestHits
 from .fileio import maf
@@ -45,11 +45,20 @@ def get_group_task(group_name, tasks):
             'task_dep': [t.name for t in tasks]}
 
     
+@convert_pathlib
 @doit_task
-def get_download_task(url, target_fn, label='default'):
+def get_download_task(url, target_fn):
+    '''Creates a doit task to download the given URL.
+    
+    Args:
+        url (str): URL to download.
+        target_fn (str): Target for the download.
+    Returns:
+        dict: doit task.
+    '''
 
     cmd = 'curl -o {target_fn} {url}'.format(**locals())
-    name = '_'.join(['download_gunzip', target_fn, label])
+    name = 'download_gunzip:{0}'.format(os.path.basename(target_fn))
 
     return {'title': title_with_actions,
             'name': name,
@@ -59,11 +68,20 @@ def get_download_task(url, target_fn, label='default'):
             'uptodate': [True]}
 
 
+@convert_pathlib
 @doit_task
 def get_download_and_gunzip_task(url, target_fn):
+    '''Create a doit task which downloads and gunzips a file.
+
+    Args:
+        url (str): URL to download.
+        target_fn (str): Target file for the download.
+    Returns:
+        dict: doit task.
+    '''
     cmd = 'curl {url} | gunzip -c > {target_fn}'.format(**locals())
 
-    name = 'download_and_gunzip:' + os.path.basename(target_fn)
+    name = 'download_and_gunzip:{0}'.format(os.path.basename(target_fn))
 
     return {'title': title_with_actions,
             'name': name,
@@ -73,13 +91,27 @@ def get_download_and_gunzip_task(url, target_fn):
             'uptodate': [True]}
 
 
+@convert_pathlib
 @doit_task
-def get_download_and_untar_task(url, target_dir, label):
+def get_download_and_untar_task(url, target_dir, label=None):
+    '''Create a doit task to download a file and untar it in the
+    given directory.
+
+    Args:
+        url (str): URL to download.
+        target_dir (str: Directory to put the untarred folder in.
+        label (str): Optional label to resolve doit name conflicts when putting
+                     multiple results in the same folder.
+    Returns:
+        dict: doit task.
+    '''
+
+    if label is None:
+        label = os.path.basename(url)
 
     cmd1 = 'mkdir -p {target_dir}; curl {url} | tar -xz -C {target_dir}'.format(**locals())
-    name = 'download_and_untar:'  + \
-            os.path.basename(os.path.dirname(target_dir)) + '-' + label
-    done = os.path.join(target_dir, name + '.done')
+    name = 'download_and_untar:{0}-{1}'.format(os.path.basename(target_dir), label)
+    done = os.path.join(target_dir, name) + '.done'
     cmd2 = 'touch {done}'.format(done=done)
 
     return {'name': name,

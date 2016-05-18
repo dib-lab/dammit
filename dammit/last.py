@@ -5,11 +5,12 @@ from doit.action import CmdAction
 from doit.tools import title_with_actions, LongRunning
 from doit.task import clean_targets
 
-from .utils import which, doit_task
+from .utils import which, doit_task, convert_pathlib
 from .parallel import parallel_fasta, multinode_parallel_fasta, get_filesize_task
 
 
 @doit_task
+@convert_pathlib
 def get_lastdb_task(db_fn, db_out_prefix=None, prot=True, params=None,
                     task_dep=None):
     '''Create a pydoit task to run lastdb.
@@ -54,6 +55,7 @@ def get_lastdb_task(db_fn, db_out_prefix=None, prot=True, params=None,
 
 
 @doit_task
+@convert_pathlib
 def get_lastal_task(query, db, out_fn, translate=False, frameshift=15,
                     cutoff=0.00001, n_threads=1, n_nodes=None, params=None):
     '''Create a pydoit task to run lastal
