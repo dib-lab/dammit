@@ -18,7 +18,7 @@ from doit.task import clean_targets, dict_to_task
 import pandas as pd
 from khmer import HLLCounter, ReadParser
 
-from .utils import which, doit_task, convert_pathlib
+from .utils import which, doit_task
 from . import parsers
 from .hits import BestHits
 from .fileio import maf
@@ -45,7 +45,7 @@ def get_group_task(group_name, tasks):
             'task_dep': [t.name for t in tasks]}
 
     
-@convert_pathlib
+
 @doit_task
 def get_download_task(url, target_fn):
     '''Creates a doit task to download the given URL.
@@ -68,7 +68,7 @@ def get_download_task(url, target_fn):
             'uptodate': [True]}
 
 
-@convert_pathlib
+
 @doit_task
 def get_download_and_gunzip_task(url, target_fn):
     '''Create a doit task which downloads and gunzips a file.
@@ -91,7 +91,7 @@ def get_download_and_gunzip_task(url, target_fn):
             'uptodate': [True]}
 
 
-@convert_pathlib
+
 @doit_task
 def get_download_and_untar_task(url, target_dir, label=None):
     '''Create a doit task to download a file and untar it in the
@@ -120,6 +120,7 @@ def get_download_and_untar_task(url, target_dir, label=None):
             'targets': [done],
             'clean': [(clean_folder, [target_dir])],
             'uptodate': [True]}
+
 
 
 @doit_task
@@ -195,43 +196,6 @@ def get_rename_transcriptome_task(transcriptome_fn, output_fn, names_fn,
 
 
 @doit_task
-def get_transeq_task(input_fn, output_fn, clean=True, frame=6):
-
-    name = 'transeq:{0}'.format(os.path.basename(input_fn))
-
-    params = '-frame {frame}'.format(frame=frame)
-    if clean:
-        params = '{params} -clean'.format(params=params)
-
-    cmd = 'transeq -sequence {input_fn} {params}'\
-          ' -clean -outseq {output_fn}'.format(**locals())
-
-    return {'name': name,
-            'title': title_with_actions,
-            'actions': [cmd],
-            'targets': [output_fn],
-            'file_dep': [input_fn],
-            'clean': [clean_targets]}
-
-
-@doit_task
-def get_crb_blast_task(query, target, output, cutoff, crb_blast_cfg,
-                       n_threads):
-
-    name = 'crb-blast:{0}.x.{1}'.format(query, target)
-    exc = which('crb-blast')
-    cmd = '{exc} --query {query} --target {target} --output {output} '\
-          '--evalue {cutoff} --threads {n_threads}'.format(**locals())
-
-    return {'name': name,
-            'title': title_with_actions,
-            'actions': [cmd],
-            'targets': [output],
-            'file_dep': [query, target],
-            'clean': [clean_targets]}
-
-
-@doit_task
 def get_maf_best_hits_task(maf_fn, output_fn):
 
     hits_mgr = BestHits()
@@ -265,6 +229,7 @@ def get_link_file_task(src, dst=''):
             'clean': [clean_targets]}
 
 
+
 @doit_task
 def get_cat_task(file_list, target_fn):
 
@@ -279,18 +244,21 @@ def get_cat_task(file_list, target_fn):
 
 
 @doit_task
-def get_busco_task(input_filename, output_name, busco_db_dir, input_type,
-                   n_threads, busco_cfg):
+def get_busco_task(input_filename, output_name, busco_db_dir, 
+                   input_type='trans', n_threads=1, params=None):
 
-    name = 'busco:' + os.path.basename(input_filename) + '-' + os.path.basename(busco_db_dir)
+    name = 'busco:{0}-{1}'.format(os.path.basename(input_filename),
+                                  os.path.basename(busco_db_dir))
 
     assert input_type in ['genome', 'OGS', 'trans']
     exc = which('BUSCO_v1.1b1.py')
     # BUSCO chokes on file paths as output names
     output_name = os.path.basename(output_name)
-
-    cmd = 'python3 {exc} -in {input_filename} -f -o {output_name} -l {busco_db_dir} '\
-            '-m {input_type} -c {n_threads}'.format(**locals())
+    cmd = ['python3', exc, '-in', input_filename, '-f', '-o', output_name,
+           '-l', busco_db_dir, '-m', input_type, '-c', str(n_threads)]
+    if params is not None:
+        cmd.extend(params)
+    cmd = ' '.join(cmd)
 
     return {'name': name,
             'title': title_with_actions,
@@ -299,46 +267,7 @@ def get_busco_task(input_filename, output_name, busco_db_dir, input_type,
             'uptodate': [run_once],
             'clean': [(clean_folder, ['run_' + output_name])]}
 
-
-@doit_task
-def get_transdecoder_orf_task(input_filename, transdecoder_cfg):
-
-    name = 'TransDecoder.LongOrfs:' + os.path.basename(input_filename)
-
-    min_prot_len = transdecoder_cfg['min_prot_len']
-    exc = which('TransDecoder.LongOrfs')
-    cmd = '{exc} -t {input_filename} -m {min_prot_len}'.format(**locals())
-
-    return {'name': name,
-            'title': title_with_actions,
-            'actions': [cmd],
-            'file_dep': [input_filename],
-            'targets': [input_filename + '.transdecoder_dir/longest_orfs.pep'],
-            'clean': [(clean_folder, [input_filename + '.transdecoder_dir'])]}
-
-
-@doit_task
-def get_transdecoder_predict_task(input_filename, db_filename, transdecoder_cfg):
-
-    name = 'TransDecoder.Predict:' + os.path.basename(input_filename)
-
-    orf_cutoff = transdecoder_cfg['orf_cutoff']
-    exc = which('TransDecoder.Predict')
-    cmd = '{exc} -t {input_filename} --retain_pfam_hits {db_filename} \
-            --retain_long_orfs {orf_cutoff}'.format(**locals())
-
-    return {'name': name,
-            'title': title_with_actions,
-            'actions': [cmd],
-            'file_dep': [input_filename,
-                         input_filename + '.transdecoder_dir/longest_orfs.pep',
-                         db_filename],
-            'targets': [input_filename + '.transdecoder' + ext \
-                        for ext in ['.bed', '.cds', '.pep', '.gff3', '.mRNA']],
-            'clean': [clean_targets,
-                     (clean_folder, [input_filename + '.transdecoder_dir'])]}
-
-
+   
 @doit_task
 def get_maf_gff3_task(input_filename, output_filename, database):
 
