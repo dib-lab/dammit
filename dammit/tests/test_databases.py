@@ -2,14 +2,10 @@ from unittest import TestCase
 
 from nose.plugins.attrib import attr
 import os
+from os import path
 import logging
 import stat
 import pandas as pd
-
-try:
-    from pathlib import Path
-except ImportError:
-    from pathlib2 import Path
 
 from dammit import databases
 from dammit.meta import get_config
@@ -72,17 +68,18 @@ class TestDatabases(TestCase):
             pass
 
         result = databases.default_database_dir(self.logger)
-        expected = Path.home() / '.dammit/databases'
+        expected = path.expanduser('~/.dammit/databases')
         self.assertTrue(result == expected)
 
         if saved_env is not None:
             os.environ['DAMMIT_DB_DIR'] = saved_env
 
     def test_default_database_dir_env(self):
-        os.environ['DAMMIT_DB_DIR'] = str(Path.home() / '.dammit/databases')
+        expected = path.expanduser('~/.dammit/databases')
+        os.environ['DAMMIT_DB_DIR'] = expected
 
         result = databases.default_database_dir(self.logger)
-        expected = Path.home() / '.dammit/databases'
+
         self.assertTrue(result == expected)
 
         del os.environ['DAMMIT_DB_DIR']
@@ -122,7 +119,7 @@ class TestDatabases(TestCase):
 
     def test_check_or_fail_fail(self):
         with TemporaryDirectory() as td:
-            self.args.database_dir = Path(td)
+            self.args.database_dir = td
             handler = databases.get_handler(self.args, self.config,
                                                  self.databases)
             with self.assertRaises(SystemExit):
