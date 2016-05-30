@@ -5,7 +5,10 @@
     "doit_backend": "sqlite3",
     
     "last": {
-        "lastal": [],
+        "lastal": {
+            "params": [],
+            "frameshift": 15
+        },
         "lastdb": ["-w3"]
     },
 
@@ -15,7 +18,8 @@
 
     "busco": {
         "db_dir": "buscodb",
-        "output_suffix": ".busco.results"
+        "output_suffix": ".busco.results",
+        "params": []
     },
 
     "hmmer": {
