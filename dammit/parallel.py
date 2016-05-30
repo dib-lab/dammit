@@ -6,39 +6,14 @@ from .utils import which, doit_task
 import os
 
 
-def parallel_fasta(input_filename, n_jobs, file_size=10000):
+def parallel_fasta(input_filename, output_filename, command, n_jobs, pbs=False):
+
     exc = which('parallel')
-    block_size = int(file_size) / int(n_jobs)
-    cmd = ['cat', input_filename, '|', exc, '--block', str(block_size),
-           '--pipe', '--eta', '--recstart', '">"', '--gnu', '-j', str(n_jobs)]
-
-    return ' '.join(cmd)
-
-def multinode_parallel_fasta(input_filename, ppn, nodes, file_size):
-    '''
-    exports = 'export PARALLEL="--workdir . --env PATH --env LD_LIBRARY_PATH '\
-              '--env LOADEDMODULES --env _LMFILES_ --env MODULE_VERSION '\
-              '--env MODULEPATH --env MODULEVERSION_STACK --env MODULESHOME '\
-              '--env OMP_DYNAMICS --env OMP_MAX_ACTIVE_LEVELS --env OMP_NESTED '\
-              '--env OMP_NUM_THREADS --env OMP_SCHEDULE --env OMP_STACKSIZE '\
-              '--env OMP_THREAD_LIMIT --env OMP_WAIT_POLICY";'
-    '''
-    exc = which('parallel')
-    block_size = int(file_size) / int(ppn * nodes)
-    cmd = ['cat', input_filename, '|', exc, '--block', str(block_size),
-           '--pipe', '--eta', '--recstart', '">"', '--gnu', '--jobs 1', 
-           '--sshloginfile $PBS_NODEFILE', '--workdir $PWD']
-
-    return ' '.join(cmd)
-
-
-@doit_task
-def get_filesize_task(filename):
-
-    def get_filesize(filename):
-        return {'size': os.path.getsize(filename)}
-
-    return {'name': 'get_filesize:{0}'.format(filename),
-            'actions': [(get_filesize, [filename])],
-            'file_dep': [filename]}
-
+    cmd = ['cat', input_filename, '|', exc, '--progress', '--pipe', '-L', 2, '-N', 400,
+           '--gnu', '-j', n_jobs, '-a', input_filename]
+    if pbs:
+        cmd.extend(['--sshloginfile $PBS_NODEFILE', '--workdir $PWD'])
+    if isinstance(command, list):
+        command = ' '.join(command)
+    cmd.extend([command, '>', output_filename])
+    return ' '.join(map(str, cmd))
