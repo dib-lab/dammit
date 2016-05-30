@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import os
+from os import mkdir, path
 
 from doit.cmd_base import TaskLoader
 from doit.doit_cmd import DoitMain
@@ -24,18 +24,21 @@ class TaskHandler(TaskLoader):
             self.files = files
 
         self.tasks = {}
-
-        self.directory = directory.resolve()
-        self.directory.mkdir(exist_ok=True)
+        
+        self.directory = directory
+        try:
+            mkdir(directory)
+        except OSError:
+            pass
 
         if db is None:
-            dep_file = self.directory / 'doit.db'
+            dep_file = path.join(self.directory, 'doit.db')
         else:
-            dep_file = self.directory / (db + '.doit.db')
+            dep_file = path.join(self.directory, '{0}.doit.db'.format(db))
         self.dep_file = dep_file
-        print(str(dep_file))
-        self.doit_config = dict(dep_file=str(dep_file), **doit_config_kwds)
-        self.doit_dep_mgr = Dependency(SqliteDB, str(dep_file))
+        logger.debug('Dependency Database File: {0}'.format(dep_file))
+        self.doit_config = dict(dep_file=self.dep_file, **doit_config_kwds)
+        self.doit_dep_mgr = Dependency(SqliteDB, dep_file)
         self.logger = logger
 
     def register_task(self, name, task, files=None):
