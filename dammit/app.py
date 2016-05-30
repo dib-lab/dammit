@@ -6,11 +6,6 @@ import logging
 import os
 import sys
 
-try:
-    from pathlib import Path
-except ImportError:
-    from pathlib2 import Path
-
 from dammit.meta import __version__, __authors__, __description__, __date__, get_config
 from dammit import utils
 from dammit import ui
@@ -18,21 +13,6 @@ from dammit import annotate
 from dammit import databases
 from dammit import dependencies
 from dammit import log
-
-class ResolveAction(argparse.Action):
-    '''argparse Action to resolve pathlib.Path arguments.
-    '''
-
-    def __call__(self, parser, namespace, values, option_string=None):
-        '''Call resolve() on pathlib.Path objects. For lists,
-        convert each element to a pathlib.Path and resolve each.'''
-
-        if isinstance(values, Path):
-            values = values.resolve()
-        elif isinstance(values, list):
-            values = [Path(v).resolve() for v in values]
-            
-        setattr(namespace, self.dest, values)
 
 
 class DammitApp(object):
@@ -46,6 +26,7 @@ class DammitApp(object):
         if self.args.config_file is not None:
             with open(self.args.config_file) as fp:
                 self.config_d.update(json.load(fp))
+        self.config_d.update(vars(self.args))
  
     def run(self):
         print(ui.header('dammit'))
@@ -79,8 +60,6 @@ class DammitApp(object):
                 parser (object): The parser to which arguments will be added.
             '''
             parser.add_argument('--database-dir',
-                                type=Path,
-                                action=ResolveAction,
                                 default=databases.default_database_dir(self.logger),
                                 help='Directory to store databases. Existing'\
                                      ' databases will not be overwritten.'\
@@ -105,8 +84,6 @@ class DammitApp(object):
                                      ' the organism being annotated.'
                                 )
             parser.add_argument('--config-file',
-                                type=Path,
-                                action=ResolveAction,
                                 )
             parser.add_argument('--verbosity',
                                 default=0,
@@ -147,9 +124,7 @@ class DammitApp(object):
                                   description=desc,
                                   help=desc
                                   )
-        dependencies_parser.add_argument('--config-file',
-                                         type=Path,
-                                         action=ResolveAction)
+        dependencies_parser.add_argument('--config-file')
         dependencies_parser.set_defaults(func=self.handle_dependencies)
 
         '''
@@ -168,8 +143,6 @@ class DammitApp(object):
                               )
 
         annotate_parser.add_argument('transcriptome',
-                                     type=Path,
-                                     action=ResolveAction,
                                      help='FASTA file with the transcripts to be'\
                                           ' annotated.'
                                      )
@@ -193,8 +166,6 @@ class DammitApp(object):
 
         annotate_parser.add_argument('-o', '--output-dir',
                                      default=None,
-                                     type=Path,
-                                     action=ResolveAction,
                                      help='Output directory. By default this will'\
                                           ' be the name of the transcriptome file'\
                                           ' with `.dammit` appended'
@@ -210,11 +181,11 @@ class DammitApp(object):
         annotate_parser.add_argument('--user-databases',
                                      nargs='+',
                                      default=[],
-                                     action=ResolveAction,
                                      help='Optional additional protein databases. '\
                                           ' These will be searched with CRB-blast.'
                                      )
-        annotate_parser.add_argument('--n-nodes',
+
+        annotate_parser.add_argument('--pbs',
                                      type=int,
                                      help='Experimental support for Portable'\
                                           ' Batch System. `--n-threads` will'\
@@ -253,5 +224,5 @@ class DammitApp(object):
         db_handler = databases.get_handler(self.args, self.config_d,
                                            self.databases_d)
         databases.check_or_fail(db_handler)
-
-        annotate.AnnotateHandler(self.args, db_handler.databases).handle()
+        annotate_handler = annotate.get_handler(self.config_d, db_handler.files)
+        annotate.run_annotation(annotate_handler)
