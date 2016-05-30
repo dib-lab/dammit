@@ -48,22 +48,6 @@ def doit_task(task_dict_func):
     return d_to_t
 
 
-def convert_pathlib(func):
-    def converted(*args, **kwargs):
-        new_args = []
-        for a in args:
-            if isinstance(a, Path):
-                a = str(a)
-            new_args.append(a)
-        new_kwargs = {}
-        for k, v in kwargs.items():
-            if isinstance(v, Path):
-                v = str(v)
-            new_kwargs[k] = v
-        return func(*new_args, **new_kwargs)
-    return converted
-
-
 class Move(object):
 
     def __init__(self, target, create=False):
