@@ -9,7 +9,7 @@ import pandas as pd
 
 from .parallel import parallel_fasta
 from . import parsers
-from .utils import doit_task, which, convert_pathlib
+from .utils import doit_task, which
 
 
 @doit_task
