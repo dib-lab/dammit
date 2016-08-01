@@ -118,7 +118,7 @@ def check_blast(logger):
 
 
 def check_busco(logger):
-    busco = which('BUSCO_v1.1b1.py') or which('BUSCO_v1.2.py')
+    busco = which('BUSCO_v1.1b1.py') or which('BUSCO_v1.22.py')
     if busco is None:
         return False, 'Not found on $PATH'
     else:
