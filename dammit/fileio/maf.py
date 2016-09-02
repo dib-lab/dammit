@@ -1,6 +1,19 @@
+from itertools import count
+
 import pandas as pd
 import numpy as np
 from .base import ChunkParser
+
+def next_or_raise(fp):
+    counter = count()
+    def func(raise_exc=True):
+        line = fp.readline()
+        n = next(counter)
+        if raise_exc is True and line == '':
+            raise RuntimeError('Malformed MAF file (line {0})'.format(n))
+        return line
+    return func
+
 
 class MafParser(ChunkParser):
 
@@ -29,11 +42,13 @@ class MafParser(ChunkParser):
         '''
         data = []
         with open(self.filename) as fp:
+            guarded_next = next_or_raise(fp)
+            n = 0
             while (True):
-                try:
-                    line = fp.next().strip()
-                except StopIteration:
+                line = guarded_next(raise_exc=False)
+                if line == '':
                     break
+                line = line.strip()
                 if not line:
                     continue
                 if line.startswith('#'):
@@ -54,7 +69,7 @@ class MafParser(ChunkParser):
                         cur_aln[key] = float(val)
 
                     # First sequence info
-                    line = fp.next()
+                    line = guarded_next()
                     tokens = line.split()
                     cur_aln['s_name'] = tokens[1]
                     cur_aln['s_start'] = int(tokens[2])
@@ -65,7 +80,7 @@ class MafParser(ChunkParser):
                         cur_aln['s_aln'] = tokens[6]
 
                     # First sequence info
-                    line = fp.next()
+                    line = guarded_next() 
                     tokens = line.split()
                     cur_aln['q_name'] = tokens[1]
                     cur_aln['q_start'] = int(tokens[2])
