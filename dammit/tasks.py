@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 from __future__ import print_function
 
-from itertools import count, izip
+from itertools import count 
 import json
 import logging
 import os
@@ -179,7 +179,7 @@ def get_rename_transcriptome_task(transcriptome_fn, output_fn, names_fn,
 
     def fix():
         names = []
-        with open(output_fn, 'wb') as fp:
+        with open(output_fn, 'w') as fp:
             for record in ReadParser(transcriptome_fn):
                 header = header_func(record.name)
                 fp.write('>{0}\n{1}\n'.format(header, record.sequence))
@@ -379,7 +379,7 @@ def get_annotate_fasta_task(transcriptome_fn, gff3_fn, output_fn):
     def annotate_fasta():
         annotations = pd.concat([g for g in \
                                  parsers.parse_gff3(gff3_fn)])
-        with open(output_fn, 'wb') as fp:
+        with open(output_fn, 'w') as fp:
             for n, record in enumerate(ReadParser(transcriptome_fn)):
                 df = annotations.query('seqid == "{0}"'.format(record.name))
                 annots = ['len={0}'.format(len(record.sequence))]
@@ -461,7 +461,6 @@ def get_transcriptome_stats_task(transcriptome, output_fn):
         except AttributeError:
             S.sort()
         gc_perc = float(gc_len) / S.sum()
-        print('return')
         return S, hll.estimate_cardinality(), gc_perc, n_ambiguous
 
     def calc_NX(lens, X):
@@ -480,9 +479,7 @@ def get_transcriptome_stats_task(transcriptome, output_fn):
         return NXlen, NXpos
 
     def cmd():
-        print('RRUNNNG')
         lens, uniq_kmers, gc_perc, n_amb = parse(transcriptome)
-        print('still running and', lens, uniq_kmers)
 
         exp_kmers = (lens - (K+1)).sum()
         redundancy = float(exp_kmers - uniq_kmers) / exp_kmers
@@ -491,21 +488,24 @@ def get_transcriptome_stats_task(transcriptome, output_fn):
 
         N50len, N50pos = calc_NX(lens, 50)
         stats = {'N': len(lens),
-                 'sum': lens.sum(),
-                 'min': lens.min(),
-                 'max': lens.max(),
-                 'med': lens.median(),
-                 'mean': lens.mean(),
-                 'N50len': N50len,
-                 'N50pos': N50pos,
-                 '25_mers': exp_kmers,
+                 'sum': int(lens.sum()),
+                 'min': int(lens.min()),
+                 'max': int(lens.max()),
+                 'med': int(lens.median()),
+                 'mean': float(lens.mean()),
+                 'N50len': int(N50len),
+                 'N50pos': int(N50pos),
+                 '25_mers': int(exp_kmers),
                  '25_mers_unique': uniq_kmers,
                  'n_ambiguous': n_amb,
                  'redundancy': redundancy,
-                 'GCperc': gc_perc}
-
-        with open(output_fn, 'wb') as fp:
+                 'GCperc': float(gc_perc)}
+        
+        with open(output_fn, 'w') as fp:
             json.dump(stats, fp, indent=4)
+
+        with open(output_fn, 'r') as fp:
+            print(fp.read())
 
     return {'name': name,
             'title': title_with_actions,

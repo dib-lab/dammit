@@ -20,7 +20,7 @@ import sys
 import numpy as np
 import pandas as pd
 
-from blast import remap_blast_coords_df as remap_blast
+from .blast import remap_blast_coords_df as remap_blast
 
 
 blast_cols = [('qseqid', str),

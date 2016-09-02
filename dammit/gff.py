@@ -29,7 +29,7 @@ def write_gff3_df(df, fp):
 
 def mangle_coordinates(gff3_df):
     '''Although 1-based fully closed intervals are of the Beast,
-    we will respect the convention in the interest of peace between
+    we will respect the convention in the interests of peace between
     worlds and compatibility.
 
     Args:
