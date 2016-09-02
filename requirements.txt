@@ -4,8 +4,8 @@ khmer>=2.0
 doit>=0.29.0
 Sphinx>1.3.1
 sphinx-rtd-theme>=0.1.9
-nose==1.3.4
-nose-capturestderr==1.0
+nose>=1.3.4
+nose-capturestderr>=1.0
 ficus>=0.1
 matplotlib>=1.0
 numexpr>=2.3.1
