@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+from __future__ import print_function
+
 from unittest import TestCase
 
 from nose.plugins.attrib import attr
@@ -24,5 +27,6 @@ class TestDammitApp(TestCase):
 
         from dammit.meta import __version__
         status, out, err = run(['--version'])
+        print(status, out, err)
         self.assertEquals(status, 0)
-        self.assertEquals(err.strip(), 'dammit {0}'.format(__version__))
+        self.assertEquals(out.strip(), 'dammit {0}'.format(__version__))

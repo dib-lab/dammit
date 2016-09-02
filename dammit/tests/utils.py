@@ -14,6 +14,8 @@ import warnings as _warnings
 from pkg_resources import Requirement, resource_filename, ResolutionError
 from tempfile import mkdtemp
 
+from doit.cmd_base import TaskLoader
+from doit.doit_cmd import DoitMain
 from doit.dependency import Dependency, DbmDB
 
 from dammit import log

@@ -9,18 +9,19 @@ from unittest import TestCase
 from doit.dependency import Dependency, DbmDB
 
 from utils import TemporaryDirectory, Move, TestData, touch, TemporaryFile
-from utils import run_task, check_status
-from dammit import common
-from dammit import tasks
-from dammit.common import run_tasks
+from utils import run_task, run_tasks, check_status
+from dammit.transdecoder import get_transdecoder_orf_task,\
+                                get_transdecoder_predict_task
+from dammit.meta import get_config
 
 
 class TestTransDecoderTasks(TestCase):
 
     @classmethod
     def setup_class(cls):
-        cls.longorfs_cfg = common.CONFIG['settings']['transdecoder']['longorfs']
-        cls.predict_cfg = common.CONFIG['settings']['transdecoder']['predict']
+        cfg, _ = get_config()
+        cls.longorfs_cfg = cfg['transdecoder']['longorfs']
+        cls.predict_cfg = cfg['transdecoder']['predict']
         cls.extensions = ['.bed', '.pep', '.gff3', '.mRNA', '.cds']
 
     def test_longorfs_task(self):
@@ -29,7 +30,7 @@ class TestTransDecoderTasks(TestCase):
                 with TestData('test-transcript.fa', td) as transcript, \
                      TestData('test-transcript-orf.pep', td) as exp_orf:
 
-                    task = tasks.get_transdecoder_orf_task(transcript,
+                    task = get_transdecoder_orf_task(transcript,
                                                            self.longorfs_cfg)
                     run_tasks([task], ['run'])
                     output_dir = transcript + '.transdecoder_dir'
@@ -48,9 +49,9 @@ class TestTransDecoderTasks(TestCase):
                 with TestData('test-transcript.fa', td) as transcript, \
                      TestData('test-protein-x-pfam-a.tbl', td) as pfam:
 
-                    orf_task = tasks.get_transdecoder_orf_task(transcript,
+                    orf_task = get_transdecoder_orf_task(transcript,
                                                                self.longorfs_cfg)
-                    pred_task = tasks.get_transdecoder_predict_task(transcript,
+                    pred_task = get_transdecoder_predict_task(transcript,
                                                                     pfam,
                                                                     self.predict_cfg)
                     run_tasks([orf_task, pred_task], ['run'])

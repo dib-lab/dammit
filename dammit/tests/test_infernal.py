@@ -10,21 +10,21 @@ from unittest import TestCase
 import pandas as pd
 
 from utils import TemporaryDirectory, Move, TestData, touch, TemporaryFile
-from utils import run_task, check_status
-from dammit import common
+from utils import run_task, run_tasks, check_status
 from dammit import tasks
-from dammit.common import run_tasks
-from dammit.infernal import cmscan
 from dammit.infernal import get_cmpress_task as cmpress_task
+from dammit.infernal import get_cmscan_task as cmscan_task
 from dammit.parsers import cmscan_to_df_iter
+from dammit.meta import get_config
 
 
 class TestInfernalTasks(TestCase):
 
     @classmethod
     def setup_class(cls):
-        cls.cmscan_cfg = common.CONFIG['settings']['infernal']['cmscan']
-        cls.cmpress_cfg = common.CONFIG['settings']['infernal']['cmscan']
+        cfg, _ = get_config()
+        cls.cmscan_cfg = cfg['infernal']['cmscan']
+        cls.cmpress_cfg = cfg['infernal']['cmscan']
         cls.extensions = ['.i1f', '.i1i', '.i1m', '.i1p']
 
     def test_cmpress_task(self):
@@ -64,8 +64,8 @@ class TestInfernalTasks(TestCase):
                      TemporaryFile(td) as out:
                         
                     db_task = cmpress_task(cm, self.cmpress_cfg)
-                    aln_tasks = cmscan(transcript, out, cm, 1.0, 1)
-                    run_tasks([db_task] + list(aln_tasks), ['run'])
+                    aln_task = cmscan_task(transcript, out, cm, 1.0, 1)
+                    run_tasks([db_task, aln_task], ['run'])
                     print(os.listdir(td), file=sys.stderr)
                     aln = ''.join(open(out).readlines())
                     print(aln, file=sys.stderr)
@@ -86,12 +86,12 @@ class TestInfernalTasks(TestCase):
                     for n_threads in (2,3,4,5):
                             
                         db_task = cmpress_task(cm, self.cmpress_cfg)
-                        aln_tasks_single = cmscan(transcript, out_single, 
+                        aln_tasks_single = cmscan_task(transcript, out_single, 
                                                                 cm, 1.0, 1)
-                        aln_tasks_multi = cmscan(transcript, out_multi, 
+                        aln_tasks_multi = cmscan_task(transcript, out_multi, 
                                                                 cm, 1.0,
                                                                 n_threads)
-                        run_tasks([db_task] + list(aln_tasks_single), ['run'])
+                        run_tasks([db_task, aln_tasks_single], ['run'])
                         run_task(aln_tasks_multi, ['run'])
 
                         alns_single = pd.concat(cmscan_to_df_iter(out_single))

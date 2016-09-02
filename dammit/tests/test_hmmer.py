@@ -9,20 +9,20 @@ from unittest import TestCase
 import pandas as pd
 
 from utils import TemporaryDirectory, Move, TestData, touch, TemporaryFile
-from utils import run_task, check_status
-from dammit import common
+from utils import run_task, run_tasks, check_status
+
 from dammit.hmmer import get_hmmscan_task as hmmscan_task
 from dammit.hmmer import get_hmmpress_task as hmmpress_task
-from dammit.hmmer import hmmscan
-from dammit.common import run_tasks
 from dammit.parsers import hmmscan_to_df_iter
+from dammit.meta import get_config
 
 class TestHMMERTasks(TestCase):
 
     @classmethod
     def setup_class(cls):
-        cls.hmmscan_cfg = common.CONFIG['settings']['hmmer']['hmmscan']
-        cls.hmmpress_cfg = common.CONFIG['settings']['hmmer']['hmmscan']
+        cfg, _ = get_config()
+        cls.hmmscan_cfg = cfg['hmmer']['hmmscan']
+        cls.hmmpress_cfg = cfg['hmmer']['hmmpress']
         cls.extensions = ['.h3f', '.h3i', '.h3m', '.h3p']
 
     def test_hmmpress_task(self):
@@ -62,9 +62,9 @@ class TestHMMERTasks(TestCase):
                      TemporaryFile(td) as out:
                         
                     db_task = hmmpress_task(hmm, self.hmmpress_cfg)
-                    aln_tasks = hmmscan(prot, out, hmm, 1.0, 1)
+                    aln_task = hmmscan_task(prot, out, hmm, 1.0, 1)
 
-                    run_tasks([db_task] + list(aln_tasks), ['run'])
+                    run_tasks([db_task, aln_task], ['run'])
                     print(os.listdir(td), file=sys.stderr)
                     aln = open(out).read()
                     print(aln)
@@ -82,12 +82,12 @@ class TestHMMERTasks(TestCase):
                     
                     for n_threads in (2,3,4,5):
                         db_task = hmmpress_task(hmm, self.hmmpress_cfg)
-                        aln_tasks_single = hmmscan(prot, out_single, 
+                        aln_task_single = hmmscan_task(prot, out_single, 
                                                    hmm, 1.0, 1)
-                        aln_tasks_multi = hmmscan(prot, out_multi,
+                        aln_task_multi = hmmscan_task(prot, out_multi,
                                                   hmm, 1.0, n_threads)
-                        run_tasks([db_task] + list(aln_tasks_single), ['run'])
-                        run_tasks(list(aln_tasks_multi), ['run'])
+                        run_tasks([db_task, aln_task_single], ['run'])
+                        run_tasks([aln_task_multi], ['run'])
                         print(os.listdir(td), file=sys.stderr)
 
                         print(open(out_single).read())
