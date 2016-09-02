@@ -1,19 +1,19 @@
 #!/usr/bin/env python
 
-import log
+from . import log
 
 from .hits import BestHits
 
-import parsers
-import gff
-import blast
-import tasks
+from . import parsers
+from . import gff
+from . import blast
+from . import tasks
 
-import annotate
-import databases
-import dependencies
-import parallel
-import hmmer
-import report
+from . import annotate
+from . import databases
+from . import dependencies
+from . import parallel
+from . import hmmer
+from . import report
 
-from meta import *
+from .meta import *
