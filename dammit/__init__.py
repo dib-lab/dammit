@@ -2,8 +2,6 @@
 
 from . import log
 
-from .hits import BestHits
-
 from . import parsers
 from . import gff
 from . import blast

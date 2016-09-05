@@ -45,7 +45,8 @@ def main():
                                 'nose-capturestderr>=1.0',
                                 'ficus>=0.1',
                                 'matplotlib>=1.0',
-                                'numexpr>=2.3.1'],
+                                'numexpr>=2.3.1',
+                                'shmlast>=0.2'],
             include_package_data = True,
             zip_safe = False,  )
 

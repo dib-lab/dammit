@@ -17,10 +17,10 @@ from doit.task import clean_targets, dict_to_task
 
 import pandas as pd
 from khmer import HLLCounter, ReadParser
+from shmlast.hits import BestHits
 
 from .utils import which, doit_task
 from . import parsers
-from .hits import BestHits
 from .fileio import maf
 from . import gff
 
