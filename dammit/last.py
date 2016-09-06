@@ -2,7 +2,7 @@
 import os
 
 from doit.action import CmdAction
-from doit.tools import title_with_actions, LongRunning
+from doit.tools import title_with_actions
 from doit.task import clean_targets
 
 from .utils import which, doit_task
@@ -88,7 +88,7 @@ def get_lastal_task(query, db, out_fn, translate=False, frameshift=15,
 
     return {'name': name,
             'title': title_with_actions,
-            'actions': [LongRunning(cmd)],
+            'actions': [cmd],
             'targets': [out_fn],
             'file_dep': [query, db + '.prj'],
             'clean': [clean_targets]}

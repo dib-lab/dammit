@@ -2,7 +2,7 @@
 from __future__ import print_function
 
 from doit.action import CmdAction
-from doit.tools import title_with_actions, LongRunning
+from doit.tools import title_with_actions
 from doit.task import clean_targets
 import os
 import pandas as pd
@@ -32,7 +32,7 @@ def get_hmmscan_task(input_filename, output_filename, db_filename,
         
     return {'name': name,
             'title': title_with_actions,
-            'actions': [LongRunning(cmd)],
+            'actions': [cmd],
             'file_dep': [input_filename, db_filename, db_filename+'.h3p'],
             'targets': [output_filename, stat],
             'clean': [clean_targets]}

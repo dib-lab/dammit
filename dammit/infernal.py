@@ -2,7 +2,7 @@
 import os
 
 from doit.action import CmdAction
-from doit.tools import title_with_actions, LongRunning
+from doit.tools import title_with_actions
 from doit.task import clean_targets
 
 from .utils import which, doit_task
@@ -47,10 +47,11 @@ def get_cmscan_task(input_filename, output_filename, db_filename,
            db_filename, '/dev/stdin'])
     cmd = parallel_fasta(input_filename, output_filename, cmd, n_threads,
                          pbs=pbs)
+    print('DAMMIT VERBOSITY:', verbosity)
 
     return {'name': name,
             'title': title_with_actions,
-            'actions': [LongRunning(cmd)],
+            'actions': [cmd],
             'file_dep': [input_filename, db_filename, db_filename + '.i1p'],
             'targets': [output_filename, stat],
             'clean': [clean_targets]}

@@ -70,7 +70,7 @@ def run_tasks(tasks, args, config={'verbosity': 0}):
     return DoitMain(Loader()).run(args)
 
 
-def run_task(task, cmd='run', verbosity=2):
+def run_task(task, cmd='run', verbosity=0):
     return run_tasks([task], [cmd], config={'verbosity': verbosity})
 
 
