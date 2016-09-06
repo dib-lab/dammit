@@ -23,7 +23,7 @@ class DammitApp(object):
         self.args = self.parser.parse_args(arg_src)
 
         self.config_d, self.databases_d = get_config()
-        if self.args.config_file is not None:
+        if hasattr(self.args, 'config_file') and self.args.config_file is not None:
             with open(self.args.config_file) as fp:
                 self.config_d.update(json.load(fp))
         self.config_d.update(vars(self.args))
@@ -44,6 +44,7 @@ class DammitApp(object):
                      description=ui.header('dammit: ' + __description__),
                      formatter_class=argparse.RawDescriptionHelpFormatter
                      )
+        parser.set_defaults(func=parser.print_help)
 
         parser.add_argument('--debug', action='store_true', default=False)
         parser.add_argument('--version', action='version',
