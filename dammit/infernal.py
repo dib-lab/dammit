@@ -47,7 +47,6 @@ def get_cmscan_task(input_filename, output_filename, db_filename,
            db_filename, '/dev/stdin'])
     cmd = parallel_fasta(input_filename, output_filename, cmd, n_threads,
                          pbs=pbs)
-    print('DAMMIT VERBOSITY:', verbosity)
 
     return {'name': name,
             'title': title_with_actions,
