@@ -19,17 +19,16 @@ class TestUIFunctions(TestCase):
 
     def test_paragraph(self):
         long_text = 'damn' * 40
-        self.assertEquals(paragraph(long_text), 'damn' * 20 + '\n' + 'damn' * 20)
+        self.assertEquals(paragraph(long_text), '\n' + 'damn' * 20 + '\n' +
+                                                'damn' * 20 + '\n')
 
     def test_listing(self):
         d = {'a': 2, 'b': 5, 'c': 10}
-        exp_d = '* a: 2\n* b: 5\n* c: 10'
-        exp_l = '* a\n* b\n* c'
+        exp_d = '* a: 2\n* b: 5\n* c: 10\n'
+        exp_l = '* a\n* b\n* c\n'
 
         self.assertEquals(listing(d), exp_d)
         self.assertEquals(listing(d.keys()), exp_l)
-        with self.assertRaises(TypeError):
-            listing('test')
 
     def test_checkbox(self):
         self.assertEquals(checkbox('test'), '[ ] test')

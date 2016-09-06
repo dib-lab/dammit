@@ -26,10 +26,12 @@ def paragraph(msg, wrap=80):
 
  
 def listing(d):
-    if type(d) is dict:
+    if type(d) is str or type(d) is bytes:
+        return d
+    elif type(d) is dict:
         keys = sorted(d.keys())
         return '\n'.join(['* {k}: {v}'.format(k=key,v=d[key]) for key in keys]) + '\n'
-    elif type(d) is list:
+    elif hasattr(d, '__iter__'):
         return '\n'.join(['* {0}'.format(e) for e in sorted(d)]) + '\n'
     else:
-        raise TypeError('Cannot make {0} into listing'.format(d))
+        return str(d)
