@@ -90,5 +90,5 @@ def get_lastal_task(query, db, out_fn, translate=False, frameshift=15,
             'title': title_with_actions,
             'actions': [LongRunning(cmd)],
             'targets': [out_fn],
-            'file_dep': [db + '.prj'],
+            'file_dep': [query, db + '.prj'],
             'clean': [clean_targets]}
