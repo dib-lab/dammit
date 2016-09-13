@@ -18,10 +18,10 @@ from doit.task import clean_targets, dict_to_task
 import pandas as pd
 from khmer import HLLCounter, ReadParser
 from shmlast.hits import BestHits
+from shmlast.last import MafParser
 
 from .utils import which, doit_task
 from . import parsers
-from .fileio import maf
 from . import gff
 
 
@@ -201,7 +201,7 @@ def get_maf_best_hits_task(maf_fn, output_fn):
     hits_mgr = BestHits()
 
     def cmd():
-        df = maf.MafParser(maf_fn).read()
+        df = MafParser(maf_fn).read()
         df = hits_mgr.best_hits(df)
         df.to_csv(output_fn, index=False)
 
@@ -242,31 +242,6 @@ def get_cat_task(file_list, target_fn):
             'targets': [target_fn],
             'clean': [clean_targets]}
 
-
-@doit_task
-def get_busco_task(input_filename, output_name, busco_db_dir, 
-                   input_type='trans', n_threads=1, params=None):
-
-    name = 'busco:{0}-{1}'.format(os.path.basename(input_filename),
-                                  os.path.basename(busco_db_dir))
-
-    assert input_type in ['genome', 'OGS', 'trans']
-    exc = which('BUSCO_v1.1b1.py')
-    # BUSCO chokes on file paths as output names
-    output_name = os.path.basename(output_name)
-    cmd = ['python3', exc, '-in', input_filename, '-f', '-o', output_name,
-           '-l', busco_db_dir, '-m', input_type, '-c', str(n_threads)]
-    if params is not None:
-        cmd.extend(params)
-    cmd = ' '.join(cmd)
-
-    return {'name': name,
-            'title': title_with_actions,
-            'actions': [cmd],
-            'file_dep': [input_filename],
-            'uptodate': [run_once],
-            'clean': [(clean_folder, ['run_' + output_name])]}
-
    
 @doit_task
 def get_maf_gff3_task(input_filename, output_filename, database):
@@ -277,7 +252,7 @@ def get_maf_gff3_task(input_filename, output_filename, database):
         if input_filename.endswith('.csv') or input_filename.endswith('.tsv'):
             it = pd.read_csv(input_filename, chunksize=10000)
         else:
-            it = maf.MafParser(input_filename)
+            it = MafParser(input_filename)
 
         with open(output_filename, 'a') as fp:
             for group in it:

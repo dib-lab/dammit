@@ -7,12 +7,12 @@ from os import path
 import sys
 
 from doit.dependency import Dependency, SqliteDB
+from shmlast.last import lastdb_task as get_lastdb_task
 
 from . import ui
 from .handler import TaskHandler
 from .hmmer import get_hmmpress_task
 from .infernal import get_cmpress_task
-from .last import get_lastdb_task
 from .tasks import get_download_and_gunzip_task, \
                    get_download_and_untar_task
 

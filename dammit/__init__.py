@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+'''
 from . import log
 
 from . import parsers
@@ -13,5 +14,5 @@ from . import dependencies
 from . import parallel
 from . import hmmer
 from . import report
-
+'''
 from .meta import *

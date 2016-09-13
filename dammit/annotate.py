@@ -7,6 +7,9 @@ from os import path
 from platform import system
 import sys
 
+from shmlast.crbl import CRBL
+from shmlast.last import lastal_task as get_lastal_task
+
 from .handler import TaskHandler
 from .tasks import get_transcriptome_stats_task, \
                    get_busco_task, \
@@ -25,7 +28,6 @@ from .tasks import get_maf_gff3_task, \
 
 from .hmmer import get_hmmscan_task, get_remap_hmmer_task
 from .infernal import get_cmscan_task
-from .last import get_lastal_task
 from .transdecoder import get_transdecoder_predict_task, \
                           get_transdecoder_orf_task
 from dammit import ui
@@ -84,6 +86,7 @@ def register_builtin_tasks(handler, config, databases):
     register_transdecoder_tasks(handler, config, databases)
     register_rfam_tasks(handler, config, databases)
     register_last_tasks(handler, config, databases)
+    register_user_db_tasks(handler, config, databases)
     register_annotate_tasks(handler, config, databases)
 
     return handler
@@ -241,18 +244,30 @@ def register_user_db_tasks(handler, config, databases):
     '''Run conditional recipricol best hits LAST (CRBL) against the
     user-supplied databases.
     '''
+    
+    if not 'user_databases' in config:
+        return
 
-    crb_blast_cfg = common.CONFIG['settings']['crb-blast']
-    for path in self.args.user_databases:
-        key = os.path.basename(path)
-        yield get_sanitize_fasta_task(os.path.abspath(path),
-                                      key)
+    input_fn = handler.files['transcriptome']
+    for db_path in config['user_databases']:
+        db_path = path.abspath(db_path)
+        db_basename = path.basename(db_path)
 
-        fn = '{0}.x.{1}.crbb.tsv'.format(self.transcriptome_fn, key)
-        self.user_pep_fn_dict[key] = fn
-        yield get_crb_blast_task(self.transcriptome_fn, 
-                                 key, 
-                                 fn, 
-                                 self.args.evalue,
-                                 crb_blast_cfg, 
-                                 self.args.n_threads)
+        results_fn = '{0}.x.{1}.crbl.csv'.format(input_fn, db_basename)
+        gff3_fn = '{0}.x.{1}.crbl.gff3'.format(input_fn, db_basename)
+
+        crbl = CRBL(input_fn,
+                    db_path, 
+                    results_fn, 
+                    n_threads=config['n_threads'],
+                    cutoff=config['evalue'])
+        for task in crbl.tasks():
+            handler.register_task('user-database-shmlast:{0}'.format(task.name),
+                                  task)
+        handler.register_task('gff3:{0}'.format(results_fn),
+                              get_maf_gff3_task(results_fn,
+                                                gff3_fn,
+                                                db_basename),
+                              files={'{0}-crbl-gff3'.format(db_basename): gff3_fn})
+        handler.files['{0}-crbl'.format(db_basename)] = results_fn
+
