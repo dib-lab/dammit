@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+from collections import OrderedDict
 from os import mkdir, path
 
 from doit.cmd_base import TaskLoader
@@ -23,7 +24,7 @@ class TaskHandler(TaskLoader):
         else:
             self.files = files
 
-        self.tasks = {}
+        self.tasks = OrderedDict()
         
         self.directory = directory
         try:
