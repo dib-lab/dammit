@@ -1,32 +1,30 @@
-from itertools import count
-
 import pandas as pd
 import numpy as np
 from .base import ChunkParser
 
-def next_or_raise(fp):
-    counter = count()
-    def func(raise_exc=True):
-        line = fp.readline()
-        n = next(counter)
-        if raise_exc is True and line == '':
-            raise RuntimeError('Malformed MAF file (line {0})'.format(n))
-        return line
-    return func
-
 
 class MafParser(ChunkParser):
+
+    columns = [('E', float),
+               ('EG2', float),
+               ('q_aln_len', int),
+               ('q_len', int),
+               ('q_name', str),
+               ('q_start', int),
+               ('q_strand', str),
+               ('s_aln_len', int),
+               ('s_len', int),
+               ('s_name', str),
+               ('s_start', int),
+               ('s_strand', str),
+               ('score', float),
+               ('bitscore', float)]
 
     def __init__(self, filename, aln_strings=False, chunksize=10000, **kwargs):
         self.aln_strings = aln_strings
         self.LAMBDA = None
         self.K = None
         super(MafParser, self).__init__(filename, chunksize=chunksize, **kwargs)
-
-    def read(self):
-        '''Read the entire file at once and return as a single DataFrame.
-        '''
-        return pd.concat(self, ignore_index=True)
 
     def __iter__(self):
         '''Iterator yielding DataFrames of length chunksize holding MAF alignments.
