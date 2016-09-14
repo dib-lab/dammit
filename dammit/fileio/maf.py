@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-from .base import ChunkParser
+from .base import ChunkParser, next_or_raise, convert_dtypes
 
 
 class MafParser(ChunkParser):

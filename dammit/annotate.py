@@ -4,34 +4,31 @@ from __future__ import print_function
 import logging
 import os
 from os import path
-from platform import system
 import sys
 
-from shmlast.crbl import CRBL
+from shmlast.app import CRBL
 from shmlast.last import lastal_task as get_lastal_task
 
 from .handler import TaskHandler
-from .tasks import get_transcriptome_stats_task, \
-                   get_busco_task, \
-                   get_group_task, \
-                   get_link_file_task, \
-                   get_sanitize_fasta_task, \
-                   get_rename_transcriptome_task
 
-from .tasks import get_maf_gff3_task, \
-                   get_hmmscan_gff3_task, \
-                   get_cmscan_gff3_task, \
-                   get_gff3_merge_task, \
-                   get_crb_gff3_task, \
-                   get_maf_best_hits_task, \
-                   get_annotate_fasta_task
-
-from .hmmer import get_hmmscan_task, get_remap_hmmer_task
-from .infernal import get_cmscan_task
-from .transdecoder import get_transdecoder_predict_task, \
-                          get_transdecoder_orf_task
-from dammit import ui
-from dammit import log
+from .tasks.fastx import (get_transcriptome_stats_task,
+                                get_sanitize_fasta_task,
+                                get_rename_transcriptome_task,
+                                get_annotate_fasta_task)
+from .tasks.busco import get_busco_task
+from .tasks.utils import get_group_task
+from .tasks.shell import get_link_file_task
+from .tasks.gff import (get_maf_gff3_task,
+                               get_hmmscan_gff3_task,
+                               get_cmscan_gff3_task,
+                               get_gff3_merge_task,
+                               get_maf_best_hits_task)
+from .tasks.hmmer import get_hmmscan_task, get_remap_hmmer_task
+from .tasks.infernal import get_cmscan_task
+from .tasks.transdecoder import (get_transdecoder_predict_task,
+                                       get_transdecoder_orf_task)
+from . import ui
+from . import log
 
 logger = logging.getLogger(__name__)
 

@@ -1,44 +1,17 @@
 #!/usr/bin/env python
-from __future__ import print_function
-
-from itertools import count 
-import json
-import logging
 import os
-import pprint
-import re
-from shutil import rmtree
-import shutil
-import sys
 
-from doit.action import CmdAction
 from doit.tools import run_once, create_folder, title_with_actions, LongRunning
 from doit.task import clean_targets, dict_to_task
-
 import pandas as pd
-from khmer import HLLCounter, ReadParser
 from shmlast.hits import BestHits
-from shmlast.last import MafParser
 
-from .utils import which, doit_task
-from . import parsers
-from . import gff
+from .. import gff
+from ..utils import which, doit_task
+from ..fileio.maf import MafParser
+from ..fileio.infernal import InfernalParser
+from ..fileio.hmmer import HMMerParser
 
-
-def clean_folder(target):
-    try:
-        rmtree(target)
-    except OSError:
-        pass
-
-
-
-@doit_task
-def get_group_task(group_name, tasks):
-
-    return {'name': group_name,
-            'actions': None,
-            'task_dep': [t.name for t in tasks]}
 
 @doit_task
 def get_maf_best_hits_task(maf_fn, output_fn):
@@ -60,11 +33,6 @@ def get_maf_best_hits_task(maf_fn, output_fn):
             'clean': [clean_targets]}
 
 
-
-
-
-
-   
 @doit_task
 def get_maf_gff3_task(input_filename, output_filename, database):
 
@@ -79,27 +47,6 @@ def get_maf_gff3_task(input_filename, output_filename, database):
         with open(output_filename, 'a') as fp:
             for group in it:
                 gff_group = gff.maf_to_gff3_df(group, database=database)
-                gff.write_gff3_df(gff_group, fp)
-
-    return {'name': name,
-            'title': title_with_actions,
-            'actions': ['rm -f {0}'.format(output_filename),
-                        cmd],
-            'file_dep': [input_filename],
-            'targets': [output_filename],
-            'clean': [clean_targets]}
-
-
-@doit_task
-def get_crb_gff3_task(input_filename, output_filename, database):
-
-    name = 'crbb-gff3:' + os.path.basename(output_filename)
-
-    def cmd():
-        with open(output_filename, 'a') as fp:
-            for group in parsers.crb_to_df_iter(input_filename,
-                                                remap=True):
-                gff_group = gff.crb_to_gff3_df(group, database=database)
                 gff.write_gff3_df(gff_group, fp)
 
     return {'name': name,
@@ -138,7 +85,7 @@ def get_cmscan_gff3_task(input_filename, output_filename, database):
 
     def cmd():
         with open(output_filename, 'a') as fp:
-            for group in parsers.cmscan_to_df_iter(input_filename):
+            for group in InfernalParser(input_filename):
                 gff_group = gff.cmscan_to_gff3_df(group, database=database)
                 gff.write_gff3_df(gff_group, fp)
 

@@ -1,12 +1,13 @@
 #!/usr/bin/env python
+from __future__ import print_function
 import os
 
 from doit.action import CmdAction
 from doit.tools import title_with_actions
 from doit.task import clean_targets
 
-from .utils import which, doit_task
-from .parallel import parallel_fasta
+from ..utils import which, doit_task
+from ..parallel import parallel_fasta
 
 
 @doit_task

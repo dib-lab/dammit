@@ -11,9 +11,9 @@ import pandas as pd
 from utils import TemporaryDirectory, Move, TestData, touch, TemporaryFile
 from utils import run_task, run_tasks, check_status
 
-from dammit.hmmer import get_hmmscan_task as hmmscan_task
-from dammit.hmmer import get_hmmpress_task as hmmpress_task
-from dammit.parsers import hmmscan_to_df_iter
+from dammit.tasks.hmmer import get_hmmscan_task as hmmscan_task
+from dammit.tasks.hmmer import get_hmmpress_task as hmmpress_task
+from dammit.fileio.hmmer import HMMerParser
 from dammit.meta import get_config
 
 class TestHMMERTasks(TestCase):
@@ -91,8 +91,8 @@ class TestHMMERTasks(TestCase):
                         print(os.listdir(td), file=sys.stderr)
 
                         print(open(out_single).read())
-                        alns_single = pd.concat(hmmscan_to_df_iter(out_single))
-                        alns_multi = pd.concat(hmmscan_to_df_iter(out_multi))
+                        alns_single = pd.concat(HMMerParser(out_single))
+                        alns_multi = pd.concat(HMMerParser(out_multi))
 
                         self.assertTrue(all(alns_single['domain_i_evalue'].sort_values() == \
                                             alns_multi['domain_i_evalue'].sort_values()))

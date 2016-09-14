@@ -1,9 +1,6 @@
 #!/usr/bin/env python
-from __future__ import print_function
-
-from .utils import which, doit_task
-
 import os
+from .utils import which, doit_task
 
 
 def parallel_fasta(input_filename, output_filename, command, n_jobs, pbs=False):

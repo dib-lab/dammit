@@ -1,5 +1,6 @@
 from itertools import count
 
+import pandas as pd
 
 def next_or_raise(fp):
     counter = count()

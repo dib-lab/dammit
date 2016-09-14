@@ -5,8 +5,9 @@ from doit.action import CmdAction
 from doit.tools import title_with_actions, LongRunning
 from doit.task import clean_targets
 
-from .utils import which, doit_task
-from .tasks import clean_folder
+from .utils import clean_folder
+from ..utils import which, doit_task
+
 
 @doit_task
 def get_transdecoder_orf_task(input_filename,params=None):

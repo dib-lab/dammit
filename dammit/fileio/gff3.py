@@ -39,8 +39,8 @@ class GFF3Parser(ChunkParser):
         for group in  pd.read_table(self.filename, delimiter='\t', comment='#',
                                     names=[k for k,_ in self.columns], na_values='.',
                                     converters={'attributes': self.decompose_attr_column},
-                                    chunksize=chunksize, header=None,
-                                    dtype=dict(gff_cols)):
+                                    chunksize=self.chunksize, header=None,
+                                    dtype=dict(self.columns)):
 
             # Generate a new DataFrame from the attributes dicts, and merge it in
             df = pd.merge(group, pd.DataFrame(list(group.attributes)),

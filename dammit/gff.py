@@ -27,6 +27,7 @@ def write_gff3_df(df, fp):
     df.to_csv(fp, sep='\t', na_rep='.', columns=[k for k, v in gff3_cols],
               index=False, header=False, quoting=csv.QUOTE_NONE)
 
+
 def mangle_coordinates(gff3_df):
     '''Although 1-based fully closed intervals are of the Beast,
     we will respect the convention in the interests of peace between
@@ -37,13 +38,15 @@ def mangle_coordinates(gff3_df):
     '''
     gff3_df.start += 1
 
-def maf_to_gff3_df(maf_df, tag='', database=''):
+
+def maf_to_gff3_df(maf_df, tag='', database='',
+                   ftype='translated_nucleotide_match'):
 
     gff3_df = pd.DataFrame()
     gff3_df['seqid'] = maf_df['q_name']
     source = '{0}.LAST'.format(tag) if tag else 'LAST'
     gff3_df['source'] = [source] * len(maf_df)
-    gff3_df['type'] = ['translated_nucleotide_match'] * len(maf_df)
+    gff3_df['type'] = [ftype] * len(maf_df)
     gff3_df['start'] = maf_df['q_start']
     gff3_df['end'] = maf_df['q_start'] + maf_df['q_aln_len']
     gff3_df['score'] = maf_df['E']
@@ -68,35 +71,9 @@ def maf_to_gff3_df(maf_df, tag='', database=''):
     return gff3_df
 
 
-def crb_to_gff3_df(crb_df, tag='', database=''):
-
-    gff3_df = pd.DataFrame()
-    gff3_df['seqid'] = crb_df['query']
-    source = '{0}.crb-blast'.format(tag) if tag else 'crb-blast'
-    gff3_df['source'] = [source] * len(crb_df)
-    gff3_df['type'] = ['translated_nucleotide_match'] * len(crb_df)
-    gff3_df['start'] = crb_df['qstart']
-    gff3_df['end'] = crb_df['qend']
-    gff3_df['score'] = crb_df['evalue']
-    gff3_df['strand'] = crb_df['qstrand']
-    gff3_df['phase'] = ['.'] * len(crb_df)
-
-    def build_attr(row):
-        data = []
-        data.append('ID=homology:{0}'.format(next(ID_GEN)))
-        data.append('Name={0}'.format(row.subject))
-        data.append('Target={0} {1} {2} {3}'.format(row.subject, row.sstart,
-                                                    row.send, row.sstrand))
-
-        if database:
-            data.append('database={0}'.format(database))
-
-        return ';'.join(data)
-
-    gff3_df['attributes'] = crb_df.apply(build_attr, axis=1)
-    mangle_coordinates(gff3_df)
-
-    return gff3_df
+def shmlast_to_gff3_df(df, database=''):
+    return maf_to_gff3_df(df, tag='shmlast', database=database,
+                          ftype='conditional_reciprocal_best_LAST')
 
 
 def hmmscan_to_gff3_df(hmmscan_df, tag='', database=''):

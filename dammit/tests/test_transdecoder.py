@@ -10,8 +10,8 @@ from doit.dependency import Dependency, DbmDB
 
 from utils import TemporaryDirectory, Move, TestData, touch, TemporaryFile
 from utils import run_task, run_tasks, check_status
-from dammit.transdecoder import get_transdecoder_orf_task,\
-                                get_transdecoder_predict_task
+from dammit.tasks.transdecoder import (get_transdecoder_orf_task,
+                                       get_transdecoder_predict_task)
 from dammit.meta import get_config
 
 

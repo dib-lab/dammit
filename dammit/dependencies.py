@@ -10,7 +10,7 @@ from doit.dependency import Dependency, SqliteDB
 
 from . import ui
 from .utils import which
-from .tasks import get_download_and_untar_task
+from .tasks.shell import get_download_and_untar_task
 
 
 class DependencyHandler(object):

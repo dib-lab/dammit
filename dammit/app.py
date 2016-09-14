@@ -6,13 +6,13 @@ import logging
 import os
 import sys
 
-from dammit.meta import __version__, __authors__, __description__, __date__, get_config
-from dammit import utils
-from dammit import ui
-from dammit import annotate
-from dammit import databases
-from dammit import dependencies
-from dammit import log
+from .meta import __version__, __authors__, __description__, __date__, get_config
+from . import utils
+from . import ui
+from . import annotate
+from . import databases
+from . import dependencies
+from . import log
 
 
 class DammitApp(object):

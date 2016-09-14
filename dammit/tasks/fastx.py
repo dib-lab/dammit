@@ -1,3 +1,19 @@
+#!/usr/bin/env python
+from __future__ import print_function
+
+from itertools import count
+import json
+import os
+import re
+
+from doit.tools import run_once, create_folder, title_with_actions, LongRunning
+from doit.task import clean_targets, dict_to_task
+from khmer import HLLCounter, ReadParser
+import pandas as pd
+
+from ..fileio.gff3 import GFF3Parser
+from ..utils import which, doit_task
+
 seq_ext = re.compile(r'(.fasta)|(.fa)|(.fastq)|(.fq)')
 def strip_seq_extension(fn):
     return seq_ext.split(fn)[0]
@@ -62,16 +78,13 @@ def get_rename_transcriptome_task(transcriptome_fn, output_fn, names_fn,
             'clean': [clean_targets]}
 
 
-
-
 @doit_task
 def get_annotate_fasta_task(transcriptome_fn, gff3_fn, output_fn):
 
     name = 'fasta-annotate:{0}'.format(output_fn)
 
     def annotate_fasta():
-        annotations = pd.concat([g for g in \
-                                 parsers.parse_gff3(gff3_fn)])
+        annotations = GFF3Parser(gff3_fn).read()
         with open(output_fn, 'w') as fp:
             for n, record in enumerate(ReadParser(transcriptome_fn)):
                 df = annotations.query('seqid == "{0}"'.format(record.name))

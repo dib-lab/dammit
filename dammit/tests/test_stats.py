@@ -10,7 +10,7 @@ from doit.dependency import Dependency, DbmDB
 
 from utils import TemporaryDirectory, Move, TestData, touch, TemporaryFile
 from utils import run_task, run_tasks, check_status
-from dammit import tasks
+from dammit.tasks.fastx import get_transcriptome_stats_task
 
 class TestTranscriptomeStatsTask(TestCase):
 
@@ -20,8 +20,8 @@ class TestTranscriptomeStatsTask(TestCase):
                 with TestData('test-transcript.fa', td) as transcript:
 
                     output_fn = os.path.join(td, 'test')
-                    tsk = tasks.get_transcriptome_stats_task(transcript,
-                                                             output_fn)
+                    tsk = get_transcriptome_stats_task(transcript,
+                                                       output_fn)
                     run_tasks([tsk], ['run'])
 
                     with open(output_fn) as fp:
@@ -40,8 +40,8 @@ class TestTranscriptomeStatsTask(TestCase):
                 with TestData('non-actg-transcripts.fa', td) as transcript:
 
                     output_fn = os.path.join(td, 'test')
-                    tsk = tasks.get_transcriptome_stats_task(transcript,
-                                                             output_fn)
+                    tsk = get_transcriptome_stats_task(transcript,
+                                                       output_fn)
                     stat = run_task(tsk)
 
                     self.assertEquals(stat, 2)
@@ -52,8 +52,8 @@ class TestTranscriptomeStatsTask(TestCase):
                 with TestData('test-transcript-N.fa', td) as transcript:
 
                     output_fn = os.path.join(td, 'test')
-                    tsk = tasks.get_transcriptome_stats_task(transcript,
-                                                             output_fn)
+                    tsk = get_transcriptome_stats_task(transcript,
+                                                       output_fn)
                     stat = run_task(tsk)
 
                     #self.assertEquals(stat, 0)

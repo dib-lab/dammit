@@ -7,9 +7,10 @@ from doit.task import clean_targets
 import os
 import pandas as pd
 
-from .parallel import parallel_fasta
-from . import parsers
-from .utils import doit_task, which
+from ..parallel import parallel_fasta
+from ..fileio.hmmer import HMMerParser
+from ..fileio.gff3 import GFF3Parser 
+from ..utils import doit_task, which
 
 
 @doit_task
@@ -69,8 +70,8 @@ def get_remap_hmmer_task(hmmer_filename, remap_gff_filename, output_filename):
     name = 'remap_hmmer:{0}'.format(os.path.basename(hmmer_filename))
 
     def cmd():
-        gff_df = pd.concat(parsers.parse_gff3(remap_gff_filename))
-        hmmer_df = pd.concat(parsers.hmmscan_to_df_iter(hmmer_filename))
+        gff_df = pd.concat(GFF3Parser(remap_gff_filename))
+        hmmer_df = pd.concat(HMMerParser(hmmer_filename))
 
         merged_df = pd.merge(hmmer_df, gff_df, left_on='full_query_name', right_on='ID')
 

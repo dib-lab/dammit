@@ -9,7 +9,7 @@ install: deps
 test: FORCE
 		python setup.py nosetests --attr !long,!huge
 
-acceptance: FORCE
+long-test: FORCE
 		python setup.py nosetests --attr !huge -x
 
 acceptance-huge: FORCE

@@ -11,10 +11,9 @@ import pandas as pd
 
 from utils import TemporaryDirectory, Move, TestData, touch, TemporaryFile
 from utils import run_task, run_tasks, check_status
-from dammit import tasks
-from dammit.infernal import get_cmpress_task as cmpress_task
-from dammit.infernal import get_cmscan_task as cmscan_task
-from dammit.parsers import cmscan_to_df_iter
+from dammit.tasks.infernal import get_cmpress_task as cmpress_task
+from dammit.tasks.infernal import get_cmscan_task as cmscan_task
+from dammit.fileio.infernal import InfernalParser
 from dammit.meta import get_config
 
 
@@ -94,8 +93,8 @@ class TestInfernalTasks(TestCase):
                         run_tasks([db_task, aln_tasks_single], ['run'])
                         run_task(aln_tasks_multi, ['run'])
 
-                        alns_single = pd.concat(cmscan_to_df_iter(out_single))
-                        alns_multi = pd.concat(cmscan_to_df_iter(out_multi))
+                        alns_single = pd.concat(InfernalParser(out_single))
+                        alns_multi = pd.concat(InfernalParser(out_multi))
 
                         self.assertTrue(all(alns_single['e_value'].sort_values() == \
                                             alns_multi['e_value'].sort_values()))
