@@ -56,7 +56,7 @@ class TestDependencies(TestCase):
 
     @classmethod
     def setup_class(cls):
-        pass
+        cls.maxDiff = None
         #cls.PATH_BACKUP = os.environ['PATH']
         #print('Setup. PATH backup:', cls.PATH_BACKUP)
 

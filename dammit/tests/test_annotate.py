@@ -26,8 +26,8 @@ class TestDammitAnnotate(TestCase):
         was retaining its state between tests. Oops!
         '''
 
-        from itertools import count
-        gff.ID_GEN = count()
+        gff.next_ID = gff.id_gen_wrapper()
+        self.maxDiff = None
 
     def test_annotate_basic(self):
         '''Run a basic annotation and verify the results.
@@ -101,8 +101,8 @@ class TestDammitAnnotate(TestCase):
 
             args = ['annotate', transcripts, '--database-dir', td]
             status, out, err = run(args, in_directory=td, fail_ok=True)
-            self.assertIn('Install databases to continue', err)
-            self.assertEquals(status, 1)
+            self.assertIn('install databases to continue', out)
+            self.assertEquals(status, 2)
 
     def test_annotate_dbdir(self):
         '''Test that --database-dir works.

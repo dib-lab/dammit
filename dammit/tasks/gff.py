@@ -59,6 +59,28 @@ def get_maf_gff3_task(input_filename, output_filename, database):
 
 
 @doit_task
+def get_shmlast_gff3_task(input_filename, output_filename, database):
+    
+    name = 'shmlast-gff3:' + os.path.basename(output_filename)
+    
+    def cmd():
+        it = pd.read_csv(input_filename, chunksize=10000)
+
+        with open(output_filename, 'a') as fp:
+            for group in it:
+                gff_group = gff.shmlast_to_gff3_df(group, database=database)
+                gff.write_gff3_df(gff_group, fp)
+
+    return {'name': name,
+            'title': title_with_actions,
+            'actions': ['rm -f {0}'.format(output_filename),
+                        cmd],
+            'file_dep': [input_filename],
+            'targets': [output_filename],
+            'clean': [clean_targets]}
+
+
+@doit_task
 def get_hmmscan_gff3_task(input_filename, output_filename, database):
 
     name = 'hmmscan-gff3:' + os.path.basename(output_filename)

@@ -19,10 +19,11 @@ from .tasks.busco import get_busco_task
 from .tasks.utils import get_group_task
 from .tasks.shell import get_link_file_task
 from .tasks.gff import (get_maf_gff3_task,
-                               get_hmmscan_gff3_task,
-                               get_cmscan_gff3_task,
-                               get_gff3_merge_task,
-                               get_maf_best_hits_task)
+                        get_shmlast_gff3_task,
+                        get_hmmscan_gff3_task,
+                        get_cmscan_gff3_task,
+                        get_gff3_merge_task,
+                        get_maf_best_hits_task)
 from .tasks.hmmer import get_hmmscan_task, get_remap_hmmer_task
 from .tasks.infernal import get_cmscan_task
 from .tasks.transdecoder import (get_transdecoder_predict_task,
@@ -67,10 +68,10 @@ def run_annotation(handler):
     print(ui.header('Annotation', level=3))
     print('Doit Database: {0}'.format(handler.dep_file))
     print('Input Transcriptome: {0}'.format(handler.files['transcriptome']))
-    uptodate, missing = handler.print_uptodate()
+    uptodate, statuses = handler.print_statuses()
     if not uptodate:
         print('Running pipeline...')
-        handler.run(move=True)
+        handler.run()
     else:
         print('Pipeline is already completed!')
         sys.exit(0)
@@ -259,12 +260,12 @@ def register_user_db_tasks(handler, config, databases):
                     n_threads=config['n_threads'],
                     cutoff=config['evalue'])
         for task in crbl.tasks():
-            handler.register_task('user-database-shmlast:{0}'.format(task.name),
-                                  task)
+            task.name = 'user-database-shmlast:{0}'.format(task.name)
+            handler.register_task(task.name, task)
         handler.register_task('gff3:{0}'.format(results_fn),
-                              get_maf_gff3_task(results_fn,
-                                                gff3_fn,
-                                                db_basename),
+                              get_shmlast_gff3_task(results_fn,
+                                                    gff3_fn,
+                                                    db_basename),
                               files={'{0}-crbl-gff3'.format(db_basename): gff3_fn})
         handler.files['{0}-crbl'.format(db_basename)] = results_fn
 

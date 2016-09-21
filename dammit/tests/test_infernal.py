@@ -91,7 +91,7 @@ class TestInfernalTasks(TestCase):
                                                                 cm, 1.0,
                                                                 n_threads)
                         run_tasks([db_task, aln_tasks_single], ['run'])
-                        run_task(aln_tasks_multi, ['run'])
+                        run_task(aln_tasks_multi)
 
                         alns_single = pd.concat(InfernalParser(out_single))
                         alns_multi = pd.concat(InfernalParser(out_multi))

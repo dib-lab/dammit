@@ -3,6 +3,7 @@
 import csv
 from itertools import count
 import pandas as pd
+import sys
 
 gff3_cols = [('seqid', str),
              ('source', str),
@@ -16,7 +17,13 @@ gff3_cols = [('seqid', str),
 
 gff_version = '3.2.1'
 
-ID_GEN = count()
+def id_gen_wrapper():
+    ID_GEN = count()
+    def get_next():
+        return next(ID_GEN)
+    return get_next
+
+next_ID = id_gen_wrapper()
 
 def version_line():
     return '##gff-version {v}'.format(v=gff_version)
@@ -25,7 +32,8 @@ def version_line():
 def write_gff3_df(df, fp):
 
     df.to_csv(fp, sep='\t', na_rep='.', columns=[k for k, v in gff3_cols],
-              index=False, header=False, quoting=csv.QUOTE_NONE)
+              index=False, header=False, quoting=csv.QUOTE_NONE,
+              float_format='%.6e')
 
 
 def mangle_coordinates(gff3_df):
@@ -55,7 +63,7 @@ def maf_to_gff3_df(maf_df, tag='', database='',
 
     def build_attr(row):
         data = []
-        data.append('ID=homology:{0}'.format(next(ID_GEN)))
+        data.append('ID=homology:{0}'.format(next_ID()))
         data.append('Name={0}'.format(row.s_name))
         data.append('Target={0} {1} {2} {3}'.format(row.s_name, row.s_start,
                                                  row.s_start + row.s_aln_len,
@@ -94,7 +102,7 @@ def hmmscan_to_gff3_df(hmmscan_df, tag='', database=''):
 
     def build_attr(row):
         data = []
-        data.append('ID=homology:{0}'.format(next(ID_GEN)))
+        data.append('ID=homology:{0}'.format(next_ID()))
         data.append('Name={0}'.format(row.target_name))
         data.append('Target={0} {1} {2} +'.format(row.target_name,
                                                     row.hmm_coord_from+1,
@@ -135,7 +143,7 @@ def cmscan_to_gff3_df(cmscan_df, tag='', database=''):
 
     def build_attr(row):
         data = []
-        data.append('ID=homology:{0}'.format(next(ID_GEN)))
+        data.append('ID=homology:{0}'.format(next_ID()))
         data.append('Name={0}'.format(row.target_name))
         data.append('Target={0} {1} {2} +'.format(row.target_name,
                                                     row.mdl_from+1,
