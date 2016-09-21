@@ -43,10 +43,10 @@ def default_database_dir(logger):
 
 def install(handler):
     print(ui.header('Database Install', level=3))
-    uptodate, missing = handler.print_uptodate()
+    uptodate, statuses = handler.print_statuses()
     if not uptodate:
         print('Installing...')
-        handler.run(move=True)
+        handler.run()
     else:
         print('Nothing to install!')
         sys.exit(0)
@@ -56,7 +56,7 @@ def check_or_fail(handler):
     print(ui.header('Database Check', level=3))
     print('Doit Database: {0}'.format(handler.dep_file))
     print('Database Directory: {0}'.format(handler.directory))
-    uptodate, missing = handler.print_uptodate()
+    uptodate, statuses = handler.print_statuses()
     if not uptodate:
         print(ui.paragraph('Must install databases to continue. To do so,'
                            ' run `dammit databases --install`. If you have'
