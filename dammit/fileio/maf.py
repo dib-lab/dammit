@@ -39,9 +39,9 @@ class MafParser(ChunkParser):
             DataFrame: Pandas DataFrame with the alignments.
         '''
         data = []
+        n_entries = 0
         with open(self.filename) as fp:
             guarded_next = next_or_raise(fp)
-            n = 0
             while (True):
                 line = guarded_next(raise_exc=False)
                 if line == '':
@@ -58,6 +58,7 @@ class MafParser(ChunkParser):
                     else:
                         continue
                 if line.startswith('a'):
+                    n_entries += 1
                     cur_aln = {}
 
                     # Alignment info
@@ -95,10 +96,14 @@ class MafParser(ChunkParser):
                         yield self._build_df(data)
                         data = []
 
+        if n_entries == 0:
+            self.raise_empty()
         if data:
             yield self._build_df(data)
 
     def _build_df(self, data):
+        if not data:
+            self.raise_empty()
 
         def _fix_sname(name):
             new, _, _ = name.partition(',')

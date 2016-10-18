@@ -46,6 +46,7 @@ class HMMerParser(ChunkParser):
         '''
 
         data = []
+        n_entries = 0
         with open(self.filename) as fp:
             for n, ln in enumerate(fp):
                 if not ln or ln.startswith('#'):
@@ -54,14 +55,19 @@ class HMMerParser(ChunkParser):
                 tokens = ln.split()
                 data.append(tokens[:len(self.columns)-1] + \
                             [' '.join(tokens[len(self.columns)-1:])])
+                n_entries += 1
                 if len(data) >= self.chunksize:
                     yield self._build_df(data)
                     data = []
 
+        if n_entries == 0:
+            self.raise_empty()
         if data:
             yield self._build_df(data)
 
     def _build_df(self, data):
+        if not data:
+            self.raise_empty()
 
         def split_query(item):
             q, _, _ = item.rpartition('|')

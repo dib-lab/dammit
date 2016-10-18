@@ -32,7 +32,6 @@ def get_download_task(url, target_fn):
             'uptodate': [True]}
 
 
-
 @doit_task
 def get_download_and_gunzip_task(url, target_fn):
     '''Create a doit task which downloads and gunzips a file.
@@ -53,7 +52,6 @@ def get_download_and_gunzip_task(url, target_fn):
             'targets': [target_fn],
             'clean': [clean_targets],
             'uptodate': [True]}
-
 
 
 @doit_task
@@ -86,7 +84,6 @@ def get_download_and_untar_task(url, target_dir, label=None):
             'uptodate': [True]}
 
 
-
 @doit_task
 def get_create_folder_task(folder):
 
@@ -111,6 +108,7 @@ def get_cat_task(file_list, target_fn):
             'file_dep': file_list,
             'targets': [target_fn],
             'clean': [clean_targets]}
+
 
 @doit_task
 def get_link_file_task(src, dst=''):

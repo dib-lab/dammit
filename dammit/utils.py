@@ -2,12 +2,8 @@
 from __future__ import print_function
 
 import os
+import stat
 import sys
-
-try:
-    from pathlib import Path
-except ImportError:
-    from pathlib2 import Path
 
 from doit.task import Task
 
@@ -46,6 +42,16 @@ def doit_task(task_dict_func):
         task_dict = task_dict_func(*args, **kwargs)
         return dict_to_task(task_dict)
     return d_to_t
+
+
+def touch(filename):
+    '''Perform the equivalent of bash's touch on the file.
+
+    Args:
+        filename (str): File path to touch.
+    '''
+
+    open(filename, 'a').close()
 
 
 class Move(object):

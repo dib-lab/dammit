@@ -1,6 +1,15 @@
 from itertools import count
-
+from sys import stderr
 import pandas as pd
+
+
+class EmptyFile(Exception):
+    pass
+
+
+def warn_empty(msg):
+    print('\nWARNING: Empty file: {0}\n'.format(msg), file=stderr)
+
 
 def next_or_raise(fp):
     counter = count()
@@ -8,7 +17,7 @@ def next_or_raise(fp):
         line = fp.readline()
         n = next(counter)
         if raise_exc is True and line == '':
-            raise RuntimeError('Malformed MAF file (line {0})'.format(n))
+            raise RuntimeError('Malformed file (line {0})'.format(n))
         return line
     return func
 
@@ -34,6 +43,9 @@ class BaseParser(object):
     def __init__(self, filename):
         self.filename = filename
 
+    def raise_empty(self):
+        raise EmptyFile('Empty file: {0}'.format(self.filename))
+
 
 class ChunkParser(BaseParser):
 
@@ -48,7 +60,11 @@ class ChunkParser(BaseParser):
     def read(self):
         '''Read the entire file at once and return as a single DataFrame.
         '''
-        return pd.concat(self, ignore_index=True)
+        try:
+            return pd.concat(self, ignore_index=True)
+        except (EmptyFile, ValueError) as e:
+            # no objects, return an empty dataframe
+            return self.empty()
 
     def empty(self):
         df = pd.DataFrame(columns=[k for k, _ in self.columns])

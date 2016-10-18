@@ -7,11 +7,13 @@ import pandas as pd
 from shmlast.hits import BestHits
 
 from .. import gff
-from ..utils import which, doit_task
+from ..utils import which, doit_task, touch
+from ..fileio import EmptyFile
 from ..fileio.maf import MafParser
 from ..fileio.infernal import InfernalParser
 from ..fileio.hmmer import HMMerParser
-
+from ..fileio.gff3 import (GFF3Writer, maf_to_gff3, shmlast_to_gff3,
+                           hmmscan_to_gff3, cmscan_to_gff3)
 
 @doit_task
 def get_maf_best_hits_task(maf_fn, output_fn):
@@ -19,6 +21,7 @@ def get_maf_best_hits_task(maf_fn, output_fn):
     hits_mgr = BestHits()
 
     def cmd():
+        # can write out an empty file
         df = MafParser(maf_fn).read()
         df = hits_mgr.best_hits(df)
         df.to_csv(output_fn, index=False)
@@ -43,11 +46,13 @@ def get_maf_gff3_task(input_filename, output_filename, database):
             it = pd.read_csv(input_filename, chunksize=10000)
         else:
             it = MafParser(input_filename)
-
-        with open(output_filename, 'a') as fp:
+        writer = GFF3Writer(output_filename, converter=maf_to_gff3,
+                            database=database)
+        try:
             for group in it:
-                gff_group = gff.maf_to_gff3_df(group, database=database)
-                gff.write_gff3_df(gff_group, fp)
+                writer.write(group)
+        except EmptyFile:
+            touch(output_filename)
 
     return {'name': name,
             'title': title_with_actions,
@@ -65,11 +70,14 @@ def get_shmlast_gff3_task(input_filename, output_filename, database):
     
     def cmd():
         it = pd.read_csv(input_filename, chunksize=10000)
+        writer = GFF3Writer(output_filename, converter=shmlast_to_gff3,
+                            database=database)
 
-        with open(output_filename, 'a') as fp:
+        try:
             for group in it:
-                gff_group = gff.shmlast_to_gff3_df(group, database=database)
-                gff.write_gff3_df(gff_group, fp)
+                writer.write(group)
+        except EmptyFile:
+            touch(output_filename)
 
     return {'name': name,
             'title': title_with_actions,
@@ -86,11 +94,14 @@ def get_hmmscan_gff3_task(input_filename, output_filename, database):
     name = 'hmmscan-gff3:' + os.path.basename(output_filename)
 
     def cmd():
-        with open(output_filename, 'a') as fp:
+        writer = GFF3Writer(output_filename, converter=hmmscan_to_gff3,
+                            database=database)
+        try:
             for group in pd.read_csv(input_filename, chunksize=10000):
-                gff_group = gff.hmmscan_to_gff3_df(group, database=database)
-                gff.write_gff3_df(gff_group, fp)
-
+                writer.write(group)
+        except EmptyFile as e:
+            touch(output_filename)
+            
     return {'name': name,
             'title': title_with_actions,
             'actions': ['rm -f {0}'.format(output_filename),
@@ -106,10 +117,13 @@ def get_cmscan_gff3_task(input_filename, output_filename, database):
     name = 'cmscan-gff3:' + os.path.basename(output_filename)
 
     def cmd():
-        with open(output_filename, 'a') as fp:
+        writer = GFF3Writer(output_filename, converter=cmscan_to_gff3,
+                            database=database)
+        try:
             for group in InfernalParser(input_filename):
-                gff_group = gff.cmscan_to_gff3_df(group, database=database)
-                gff.write_gff3_df(gff_group, fp)
+                writer.write(group)
+        except EmptyFile as e:
+            touch(output_filename)
 
     return {'name': name,
             'title': title_with_actions,
@@ -126,7 +140,7 @@ def get_gff3_merge_task(gff3_filenames, output_filename):
     name = 'gff3-merge:{0}'.format(os.path.basename(output_filename))
 
     merge_cmd = 'echo "{v}" > {out}; cat {f} | sed \'/^#/ d\''\
-                ' | sort | sed \'/^$/d\' >> {out}'.format(v=gff.version_line(),
+                ' | sort | sed \'/^$/d\' >> {out}'.format(v=GFF3Writer.version_line,
                                           f=' '.join(gff3_filenames),
                                           out=output_filename)
     return {'name': name,

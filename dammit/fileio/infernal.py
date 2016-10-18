@@ -38,6 +38,7 @@ class InfernalParser(ChunkParser):
         '''
 
         data = []
+        n_entries = 0
         with open(self.filename) as fp:
             for ln in fp:
                 ln = ln.strip()
@@ -46,15 +47,19 @@ class InfernalParser(ChunkParser):
                 tokens = ln.split()
                 data.append(tokens[:len(self.columns)-1] + \
                             [' '.join(tokens[len(self.columns)-1:])])
-
+                n_entries += 1
                 if len(data) >= self.chunksize:
                     yield self._build_df(data)
                     data = []
 
+        if n_entries == 0:
+            self.raise_empty()
         if data:
             yield self._build_df(data)
 
     def _build_df(self, data):
+        if not data:
+            self.raise_empty()
         df = pd.DataFrame(data, columns=[k for k, _ in self.columns])
         convert_dtypes(df, dict(self.columns))
         df.mdl_from = df.mdl_from - 1

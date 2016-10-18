@@ -6,6 +6,7 @@ from doit.tools import title_with_actions
 from doit.task import clean_targets
 import os
 import pandas as pd
+from sys import stderr
 
 from ..parallel import parallel_fasta
 from ..fileio.hmmer import HMMerParser
@@ -70,20 +71,21 @@ def get_remap_hmmer_task(hmmer_filename, remap_gff_filename, output_filename):
     name = 'remap_hmmer:{0}'.format(os.path.basename(hmmer_filename))
 
     def cmd():
-        gff_df = pd.concat(GFF3Parser(remap_gff_filename))
-        hmmer_df = pd.concat(HMMerParser(hmmer_filename))
+        gff_df = GFF3Parser(remap_gff_filename).read()
+        hmmer_df = HMMerParser(hmmer_filename).read()
 
-        merged_df = pd.merge(hmmer_df, gff_df, left_on='full_query_name', right_on='ID')
+        if len(gff_df) > 0 and len(hmmer_df) > 0:
+            merged_df = pd.merge(hmmer_df, gff_df, left_on='full_query_name', right_on='ID')
 
-        hmmer_df['env_coord_from'] = (merged_df.start + \
-                                      (3 * merged_df.env_coord_from)).astype(int)
-        hmmer_df['env_coord_to'] = (merged_df.start + \
-                                    (3 * merged_df.env_coord_to)).astype(int)
-        hmmer_df['ali_coord_from'] = (merged_df.start + \
-                                      (3 * merged_df.ali_coord_from)).astype(int)
-        hmmer_df['ali_coord_to'] = (merged_df.start + \
-                                    (3 * merged_df.ali_coord_to)).astype(int)
-
+            hmmer_df['env_coord_from'] = (merged_df.start + \
+                                          (3 * merged_df.env_coord_from)).astype(int)
+            hmmer_df['env_coord_to'] = (merged_df.start + \
+                                        (3 * merged_df.env_coord_to)).astype(int)
+            hmmer_df['ali_coord_from'] = (merged_df.start + \
+                                          (3 * merged_df.ali_coord_from)).astype(int)
+            hmmer_df['ali_coord_to'] = (merged_df.start + \
+                                        (3 * merged_df.ali_coord_to)).astype(int)
+        
         hmmer_df.to_csv(output_filename, header=True, index=False)
 
     return {'name': name,

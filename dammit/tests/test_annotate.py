@@ -45,6 +45,28 @@ class TestDammitAnnotate(TestCase):
             gff3_fn = os.path.join(outdir, 'pom.single.fa.dammit.gff3')
             fasta_fn = os.path.join(outdir, 'pom.single.fa.dammit.fasta')
 
+            print(os.listdir(td))
+            print(os.listdir(outdir))
+            print(gff3_fn, fasta_fn)
+            self.assertEquals(open(gff3_fn).read(), open(exp_gff3).read())
+            self.assertEquals(open(fasta_fn).read(), open(exp_fasta).read())
+
+    def test_annotate_full(self):
+        '''Run a full annotation and verify the results.
+        '''
+
+        with TemporaryDirectory() as td,\
+             TestData('pom.single.fa', td) as transcripts,\
+             TestData('pom.single.fa.dammit.gff3.full', td) as exp_gff3,\
+             TestData('pom.single.fa.dammit.fasta.full', td) as exp_fasta:
+
+            args = ['annotate', transcripts, '--full']
+            status, out, err = run(args, in_directory=td)
+
+            outdir = '{0}.dammit'.format(transcripts)
+            gff3_fn = os.path.join(outdir, 'pom.single.fa.dammit.gff3')
+            fasta_fn = os.path.join(outdir, 'pom.single.fa.dammit.fasta')
+
             self.assertEquals(open(gff3_fn).read(), open(exp_gff3).read())
             self.assertEquals(open(fasta_fn).read(), open(exp_fasta).read())
 
