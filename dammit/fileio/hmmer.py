@@ -77,6 +77,7 @@ class HMMerParser(ChunkParser):
         convert_dtypes(df, dict(self.columns))
         df['full_query_name'] = df.query_name
         df['query_name'] = df.query_name.apply(split_query)
+        # fix the evil coordinate system
         df.hmm_coord_from = df.hmm_coord_from - 1
         df.ali_coord_from = df.ali_coord_from - 1
         df.env_coord_from = df.env_coord_from -1

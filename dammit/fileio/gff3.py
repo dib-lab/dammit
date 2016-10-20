@@ -22,12 +22,12 @@ class GFF3Parser(ChunkParser):
 
     columns = [('seqid', str),
                 ('source', str),
-                ('feature_type', str),
+                ('type', str),
                 ('start', float),
                 ('end', float),
                 ('score', float),
                 ('strand', str),
-                ('frame', float),
+                ('phase', float),
                 ('attributes', str)]
     
     def __init__(self, filename, **kwargs):
@@ -112,7 +112,7 @@ def maf_to_gff3(maf_df, tag='', database='',
 
 
 def shmlast_to_gff3(df, database=''):
-    return maf_to_gff3_df(df, tag='shmlast', database=database,
+    return maf_to_gff3(df, tag='shmlast', database=database,
                           ftype='conditional_reciprocal_best_LAST')
 
 
@@ -197,7 +197,7 @@ def cmscan_to_gff3(cmscan_df, tag='', database=''):
 
 class GFF3Writer(object):
 
-    version_line = '##gff-version 3.2.1\n'
+    version_line = '##gff-version 3.2.1'
 
     def __init__(self, filename=None, converter=None, **converter_kwds):
         self.filename = filename
@@ -237,8 +237,8 @@ class GFF3Writer(object):
 
             if self.converter is not None:
                 data_df = self.convert(data_df)
-
-            self.mangle_coordinates(data_df)
+            else:
+                self.mangle_coordinates(data_df)
 
             data_df.to_csv(fp, sep='\t', na_rep='.', columns=[k for k, v in GFF3Parser.columns],
                            index=False, header=False, quoting=csv.QUOTE_NONE,

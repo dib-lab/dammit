@@ -1,6 +1,7 @@
 import pandas as pd
 from .base import convert_dtypes, ChunkParser
 
+
 class InfernalParser(ChunkParser):
 
     columns = [('target_name', str),
@@ -62,6 +63,7 @@ class InfernalParser(ChunkParser):
             self.raise_empty()
         df = pd.DataFrame(data, columns=[k for k, _ in self.columns])
         convert_dtypes(df, dict(self.columns))
+        # fix the evil coordinate system
         df.mdl_from = df.mdl_from - 1
         df.seq_from = df.seq_from - 1
         return df
