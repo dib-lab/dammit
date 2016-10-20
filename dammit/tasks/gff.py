@@ -6,7 +6,6 @@ from doit.task import clean_targets, dict_to_task
 import pandas as pd
 from shmlast.hits import BestHits
 
-from .. import gff
 from ..utils import which, doit_task, touch
 from ..fileio import EmptyFile
 from ..fileio.maf import MafParser

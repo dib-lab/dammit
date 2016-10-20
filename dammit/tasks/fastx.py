@@ -91,7 +91,7 @@ def get_annotate_fasta_task(transcriptome_fn, gff3_fn, output_fn):
                 annots = ['len={0}'.format(len(record.sequence))]
                 #for seqid, sgroup in df.groupby('seqid'):
                 #    for feature_type, fgroup in sgroup.groupby('feature_type'):
-                for feature_type, fgroup in df.groupby('feature_type'):
+                for feature_type, fgroup in df.groupby('type'):
 
                     if feature_type in ['translated_nucleotide_match',
                                         'protein_hmm_match',
