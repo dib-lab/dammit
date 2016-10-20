@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 from __future__ import print_function
 
+from collections import OrderedDict
 import logging
 import os
 from os import path
@@ -190,7 +191,8 @@ def register_last_tasks(handler, config, databases):
     input_fn = handler.files['transcriptome']
     lastal_cfg = config['last']['lastal']
     
-    dbs = {'OrthoDB': databases['OrthoDB']}
+    dbs = OrderedDict()
+    dbs['OrthoDB'] = databases['OrthoDB']
     if config['full'] is True:
         dbs['uniref90'] = databases['uniref90']
 
