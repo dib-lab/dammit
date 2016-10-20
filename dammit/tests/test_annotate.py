@@ -7,7 +7,7 @@ import pandas as pd
 
 from dammit.app import DammitApp
 from dammit import dependencies
-from dammit import gff
+from dammit.fileio import gff3
 
 from utils import TemporaryDirectory, TestData, runscript
 
@@ -15,6 +15,17 @@ PATH_BACKUP = os.environ['PATH']
 
 def run(args, **kwargs):
     return runscript('dammit', args, **kwargs)
+
+
+def compare_gff(fn_a, fn_b):
+    df_a = gff3.GFF3Parser(fn_a).read().sort_values('ID')
+    df_a.reset_index(inplace=True, drop=True)
+    df_b = gff3.GFF3Parser(fn_b).read().sort_values('ID')
+    df_b.reset_index(inplace=True, drop=True)
+    
+    print(df_a)
+    print(df_b)
+    return df_a.equals(df_b)
 
 
 @attr('long')
@@ -26,7 +37,7 @@ class TestDammitAnnotate(TestCase):
         was retaining its state between tests. Oops!
         '''
 
-        gff.next_ID = gff.id_gen_wrapper()
+        gff3.next_ID = gff3.id_gen_wrapper()
         self.maxDiff = None
 
     def test_annotate_basic(self):
@@ -48,7 +59,7 @@ class TestDammitAnnotate(TestCase):
             print(os.listdir(td))
             print(os.listdir(outdir))
             print(gff3_fn, fasta_fn)
-            self.assertEquals(open(gff3_fn).read(), open(exp_gff3).read())
+            assert compare_gff(gff3_fn, exp_gff3)
             self.assertEquals(open(fasta_fn).read(), open(exp_fasta).read())
 
     def test_annotate_full(self):
@@ -67,7 +78,7 @@ class TestDammitAnnotate(TestCase):
             gff3_fn = os.path.join(outdir, 'pom.single.fa.dammit.gff3')
             fasta_fn = os.path.join(outdir, 'pom.single.fa.dammit.fasta')
 
-            self.assertEquals(open(gff3_fn).read(), open(exp_gff3).read())
+            assert compare_gff(gff3_fn, exp_gff3)
             self.assertEquals(open(fasta_fn).read(), open(exp_fasta).read())
 
     def test_annotate_threaded(self):
@@ -97,7 +108,7 @@ class TestDammitAnnotate(TestCase):
             gff3_fn = os.path.join(outdir, 'pom.single.fa.dammit.gff3')
             fasta_fn = os.path.join(outdir, 'pom.single.fa.dammit.fasta')
 
-            self.assertEquals(open(gff3_fn).read(), open(exp_gff3).read())
+            assert compare_gff(gff3_fn, exp_gff3)
             self.assertEquals(open(fasta_fn).read(), open(exp_fasta).read())
   
 
@@ -147,14 +158,15 @@ class TestDammitAnnotate(TestCase):
              TestData('pom.single.fa.dammit.gff3.udb', td) as exp_gff3,\
              TestData('pom.single.fa.dammit.fasta.udb', td) as exp_fasta:
 
-            args = ['annotate', transcripts, '--user-databases', pep]
+            args = ['annotate', transcripts, '--user-databases', pep,
+                    '--verbosity', '2']
             status, out, err = run(args, in_directory=td)
 
             outdir = '{0}.dammit'.format(transcripts)
             gff3_fn = os.path.join(outdir, 'pom.single.fa.dammit.gff3')
             fasta_fn = os.path.join(outdir, 'pom.single.fa.dammit.fasta')
 
-            self.assertEquals(open(gff3_fn).read(), open(exp_gff3).read())
+            assert compare_gff(gff3_fn, exp_gff3)
             self.assertEquals(open(fasta_fn).read(), open(exp_fasta).read())
 
     def test_annotate_name(self):

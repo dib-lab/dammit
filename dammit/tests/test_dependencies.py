@@ -7,7 +7,6 @@ import pandas as pd
 
 from dammit.app import DammitApp
 from dammit import dependencies
-from dammit import gff
 
 from utils import TemporaryDirectory, TestData, runscript
 

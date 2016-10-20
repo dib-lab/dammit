@@ -255,7 +255,7 @@ def scriptpath(scriptname='dammit'):
             return path
 
 
-def _runscript(scriptname, sandbox=False):
+def _runscript(scriptname):
     """
     Find & run a script with exec (i.e. not via os.system or subprocess).
     """
@@ -268,10 +268,7 @@ def _runscript(scriptname, sandbox=False):
         pkg_resources.get_distribution("dammit").run_script(scriptname, ns)
         return 0
     except pkg_resources.ResolutionError as err:
-        if sandbox:
-            path = os.path.join(os.path.dirname(__file__), "../sandbox")
-        else:
-            path = scriptpath()
+        path = scriptpath()
 
         scriptfile = os.path.join(path, scriptname)
         if os.path.isfile(scriptfile):
@@ -285,7 +282,7 @@ def _runscript(scriptname, sandbox=False):
 
 
 def runscript(scriptname, args, in_directory=None,
-              fail_ok=False, sandbox=False):
+              fail_ok=False):
     """Run a Python script using exec().
     Run the given Python script, with the given args, in the given directory,
     using 'exec'.  Mimic proper shell functionality with argv, and capture
@@ -315,7 +312,7 @@ def runscript(scriptname, args, in_directory=None,
             print('running:', scriptname, 'in:', in_directory, file=oldout)
             print('arguments', sysargs, file=oldout)
 
-            status = _runscript(scriptname, sandbox=sandbox)
+            status = _runscript(scriptname)
         except nose.SkipTest:
             raise
         except SystemExit as e:
@@ -331,8 +328,6 @@ def runscript(scriptname, args, in_directory=None,
         os.chdir(cwd)
 
     if status != 0 and not fail_ok:
-        #print(out)
-        #print(err)
         assert False, (status, out, err)
 
     return status, out, err
