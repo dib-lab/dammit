@@ -136,8 +136,11 @@ def check_blast(logger):
 
 def check_busco(logger):
     busco = which('BUSCO_v1.1b1.py')
+    transeq = which('transeq')
     if busco is None:
         return False, 'Not found on $PATH'
+    elif transeq is None:
+        return False, 'EMBOSS transeq not found, which is a BUSCO dependency.'
     else:
         logger.debug('BUSCO:' + busco)
         return True, os.path.dirname(busco)
