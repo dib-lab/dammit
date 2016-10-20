@@ -60,7 +60,7 @@ class DependencyHandler(object):
     def print_all_statuses(self, out=sys.stdout):
         is_fulfilled, unfulfilled = self.get_all_statuses()
         if is_fulfilled:
-            print(ui.paragraph('All dependencies fulfilled!'), file=out)
+            print(ui.paragraph('*All dependencies fulfilled.*'), file=out)
         else:
             print('\nSome dependencies unfulfilled:', file=out)
             print(ui.listing(unfulfilled), file=out)

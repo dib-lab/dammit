@@ -75,15 +75,19 @@ class TaskHandler(TaskLoader):
 
         return status.status
 
-    def print_statuses(self):
+    def print_statuses(self, uptodate_msg='All tasks up-to-date!'):
         uptodate, statuses = self.check_uptodate()
         if uptodate:
-            print(ui.paragraph('All tasks up-to-date!'))
+            print(ui.paragraph(uptodate_msg))
         else:
-            print('\nUp-to-date tasks:')
-            print(ui.listing([t for t,s in statuses.items() if s is True]))
-            print('\nOut-of-date tasks:')
-            print(ui.listing([t for t,s in statuses.items() if s is False]))
+            uptodate_list = [t for t,s in statuses.items() if s is True]
+            outofdate_list = [t for t,s in statuses.items() if s is False]
+            if uptodate_list:
+                print('\nUp-to-date tasks:')
+                print(ui.listing(uptodate_list))
+            if outofdate_list:
+                print('\nOut-of-date tasks:')
+                print(ui.listing(outofdate_list))
         return uptodate, statuses
 
     def check_uptodate(self):

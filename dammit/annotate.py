@@ -69,7 +69,8 @@ def run_annotation(handler):
     print(ui.header('Annotation', level=3))
     print('Doit Database: {0}'.format(handler.dep_file))
     print('Input Transcriptome: {0}'.format(handler.files['transcriptome']))
-    uptodate, statuses = handler.print_statuses()
+    msg = '*All annotation tasks up-to-date.*'
+    uptodate, statuses = handler.print_statuses(uptodate_msg=msg)
     if not uptodate:
         print('Running pipeline...')
         handler.run()
