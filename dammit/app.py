@@ -218,6 +218,7 @@ class DammitApp(object):
             databases.check_or_fail(handler)
 
     def handle_annotate(self):
+        log.start_logging()
         print(ui.header('submodule: annotate', level=2))
 
         dependencies.get_handler().check_or_fail()
