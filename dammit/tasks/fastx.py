@@ -21,27 +21,6 @@ def strip_seq_extension(fn):
 
     
 @doit_task
-def get_sanitize_fasta_task(input_fn, output_fn):
-
-    import re
-    name = 'sanitize_fasta:{0}'.format(os.path.basename(input_fn))
-
-    def fix():
-        bad = r'["`/|=]+'
-        with open(output_fn, 'wb') as fp:
-            for record in ReadParser(input_fn):
-                header = re.sub(bad, r'.', record.name)
-                fp.write('>{0}\n{1}\n'.format(header, record.sequence))
-
-    return {'name': name,
-            'title': title_with_actions,
-            'actions': [fix],
-            'file_dep': [input_fn],
-            'targets': [output_fn],
-            'clean': [clean_targets]}
-
-
-@doit_task
 def get_rename_transcriptome_task(transcriptome_fn, output_fn, names_fn,
                                   transcript_basename, split_regex=None):
 

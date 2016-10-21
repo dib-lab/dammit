@@ -13,7 +13,6 @@ from shmlast.last import lastal_task as get_lastal_task
 from .handler import TaskHandler
 
 from .tasks.fastx import (get_transcriptome_stats_task,
-                                get_sanitize_fasta_task,
                                 get_rename_transcriptome_task,
                                 get_annotate_fasta_task)
 from .tasks.busco import get_busco_task
