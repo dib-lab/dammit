@@ -8,6 +8,7 @@ import os
 import pandas as pd
 from sys import stderr
 
+from ..profile import profile_task
 from ..parallel import parallel_fasta
 from ..fileio.hmmer import HMMerParser
 from ..fileio.gff3 import GFF3Parser 
@@ -15,6 +16,7 @@ from ..utils import doit_task, which
 
 
 @doit_task
+@profile_task
 def get_hmmscan_task(input_filename, output_filename, db_filename,
                      cutoff=0.00001, n_threads=1, pbs=False, 
                      params=None):
@@ -41,6 +43,7 @@ def get_hmmscan_task(input_filename, output_filename, db_filename,
 
 
 @doit_task
+@profile_task
 def get_hmmpress_task(db_filename, params=None, task_dep=None):
 
     name = 'hmmpress:' + os.path.basename(db_filename)

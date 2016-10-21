@@ -47,7 +47,8 @@ def get_handler(config, databases, builtins=True):
     handler = TaskHandler(directory, logger, config=config,
                           db='annotate',
                           backend=config['doit_backend'],
-                          verbosity=config['verbosity'])
+                          verbosity=config['verbosity'],
+                          profile=config['profile'])
     log.start_logging(path.join(directory, 'dammit.log'))
 
     input_fn = path.join(directory, path.basename(config['transcriptome']))

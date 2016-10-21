@@ -6,10 +6,12 @@ from doit.tools import title_with_actions, LongRunning
 from doit.task import clean_targets
 
 from .utils import clean_folder
+from ..profile import profile_task
 from ..utils import which, doit_task
 
 
 @doit_task
+@profile_task
 def get_transdecoder_orf_task(input_filename,params=None):
 
     name = 'TransDecoder.LongOrfs:' + os.path.basename(input_filename)
@@ -28,6 +30,7 @@ def get_transdecoder_orf_task(input_filename,params=None):
             'clean': [(clean_folder, [input_filename + '.transdecoder_dir'])]}
 
 @doit_task
+@profile_task
 def get_transdecoder_predict_task(input_filename, pfam_filename, params=None):
 
     name = 'TransDecoder.Predict:' + os.path.basename(input_filename)

@@ -92,6 +92,10 @@ class DammitApp(object):
                                 choices=[0,1,2],
                                 help='Verbosity level for doit tasks.'
                                 )
+            parser.add_argument('--profile',
+                                default=False,
+                                action='store_true',
+                                help='Profile task execution.')
 
         '''
         Add the databases subcommand.

@@ -6,11 +6,13 @@ from doit.action import CmdAction
 from doit.tools import title_with_actions
 from doit.task import clean_targets
 
+from ..profile import profile_task
 from ..utils import which, doit_task
 from ..parallel import parallel_fasta
 
 
 @doit_task
+@profile_task
 def get_cmpress_task(db_filename, params=None, task_dep=None):
 
     cmd = [which('cmpress')]
@@ -32,6 +34,7 @@ def get_cmpress_task(db_filename, params=None, task_dep=None):
 
 
 @doit_task
+@profile_task
 def get_cmscan_task(input_filename, output_filename, db_filename,
                     cutoff=0.00001, n_threads=1, pbs=False, params=None):
 

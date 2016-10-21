@@ -9,10 +9,12 @@ from doit.task import clean_targets
 import pandas as pd
 
 from .utils import clean_folder
+from ..profile import profile_task
 from ..utils import doit_task, which
 
 
 @doit_task
+@profile_task
 def get_busco_task(input_filename, output_name, busco_db_dir, 
                    input_type='trans', n_threads=1, params=None):
 

@@ -12,6 +12,7 @@ from khmer import HLLCounter, ReadParser
 import pandas as pd
 
 from ..fileio.gff3 import GFF3Parser
+from ..profile import profile_task
 from ..utils import which, doit_task
 
 seq_ext = re.compile(r'(.fasta)|(.fa)|(.fastq)|(.fq)')
@@ -79,6 +80,7 @@ def get_rename_transcriptome_task(transcriptome_fn, output_fn, names_fn,
 
 
 @doit_task
+@profile_task
 def get_annotate_fasta_task(transcriptome_fn, gff3_fn, output_fn):
 
     name = 'fasta-annotate:{0}'.format(output_fn)
@@ -131,6 +133,7 @@ def get_annotate_fasta_task(transcriptome_fn, gff3_fn, output_fn):
 
 
 @doit_task
+@profile_task
 def get_transcriptome_stats_task(transcriptome, output_fn):
 
     import re

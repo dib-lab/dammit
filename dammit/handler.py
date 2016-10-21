@@ -7,13 +7,14 @@ from doit.cmd_base import TaskLoader
 from doit.doit_cmd import DoitMain
 from doit.dependency import Dependency, SqliteDB
 
+from .profile import StartProfiler
 from .utils import Move
 from . import ui
 
 class TaskHandler(TaskLoader):
 
     def __init__(self, directory, logger, config=None, files=None, 
-                 db=None, **doit_config_kwds):
+                 profile=False, db=None, **doit_config_kwds):
 
         super(TaskHandler, self).__init__()
 
@@ -40,7 +41,10 @@ class TaskHandler(TaskLoader):
         logger.debug('Dependency Database File: {0}'.format(dep_file))
         self.doit_config = dict(dep_file=self.dep_file, **doit_config_kwds)
         self.doit_dep_mgr = Dependency(SqliteDB, dep_file)
+
+        self.profile = profile
         self.logger = logger
+        
 
     def register_task(self, name, task, files=None):
         if files is None:
@@ -107,6 +111,12 @@ class TaskHandler(TaskLoader):
         if doit_args is None:
             doit_args = ['run']
         runner = DoitMain(self)
+
         with Move(self.directory):
-            return runner.run(doit_args)
+            if self.profile is True:
+                profile_fn = path.join(self.directory, 'profile.csv')
+                with StartProfiler(filename=profile_fn):
+                    return runner.run(doit_args)
+            else:
+                return runner.run(doit_args)
 
