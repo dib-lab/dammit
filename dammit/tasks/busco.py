@@ -4,7 +4,7 @@ from __future__ import print_function
 import os
 
 from doit.action import CmdAction
-from doit.tools import run_once, title_with_actions
+from doit.tools import run_once
 from doit.task import clean_targets
 import pandas as pd
 
@@ -17,6 +17,19 @@ from ..utils import doit_task, which
 @profile_task
 def get_busco_task(input_filename, output_name, busco_db_dir, 
                    input_type='trans', n_threads=1, params=None):
+    '''Get a task to run BUSCO on the given FASTA file.
+
+    Args:
+        input_filename (str): The FASTA file to run BUSCO on.
+        output_name (str): Base name for the BUSCO output directory.
+        busco_db_dir (str): Directory with the BUSCO databases.
+        input_type (str): By default, `trans` for transcriptome.
+        n_threads (int): Number of threads to use.
+        params (list): Extra parameters to pass to the executable.
+
+    Returns:
+        dict: A doit task.
+    '''
 
     name = 'busco:{0}-{1}'.format(os.path.basename(input_filename),
                                   os.path.basename(busco_db_dir))
@@ -32,7 +45,6 @@ def get_busco_task(input_filename, output_name, busco_db_dir,
     cmd = ' '.join(cmd)
 
     return {'name': name,
-            'title': title_with_actions,
             'actions': [cmd],
             'file_dep': [input_filename],
             'uptodate': [run_once],

@@ -34,7 +34,7 @@ class DammitApp(object):
     def run(self):
         print(ui.header('dammit'))
         print(ui.header(__description__, level=2))
-        about = '\nby {0}\nv{1}, {2}\n'.format(', '.join(__authors__),
+        about = '\nby {0}\n\n**v{1}**, {2}\n'.format(', '.join(__authors__),
                                            __version__, __date__)
         print(about)
         self.args.func()

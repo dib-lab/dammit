@@ -3,7 +3,7 @@ from __future__ import print_function
 import os
 
 from doit.action import CmdAction
-from doit.tools import title_with_actions, LongRunning
+from doit.tools import LongRunning
 from doit.task import clean_targets
 
 from .utils import clean_folder
@@ -24,8 +24,7 @@ def get_download_task(url, target_fn):
     cmd = 'curl -o {target_fn} {url}'.format(**locals())
     name = 'download_gunzip:{0}'.format(os.path.basename(target_fn))
 
-    return {'title': title_with_actions,
-            'name': name,
+    return {'name': name,
             'actions': [LongRunning(cmd)],
             'targets': [target_fn],
             'clean': [clean_targets],
@@ -46,8 +45,7 @@ def get_download_and_gunzip_task(url, target_fn):
 
     name = 'download_and_gunzip:{0}'.format(os.path.basename(target_fn))
 
-    return {'title': title_with_actions,
-            'name': name,
+    return {'name': name,
             'actions': [LongRunning(cmd)],
             'targets': [target_fn],
             'clean': [clean_targets],
@@ -77,7 +75,6 @@ def get_download_and_untar_task(url, target_dir, label=None):
     cmd2 = 'touch {done}'.format(done=done)
 
     return {'name': name,
-            'title': title_with_actions,
             'actions': [LongRunning(cmd1), cmd2],
             'targets': [done],
             'clean': [(clean_folder, [target_dir])],
@@ -85,25 +82,21 @@ def get_download_and_untar_task(url, target_dir, label=None):
 
 
 @doit_task
-def get_create_folder_task(folder):
-
-    name = 'create_folder:{folder}'.format(**locals())
-
-    return {'title': title_with_actions,
-            'name': name,
-            'actions': [(create_folder, [folder])],
-            'targets': [folder],
-            'uptodate': [run_once],
-            'clean': [clean_targets] }
-
-
-@doit_task
 def get_cat_task(file_list, target_fn):
+    '''Create a doit task to `cat` together the given files and pipe the
+    result to the given target.
+
+    Args:
+        file_list (list): The files to `cat`.
+        target_fn (str): The target file.
+
+    Returns:
+        dict: A doit task.
+    '''
 
     cmd = 'cat {files} > {t}'.format(files=' '.join(file_list), t=target_fn)
 
-    return {'title': title_with_actions,
-            'name': 'cat:' + os.path.basename(target_fn),
+    return {'name': 'cat:' + os.path.basename(target_fn),
             'actions': [cmd],
             'file_dep': file_list,
             'targets': [target_fn],
@@ -112,11 +105,18 @@ def get_cat_task(file_list, target_fn):
 
 @doit_task
 def get_link_file_task(src, dst=''):
-    ''' Soft-link file to the current directory
+    ''' Soft-link file to the current directory, or to the destination
+    target if given.
+
+    Args:
+        src (str): The file to link.
+        dst (str): The destination; by default, the current directory.
+
+    Returns:
+        dict: A doit task.
     '''
     cmd = 'ln -fs {src} {dst}'.format(src=src, dst=dst)
-    return {'title': title_with_actions,
-            'name': 'ln:' + os.path.basename(src) + ('-' + dst if dst else ''),
+    return {'name': 'ln:' + os.path.basename(src) + ('-' + dst if dst else ''),
             'actions': [cmd],
             'file_dep': [src],
             'targets': [os.path.basename(src) if not dst else dst],

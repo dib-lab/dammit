@@ -1,21 +1,35 @@
 import csv
 import filelock
+from functools import wraps
 import sys
 import time
 import warnings
 from contextlib import contextmanager
 from os import path
-import six
+
 
 from doit.task import Task as DoitTask
+import six
+
+from .utils import cleaned_actions
 
 
 class Profiler(object):
+    '''Thread-safe performance profiler.
+    '''
 
     def __init__(self):
         self.running = False
 
     def start_profiler(self, filename=None, blockname='__main__'):
+        '''Start the profiler, with results stored in the given filename.
+
+        Args:
+            filename (str): Path to store profiling results. If not given,
+                uses a representation of the current time
+            blockname (str): Name assigned to the main block.
+        '''
+
         self.run_name = time.strftime("%a_%d_%b_%Y_%H%M%S", time.localtime())
         if filename is None:
             self.filename = '{0}.csv'.format(self.run_name)
@@ -29,6 +43,16 @@ class Profiler(object):
         print('Profiling is ON:', self.filename, '\n', file=sys.stderr)
 
     def write_result(self, task_name, start_time, end_time, elapsed_time):
+        '''Write results to the file, using the given task name as the
+        name for the results block.
+
+        Args:
+            task_name (str): ID for the result row (the block profiled).
+            start_time (float): Time of block start.
+            end_time (float): Time of block end.
+            elapsed_time (float): Total time.
+        '''
+
         try:
             with self.lock.acquire(timeout=10):
                 header = not path.isfile(self.filename)
@@ -43,6 +67,8 @@ class Profiler(object):
             warnings.warn(e, RuntimeWarning, stacklevel=1)
 
     def stop_profiler(self):
+        '''Shut down the profiler and write the final elapsed time.
+        '''
         self.end_time = time.time()
         elapsed = self.end_time - self.start_time
         self.write_result(self.blockname, self.start_time, self.end_time, elapsed)
@@ -51,39 +77,48 @@ class Profiler(object):
 
 
 class Timer(object):
+    '''Simple timer class.
+    '''
 
     def start(self):
+        '''Start the timer.
+        '''
         self.start_time = time.time()
 
     def stop(self):
+        '''Stop the timer and return the elapsed time.
+        '''
         self.end_time = time.time()
         return self.end_time - self.start_time
 
 
 def title_without_profile_actions(task):
-    """return task name task actions"""
+    """Generate title without profiling actions"""
     title = ''
     if task.actions:
-        for action in task.actions[1:-1]:
-            title += "\n\t* " + six.text_type(action)
-    # A task that contains no actions at all
-    # is used as group task
+        title = cleaned_actions(task.actions[1:-1])
     else:
         title = "Group: %s" % ", ".join(task.task_dep)
     return "%s: %s"% (task.name, title)
 
 
 def setup_profiler():
-    '''Returns a doit task decorator and a context manager for profiling.
+    '''Returns a context manager, a funnction to add profiling actions to doit
+    tasks, and a decoratator to apply that function to task functions.
 
-    The task decorator calls records profile data when the task finishes
-    executing by adding new tasks to the beginning and end of the actions
-    list. The context manager simply starts a new profiler instance within
-    its block.
+    The profiling function adds new actions to the beginning and end of
+    the given task's action list, which start and stop the profiler and 
+    record the results. The task decorator applies this function. The actions
+    only record data if the profiler is running when they are called, and
+    they are removed from doit's execution output to reduce clutter.
 
-    Yes, this is a function function funcion which creates four different
+    The context manager starts the profiler in its block, storing data
+    in the given file.
+
+    Yes, this is a function function function which creates six different
     functions at seven different function scopes. Written in honor
-    of javascript programmers everywhere.
+    of javascript programmers everywhere, and to baffle and irritate
+    @ryneches.
     '''
 
     profiler = Profiler()
@@ -116,10 +151,10 @@ def setup_profiler():
         actions.append(stop_profiling)
 
         return task
-
-
+    
     def profile_decorator(task_func):
 
+        @wraps(task_func)
         def func(*args, **kwargs):
             task = task_func(*args, **kwargs)
             return add_profile_actions(task)

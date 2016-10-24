@@ -41,8 +41,15 @@ def default_database_dir(logger):
     return directory
 
 
+def print_meta(handler):
+    print(ui.header('Info', level=4))
+    info = {'Doit Database': handler.dep_file,
+            'Database Directory': handler.directory}
+    print(ui.listing(info))
+
 def install(handler):
     print(ui.header('Database Install', level=3))
+    print_meta(handler)
     msg = '*All database tasks up-to-date.*'
     uptodate, statuses = handler.print_statuses(uptodate_msg=msg)
     if not uptodate:
@@ -55,8 +62,7 @@ def install(handler):
 
 def check_or_fail(handler):
     print(ui.header('Database Check', level=3))
-    print('Doit Database: {0}'.format(handler.dep_file))
-    print('Database Directory: {0}'.format(handler.directory))
+    print_meta(handler)
     msg = '*All database tasks up-to-date.*'
     uptodate, statuses = handler.print_statuses(uptodate_msg=msg)
     if not uptodate:

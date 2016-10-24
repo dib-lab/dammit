@@ -18,7 +18,6 @@ from .tasks.fastx import (get_transcriptome_stats_task,
 from .tasks.report import get_annotate_fasta_task
 from .tasks.busco import get_busco_task
 from .tasks.utils import get_group_task
-from .tasks.shell import get_link_file_task
 from .tasks.gff import (get_maf_gff3_task,
                         get_shmlast_gff3_task,
                         get_hmmscan_gff3_task,
@@ -67,15 +66,16 @@ def get_handler(config, databases):
 
 def run_annotation(handler):
     print(ui.header('Annotation', level=3))
-    print('Doit Database: {0}'.format(handler.dep_file))
-    print('Input Transcriptome: {0}'.format(handler.files['transcriptome']))
+    print(ui.header('Info', level=4))
+    info = {'Doit Database': handler.dep_file,
+            'Input Transcriptome': handler.files['transcriptome']}
+    print(ui.listing(info))
     msg = '*All annotation tasks up-to-date.*'
     uptodate, statuses = handler.print_statuses(uptodate_msg=msg)
     if not uptodate:
-        print('Running pipeline...')
         handler.run()
     else:
-        print('Pipeline is already completed!')
+        print('**Pipeline is already completed!**')
         sys.exit(0)
 
 

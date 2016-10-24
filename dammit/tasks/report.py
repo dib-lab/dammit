@@ -4,7 +4,7 @@ from __future__ import print_function
 import os
 import sys
 
-from doit.tools import run_once, title_with_actions
+from doit.tools import run_once
 from doit.task import clean_targets
 from khmer import ReadParser
 
@@ -18,6 +18,19 @@ def generate_sequence_name(original_name, sequence, annotation_df):
 
 
 def generate_sequence_summary(original_name, sequence, annotation_df):
+    '''Given a FASTA sequence's original name, the sequence itself,
+    and a DataFrame with its corresponding GFF3 annotations, generate
+    a summary line of the annotations in key=value format.
+
+    Args:
+        original_name (str): Original name of the sequence.
+        sequence (str): The sequence itself.
+        annotation_df (DataFrame): DataFrame with GFF3 format annotations.
+
+    Returns:
+        str: The new summary header.
+    '''
+
     annots = ['len={0}'.format(len(sequence))]
     for feature_type, fgroup in annotation_df.groupby('type'):
 
@@ -53,6 +66,16 @@ def generate_sequence_summary(original_name, sequence, annotation_df):
 @doit_task
 @profile_task
 def get_annotate_fasta_task(transcriptome_fn, gff3_fn, output_fn):
+    '''Annotation the headers in a FASTA file with its corresponding GFF3 file.
+
+    Args:
+        transcriptome_fn (str): Path to the FASTA file.
+        gff3_fn (str): Path to the GFF3 annotations.
+        output_fn (str): Path to store the resulting annotated FASTA.
+
+    Returns:
+        dict: A doit task.
+    '''
 
     name = 'fasta-annotate:{0}'.format(output_fn)
 
@@ -66,9 +89,8 @@ def get_annotate_fasta_task(transcriptome_fn, gff3_fn, output_fn):
                 fp.write('>{0}\n{1}\n'.format(desc.strip(), record.sequence))
 
     return {'name': name,
-                'title': title_with_actions,
-                'actions': [annotate_fasta],
-                'file_dep': [transcriptome_fn, gff3_fn],
-                'targets': [output_fn],
-                'clean': [clean_targets]}
+            'actions': [annotate_fasta],
+            'file_dep': [transcriptome_fn, gff3_fn],
+            'targets': [output_fn],
+            'clean': [clean_targets]}
 

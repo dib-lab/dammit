@@ -6,7 +6,7 @@ import json
 import os
 import re
 
-from doit.tools import run_once, create_folder, title_with_actions, LongRunning
+from doit.tools import run_once, create_folder, LongRunning
 from doit.task import clean_targets, dict_to_task
 from khmer import HLLCounter, ReadParser
 import pandas as pd
@@ -23,6 +23,19 @@ def strip_seq_extension(fn):
 @doit_task
 def get_rename_transcriptome_task(transcriptome_fn, output_fn, names_fn,
                                   transcript_basename, split_regex=None):
+    '''Create a doit task to copy a FASTA file and rename the headers.
+
+    Args:
+        transcriptome_fn (str): The FASTA file.
+        output_fn (str): Destination to copy to.
+        names_fn (str): Destination to the store mapping from old to new names.
+        transcript_basename (str): String to contruct new names from.
+        split_regex (regex): Regex to split the input names with; must contain
+            a `name` field.
+    
+    Returns:
+        dict: A doit task.
+    '''
 
     import re
     name = os.path.basename(transcriptome_fn)
@@ -51,7 +64,6 @@ def get_rename_transcriptome_task(transcriptome_fn, output_fn, names_fn,
                                                                     index=False)
 
     return {'name': name,
-            'title': title_with_actions,
             'actions': [fix],
             'targets': [output_fn, names_fn],
             'file_dep': [transcriptome_fn],
@@ -61,6 +73,15 @@ def get_rename_transcriptome_task(transcriptome_fn, output_fn, names_fn,
 @doit_task
 @profile_task
 def get_transcriptome_stats_task(transcriptome, output_fn):
+    '''Create a doit task to run basic metrics on a transcriptome.
+
+    Args:
+        transcriptome (str): The input FASTA file.
+        output_fn (str): File to store the results.
+
+    Returns:
+        dict: A doit task.
+    '''
 
     import re
 
@@ -143,7 +164,6 @@ def get_transcriptome_stats_task(transcriptome, output_fn):
             print(fp.read())
 
     return {'name': name,
-            'title': title_with_actions,
             'actions': [(cmd, [])],
             'file_dep': [transcriptome],
             'targets': [output_fn],

@@ -39,7 +39,9 @@ class TaskHandler(TaskLoader):
             dep_file = path.join(self.directory, '{0}.doit.db'.format(db))
         self.dep_file = dep_file
         logger.debug('Dependency Database File: {0}'.format(dep_file))
-        self.doit_config = dict(dep_file=self.dep_file, **doit_config_kwds)
+        self.doit_config = dict(dep_file=self.dep_file,
+                                reporter=ui.GithubMarkdownReporter,
+                                **doit_config_kwds)
         self.doit_dep_mgr = Dependency(SqliteDB, dep_file)
 
         self.profile = profile
@@ -107,7 +109,8 @@ class TaskHandler(TaskLoader):
         self.logger.debug('loading {0} tasks'.format(len(self.tasks)))
         return self.tasks.values(), self.doit_config
 
-    def run(self, doit_args=None):
+    def run(self, doit_args=None, verbose=True):
+        print(ui.header('Run Tasks', level=4))
         if doit_args is None:
             doit_args = ['run']
         runner = DoitMain(self)
