@@ -5,6 +5,9 @@ import time
 import warnings
 from contextlib import contextmanager
 from os import path
+import six
+
+from doit.task import Task as DoitTask
 
 
 class Profiler(object):
@@ -57,6 +60,19 @@ class Timer(object):
         return self.end_time - self.start_time
 
 
+def title_without_profile_actions(task):
+    """return task name task actions"""
+    title = ''
+    if task.actions:
+        for action in task.actions[1:-1]:
+            title += "\n\t* " + six.text_type(action)
+    # A task that contains no actions at all
+    # is used as group task
+    else:
+        title = "Group: %s" % ", ".join(task.task_dep)
+    return "%s: %s"% (task.name, title)
+
+
 def setup_profiler():
     '''Returns a doit task decorator and a context manager for profiling.
 
@@ -77,29 +93,40 @@ def setup_profiler():
         yield
         profiler.stop_profiler()
 
-    def profile_decorator(task_dict_func):
+    def add_profile_actions(task):
+        timer = Timer()
+        def start_profiling():
+            if profiler.running:
+                timer.start()
+
+        def stop_profiling():
+            if profiler.running:
+                elapsed = timer.stop()
+                profiler.write_result(task['name'], timer.start_time,
+                                      timer.end_time, elapsed)
+        
+        if isinstance(task, DoitTask):
+            actions = task._actions
+            task.custom_title = title_without_profile_actions
+        else:
+            actions = task['actions']
+            task['title'] = title_without_profile_actions
+
+        actions.insert(0, start_profiling)
+        actions.append(stop_profiling)
+
+        return task
+
+
+    def profile_decorator(task_func):
 
         def func(*args, **kwargs):
-            task = task_dict_func(*args, **kwargs)
-            timer = Timer()
-            def start_profiling():
-                if profiler.running:
-                    timer.start()
-
-            def stop_profiling():
-                if profiler.running:
-                    elapsed = timer.stop()
-                    profiler.write_result(task['name'], timer.start_time,
-                                          timer.end_time, elapsed)
-            
-            task['actions'].insert(0, start_profiling)
-            task['actions'].append(stop_profiling)
-
-            return task
+            task = task_func(*args, **kwargs)
+            return add_profile_actions(task)
         
         return func
 
-    return profiler_manager, profile_decorator
+    return profiler_manager, add_profile_actions, profile_decorator
 
-StartProfiler, profile_task = setup_profiler()
+StartProfiler, add_profile_actions, profile_task = setup_profiler()
 

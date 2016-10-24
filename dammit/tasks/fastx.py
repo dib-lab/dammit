@@ -60,59 +60,6 @@ def get_rename_transcriptome_task(transcriptome_fn, output_fn, names_fn,
 
 @doit_task
 @profile_task
-def get_annotate_fasta_task(transcriptome_fn, gff3_fn, output_fn):
-
-    name = 'fasta-annotate:{0}'.format(output_fn)
-
-    def annotate_fasta():
-        annotations = GFF3Parser(gff3_fn).read()
-        with open(output_fn, 'w') as fp:
-            for n, record in enumerate(ReadParser(transcriptome_fn)):
-                df = annotations.query('seqid == "{0}"'.format(record.name))
-                annots = ['len={0}'.format(len(record.sequence))]
-                #for seqid, sgroup in df.groupby('seqid'):
-                #    for feature_type, fgroup in sgroup.groupby('feature_type'):
-                for feature_type, fgroup in df.groupby('type'):
-
-                    if feature_type in ['translated_nucleotide_match',
-                                        'protein_hmm_match',
-                                        'RNA_sequence_secondary_structure']:
-
-                        collapsed = ','.join(['{}:{}-{}'.format(row.Name.split(':dammit')[0],
-                                                                 int(row.start),
-                                                                 int(row.end)) \
-                                        for _, row in fgroup.iterrows()])
-                        if feature_type == 'translated_nucleotide_match':
-                            key = 'homologies'
-                        elif feature_type == 'protein_hmm_match':
-                            key = 'hmm_matches'
-                        else:
-                            key = 'RNA_matches'
-                        annots.append('{0}={1}'.format(key, collapsed))
-
-                    elif feature_type in ['exon', 'CDS', 'gene',
-                                          'five_prime_UTR', 'three_prime_UTR',
-                                          'mRNA']:
-
-                        collapsed = ','.join(['{}-{}'.format(int(row.start),
-                                                             int(row.end)) \
-                                        for _, row in fgroup.iterrows()])
-                        annots.append('{0}={1}'.format(feature_type, collapsed))
-
-                desc = '{0} {1}'.format(record.name, ' '.join(annots))
-
-                fp.write('>{0}\n{1}\n'.format(desc.strip(), record.sequence))
-
-    return {'name': name,
-                'title': title_with_actions,
-                'actions': [annotate_fasta],
-                'file_dep': [transcriptome_fn, gff3_fn],
-                'targets': [output_fn],
-                'clean': [clean_targets]}
-
-
-@doit_task
-@profile_task
 def get_transcriptome_stats_task(transcriptome, output_fn):
 
     import re

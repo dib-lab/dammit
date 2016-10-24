@@ -11,10 +11,11 @@ from shmlast.app import CRBL
 from shmlast.last import lastal_task as get_lastal_task
 
 from .handler import TaskHandler
+from .profile import add_profile_actions
 
 from .tasks.fastx import (get_transcriptome_stats_task,
-                                get_rename_transcriptome_task,
-                                get_annotate_fasta_task)
+                          get_rename_transcriptome_task)
+from .tasks.report import get_annotate_fasta_task
 from .tasks.busco import get_busco_task
 from .tasks.utils import get_group_task
 from .tasks.shell import get_link_file_task
@@ -33,7 +34,7 @@ from . import log
 
 logger = logging.getLogger(__name__)
 
-def get_handler(config, databases, builtins=True):
+def get_handler(config, databases):
 
     logger = logging.getLogger('AnnotateHandler')
 
@@ -42,8 +43,9 @@ def get_handler(config, databases, builtins=True):
     else:
         out_dir = config['output_dir']
     directory = path.abspath(out_dir)
-    
-    handler = TaskHandler(directory, logger, config=config,
+
+    handler = TaskHandler(directory, logger, 
+                          config=config,
                           db='annotate',
                           backend=config['doit_backend'],
                           verbosity=config['verbosity'],
@@ -60,8 +62,6 @@ def get_handler(config, databases, builtins=True):
                           files={'transcriptome': input_fn,
                                  'name_map': name_map_fn})
     
-    if builtins:
-        return register_builtin_tasks(handler, config, databases)
     return handler
 
 
@@ -79,13 +79,40 @@ def run_annotation(handler):
         sys.exit(0)
 
 
-def register_builtin_tasks(handler, config, databases):
+def build_default_pipeline(handler, config, databases):
 
     register_stats_task(handler)
     register_busco_task(handler, config, databases)
     register_transdecoder_tasks(handler, config, databases)
     register_rfam_tasks(handler, config, databases)
-    register_last_tasks(handler, config, databases)
+    register_lastal_tasks(handler, config, databases,
+                        include_uniref=False)
+    register_user_db_tasks(handler, config, databases)
+    register_annotate_tasks(handler, config, databases)
+
+    return handler
+
+
+def build_full_pipeline(handler, config, databases):
+
+    register_stats_task(handler)
+    register_busco_task(handler, config, databases)
+    register_transdecoder_tasks(handler, config, databases)
+    register_rfam_tasks(handler, config, databases)
+    register_lastal_tasks(handler, config, databases,
+                        include_uniref=True)
+    register_user_db_tasks(handler, config, databases)
+    register_annotate_tasks(handler, config, databases)
+
+    return handler
+
+
+def build_quick_pipeline(handler, config, databases):
+
+    register_stats_task(handler)
+    register_busco_task(handler, config, databases)
+    register_transdecoder_tasks(handler, config, databases,
+                                include_hmmer=False)
     register_user_db_tasks(handler, config, databases)
     register_annotate_tasks(handler, config, databases)
 
@@ -99,6 +126,7 @@ def register_stats_task(handler):
                           get_transcriptome_stats_task(input_fn,
                                                        stats_fn),
                           files={'stats': stats_fn})
+
 
 def register_busco_task(handler, config, databases):
     input_fn = handler.files['transcriptome']
@@ -117,7 +145,8 @@ def register_busco_task(handler, config, databases):
                           files={'BUSCO': busco_out_dir})
 
 
-def register_transdecoder_tasks(handler, config, databases):
+def register_transdecoder_tasks(handler, config, databases,
+                                include_hmmer=True):
     '''Run TransDecoder. TransDecoder first finds long ORFs with
     TransDecoder.LongOrfs, which are output as a FASTA file of protein
     sequences. We can then use these sequences to search against Pfam-A for
@@ -131,40 +160,43 @@ def register_transdecoder_tasks(handler, config, databases):
                           get_transdecoder_orf_task(input_fn, 
                                                     params=config['transdecoder']['longorfs']),
                           files={'longest_orfs': path.join(transdecoder_dir, 'longest_orfs.pep')})
-    pfam_fn = path.join(transdecoder_dir, 'longest_orfs.pep.x.pfam.tbl')
-    handler.register_task('hmmscan:Pfam-A',
-                          get_hmmscan_task(handler.files['longest_orfs'],
-                                           pfam_fn,
-                                           databases['Pfam-A'],
-                                           cutoff=config['evalue'],
-                                           n_threads=config['n_threads'],
-                                           pbs=config['pbs'],
-                                           params=config['hmmer']['hmmscan']),
-                          files={'longest_orfs_pfam': pfam_fn})
+    
+    pfam_fn = None
+    if include_hmmer is True:
+        pfam_fn = path.join(transdecoder_dir, 'longest_orfs.pep.x.pfam.tbl')
+        handler.register_task('hmmscan:Pfam-A',
+                              get_hmmscan_task(handler.files['longest_orfs'],
+                                               pfam_fn,
+                                               databases['Pfam-A'],
+                                               cutoff=config['evalue'],
+                                               n_threads=config['n_threads'],
+                                               pbs=config['pbs'],
+                                               params=config['hmmer']['hmmscan']),
+                              files={'longest_orfs_pfam': pfam_fn})
 
-    pfam_csv_fn = '{0}.x.pfam-A.csv'.format(input_fn)
-    handler.register_task('hmmscan:Pfam-A:remap',
-                          get_remap_hmmer_task(handler.files['longest_orfs_pfam'],
-                                               path.join(transdecoder_dir, 'longest_orfs.gff3'),
-                                               pfam_csv_fn),
-                          files={'Pfam-A-csv': pfam_csv_fn})
+        pfam_csv_fn = '{0}.x.pfam-A.csv'.format(input_fn)
+        handler.register_task('hmmscan:Pfam-A:remap',
+                              get_remap_hmmer_task(handler.files['longest_orfs_pfam'],
+                                                   path.join(transdecoder_dir, 'longest_orfs.gff3'),
+                                                   pfam_csv_fn),
+                              files={'Pfam-A-csv': pfam_csv_fn})
+        
+        pfam_gff3 = '{0}.x.pfam-A.gff3'.format(input_fn)
+        handler.register_task('gff3:Pfam-A',
+                               get_hmmscan_gff3_task(pfam_csv_fn,
+                                                     pfam_gff3, 
+                                                     'Pfam'),
+                               files={'Pfam-A-gff3': pfam_gff3})
 
-    predict_cfg = config['transdecoder']['predict']
+    predict_params = config['transdecoder']['predict']
     transdecoder_pep = '{0}.transdecoder.pep'.format(input_fn)
     transdecoder_gff3 = '{0}.transdecoder.gff3'.format(input_fn)
     handler.register_task('TransDecoder.Predict',
                           get_transdecoder_predict_task(input_fn, 
-                                                        pfam_fn,
-                                                        predict_cfg),
+                                                        pfam_filename=pfam_fn,
+                                                        params=predict_params),
                           files={'transdecoder-pep': transdecoder_pep,
                                  'transdecoder-gff3': transdecoder_gff3})
-
-    pfam_gff3 = '{0}.x.pfam-A.gff3'.format(input_fn)
-    handler.register_task('gff3:Pfam-A',
-                           get_hmmscan_gff3_task(pfam_csv_fn,
-                                                 pfam_gff3, 
-                                                 'Pfam'),
-                           files={'Pfam-A-gff3': pfam_gff3})
 
 
 def register_rfam_tasks(handler, config, databases):
@@ -188,19 +220,20 @@ def register_rfam_tasks(handler, config, databases):
                           files={'Rfam-gff3': rfam_gff3})
 
 
-def register_last_tasks(handler, config, databases):
+def register_lastal_tasks(handler, config, databases,
+                          include_uniref=False):
     input_fn = handler.files['transcriptome']
     lastal_cfg = config['last']['lastal']
     
     dbs = OrderedDict()
     dbs['OrthoDB'] = databases['OrthoDB']
-    if config['full'] is True:
+    if include_uniref is True:
         dbs['uniref90'] = databases['uniref90']
 
     for name, db in dbs.items():
         output_fn = '{0}.x.{1}.maf'.format(input_fn, name)
         handler.register_task('lastal:{0}'.format(name),
-                              get_lastal_task(input_fn,
+                          add_profile_actions(get_lastal_task(input_fn,
                                               db,
                                               output_fn,
                                               translate=True,
@@ -208,7 +241,7 @@ def register_last_tasks(handler, config, databases):
                                               n_threads=config['n_threads'],
                                               frameshift=lastal_cfg['frameshift'],
                                               pbs=config['pbs'],
-                                              params=lastal_cfg['params']),
+                                              params=lastal_cfg['params'])),
                               files={name: output_fn})
 
         best_fn = '{0}.x.{1}.best.csv'.format(input_fn, name)
@@ -263,8 +296,9 @@ def register_user_db_tasks(handler, config, databases):
                     n_threads=config['n_threads'],
                     cutoff=config['evalue'])
         for task in crbl.tasks():
-            task.name = 'user-database-shmlast:{0}'.format(task.name)
-            handler.register_task(task.name, task)
+            task.name = 'user-database:{0}-shmlast-{1}'.format(db_basename,
+                                                               task.name)
+            handler.register_task(task.name, add_profile_actions(task))
         handler.register_task('gff3:{0}'.format(results_fn),
                               get_shmlast_gff3_task(results_fn,
                                                     gff3_fn,

@@ -10,6 +10,9 @@ from .meta import __version__, __authors__, __description__, __date__, get_confi
 from . import utils
 from . import ui
 from . import annotate
+from .annotate import (build_quick_pipeline,
+                      build_default_pipeline,
+                      build_full_pipeline)
 from . import databases
 from . import dependencies
 from . import log
@@ -68,15 +71,6 @@ class DammitApp(object):
                                      ' $HOME/.dammit/databases.'
                                 )
 
-            parser.add_argument('--full',
-                                action='store_true',
-                                default=False,
-                                help='Do complete run with uniref90. By default'\
-                                     ' uniref90 is left out, as it is huge '\
-                                     ' and homology searches take a long'\
-                                     ' time.'
-                                )
-
             parser.add_argument('--busco-group',
                                 default='metazoa',
                                 choices=['metazoa', 'eukaryota', 'vertebrata',
@@ -84,18 +78,44 @@ class DammitApp(object):
                                 help='Which BUSCO group to use. Depends on'\
                                      ' the organism being annotated.'
                                 )
+
             parser.add_argument('--config-file',
                                 )
+
             parser.add_argument('--verbosity',
                                 default=0,
                                 type=int,
                                 choices=[0,1,2],
                                 help='Verbosity level for doit tasks.'
                                 )
+
             parser.add_argument('--profile',
                                 default=False,
                                 action='store_true',
                                 help='Profile task execution.')
+
+            pgroup = parser.add_mutually_exclusive_group()
+            pgroup.add_argument('--full',
+                                action='store_true',
+                                default=False,
+                                help='Run a "complete" annotation; includes'\
+                                     ' uniref90, which is left out of the'\
+                                     ' default pipeline because it is huge'\
+                                     ' and homology searches take a long'\
+                                     ' time.'
+                                )
+
+            pgroup.add_argument('--quick',
+                                default=False,
+                                action='store_true',
+                                help='Run a "quick" annotation; excludes'\
+                                     ' the Infernal Rfam tasks, the HMMER'\
+                                     ' Pfam tasks, and the LAST OrthoDB'\
+                                     ' and uniref90 tasks. Best for users'\
+                                     ' just looking to get basic stats'\
+                                     ' and conditional reciprocal best'\
+                                     ' LAST from a protein database.')
+
 
         '''
         Add the databases subcommand.
@@ -231,4 +251,16 @@ class DammitApp(object):
                                            self.databases_d)
         databases.check_or_fail(db_handler)
         annotate_handler = annotate.get_handler(self.config_d, db_handler.files)
+        if self.args.quick:
+            build_quick_pipeline(annotate_handler, 
+                                 self.config_d, 
+                                 db_handler.files)
+        elif self.args.full:
+            build_full_pipeline(annotate_handler, 
+                                self.config_d, 
+                                db_handler.files)
+        else:
+            build_default_pipeline(annotate_handler, 
+                                   self.config_d, 
+                                   db_handler.files)
         annotate.run_annotation(annotate_handler)

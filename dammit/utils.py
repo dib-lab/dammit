@@ -5,7 +5,7 @@ import os
 import stat
 import sys
 
-from doit.task import Task
+from doit.task import Task, InvalidTask
 
 
 class DammitTask(Task):
