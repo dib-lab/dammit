@@ -234,8 +234,11 @@ class DammitApp(object):
 
         dependencies.get_handler().check_or_fail()
 
-        handler = databases.get_handler(self.args, self.config_d,
-                                        self.databases_d)
+        handler = databases.get_handler(self.config_d)
+        databases.build_default_pipeline(handler, 
+                                         self.config_d,
+                                         self.databases_d,
+                                         with_uniref=self.args.full)
         if self.args.install:
             databases.install(handler)
         else:
@@ -247,9 +250,13 @@ class DammitApp(object):
 
         dependencies.get_handler().check_or_fail()
 
-        db_handler = databases.get_handler(self.args, self.config_d,
-                                           self.databases_d)
+        db_handler = databases.get_handler(self.config_d)
+        databases.build_default_pipeline(db_handler, 
+                                         self.config_d,
+                                         self.databases_d,
+                                         with_uniref=self.args.full)
         databases.check_or_fail(db_handler)
+
         annotate_handler = annotate.get_handler(self.config_d, db_handler.files)
         if self.args.quick:
             build_quick_pipeline(annotate_handler, 

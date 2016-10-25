@@ -34,6 +34,18 @@ from . import log
 logger = logging.getLogger(__name__)
 
 def get_handler(config, databases):
+    '''Build the TaskHandler for the annotation pipelines. The
+    handler will not have registered tasks when returned.
+
+    Args:
+        config (dict): Config dictionary, which contains the command
+            line arguments and the entries from the config file.
+        databases (dict): The dictionary of files from a database
+            TaskHandler.
+
+    Returns:
+        handler.TaskHandler: A constructed TaskHandler.
+    '''
 
     logger = logging.getLogger('AnnotateHandler')
 
@@ -65,6 +77,13 @@ def get_handler(config, databases):
 
 
 def run_annotation(handler):
+    '''Run the annotation pipeline from the given handler.
+
+    Prints the appropriate output and exits of the pipeline is alredy completed.
+
+    Args:
+        handler (handler.TaskHandler): Handler with tasks for the pipeline.
+    '''
     print(ui.header('Annotation', level=3))
     print(ui.header('Info', level=4))
     info = {'Doit Database': handler.dep_file,
@@ -80,6 +99,20 @@ def run_annotation(handler):
 
 
 def build_default_pipeline(handler, config, databases):
+    '''Register tasks for the default dammit pipeline.
+
+    This is all the main tasks, without lastal uniref90 task.
+
+    Args:
+        handler (handler.TaskHandler): The task handler to register on.
+        config (dict): Config dictionary, which contains the command
+            line arguments and the entries from the config file.
+        databases (dict): The dictionary of files from a database
+            TaskHandler.
+    
+    Returns:
+        handler.TaskHandler: The handler passed in.
+    '''
 
     register_stats_task(handler)
     register_busco_task(handler, config, databases)
@@ -94,7 +127,18 @@ def build_default_pipeline(handler, config, databases):
 
 
 def build_full_pipeline(handler, config, databases):
+    '''Register tasks for the full dammit pipeline (with uniref90).
 
+    Args:
+        handler (handler.TaskHandler): The task handler to register on.
+        config (dict): Config dictionary, which contains the command
+            line arguments and the entries from the config file.
+        databases (dict): The dictionary of files from a database
+            TaskHandler.
+    
+    Returns:
+        handler.TaskHandler: The handler passed in.
+    '''
     register_stats_task(handler)
     register_busco_task(handler, config, databases)
     register_transdecoder_tasks(handler, config, databases)
@@ -108,6 +152,23 @@ def build_full_pipeline(handler, config, databases):
 
 
 def build_quick_pipeline(handler, config, databases):
+    '''Register tasks for the quick annotation pipeline.
+
+    Leaves out the Pfam search (and so does not pass these hits to 
+    `TransDecoder.Predict`), the Rfam search, and the lastal searches
+    against OrthoDB and uniref90. Best suited for users who have built their
+    own protein databases and would just like to annotate off them.
+
+    Args:
+        handler (handler.TaskHandler): The task handler to register on.
+        config (dict): Config dictionary, which contains the command
+            line arguments and the entries from the config file.
+        databases (dict): The dictionary of files from a database
+            TaskHandler.
+    
+    Returns:
+        handler.TaskHandler: The handler passed in.
+    '''
 
     register_stats_task(handler)
     register_busco_task(handler, config, databases)
@@ -120,6 +181,8 @@ def build_quick_pipeline(handler, config, databases):
 
 
 def register_stats_task(handler):
+    '''Register the tasks for basic transcriptome metrics.'''
+
     input_fn = handler.files['transcriptome']
     stats_fn = input_fn + '.dammit.stats.json'
     handler.register_task('transcriptome-stats',
@@ -129,6 +192,9 @@ def register_stats_task(handler):
 
 
 def register_busco_task(handler, config, databases):
+    '''Register tasks for BUSCO. Note that this expects
+    a proper dammit config dictionary.'''
+
     input_fn = handler.files['transcriptome']
     busco_group = config['busco_group']
     busco_database = databases['BUSCO-{0}'.format(busco_group)]
@@ -147,12 +213,17 @@ def register_busco_task(handler, config, databases):
 
 def register_transdecoder_tasks(handler, config, databases,
                                 include_hmmer=True):
-    '''Run TransDecoder. TransDecoder first finds long ORFs with
-    TransDecoder.LongOrfs, which are output as a FASTA file of protein
-    sequences. We can then use these sequences to search against Pfam-A for
-    conserved domains. TransDecoder.Predict uses the Pfam results to train its
-    model for prediction of gene features.
+    '''Register tasks for TransDecoder. TransDecoder first finds long ORFs with
+    `TransDecoder.LongOrfs`, which are output as a FASTA file of protein
+    sequences. These sequences can are then used to search against Pfam-A for
+    conserved domains, and the coordinates from the resulting matches mapped
+    back relative to the original transcripts. `TransDecoder.Predict` the builds
+    the final gene models based on the training data provided by
+    `TransDecoder.LongOrfs`, optionally using the Pfam-A results to keep
+    ORFs which otherwise don't fit the model closely enough. Once again,
+    note that a proper dammit config dictionary is required.
     '''
+
     input_fn = handler.files['transcriptome']
     transdecoder_dir = '{0}.transdecoder_dir'.format(input_fn)
     
@@ -200,6 +271,11 @@ def register_transdecoder_tasks(handler, config, databases,
 
 
 def register_rfam_tasks(handler, config, databases):
+    '''Registers tasks for Infernal's `cmscan` against Rfam. Rfam is an RNA
+    secondary structure database comprising covariance models for many known
+    RNAs. This is a relatively slow step. A proper dammit config dictionary is
+    required.'''
+
     input_fn = handler.files['transcriptome']
     output_fn = '{0}.x.rfam.tbl'.format(input_fn)
     handler.register_task('cmscan:Rfam',
@@ -222,6 +298,19 @@ def register_rfam_tasks(handler, config, databases):
 
 def register_lastal_tasks(handler, config, databases,
                           include_uniref=False):
+    '''Register tasks for `lastal` searches. By default, this will just
+    align the transcriptome against OrthoDB; if requested, it will align against
+    uniref90 as well, which takes considerably longer.
+
+    Args:
+        handler (handler.TaskHandler): The task handler to register on.
+        config (dict): Config dictionary, which contains the command
+            line arguments and the entries from the config file.
+        databases (dict): The dictionary of files from a database
+            TaskHandler.
+        include_uniref (bool): If True, add tasks for searching uniref90.
+    '''
+
     input_fn = handler.files['transcriptome']
     lastal_cfg = config['last']['lastal']
     
@@ -259,6 +348,16 @@ def register_lastal_tasks(handler, config, databases,
 
 
 def register_annotate_tasks(handler, config, databases):
+    '''Register tasks for aggregating the annotations into one GFF3 file
+    and writing out summary descriptions in a new FASTA file.
+
+    Args:
+        handler (handler.TaskHandler): The task handler to register on.
+        config (dict): Config dictionary, which contains the command
+            line arguments and the entries from the config file.
+        databases (dict): The dictionary of files from a database
+            TaskHandler.
+    '''
     input_fn = handler.files['transcriptome']
     gff3_files = [fn for name, fn in handler.files.items() if name.endswith('-gff3')]
     merged_gff3 = '{0}.dammit.gff3'.format(input_fn)

@@ -16,38 +16,69 @@ from .tasks.infernal import get_cmpress_task
 from .tasks.shell import (get_download_and_gunzip_task,
                           get_download_and_untar_task)
 
-def get_handler(args, config, databases):
+def get_handler(config):
+    '''Build the TaskHandler for the database prep pipeline. The
+    handler will not have registered tasks when returned.
+
+    Args:
+        config (dict): Config dictionary, which contains the command
+            line arguments and the entries from the config file.
+        databases (dict): The database dictionary from `databases.json`.
+
+    Returns:
+        handler.TaskHandler: A constructed TaskHandler.
+    '''
 
     logger = logging.getLogger('DatabaseHandler')
     logger.debug('get_handler')
 
-    handler = TaskHandler(args.database_dir, logger, config=config,
+    handler = TaskHandler(config['database_dir'],
+                          logger, 
+                          config=config,
                           db='databases',
                           backend=config['doit_backend'],
-                          verbosity=args.verbosity)
+                          verbosity=config['verbosity'])
 
-    return register_builtin_tasks(handler, config, databases,
-                                  with_uniref=args.full)
+    return handler
 
 
 def default_database_dir(logger):
+    '''Get the default database directory: checks the environment
+    for a DAMMIT_DB_DIR variable, and if it is not found, returns
+    the default location of `$HOME/.dammit/databases`.
+
+    Args:
+        logger (logging.logger): Logger to write to.
+    Returns:
+        str: Path to the database directory.
+    '''
+
     try:
         directory = os.environ['DAMMIT_DB_DIR']
         logger.debug('found DAMMIT_DB_DIR env variable')
     except KeyError:
         logger.debug('no DAMMIT_DB_DIR or --database-dir, using'\
-                          ' default')
+                     'default')
         directory = path.join(os.environ['HOME'], '.dammit', 'databases')
     return directory
 
 
 def print_meta(handler):
+    '''Print metadata about the database pipeline.
+
+    Args:
+        handler (handler.TaskHandler): The database task handler.
+    '''
+
     print(ui.header('Info', level=4))
     info = {'Doit Database': handler.dep_file,
             'Database Directory': handler.directory}
     print(ui.listing(info))
 
 def install(handler):
+    '''Run the database prep pipeline from the given handler.
+    '''
+
     print(ui.header('Database Install', level=3))
     print_meta(handler)
     msg = '*All database tasks up-to-date.*'
@@ -61,6 +92,10 @@ def install(handler):
 
 
 def check_or_fail(handler):
+    '''Check that the handler's tasks are complete, and if not, exit
+    with status 2.
+    '''
+
     print(ui.header('Database Check', level=3))
     print_meta(handler)
     msg = '*All database tasks up-to-date.*'
@@ -75,7 +110,20 @@ def check_or_fail(handler):
         sys.exit(2)
 
 
-def register_builtin_tasks(handler, config, databases, with_uniref=False):
+def build_default_pipeline(handler, config, databases, with_uniref=False):
+    '''Register tasks for dammit's builtin database prep pipeline.
+
+    Args:
+        handler (handler.TaskHandler): The task handler to register on.
+        config (dict): Config dictionary, which contains the command
+            line arguments and the entries from the config file.
+        databases (dict): The dictionary of files from `databases.json`.
+        with_uniref (bool): If True, download and install the uniref90
+            database. Note that this will take 16+Gb of RAM and a looong
+            time to prepare with `lastdb`.
+    Returns:
+        handler.TaskHandler: The handler passed in.
+    '''
 
     register_pfam_tasks(handler, config['hmmer']['hmmpress'], databases)
     register_rfam_tasks(handler, config['infernal']['cmpress'], databases)
