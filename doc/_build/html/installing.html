@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Installation &mdash; dammit 0.3 documentation</title>
+    <title>Installation &#8212; dammit 1.0.dev0 documentation</title>
     
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.3',
+        VERSION:     '1.0.dev0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,15 +26,18 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="author" title="About these documents" href="about.html" />
-    <link rel="top" title="dammit 0.3 documentation" href="index.html" />
+    <link rel="top" title="dammit 1.0.dev0 documentation" href="index.html" />
     <link rel="next" title="Tutorial" href="tutorial.html" />
     <link rel="prev" title="dammit!" href="index.html" />
    
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head>
-  <body role="document">  
+  <body role="document">
+  
 
     <div class="document">
       <div class="documentwrapper">
@@ -55,20 +58,20 @@ suck less, then installing the necessary software should suck less too.</p>
 <p>Most of this guide will assume you&#8217;re on a Ubuntu system. However, the dependencies
 should all run on any flavor of GNU/Linux and on OSX.</p>
 <p>First, let&#8217;s get packages from the Ubuntu PPAs:</p>
-<div class="highlight-python"><div class="highlight"><pre>sudo apt-get update
-sudo apt-get install git ruby hmmer unzip build-essential \
-    infernal ncbi-blast+ liburi-escape-xs-perl emboss liburi-perl \
-    libsm6 libxrender1 libfontconfig1 parallel
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">update</span>
+<span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="n">git</span> <span class="n">ruby</span> <span class="n">hmmer</span> <span class="n">unzip</span> <span class="n">build</span><span class="o">-</span><span class="n">essential</span> \
+    <span class="n">infernal</span> <span class="n">ncbi</span><span class="o">-</span><span class="n">blast</span><span class="o">+</span> <span class="n">liburi</span><span class="o">-</span><span class="n">escape</span><span class="o">-</span><span class="n">xs</span><span class="o">-</span><span class="n">perl</span> <span class="n">emboss</span> <span class="n">liburi</span><span class="o">-</span><span class="n">perl</span> \
+    <span class="n">libsm6</span> <span class="n">libxrender1</span> <span class="n">libfontconfig1</span> <span class="n">parallel</span>
 </pre></div>
 </div>
 <p>If you&#8217;re on Ubuntu 15.10, you can also install TransDecoder and LAST through aptitude:</p>
-<div class="highlight-python"><div class="highlight"><pre>sudo apt-get install transdecoder last-align
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="n">transdecoder</span> <span class="n">last</span><span class="o">-</span><span class="n">align</span>
 </pre></div>
 </div>
 <p>Otherwise, you&#8217;ll need to install them manually.
 To install <a class="reference external" href="https://transdecoder.github.io/">TransDecoder</a> in your home directory, execute these commands in your
 terminal:</p>
-<div class="highlight-python"><div class="highlight"><pre>cd
+<div class="highlight-default"><div class="highlight"><pre><span></span>cd
 curl -LO https://github.com/TransDecoder/TransDecoder/archive/2.0.1.tar.gz
 tar -xvzf 2.0.1.tar.gz
 cd TransDecoder-2.0.1; make
@@ -76,7 +79,7 @@ export PATH=$HOME/TransDecoder-2.0.1:$PATH
 </pre></div>
 </div>
 <p>To get LAST:</p>
-<div class="highlight-python"><div class="highlight"><pre>cd
+<div class="highlight-default"><div class="highlight"><pre><span></span>cd
 curl -LO http://last.cbrc.jp/last-658.zip
 unzip last-658.zip
 cd last-658
@@ -87,7 +90,7 @@ export PATH=$HOME/last-658/scripts:$PATH
 </div>
 <p>The above commands will only install them for the current session; to
 keep it installed, append the exports to your bash profile:</p>
-<div class="highlight-python"><div class="highlight"><pre>echo &#39;export PATH=$HOME/TransDecoder-2.0.1:$PATH&#39; &gt;&gt; $HOME/.bashrc
+<div class="highlight-default"><div class="highlight"><pre><span></span>echo &#39;export PATH=$HOME/TransDecoder-2.0.1:$PATH&#39; &gt;&gt; $HOME/.bashrc
 echo &#39;export PATH=$HOME/last-658/src:$PATH&#39; &gt;&gt; $HOME/.bashrc
 echo &#39;export PATH=$HOME/last-658/scripts:$PATH&#39; &gt;&gt; $HOME/.bashrc
 </pre></div>
@@ -96,12 +99,12 @@ echo &#39;export PATH=$HOME/last-658/scripts:$PATH&#39; &gt;&gt; $HOME/.bashrc
 described in <a class="reference external" href="http://journals.plos.org/plosgenetics/article?id=10.1371/journal.pgen.1004365">Aubry et al.</a>,
 and is implemented in ruby. Assuming you have ruby (which was installed above),
 it can be installed with:</p>
-<div class="highlight-python"><div class="highlight"><pre>sudo gem install crb-blast
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">gem</span> <span class="n">install</span> <span class="n">crb</span><span class="o">-</span><span class="n">blast</span>
 </pre></div>
 </div>
 <p>dammit also runs BUSCO to assess completeness. To install it, run the following
 commands:</p>
-<div class="highlight-python"><div class="highlight"><pre>cd
+<div class="highlight-default"><div class="highlight"><pre><span></span>cd
 curl -LO http://busco.ezlab.org/files/BUSCO_v1.1b1.tar.gz
 tar -xvzf BUSCO_v1.1b1.tar.gz
 chmod +x BUSCO_v1.1b1/*.py
@@ -109,7 +112,7 @@ export PATH=$HOME/BUSCO_v1.1b1:$PATH
 </pre></div>
 </div>
 <p>...and once again, to install it permanently:</p>
-<div class="highlight-python"><div class="highlight"><pre>echo &#39;export PATH=$HOME/BUSCO_v1.1b1:$PATH&#39; &gt;&gt; $HOME/.bashrc
+<div class="highlight-default"><div class="highlight"><pre><span></span>echo &#39;export PATH=$HOME/BUSCO_v1.1b1:$PATH&#39; &gt;&gt; $HOME/.bashrc
 </pre></div>
 </div>
 </div>
@@ -118,13 +121,13 @@ export PATH=$HOME/BUSCO_v1.1b1:$PATH
 <p>dammit is a python package, and relies on a number of commonly-used scientific
 libraries. If you&#8217;re sure you have the following python dependencies already,
 you can skip this step and move on to the final stage:</p>
-<div class="highlight-python"><div class="highlight"><pre>setuptools&gt;=0.6.35
-pandas&gt;=0.17
-khmer&gt;=2.0
-doit&gt;=0.29.0
-nose==1.3.4
-ficus&gt;=0.1
-matplotlib&gt;=1.0
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">setuptools</span><span class="o">&gt;=</span><span class="mf">0.6</span><span class="o">.</span><span class="mi">35</span>
+<span class="n">pandas</span><span class="o">&gt;=</span><span class="mf">0.17</span>
+<span class="n">khmer</span><span class="o">&gt;=</span><span class="mf">2.0</span>
+<span class="n">doit</span><span class="o">&gt;=</span><span class="mf">0.29</span><span class="o">.</span><span class="mi">0</span>
+<span class="n">nose</span><span class="o">==</span><span class="mf">1.3</span><span class="o">.</span><span class="mi">4</span>
+<span class="n">ficus</span><span class="o">&gt;=</span><span class="mf">0.1</span>
+<span class="n">matplotlib</span><span class="o">&gt;=</span><span class="mf">1.0</span>
 </pre></div>
 </div>
 <p>Otherwise, we will have to install them. Pandas, numpy, and matplotlib
@@ -132,38 +135,38 @@ are quite hefty, mostly because they require a lot of compilation. To get around
 you can either install them via Anaconda, which I recommend, or you can install those
 which are available through the Ubuntu PPAs. If you wish to do things the slow
 but traditional way, you can just skip right ahead and:</p>
-<div class="highlight-python"><div class="highlight"><pre>pip install -U setuptools
-pip install dammit
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">U</span> <span class="n">setuptools</span>
+<span class="n">pip</span> <span class="n">install</span> <span class="n">dammit</span>
 </pre></div>
 </div>
 <p>Otherwise, proceed to the Anaconda instructions, or skip ahead to the hybrid
-<a class="reference internal" href="#ubuntu-instructions"><span>Ubuntu / Pip Instructions</span></a>.</p>
+<a class="reference internal" href="#ubuntu-instructions"><span class="std std-ref">Ubuntu / Pip Instructions</span></a>.</p>
 <div class="section" id="anaconda">
 <h3>Anaconda<a class="headerlink" href="#anaconda" title="Permalink to this headline">¶</a></h3>
 <p>Anaconda (or miniconda) is the preferred distribution for dammit. It&#8217;s straightforward
 to install and saves a lot of time compiling things when creating new environments. To
 install it on Ubuntu, first download it:</p>
-<div class="highlight-python"><div class="highlight"><pre>cd
-curl -OL https://3230d63b5fc54e62148e-c95ac804525aac4b6dba79b00b39d1d3.ssl.cf1.rackcdn.com/Anaconda2-4.0.0-Linux-x86_64.sh
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">cd</span>
+<span class="n">curl</span> <span class="o">-</span><span class="n">OL</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="mi">3230</span><span class="n">d63b5fc54e62148e</span><span class="o">-</span><span class="n">c95ac804525aac4b6dba79b00b39d1d3</span><span class="o">.</span><span class="n">ssl</span><span class="o">.</span><span class="n">cf1</span><span class="o">.</span><span class="n">rackcdn</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">Anaconda2</span><span class="o">-</span><span class="mf">4.0</span><span class="o">.</span><span class="mi">0</span><span class="o">-</span><span class="n">Linux</span><span class="o">-</span><span class="n">x86_64</span><span class="o">.</span><span class="n">sh</span>
 </pre></div>
 </div>
 <p>And run the installer:</p>
-<div class="highlight-python"><div class="highlight"><pre>bash Anaconda2-2.4.0-Linux-x86_64.sh -b
+<div class="highlight-default"><div class="highlight"><pre><span></span>bash Anaconda2-2.4.0-Linux-x86_64.sh -b
 echo &#39;export PATH=$HOME/anaconda2/bin:$PATH&#39; &gt;&gt; $HOME/.bashrc
 </pre></div>
 </div>
 <p>Select <cite>yes</cite> when prompted on adding it to your <cite>.bashrc</cite>, and resource your profile
 to gain access to it:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">source</span> <span class="o">.</span><span class="n">bashrc</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">source</span> <span class="o">.</span><span class="n">bashrc</span>
 </pre></div>
 </div>
 <p>The version of Sphinx which is shipped with Anaconda has issues; we will remove it
 and allow dammit to install its own version via PyPI:</p>
-<div class="highlight-python"><div class="highlight"><pre>conda remove sphinx
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">remove</span> <span class="n">sphinx</span>
 </pre></div>
 </div>
 <p>Get the latest versions of some packages:</p>
-<div class="highlight-python"><div class="highlight"><pre>conda update pandas numexpr
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">update</span> <span class="n">pandas</span> <span class="n">numexpr</span>
 </pre></div>
 </div>
 </div>
@@ -172,8 +175,8 @@ and allow dammit to install its own version via PyPI:</p>
 <p>If you&#8217;d prefer to not use Anaconda, are on a clean Ubuntu 14.04 machine, have not
 installed the python packages with pip, and have installed the non-python dependencies,
 you can install them through the Ubuntu PPAs as follows:</p>
-<div class="highlight-python"><div class="highlight"><pre>sudo apt-get update
-sudo apt-get install python-pip python-dev python-numpy
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">update</span>
+<span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="n">python</span><span class="o">-</span><span class="n">pip</span> <span class="n">python</span><span class="o">-</span><span class="n">dev</span> <span class="n">python</span><span class="o">-</span><span class="n">numpy</span>
 </pre></div>
 </div>
 <p>Unfortunately, you&#8217;ll still have to install Pandas  through pip, as
@@ -183,8 +186,8 @@ along with dammit.</p>
 <div class="section" id="dammit">
 <span id="dammit-instructions"></span><h3>Dammit<a class="headerlink" href="#dammit" title="Permalink to this headline">¶</a></h3>
 <p>dammit itself is quite easy to install. Just run:</p>
-<div class="highlight-python"><div class="highlight"><pre>pip install -U setuptools
-pip install dammit
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">U</span> <span class="n">setuptools</span>
+<span class="n">pip</span> <span class="n">install</span> <span class="n">dammit</span>
 </pre></div>
 </div>
 <p>If you&#8217;re not running anaconda or a virtual environment, you&#8217;ll have to put a <cite>sudo</cite>
@@ -192,7 +195,7 @@ before pip to install it globally. If you don&#8217;t already have a recent vers
 scikit-learn this will take a bit.</p>
 <p>When you&#8217;re done, run the check again to make sure everything was installed
 correctly:</p>
-<div class="highlight-python"><div class="highlight"><pre>dammit dependencies
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">dammit</span> <span class="n">dependencies</span>
 </pre></div>
 </div>
 <p>And you&#8217;re ready to go!</p>
@@ -238,14 +241,11 @@ correctly:</p>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -256,8 +256,8 @@ correctly:</p>
       &copy;2015, Camille Scott.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.3</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.6</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
       
       |
       <a href="_sources/installing.txt"

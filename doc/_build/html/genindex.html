@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Index &mdash; dammit 0.3 documentation</title>
+    <title>Index &#8212; dammit 1.0.dev0 documentation</title>
     
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -16,7 +16,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.3',
+        VERSION:     '1.0.dev0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -27,13 +27,16 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="author" title="About these documents" href="about.html" />
-    <link rel="top" title="dammit 0.3 documentation" href="index.html" />
+    <link rel="top" title="dammit 1.0.dev0 documentation" href="index.html" />
    
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head>
-  <body role="document">  
+  <body role="document">
+  
 
     <div class="document">
       <div class="documentwrapper">
@@ -48,16 +51,18 @@
  | <a href="#B"><strong>B</strong></a>
  | <a href="#C"><strong>C</strong></a>
  | <a href="#D"><strong>D</strong></a>
+ | <a href="#E"><strong>E</strong></a>
  | <a href="#F"><strong>F</strong></a>
  | <a href="#G"><strong>G</strong></a>
  | <a href="#H"><strong>H</strong></a>
+ | <a href="#I"><strong>I</strong></a>
+ | <a href="#L"><strong>L</strong></a>
  | <a href="#M"><strong>M</strong></a>
- | <a href="#O"><strong>O</strong></a>
+ | <a href="#N"><strong>N</strong></a>
  | <a href="#P"><strong>P</strong></a>
  | <a href="#R"><strong>R</strong></a>
  | <a href="#S"><strong>S</strong></a>
  | <a href="#T"><strong>T</strong></a>
- | <a href="#U"><strong>U</strong></a>
  | <a href="#V"><strong>V</strong></a>
  | <a href="#W"><strong>W</strong></a>
  
@@ -66,17 +71,7 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="dammit.html#dammit.dependencies.DependencyHandler.add_dependency_check">add_dependency_check() (dammit.dependencies.DependencyHandler method)</a>
-  </dt>
-
-      
-  <dt><a href="dammit.html#dammit.common.add_header">add_header() (in module dammit.common)</a>
-  </dt>
-
-  </dl></td>
-  <td style="width: 33%" valign="top"><dl>
-      
-  <dt><a href="dammit.html#dammit.annotate.AnnotateHandler">AnnotateHandler (class in dammit.annotate)</a>
+  <dt><a href="dammit.html#dammit.profile.add_profile_actions">add_profile_actions() (in module dammit.profile)</a>
   </dt>
 
   </dl></td>
@@ -86,17 +81,31 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="dammit.html#dammit.parsers.blast_to_df_iter">blast_to_df_iter() (in module dammit.parsers)</a>
+  <dt><a href="dammit.fileio.html#dammit.fileio.base.BaseParser">BaseParser (class in dammit.fileio.base)</a>
   </dt>
 
       
-  <dt><a href="dammit.html#dammit.annotate.AnnotateHandler.busco_task">busco_task() (dammit.annotate.AnnotateHandler method)</a>
+  <dt><a href="dammit.html#dammit.annotate.build_default_pipeline">build_default_pipeline() (in module dammit.annotate)</a>
+  </dt>
+
+      <dd><dl>
+        
+  <dt><a href="dammit.html#dammit.databases.build_default_pipeline">(in module dammit.databases)</a>
+  </dt>
+
+      </dl></dd>
+      
+  <dt><a href="dammit.html#dammit.annotate.build_full_pipeline">build_full_pipeline() (in module dammit.annotate)</a>
   </dt>
 
   </dl></td>
   <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="dammit.html#dammit.parsers.busco_to_df">busco_to_df() (in module dammit.parsers)</a>
+  <dt><a href="dammit.html#dammit.annotate.build_quick_pipeline">build_quick_pipeline() (in module dammit.annotate)</a>
+  </dt>
+
+      
+  <dt><a href="dammit.tasks.html#dammit.tasks.busco.busco_to_df">busco_to_df() (in module dammit.tasks.busco)</a>
   </dt>
 
   </dl></td>
@@ -105,10 +114,6 @@
 <h2 id="C">C</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%" valign="top"><dl>
-      
-  <dt><a href="dammit.html#dammit.databases.DatabaseHandler.check">check() (dammit.databases.DatabaseHandler method)</a>
-  </dt>
-
       
   <dt><a href="dammit.html#dammit.dependencies.check_blast">check_blast() (in module dammit.dependencies)</a>
   </dt>
@@ -134,23 +139,43 @@
   </dt>
 
       
-  <dt><a href="dammit.html#dammit.databases.DatabaseHandler.check_or_fail">check_or_fail() (dammit.databases.DatabaseHandler method)</a>
+  <dt><a href="dammit.html#dammit.dependencies.DependencyHandler.check_or_fail">check_or_fail() (dammit.dependencies.DependencyHandler method)</a>
   </dt>
 
       <dd><dl>
         
-  <dt><a href="dammit.html#dammit.dependencies.DependencyHandler.check_or_fail">(dammit.dependencies.DependencyHandler method)</a>
+  <dt><a href="dammit.html#dammit.databases.check_or_fail">(in module dammit.databases)</a>
   </dt>
 
       </dl></dd>
       
+  <dt><a href="dammit.html#dammit.dependencies.check_parallel">check_parallel() (in module dammit.dependencies)</a>
+  </dt>
+
+      
   <dt><a href="dammit.html#dammit.dependencies.check_transdecoder">check_transdecoder() (in module dammit.dependencies)</a>
+  </dt>
+
+      
+  <dt><a href="dammit.html#dammit.handler.TaskHandler.check_uptodate">check_uptodate() (dammit.handler.TaskHandler method)</a>
   </dt>
 
   </dl></td>
   <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="dammit.html#dammit.tasks.clean_folder">clean_folder() (in module dammit.tasks)</a>
+  <dt><a href="dammit.html#dammit.ui.checkbox">checkbox() (in module dammit.ui)</a>
+  </dt>
+
+      
+  <dt><a href="dammit.fileio.html#dammit.fileio.base.ChunkParser">ChunkParser (class in dammit.fileio.base)</a>
+  </dt>
+
+      
+  <dt><a href="dammit.tasks.html#dammit.tasks.utils.clean_folder">clean_folder() (in module dammit.tasks.utils)</a>
+  </dt>
+
+      
+  <dt><a href="dammit.html#dammit.utils.cleaned_actions">cleaned_actions() (in module dammit.utils)</a>
   </dt>
 
       
@@ -158,31 +183,37 @@
   </dt>
 
       
-  <dt><a href="dammit.html#dammit.annotate.AnnotateHandler.cmscan_task">cmscan_task() (dammit.annotate.AnnotateHandler method)</a>
+  <dt><a href="dammit.html#dammit.handler.TaskHandler.clear_tasks">clear_tasks() (dammit.handler.TaskHandler method)</a>
   </dt>
 
       
-  <dt><a href="dammit.html#dammit.parsers.cmscan_to_df_iter">cmscan_to_df_iter() (in module dammit.parsers)</a>
+  <dt><a href="dammit.fileio.html#dammit.fileio.gff3.cmscan_to_gff3">cmscan_to_gff3() (in module dammit.fileio.gff3)</a>
   </dt>
 
       
-  <dt><a href="dammit.html#dammit.gff.cmscan_to_gff3_df">cmscan_to_gff3_df() (in module dammit.gff)</a>
+  <dt><a href="dammit.fileio.html#dammit.fileio.gff3.GFF3Parser.columns">columns (dammit.fileio.gff3.GFF3Parser attribute)</a>
+  </dt>
+
+      <dd><dl>
+        
+  <dt><a href="dammit.fileio.html#dammit.fileio.hmmer.HMMerParser.columns">(dammit.fileio.hmmer.HMMerParser attribute)</a>
+  </dt>
+
+        
+  <dt><a href="dammit.fileio.html#dammit.fileio.infernal.InfernalParser.columns">(dammit.fileio.infernal.InfernalParser attribute)</a>
+  </dt>
+
+        
+  <dt><a href="dammit.fileio.html#dammit.fileio.maf.MafParser.columns">(dammit.fileio.maf.MafParser attribute)</a>
+  </dt>
+
+      </dl></dd>
+      
+  <dt><a href="dammit.fileio.html#dammit.fileio.gff3.GFF3Writer.convert">convert() (dammit.fileio.gff3.GFF3Writer method)</a>
   </dt>
 
       
-  <dt><a href="dammit.html#dammit.parsers.convert_dtypes">convert_dtypes() (in module dammit.parsers)</a>
-  </dt>
-
-      
-  <dt><a href="dammit.html#dammit.parsers.crb_to_df_iter">crb_to_df_iter() (in module dammit.parsers)</a>
-  </dt>
-
-      
-  <dt><a href="dammit.html#dammit.gff.crb_to_gff3_df">crb_to_gff3_df() (in module dammit.gff)</a>
-  </dt>
-
-      
-  <dt><a href="dammit.html#dammit.tasks.create_task_object">create_task_object() (in module dammit.tasks)</a>
+  <dt><a href="dammit.fileio.html#dammit.fileio.base.convert_dtypes">convert_dtypes() (in module dammit.fileio.base)</a>
   </dt>
 
   </dl></td>
@@ -200,11 +231,7 @@
   </dt>
 
       
-  <dt><a href="dammit.html#module-dammit.blast">dammit.blast (module)</a>
-  </dt>
-
-      
-  <dt><a href="dammit.html#module-dammit.common">dammit.common (module)</a>
+  <dt><a href="dammit.html#module-dammit.app">dammit.app (module)</a>
   </dt>
 
       
@@ -215,30 +242,168 @@
   <dt><a href="dammit.html#module-dammit.dependencies">dammit.dependencies (module)</a>
   </dt>
 
+      
+  <dt><a href="dammit.fileio.html#module-dammit.fileio">dammit.fileio (module)</a>
+  </dt>
+
+      
+  <dt><a href="dammit.fileio.html#module-dammit.fileio.base">dammit.fileio.base (module)</a>
+  </dt>
+
+      
+  <dt><a href="dammit.fileio.html#module-dammit.fileio.gff3">dammit.fileio.gff3 (module)</a>
+  </dt>
+
+      
+  <dt><a href="dammit.fileio.html#module-dammit.fileio.hmmer">dammit.fileio.hmmer (module)</a>
+  </dt>
+
+      
+  <dt><a href="dammit.fileio.html#module-dammit.fileio.infernal">dammit.fileio.infernal (module)</a>
+  </dt>
+
+      
+  <dt><a href="dammit.fileio.html#module-dammit.fileio.maf">dammit.fileio.maf (module)</a>
+  </dt>
+
+      
+  <dt><a href="dammit.html#module-dammit.handler">dammit.handler (module)</a>
+  </dt>
+
+      
+  <dt><a href="dammit.html#module-dammit.log">dammit.log (module)</a>
+  </dt>
+
+      
+  <dt><a href="dammit.html#module-dammit.meta">dammit.meta (module)</a>
+  </dt>
+
+      
+  <dt><a href="dammit.html#module-dammit.parallel">dammit.parallel (module)</a>
+  </dt>
+
+      
+  <dt><a href="dammit.html#module-dammit.profile">dammit.profile (module)</a>
+  </dt>
+
+      
+  <dt><a href="dammit.tasks.html#module-dammit.tasks">dammit.tasks (module)</a>
+  </dt>
+
+      
+  <dt><a href="dammit.tasks.html#module-dammit.tasks.busco">dammit.tasks.busco (module)</a>
+  </dt>
+
+      
+  <dt><a href="dammit.tasks.html#module-dammit.tasks.fastx">dammit.tasks.fastx (module)</a>
+  </dt>
+
+      
+  <dt><a href="dammit.tasks.html#module-dammit.tasks.gff">dammit.tasks.gff (module)</a>
+  </dt>
+
   </dl></td>
   <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="dammit.html#module-dammit.gff">dammit.gff (module)</a>
+  <dt><a href="dammit.tasks.html#module-dammit.tasks.hmmer">dammit.tasks.hmmer (module)</a>
   </dt>
 
       
-  <dt><a href="dammit.html#module-dammit.parsers">dammit.parsers (module)</a>
+  <dt><a href="dammit.tasks.html#module-dammit.tasks.infernal">dammit.tasks.infernal (module)</a>
   </dt>
 
       
-  <dt><a href="dammit.html#module-dammit.report">dammit.report (module)</a>
+  <dt><a href="dammit.tasks.html#module-dammit.tasks.report">dammit.tasks.report (module)</a>
   </dt>
 
       
-  <dt><a href="dammit.html#module-dammit.tasks">dammit.tasks (module)</a>
+  <dt><a href="dammit.tasks.html#module-dammit.tasks.shell">dammit.tasks.shell (module)</a>
   </dt>
 
       
-  <dt><a href="dammit.html#dammit.databases.DatabaseHandler">DatabaseHandler (class in dammit.databases)</a>
+  <dt><a href="dammit.tasks.html#module-dammit.tasks.transdecoder">dammit.tasks.transdecoder (module)</a>
+  </dt>
+
+      
+  <dt><a href="dammit.tasks.html#module-dammit.tasks.utils">dammit.tasks.utils (module)</a>
+  </dt>
+
+      
+  <dt><a href="dammit.html#module-dammit.ui">dammit.ui (module)</a>
+  </dt>
+
+      
+  <dt><a href="dammit.html#module-dammit.utils">dammit.utils (module)</a>
+  </dt>
+
+      
+  <dt><a href="dammit.html#dammit.app.DammitApp">DammitApp (class in dammit.app)</a>
+  </dt>
+
+      
+  <dt><a href="dammit.html#dammit.utils.DammitTask">DammitTask (class in dammit.utils)</a>
+  </dt>
+
+      
+  <dt><a href="dammit.fileio.html#dammit.fileio.gff3.GFF3Parser.decompose_attr_column">decompose_attr_column() (dammit.fileio.gff3.GFF3Parser static method)</a>
+  </dt>
+
+      
+  <dt><a href="dammit.html#dammit.databases.default_database_dir">default_database_dir() (in module dammit.databases)</a>
+  </dt>
+
+      
+  <dt><a href="dammit.html#dammit.handler.TaskHandler.dep_file">dep_file (dammit.handler.TaskHandler attribute)</a>
   </dt>
 
       
   <dt><a href="dammit.html#dammit.dependencies.DependencyHandler">DependencyHandler (class in dammit.dependencies)</a>
+  </dt>
+
+      
+  <dt><a href="dammit.html#dammit.utils.dict_to_task">dict_to_task() (in module dammit.utils)</a>
+  </dt>
+
+      
+  <dt><a href="dammit.html#dammit.handler.TaskHandler.directory">directory (dammit.handler.TaskHandler attribute)</a>
+  </dt>
+
+      
+  <dt><a href="dammit.html#dammit.handler.TaskHandler.doit_config">doit_config (dammit.handler.TaskHandler attribute)</a>
+  </dt>
+
+      
+  <dt><a href="dammit.html#dammit.handler.TaskHandler.doit_dep_mgr">doit_dep_mgr (dammit.handler.TaskHandler attribute)</a>
+  </dt>
+
+      
+  <dt><a href="dammit.html#dammit.utils.doit_task">doit_task() (in module dammit.utils)</a>
+  </dt>
+
+  </dl></td>
+</tr></table>
+
+<h2 id="E">E</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%" valign="top"><dl>
+      
+  <dt><a href="dammit.fileio.html#dammit.fileio.base.ChunkParser.empty">empty() (dammit.fileio.base.ChunkParser method)</a>
+  </dt>
+
+      <dd><dl>
+        
+  <dt><a href="dammit.fileio.html#dammit.fileio.gff3.GFF3Parser.empty">(dammit.fileio.gff3.GFF3Parser method)</a>
+  </dt>
+
+      </dl></dd>
+      
+  <dt><a href="dammit.fileio.html#dammit.fileio.base.EmptyFile">EmptyFile</a>
+  </dt>
+
+  </dl></td>
+  <td style="width: 33%" valign="top"><dl>
+      
+  <dt><a href="dammit.html#dammit.ui.GithubMarkdownReporter.execute_task">execute_task() (dammit.ui.GithubMarkdownReporter method)</a>
   </dt>
 
   </dl></td>
@@ -248,13 +413,7 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="dammit.html#dammit.blast.fix_blast_coords">fix_blast_coords() (in module dammit.blast)</a>
-  </dt>
-
-  </dl></td>
-  <td style="width: 33%" valign="top"><dl>
-      
-  <dt><a href="dammit.html#dammit.blast.fix_coords_single">fix_coords_single() (in module dammit.blast)</a>
+  <dt><a href="dammit.html#dammit.handler.TaskHandler.files">files (dammit.handler.TaskHandler attribute)</a>
   </dt>
 
   </dl></td>
@@ -264,139 +423,153 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="dammit.html#dammit.tasks.get_annotate_fasta_task">get_annotate_fasta_task() (in module dammit.tasks)</a>
+  <dt><a href="dammit.tasks.html#dammit.tasks.report.generate_sequence_name">generate_sequence_name() (in module dammit.tasks.report)</a>
   </dt>
 
       
-  <dt><a href="dammit.html#dammit.tasks.get_busco_task">get_busco_task() (in module dammit.tasks)</a>
+  <dt><a href="dammit.tasks.html#dammit.tasks.report.generate_sequence_summary">generate_sequence_summary() (in module dammit.tasks.report)</a>
   </dt>
 
       
-  <dt><a href="dammit.html#dammit.tasks.get_cat_task">get_cat_task() (in module dammit.tasks)</a>
+  <dt><a href="dammit.html#dammit.dependencies.DependencyHandler.get_all_statuses">get_all_statuses() (dammit.dependencies.DependencyHandler method)</a>
   </dt>
 
       
-  <dt><a href="dammit.html#dammit.tasks.get_cmpress_task">get_cmpress_task() (in module dammit.tasks)</a>
+  <dt><a href="dammit.tasks.html#dammit.tasks.report.get_annotate_fasta_task">get_annotate_fasta_task() (in module dammit.tasks.report)</a>
   </dt>
 
       
-  <dt><a href="dammit.html#dammit.tasks.get_cmscan_gff3_task">get_cmscan_gff3_task() (in module dammit.tasks)</a>
+  <dt><a href="dammit.tasks.html#dammit.tasks.busco.get_busco_task">get_busco_task() (in module dammit.tasks.busco)</a>
   </dt>
 
       
-  <dt><a href="dammit.html#dammit.tasks.get_cmscan_task">get_cmscan_task() (in module dammit.tasks)</a>
+  <dt><a href="dammit.tasks.html#dammit.tasks.shell.get_cat_task">get_cat_task() (in module dammit.tasks.shell)</a>
   </dt>
 
       
-  <dt><a href="dammit.html#dammit.tasks.get_crb_blast_task">get_crb_blast_task() (in module dammit.tasks)</a>
+  <dt><a href="dammit.tasks.html#dammit.tasks.infernal.get_cmpress_task">get_cmpress_task() (in module dammit.tasks.infernal)</a>
   </dt>
 
       
-  <dt><a href="dammit.html#dammit.tasks.get_crb_gff3_task">get_crb_gff3_task() (in module dammit.tasks)</a>
+  <dt><a href="dammit.tasks.html#dammit.tasks.gff.get_cmscan_gff3_task">get_cmscan_gff3_task() (in module dammit.tasks.gff)</a>
   </dt>
 
       
-  <dt><a href="dammit.html#dammit.tasks.get_create_folder_task">get_create_folder_task() (in module dammit.tasks)</a>
+  <dt><a href="dammit.tasks.html#dammit.tasks.infernal.get_cmscan_task">get_cmscan_task() (in module dammit.tasks.infernal)</a>
   </dt>
 
       
-  <dt><a href="dammit.html#dammit.common.get_dammit_dir">get_dammit_dir() (in module dammit.common)</a>
+  <dt><a href="dammit.html#dammit.meta.get_config">get_config() (in module dammit.meta)</a>
   </dt>
 
       
-  <dt><a href="dammit.html#dammit.tasks.get_download_and_gunzip_task">get_download_and_gunzip_task() (in module dammit.tasks)</a>
+  <dt><a href="dammit.tasks.html#dammit.tasks.shell.get_download_and_gunzip_task">get_download_and_gunzip_task() (in module dammit.tasks.shell)</a>
   </dt>
 
       
-  <dt><a href="dammit.html#dammit.tasks.get_download_and_untar_task">get_download_and_untar_task() (in module dammit.tasks)</a>
+  <dt><a href="dammit.tasks.html#dammit.tasks.shell.get_download_and_untar_task">get_download_and_untar_task() (in module dammit.tasks.shell)</a>
   </dt>
 
       
-  <dt><a href="dammit.html#dammit.tasks.get_download_task">get_download_task() (in module dammit.tasks)</a>
+  <dt><a href="dammit.tasks.html#dammit.tasks.shell.get_download_task">get_download_task() (in module dammit.tasks.shell)</a>
   </dt>
 
       
-  <dt><a href="dammit.html#dammit.tasks.get_gff3_merge_task">get_gff3_merge_task() (in module dammit.tasks)</a>
+  <dt><a href="dammit.tasks.html#dammit.tasks.gff.get_gff3_merge_task">get_gff3_merge_task() (in module dammit.tasks.gff)</a>
   </dt>
 
       
-  <dt><a href="dammit.html#dammit.tasks.get_group_task">get_group_task() (in module dammit.tasks)</a>
+  <dt><a href="dammit.tasks.html#dammit.tasks.utils.get_group_task">get_group_task() (in module dammit.tasks.utils)</a>
   </dt>
 
       
-  <dt><a href="dammit.html#dammit.tasks.get_hmmpress_task">get_hmmpress_task() (in module dammit.tasks)</a>
+  <dt><a href="dammit.html#dammit.annotate.get_handler">get_handler() (in module dammit.annotate)</a>
+  </dt>
+
+      <dd><dl>
+        
+  <dt><a href="dammit.html#dammit.databases.get_handler">(in module dammit.databases)</a>
+  </dt>
+
+        
+  <dt><a href="dammit.html#dammit.dependencies.get_handler">(in module dammit.dependencies)</a>
+  </dt>
+
+      </dl></dd>
+      
+  <dt><a href="dammit.tasks.html#dammit.tasks.hmmer.get_hmmpress_task">get_hmmpress_task() (in module dammit.tasks.hmmer)</a>
   </dt>
 
   </dl></td>
   <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="dammit.html#dammit.tasks.get_hmmscan_gff3_task">get_hmmscan_gff3_task() (in module dammit.tasks)</a>
+  <dt><a href="dammit.tasks.html#dammit.tasks.gff.get_hmmscan_gff3_task">get_hmmscan_gff3_task() (in module dammit.tasks.gff)</a>
   </dt>
 
       
-  <dt><a href="dammit.html#dammit.tasks.get_hmmscan_task">get_hmmscan_task() (in module dammit.tasks)</a>
+  <dt><a href="dammit.tasks.html#dammit.tasks.hmmer.get_hmmscan_task">get_hmmscan_task() (in module dammit.tasks.hmmer)</a>
   </dt>
 
       
-  <dt><a href="dammit.html#dammit.tasks.get_lastal_task">get_lastal_task() (in module dammit.tasks)</a>
+  <dt><a href="dammit.tasks.html#dammit.tasks.shell.get_link_file_task">get_link_file_task() (in module dammit.tasks.shell)</a>
   </dt>
 
       
-  <dt><a href="dammit.html#dammit.tasks.get_lastdb_task">get_lastdb_task() (in module dammit.tasks)</a>
+  <dt><a href="dammit.tasks.html#dammit.tasks.gff.get_maf_best_hits_task">get_maf_best_hits_task() (in module dammit.tasks.gff)</a>
   </dt>
 
       
-  <dt><a href="dammit.html#dammit.tasks.get_link_file_task">get_link_file_task() (in module dammit.tasks)</a>
+  <dt><a href="dammit.tasks.html#dammit.tasks.gff.get_maf_gff3_task">get_maf_gff3_task() (in module dammit.tasks.gff)</a>
   </dt>
 
       
-  <dt><a href="dammit.html#dammit.tasks.get_maf_best_hits_task">get_maf_best_hits_task() (in module dammit.tasks)</a>
+  <dt><a href="dammit.html#dammit.app.DammitApp.get_parser">get_parser() (dammit.app.DammitApp method)</a>
   </dt>
 
       
-  <dt><a href="dammit.html#dammit.tasks.get_maf_gff3_task">get_maf_gff3_task() (in module dammit.tasks)</a>
+  <dt><a href="dammit.tasks.html#dammit.tasks.hmmer.get_remap_hmmer_task">get_remap_hmmer_task() (in module dammit.tasks.hmmer)</a>
   </dt>
 
       
-  <dt><a href="dammit.html#dammit.tasks.get_remap_hmmer_task">get_remap_hmmer_task() (in module dammit.tasks)</a>
+  <dt><a href="dammit.tasks.html#dammit.tasks.fastx.get_rename_transcriptome_task">get_rename_transcriptome_task() (in module dammit.tasks.fastx)</a>
   </dt>
 
       
-  <dt><a href="dammit.html#dammit.tasks.get_rename_transcriptome_task">get_rename_transcriptome_task() (in module dammit.tasks)</a>
+  <dt><a href="dammit.tasks.html#dammit.tasks.gff.get_shmlast_gff3_task">get_shmlast_gff3_task() (in module dammit.tasks.gff)</a>
   </dt>
 
       
-  <dt><a href="dammit.html#dammit.report.get_report_tasks">get_report_tasks() (in module dammit.report)</a>
-  </dt>
-
-      
-  <dt><a href="dammit.html#dammit.tasks.get_sanitize_fasta_task">get_sanitize_fasta_task() (in module dammit.tasks)</a>
-  </dt>
-
-      
-  <dt><a href="dammit.html#dammit.annotate.AnnotateHandler.get_tasks">get_tasks() (dammit.annotate.AnnotateHandler method)</a>
+  <dt><a href="dammit.html#dammit.dependencies.DependencyHandler.get_status">get_status() (dammit.dependencies.DependencyHandler method)</a>
   </dt>
 
       <dd><dl>
         
-  <dt><a href="dammit.html#dammit.databases.DatabaseHandler.get_tasks">(dammit.databases.DatabaseHandler method)</a>
+  <dt><a href="dammit.html#dammit.handler.TaskHandler.get_status">(dammit.handler.TaskHandler method)</a>
   </dt>
 
       </dl></dd>
       
-  <dt><a href="dammit.html#dammit.tasks.get_transcriptome_stats_task">get_transcriptome_stats_task() (in module dammit.tasks)</a>
+  <dt><a href="dammit.tasks.html#dammit.tasks.fastx.get_transcriptome_stats_task">get_transcriptome_stats_task() (in module dammit.tasks.fastx)</a>
   </dt>
 
       
-  <dt><a href="dammit.html#dammit.tasks.get_transdecoder_orf_task">get_transdecoder_orf_task() (in module dammit.tasks)</a>
+  <dt><a href="dammit.tasks.html#dammit.tasks.transdecoder.get_transdecoder_orf_task">get_transdecoder_orf_task() (in module dammit.tasks.transdecoder)</a>
   </dt>
 
       
-  <dt><a href="dammit.html#dammit.tasks.get_transdecoder_predict_task">get_transdecoder_predict_task() (in module dammit.tasks)</a>
+  <dt><a href="dammit.tasks.html#dammit.tasks.transdecoder.get_transdecoder_predict_task">get_transdecoder_predict_task() (in module dammit.tasks.transdecoder)</a>
   </dt>
 
       
-  <dt><a href="dammit.html#dammit.tasks.get_transeq_task">get_transeq_task() (in module dammit.tasks)</a>
+  <dt><a href="dammit.fileio.html#dammit.fileio.gff3.GFF3Parser">GFF3Parser (class in dammit.fileio.gff3)</a>
+  </dt>
+
+      
+  <dt><a href="dammit.fileio.html#dammit.fileio.gff3.GFF3Writer">GFF3Writer (class in dammit.fileio.gff3)</a>
+  </dt>
+
+      
+  <dt><a href="dammit.html#dammit.ui.GithubMarkdownReporter">GithubMarkdownReporter (class in dammit.ui)</a>
   </dt>
 
   </dl></td>
@@ -406,27 +579,73 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="dammit.html#dammit.annotate.AnnotateHandler.handle">handle() (dammit.annotate.AnnotateHandler method)</a>
+  <dt><a href="dammit.html#dammit.app.DammitApp.handle_annotate">handle_annotate() (dammit.app.DammitApp method)</a>
   </dt>
 
-      <dd><dl>
-        
-  <dt><a href="dammit.html#dammit.databases.DatabaseHandler.handle">(dammit.databases.DatabaseHandler method)</a>
-  </dt>
-
-        
-  <dt><a href="dammit.html#dammit.dependencies.DependencyHandler.handle">(dammit.dependencies.DependencyHandler method)</a>
-  </dt>
-
-      </dl></dd>
       
-  <dt><a href="dammit.html#dammit.parsers.hmmscan_to_df_iter">hmmscan_to_df_iter() (in module dammit.parsers)</a>
+  <dt><a href="dammit.html#dammit.app.DammitApp.handle_databases">handle_databases() (dammit.app.DammitApp method)</a>
+  </dt>
+
+      
+  <dt><a href="dammit.html#dammit.app.DammitApp.handle_dependencies">handle_dependencies() (dammit.app.DammitApp method)</a>
   </dt>
 
   </dl></td>
   <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="dammit.html#dammit.gff.hmmscan_to_gff3_df">hmmscan_to_gff3_df() (in module dammit.gff)</a>
+  <dt><a href="dammit.html#dammit.ui.header">header() (in module dammit.ui)</a>
+  </dt>
+
+      
+  <dt><a href="dammit.fileio.html#dammit.fileio.hmmer.HMMerParser">HMMerParser (class in dammit.fileio.hmmer)</a>
+  </dt>
+
+      
+  <dt><a href="dammit.fileio.html#dammit.fileio.gff3.hmmscan_to_gff3">hmmscan_to_gff3() (in module dammit.fileio.gff3)</a>
+  </dt>
+
+  </dl></td>
+</tr></table>
+
+<h2 id="I">I</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%" valign="top"><dl>
+      
+  <dt><a href="dammit.fileio.html#dammit.fileio.gff3.id_gen_wrapper">id_gen_wrapper() (in module dammit.fileio.gff3)</a>
+  </dt>
+
+      
+  <dt><a href="dammit.fileio.html#dammit.fileio.infernal.InfernalParser">InfernalParser (class in dammit.fileio.infernal)</a>
+  </dt>
+
+  </dl></td>
+  <td style="width: 33%" valign="top"><dl>
+      
+  <dt><a href="dammit.html#dammit.log.init_default_logger">init_default_logger() (in module dammit.log)</a>
+  </dt>
+
+      
+  <dt><a href="dammit.html#dammit.databases.install">install() (in module dammit.databases)</a>
+  </dt>
+
+  </dl></td>
+</tr></table>
+
+<h2 id="L">L</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%" valign="top"><dl>
+      
+  <dt><a href="dammit.html#dammit.ui.listing">listing() (in module dammit.ui)</a>
+  </dt>
+
+      
+  <dt><a href="dammit.html#dammit.handler.TaskHandler.load_tasks">load_tasks() (dammit.handler.TaskHandler method)</a>
+  </dt>
+
+  </dl></td>
+  <td style="width: 33%" valign="top"><dl>
+      
+  <dt><a href="dammit.html#dammit.handler.TaskHandler.logger">logger (dammit.handler.TaskHandler attribute)</a>
   </dt>
 
   </dl></td>
@@ -436,27 +655,37 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="dammit.html#dammit.gff.maf_to_gff3_df">maf_to_gff3_df() (in module dammit.gff)</a>
+  <dt><a href="dammit.fileio.html#dammit.fileio.gff3.maf_to_gff3">maf_to_gff3() (in module dammit.fileio.gff3)</a>
   </dt>
 
       
-  <dt><a href="dammit.html#dammit.gff.mangle_coordinates">mangle_coordinates() (in module dammit.gff)</a>
+  <dt><a href="dammit.fileio.html#dammit.fileio.maf.MafParser">MafParser (class in dammit.fileio.maf)</a>
   </dt>
 
   </dl></td>
   <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="dammit.html#dammit.tasks.multinode_parallel_fasta">multinode_parallel_fasta() (in module dammit.tasks)</a>
+  <dt><a href="dammit.fileio.html#dammit.fileio.gff3.GFF3Writer.mangle_coordinates">mangle_coordinates() (dammit.fileio.gff3.GFF3Writer static method)</a>
+  </dt>
+
+      
+  <dt><a href="dammit.html#dammit.utils.Move">Move (class in dammit.utils)</a>
   </dt>
 
   </dl></td>
 </tr></table>
 
-<h2 id="O">O</h2>
+<h2 id="N">N</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="dammit.html#dammit.annotate.AnnotateHandler.orthodb_task">orthodb_task() (dammit.annotate.AnnotateHandler method)</a>
+  <dt><a href="dammit.fileio.html#dammit.fileio.gff3.next_ID">next_ID() (in module dammit.fileio.gff3)</a>
+  </dt>
+
+  </dl></td>
+  <td style="width: 33%" valign="top"><dl>
+      
+  <dt><a href="dammit.fileio.html#dammit.fileio.base.next_or_raise">next_or_raise() (in module dammit.fileio.base)</a>
   </dt>
 
   </dl></td>
@@ -466,33 +695,49 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="dammit.html#dammit.tasks.parallel_fasta">parallel_fasta() (in module dammit.tasks)</a>
+  <dt><a href="dammit.html#dammit.ui.paragraph">paragraph() (in module dammit.ui)</a>
   </dt>
 
       
-  <dt><a href="dammit.html#dammit.parsers.parse_busco_full">parse_busco_full() (in module dammit.parsers)</a>
+  <dt><a href="dammit.html#dammit.parallel.parallel_fasta">parallel_fasta() (in module dammit.parallel)</a>
   </dt>
 
       
-  <dt><a href="dammit.html#dammit.parsers.parse_busco_multiple">parse_busco_multiple() (in module dammit.parsers)</a>
+  <dt><a href="dammit.tasks.html#dammit.tasks.busco.parse_busco_full">parse_busco_full() (in module dammit.tasks.busco)</a>
   </dt>
 
       
-  <dt><a href="dammit.html#dammit.parsers.parse_busco_summary">parse_busco_summary() (in module dammit.parsers)</a>
+  <dt><a href="dammit.tasks.html#dammit.tasks.busco.parse_busco_multiple">parse_busco_multiple() (in module dammit.tasks.busco)</a>
+  </dt>
+
+      
+  <dt><a href="dammit.tasks.html#dammit.tasks.busco.parse_busco_summary">parse_busco_summary() (in module dammit.tasks.busco)</a>
+  </dt>
+
+      
+  <dt><a href="dammit.html#dammit.dependencies.DependencyHandler.print_all_statuses">print_all_statuses() (dammit.dependencies.DependencyHandler method)</a>
   </dt>
 
   </dl></td>
   <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="dammit.html#dammit.parsers.parse_gff3">parse_gff3() (in module dammit.parsers)</a>
+  <dt><a href="dammit.html#dammit.databases.print_meta">print_meta() (in module dammit.databases)</a>
   </dt>
 
       
-  <dt><a href="dammit.html#dammit.common.print_header">print_header() (in module dammit.common)</a>
+  <dt><a href="dammit.html#dammit.handler.TaskHandler.print_statuses">print_statuses() (dammit.handler.TaskHandler method)</a>
   </dt>
 
       
-  <dt><a href="dammit.html#dammit.tasks.print_tasks">print_tasks() (in module dammit.tasks)</a>
+  <dt><a href="dammit.html#dammit.handler.TaskHandler.profile">profile (dammit.handler.TaskHandler attribute)</a>
+  </dt>
+
+      
+  <dt><a href="dammit.html#dammit.profile.profile_task">profile_task() (in module dammit.profile)</a>
+  </dt>
+
+      
+  <dt><a href="dammit.html#dammit.profile.Profiler">Profiler (class in dammit.profile)</a>
   </dt>
 
   </dl></td>
@@ -502,29 +747,91 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="dammit.html#dammit.blast.remap_blast_coords_df">remap_blast_coords_df() (in module dammit.blast)</a>
+  <dt><a href="dammit.fileio.html#dammit.fileio.base.BaseParser.raise_empty">raise_empty() (dammit.fileio.base.BaseParser method)</a>
   </dt>
 
       
-  <dt><a href="dammit.html#dammit.annotate.AnnotateHandler.rename_task">rename_task() (dammit.annotate.AnnotateHandler method)</a>
+  <dt><a href="dammit.fileio.html#dammit.fileio.base.ChunkParser.read">read() (dammit.fileio.base.ChunkParser method)</a>
+  </dt>
+
+      
+  <dt><a href="dammit.html#dammit.annotate.register_annotate_tasks">register_annotate_tasks() (in module dammit.annotate)</a>
+  </dt>
+
+      
+  <dt><a href="dammit.html#dammit.dependencies.register_builtin_checks">register_builtin_checks() (in module dammit.dependencies)</a>
+  </dt>
+
+      
+  <dt><a href="dammit.html#dammit.annotate.register_busco_task">register_busco_task() (in module dammit.annotate)</a>
+  </dt>
+
+      
+  <dt><a href="dammit.html#dammit.databases.register_busco_tasks">register_busco_tasks() (in module dammit.databases)</a>
+  </dt>
+
+      
+  <dt><a href="dammit.html#dammit.dependencies.DependencyHandler.register_dependency_check">register_dependency_check() (dammit.dependencies.DependencyHandler method)</a>
+  </dt>
+
+      
+  <dt><a href="dammit.html#dammit.annotate.register_lastal_tasks">register_lastal_tasks() (in module dammit.annotate)</a>
+  </dt>
+
+      
+  <dt><a href="dammit.html#dammit.databases.register_orthodb_tasks">register_orthodb_tasks() (in module dammit.databases)</a>
   </dt>
 
   </dl></td>
   <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="dammit.html#dammit.dependencies.DependencyHandler.run_checks">run_checks() (dammit.dependencies.DependencyHandler method)</a>
+  <dt><a href="dammit.html#dammit.databases.register_pfam_tasks">register_pfam_tasks() (in module dammit.databases)</a>
   </dt>
 
       
-  <dt><a href="dammit.html#dammit.annotate.AnnotateHandler.run_tasks">run_tasks() (dammit.annotate.AnnotateHandler method)</a>
+  <dt><a href="dammit.html#dammit.annotate.register_rfam_tasks">register_rfam_tasks() (in module dammit.annotate)</a>
   </dt>
 
       <dd><dl>
         
-  <dt><a href="dammit.html#dammit.common.run_tasks">(in module dammit.common)</a>
+  <dt><a href="dammit.html#dammit.databases.register_rfam_tasks">(in module dammit.databases)</a>
   </dt>
 
       </dl></dd>
+      
+  <dt><a href="dammit.html#dammit.annotate.register_stats_task">register_stats_task() (in module dammit.annotate)</a>
+  </dt>
+
+      
+  <dt><a href="dammit.html#dammit.handler.TaskHandler.register_task">register_task() (dammit.handler.TaskHandler method)</a>
+  </dt>
+
+      
+  <dt><a href="dammit.html#dammit.annotate.register_transdecoder_tasks">register_transdecoder_tasks() (in module dammit.annotate)</a>
+  </dt>
+
+      
+  <dt><a href="dammit.html#dammit.databases.register_uniref90_tasks">register_uniref90_tasks() (in module dammit.databases)</a>
+  </dt>
+
+      
+  <dt><a href="dammit.html#dammit.annotate.register_user_db_tasks">register_user_db_tasks() (in module dammit.annotate)</a>
+  </dt>
+
+      
+  <dt><a href="dammit.html#dammit.app.DammitApp.run">run() (dammit.app.DammitApp method)</a>
+  </dt>
+
+      <dd><dl>
+        
+  <dt><a href="dammit.html#dammit.handler.TaskHandler.run">(dammit.handler.TaskHandler method)</a>
+  </dt>
+
+      </dl></dd>
+      
+  <dt><a href="dammit.html#dammit.annotate.run_annotation">run_annotation() (in module dammit.annotate)</a>
+  </dt>
+
   </dl></td>
 </tr></table>
 
@@ -532,13 +839,49 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="dammit.html#dammit.annotate.AnnotateHandler.stats_task">stats_task() (dammit.annotate.AnnotateHandler method)</a>
+  <dt><a href="dammit.html#dammit.profile.setup_profiler">setup_profiler() (in module dammit.profile)</a>
+  </dt>
+
+      
+  <dt><a href="dammit.fileio.html#dammit.fileio.gff3.shmlast_to_gff3">shmlast_to_gff3() (in module dammit.fileio.gff3)</a>
+  </dt>
+
+      
+  <dt><a href="dammit.html#dammit.ui.GithubMarkdownReporter.skip_ignore">skip_ignore() (dammit.ui.GithubMarkdownReporter method)</a>
+  </dt>
+
+      
+  <dt><a href="dammit.html#dammit.ui.GithubMarkdownReporter.skip_uptodate">skip_uptodate() (dammit.ui.GithubMarkdownReporter method)</a>
+  </dt>
+
+      
+  <dt><a href="dammit.html#dammit.profile.Timer.start">start() (dammit.profile.Timer method)</a>
+  </dt>
+
+      
+  <dt><a href="dammit.html#dammit.log.start_logging">start_logging() (in module dammit.log)</a>
   </dt>
 
   </dl></td>
   <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="dammit.html#dammit.tasks.strip_seq_extension">strip_seq_extension() (in module dammit.tasks)</a>
+  <dt><a href="dammit.html#dammit.profile.Profiler.start_profiler">start_profiler() (dammit.profile.Profiler method)</a>
+  </dt>
+
+      
+  <dt><a href="dammit.html#dammit.profile.StartProfiler">StartProfiler() (in module dammit.profile)</a>
+  </dt>
+
+      
+  <dt><a href="dammit.html#dammit.profile.Timer.stop">stop() (dammit.profile.Timer method)</a>
+  </dt>
+
+      
+  <dt><a href="dammit.html#dammit.profile.Profiler.stop_profiler">stop_profiler() (dammit.profile.Profiler method)</a>
+  </dt>
+
+      
+  <dt><a href="dammit.tasks.html#dammit.tasks.fastx.strip_seq_extension">strip_seq_extension() (in module dammit.tasks.fastx)</a>
   </dt>
 
   </dl></td>
@@ -548,33 +891,29 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="dammit.html#dammit.tasks.task_str">task_str() (in module dammit.tasks)</a>
+  <dt><a href="dammit.html#dammit.handler.TaskHandler.task">task (dammit.handler.TaskHandler attribute)</a>
   </dt>
 
       
-  <dt><a href="dammit.html#dammit.annotate.AnnotateHandler.transdecoder_tasks">transdecoder_tasks() (dammit.annotate.AnnotateHandler method)</a>
+  <dt><a href="dammit.html#dammit.handler.TaskHandler">TaskHandler (class in dammit.handler)</a>
   </dt>
 
-  </dl></td>
-  <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="dammit.html#dammit.annotate.AnnotateHandler.transeq_task">transeq_task() (dammit.annotate.AnnotateHandler method)</a>
-  </dt>
-
-  </dl></td>
-</tr></table>
-
-<h2 id="U">U</h2>
-<table style="width: 100%" class="indextable genindextable"><tr>
-  <td style="width: 33%" valign="top"><dl>
-      
-  <dt><a href="dammit.html#dammit.annotate.AnnotateHandler.uniref_task">uniref_task() (dammit.annotate.AnnotateHandler method)</a>
+  <dt><a href="dammit.html#dammit.profile.Timer">Timer (class in dammit.profile)</a>
   </dt>
 
   </dl></td>
   <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="dammit.html#dammit.annotate.AnnotateHandler.user_crb_tasks">user_crb_tasks() (dammit.annotate.AnnotateHandler method)</a>
+  <dt><a href="dammit.html#dammit.utils.DammitTask.title">title() (dammit.utils.DammitTask method)</a>
+  </dt>
+
+      
+  <dt><a href="dammit.html#dammit.profile.title_without_profile_actions">title_without_profile_actions() (in module dammit.profile)</a>
+  </dt>
+
+      
+  <dt><a href="dammit.html#dammit.utils.touch">touch() (in module dammit.utils)</a>
   </dt>
 
   </dl></td>
@@ -584,7 +923,7 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="dammit.html#dammit.gff.version_line">version_line() (in module dammit.gff)</a>
+  <dt><a href="dammit.fileio.html#dammit.fileio.gff3.GFF3Writer.version_line">version_line (dammit.fileio.gff3.GFF3Writer attribute)</a>
   </dt>
 
   </dl></td>
@@ -594,13 +933,21 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="dammit.html#dammit.common.which">which() (in module dammit.common)</a>
+  <dt><a href="dammit.fileio.html#dammit.fileio.base.warn_empty">warn_empty() (in module dammit.fileio.base)</a>
+  </dt>
+
+      
+  <dt><a href="dammit.html#dammit.utils.which">which() (in module dammit.utils)</a>
   </dt>
 
   </dl></td>
   <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="dammit.html#dammit.gff.write_gff3_df">write_gff3_df() (in module dammit.gff)</a>
+  <dt><a href="dammit.fileio.html#dammit.fileio.gff3.GFF3Writer.write">write() (dammit.fileio.gff3.GFF3Writer method)</a>
+  </dt>
+
+      
+  <dt><a href="dammit.html#dammit.profile.Profiler.write_result">write_result() (dammit.profile.Profiler method)</a>
   </dt>
 
   </dl></td>
@@ -625,14 +972,11 @@
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -643,8 +987,8 @@
       &copy;2015, Camille Scott.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.3</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.6</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
       
     </div>
 

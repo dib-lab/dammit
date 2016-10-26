@@ -1,0 +1,173 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>dammit.fileio.hmmer &#8212; dammit 1.0.dev0 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.0.dev0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="author" title="About these documents" href="../../../about.html" />
+    <link rel="top" title="dammit 1.0.dev0 documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for dammit.fileio.hmmer</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">.base</span> <span class="k">import</span> <span class="n">next_or_raise</span><span class="p">,</span> <span class="n">convert_dtypes</span><span class="p">,</span> <span class="n">ChunkParser</span>
+
+<div class="viewcode-block" id="HMMerParser"><a class="viewcode-back" href="../../../dammit.fileio.html#dammit.fileio.hmmer.HMMerParser">[docs]</a><span class="k">class</span> <span class="nc">HMMerParser</span><span class="p">(</span><span class="n">ChunkParser</span><span class="p">):</span>
+    
+    <span class="n">columns</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;target_name&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">),</span>
+                <span class="p">(</span><span class="s1">&#39;target_accession&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">),</span>
+                <span class="p">(</span><span class="s1">&#39;tlen&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span>
+                <span class="p">(</span><span class="s1">&#39;query_name&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">),</span>
+                <span class="p">(</span><span class="s1">&#39;query_accession&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">),</span>
+                <span class="p">(</span><span class="s1">&#39;query_len&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span>
+                <span class="p">(</span><span class="s1">&#39;full_evalue&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span>
+                <span class="p">(</span><span class="s1">&#39;full_score&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span>
+                <span class="p">(</span><span class="s1">&#39;full_bias&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span>
+                <span class="p">(</span><span class="s1">&#39;domain_num&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span>
+                <span class="p">(</span><span class="s1">&#39;domain_total&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span>
+                <span class="p">(</span><span class="s1">&#39;domain_c_evalue&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span>
+                <span class="p">(</span><span class="s1">&#39;domain_i_evalue&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span>
+                <span class="p">(</span><span class="s1">&#39;domain_score&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span>
+                <span class="p">(</span><span class="s1">&#39;domain_bias&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span>
+                <span class="p">(</span><span class="s1">&#39;hmm_coord_from&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span>
+                <span class="p">(</span><span class="s1">&#39;hmm_coord_to&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span>
+                <span class="p">(</span><span class="s1">&#39;ali_coord_from&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span>
+                <span class="p">(</span><span class="s1">&#39;ali_coord_to&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span>
+                <span class="p">(</span><span class="s1">&#39;env_coord_from&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span>
+                <span class="p">(</span><span class="s1">&#39;env_coord_to&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span>
+                <span class="p">(</span><span class="s1">&#39;accuracy&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span>
+                <span class="p">(</span><span class="s1">&#39;description&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">)]</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">HMMerParser</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Yields DataFrames of length chunksize from a given</span>
+<span class="sd">        hmmscan result file.</span>
+
+<span class="sd">        HMMER uses 1-based, fully open intervals. Another format of the devil.</span>
+
+<span class="sd">        We convert to proper 0-based, half-open intervals.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            fn (str): Path to the hmmscan file.</span>
+<span class="sd">            chunksize (int): Hits per iteration.</span>
+<span class="sd">        Yields:</span>
+<span class="sd">            DataFrame: Pandas DataFrame with the hmmscan hits.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">n_entries</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">ln</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">fp</span><span class="p">):</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">ln</span> <span class="ow">or</span> <span class="n">ln</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;#&#39;</span><span class="p">):</span>
+                    <span class="k">continue</span>
+
+                <span class="n">tokens</span> <span class="o">=</span> <span class="n">ln</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+                <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tokens</span><span class="p">[:</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> \
+                            <span class="p">[</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tokens</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">:])])</span>
+                <span class="n">n_entries</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">chunksize</span><span class="p">:</span>
+                    <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_df</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+                    <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">if</span> <span class="n">n_entries</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">raise_empty</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">data</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_df</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_build_df</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">data</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">raise_empty</span><span class="p">()</span>
+
+        <span class="k">def</span> <span class="nf">split_query</span><span class="p">(</span><span class="n">item</span><span class="p">):</span>
+            <span class="n">q</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">rpartition</span><span class="p">(</span><span class="s1">&#39;|&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">q</span>
+
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="p">])</span>
+        <span class="n">convert_dtypes</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="p">))</span>
+        <span class="n">df</span><span class="p">[</span><span class="s1">&#39;full_query_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">query_name</span>
+        <span class="n">df</span><span class="p">[</span><span class="s1">&#39;query_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">query_name</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">split_query</span><span class="p">)</span>
+        <span class="c1"># fix the evil coordinate system</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">hmm_coord_from</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">hmm_coord_from</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">ali_coord_from</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">ali_coord_from</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">env_coord_from</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">env_coord_from</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="k">return</span> <span class="n">df</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2015, Camille Scott.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

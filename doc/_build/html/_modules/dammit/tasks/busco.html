@@ -1,0 +1,236 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>dammit.tasks.busco &#8212; dammit 1.0.dev0 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.0.dev0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="author" title="About these documents" href="../../../about.html" />
+    <link rel="top" title="dammit 1.0.dev0 documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for dammit.tasks.busco</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="kn">from</span> <span class="nn">doit.action</span> <span class="k">import</span> <span class="n">CmdAction</span>
+<span class="kn">from</span> <span class="nn">doit.tools</span> <span class="k">import</span> <span class="n">run_once</span>
+<span class="kn">from</span> <span class="nn">doit.task</span> <span class="k">import</span> <span class="n">clean_targets</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="kn">from</span> <span class="nn">.utils</span> <span class="k">import</span> <span class="n">clean_folder</span>
+<span class="kn">from</span> <span class="nn">..profile</span> <span class="k">import</span> <span class="n">profile_task</span>
+<span class="kn">from</span> <span class="nn">..utils</span> <span class="k">import</span> <span class="n">doit_task</span><span class="p">,</span> <span class="n">which</span>
+
+
+<span class="nd">@doit_task</span>
+<span class="nd">@profile_task</span>
+<div class="viewcode-block" id="get_busco_task"><a class="viewcode-back" href="../../../dammit.tasks.html#dammit.tasks.busco.get_busco_task">[docs]</a><span class="k">def</span> <span class="nf">get_busco_task</span><span class="p">(</span><span class="n">input_filename</span><span class="p">,</span> <span class="n">output_name</span><span class="p">,</span> <span class="n">busco_db_dir</span><span class="p">,</span> 
+                   <span class="n">input_type</span><span class="o">=</span><span class="s1">&#39;trans&#39;</span><span class="p">,</span> <span class="n">n_threads</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Get a task to run BUSCO on the given FASTA file.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        input_filename (str): The FASTA file to run BUSCO on.</span>
+<span class="sd">        output_name (str): Base name for the BUSCO output directory.</span>
+<span class="sd">        busco_db_dir (str): Directory with the BUSCO databases.</span>
+<span class="sd">        input_type (str): By default, `trans` for transcriptome.</span>
+<span class="sd">        n_threads (int): Number of threads to use.</span>
+<span class="sd">        params (list): Extra parameters to pass to the executable.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        dict: A doit task.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;busco:</span><span class="si">{0}</span><span class="s1">-</span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">input_filename</span><span class="p">),</span>
+                                  <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">busco_db_dir</span><span class="p">))</span>
+
+    <span class="k">assert</span> <span class="n">input_type</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;genome&#39;</span><span class="p">,</span> <span class="s1">&#39;OGS&#39;</span><span class="p">,</span> <span class="s1">&#39;trans&#39;</span><span class="p">]</span>
+    <span class="n">exc</span> <span class="o">=</span> <span class="n">which</span><span class="p">(</span><span class="s1">&#39;BUSCO_v1.1b1.py&#39;</span><span class="p">)</span>
+    <span class="c1"># BUSCO chokes on file paths as output names</span>
+    <span class="n">output_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">output_name</span><span class="p">)</span>
+    <span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;python3&#39;</span><span class="p">,</span> <span class="n">exc</span><span class="p">,</span> <span class="s1">&#39;-in&#39;</span><span class="p">,</span> <span class="n">input_filename</span><span class="p">,</span> <span class="s1">&#39;-f&#39;</span><span class="p">,</span> <span class="s1">&#39;-o&#39;</span><span class="p">,</span> <span class="n">output_name</span><span class="p">,</span>
+           <span class="s1">&#39;-l&#39;</span><span class="p">,</span> <span class="n">busco_db_dir</span><span class="p">,</span> <span class="s1">&#39;-m&#39;</span><span class="p">,</span> <span class="n">input_type</span><span class="p">,</span> <span class="s1">&#39;-c&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">n_threads</span><span class="p">)]</span>
+    <span class="k">if</span> <span class="n">params</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">cmd</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+    <span class="n">cmd</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span>
+            <span class="s1">&#39;actions&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">cmd</span><span class="p">],</span>
+            <span class="s1">&#39;file_dep&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">input_filename</span><span class="p">],</span>
+            <span class="s1">&#39;uptodate&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">run_once</span><span class="p">],</span>
+            <span class="s1">&#39;clean&#39;</span><span class="p">:</span> <span class="p">[(</span><span class="n">clean_folder</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;run_&#39;</span> <span class="o">+</span> <span class="n">output_name</span><span class="p">])]}</span></div>
+
+
+<div class="viewcode-block" id="parse_busco_full"><a class="viewcode-back" href="../../../dammit.tasks.html#dammit.tasks.busco.parse_busco_full">[docs]</a><span class="k">def</span> <span class="nf">parse_busco_full</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Parses a BUSCO full result table into a Pandas DataFrame.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        fn (str): The results file.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        DataFrame: The results DataFrame.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_table</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">df</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;#BUSCO_group&#39;</span><span class="p">:</span> <span class="s1">&#39;BUSCO_group&#39;</span><span class="p">})</span></div>
+
+
+<div class="viewcode-block" id="parse_busco_summary"><a class="viewcode-back" href="../../../dammit.tasks.html#dammit.tasks.busco.parse_busco_summary">[docs]</a><span class="k">def</span> <span class="nf">parse_busco_summary</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Parses a BUSCO summary file into a JSON compatible</span>
+<span class="sd">    dictionary.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        fn (str): The summary results file.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        dict: The BUSCO results.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="n">res</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">ln</span> <span class="ow">in</span> <span class="n">fp</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">ln</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;C:&#39;</span><span class="p">):</span>
+                <span class="n">tokens</span> <span class="o">=</span> <span class="n">ln</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">tokens</span><span class="p">:</span>
+                    <span class="n">key</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">val</span> <span class="o">=</span> <span class="n">token</span><span class="o">.</span><span class="n">partition</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)</span>
+                    <span class="n">key</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                    <span class="n">val</span> <span class="o">=</span> <span class="n">val</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;%&#39;</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">&#39;C&#39;</span><span class="p">:</span>
+                        <span class="n">valc</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">vald</span> <span class="o">=</span> <span class="n">val</span><span class="o">.</span><span class="n">partition</span><span class="p">(</span><span class="s1">&#39;%&#39;</span><span class="p">)</span>
+                        <span class="n">valc</span> <span class="o">=</span> <span class="n">valc</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                        <span class="n">vald</span> <span class="o">=</span> <span class="n">vald</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;D:][%&#39;</span><span class="p">)</span>
+                        <span class="n">res</span><span class="p">[</span><span class="s1">&#39;C(%)&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">valc</span>
+                        <span class="n">res</span><span class="p">[</span><span class="s1">&#39;D(%)&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">vald</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">key</span> <span class="o">!=</span> <span class="s1">&#39;n&#39;</span><span class="p">:</span>
+                           <span class="n">key</span> <span class="o">+=</span> <span class="s1">&#39;(%)&#39;</span>
+                        <span class="n">res</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;%&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">res</span></div>
+
+
+<div class="viewcode-block" id="parse_busco_multiple"><a class="viewcode-back" href="../../../dammit.tasks.html#dammit.tasks.busco.parse_busco_multiple">[docs]</a><span class="k">def</span> <span class="nf">parse_busco_multiple</span><span class="p">(</span><span class="n">fn_list</span><span class="p">,</span> <span class="n">dbs</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;metazoa&#39;</span><span class="p">,</span> <span class="s1">&#39;vertebrata&#39;</span><span class="p">]):</span>
+    <span class="sd">&#39;&#39;&#39;Parses multiple BUSCO results summaries into an appropriately</span>
+<span class="sd">    index DataFrame.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        fn_list (list): List of paths to results files.</span>
+<span class="sd">        dbs (list): List of BUSCO database names.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        DataFrame: The formated DataFrame.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">fn</span> <span class="ow">in</span> <span class="n">fn_list</span><span class="p">:</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">parse_busco_summary</span><span class="p">(</span><span class="n">fn</span><span class="p">))</span>
+
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;fn&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">fn</span><span class="p">)[</span><span class="mi">14</span><span class="p">:</span><span class="o">-</span><span class="mi">14</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">fn</span> <span class="ow">in</span> <span class="n">fn_list</span><span class="p">]</span>
+    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;db&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">for</span> <span class="n">db</span> <span class="ow">in</span> <span class="n">dbs</span><span class="p">:</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">fn</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="n">db</span><span class="p">)</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span><span class="s1">&#39;db&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">db</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span><span class="s1">&#39;fn&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="s1">&#39;fn&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">fn</span><span class="p">:</span> <span class="n">fn</span><span class="p">[:</span><span class="n">fn</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">db</span><span class="p">)]</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;. &#39;</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">df</span></div>
+
+
+<div class="viewcode-block" id="busco_to_df"><a class="viewcode-back" href="../../../dammit.tasks.html#dammit.tasks.busco.busco_to_df">[docs]</a><span class="k">def</span> <span class="nf">busco_to_df</span><span class="p">(</span><span class="n">fn_list</span><span class="p">,</span> <span class="n">dbs</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;metazoa&#39;</span><span class="p">,</span> <span class="s1">&#39;vertebrata&#39;</span><span class="p">]):</span>
+    <span class="sd">&#39;&#39;&#39; Given a list of BUSCO results from different databases, produce</span>
+<span class="sd">    an appropriately multi-indexed DataFrame of the results.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        fn_list (list): The BUSCO summary files.</span>
+<span class="sd">        dbs (list): The BUSCO databases used for these runs.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        DataFrame: The BUSCO results.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">fn</span> <span class="ow">in</span> <span class="n">fn_list</span><span class="p">:</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">parse_busco</span><span class="p">(</span><span class="n">fn</span><span class="p">))</span>
+
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;fn&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">fn</span><span class="p">)[</span><span class="mi">14</span><span class="p">:</span><span class="o">-</span><span class="mi">14</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">fn</span> <span class="ow">in</span> <span class="n">fn_list</span><span class="p">]</span>
+    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;db&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">for</span> <span class="n">db</span> <span class="ow">in</span> <span class="n">dbs</span><span class="p">:</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">fn</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="n">db</span><span class="p">)</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span><span class="s1">&#39;db&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">db</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span><span class="s1">&#39;fn&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="s1">&#39;fn&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">fn</span><span class="p">:</span> <span class="n">fn</span><span class="p">[:</span><span class="n">fn</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">db</span><span class="p">)]</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;. &#39;</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">df</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2015, Camille Scott.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

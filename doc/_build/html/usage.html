@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Usage &mdash; dammit 0.3 documentation</title>
+    <title>Usage &#8212; dammit 1.0.dev0 documentation</title>
     
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.3',
+        VERSION:     '1.0.dev0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,15 +26,18 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="author" title="About these documents" href="about.html" />
-    <link rel="top" title="dammit 0.3 documentation" href="index.html" />
+    <link rel="top" title="dammit 1.0.dev0 documentation" href="index.html" />
     <link rel="next" title="Databases" href="databases.html" />
     <link rel="prev" title="Tutorial" href="tutorial.html" />
    
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head>
-  <body role="document">  
+  <body role="document">
+  
 
     <div class="document">
       <div class="documentwrapper">
@@ -49,7 +52,7 @@ This page has more complete usage information and a better breakdown of the func
 <h2>Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h2>
 <p>dammit has three components. The first, <cite>dependencies</cite>, checks whether you have the dependencies installed
 correctly and warns you if not. It is run with:</p>
-<div class="highlight-python"><div class="highlight"><pre>dammit dependencies
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">dammit</span> <span class="n">dependencies</span>
 </pre></div>
 </div>
 <p>There isn&#8217;t much to this command; either you have the dependencies or you don&#8217;t. If you don&#8217;t,
@@ -68,11 +71,11 @@ aggregates the results, and outputs a GFF3 file and annotation report. It takes 
 Additionally, it can specify an optional output directory, the number of threads to use with
 threaded subprograms like HMMER, and a list of user-supplied protein databases in FASTA format. A
 simple invocation with the default databases would look like:</p>
-<div class="highlight-python"><div class="highlight"><pre>dammit annotate &lt;transcriptome.fasta&gt;
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">dammit</span> <span class="n">annotate</span> <span class="o">&lt;</span><span class="n">transcriptome</span><span class="o">.</span><span class="n">fasta</span><span class="o">&gt;</span>
 </pre></div>
 </div>
 <p>While a more complex invocation might look like:</p>
-<div class="highlight-python"><div class="highlight"><pre>dammit annotate &lt;transcriptome.fasta&gt; --database-dir /path/to/dbs --busco-group vertebrata --n_threads 4 --user-databases whale.pep.fasta dolphin.pep.fasta
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">dammit</span> <span class="n">annotate</span> <span class="o">&lt;</span><span class="n">transcriptome</span><span class="o">.</span><span class="n">fasta</span><span class="o">&gt;</span> <span class="o">--</span><span class="n">database</span><span class="o">-</span><span class="nb">dir</span> <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">dbs</span> <span class="o">--</span><span class="n">busco</span><span class="o">-</span><span class="n">group</span> <span class="n">vertebrata</span> <span class="o">--</span><span class="n">n_threads</span> <span class="mi">4</span> <span class="o">--</span><span class="n">user</span><span class="o">-</span><span class="n">databases</span> <span class="n">whale</span><span class="o">.</span><span class="n">pep</span><span class="o">.</span><span class="n">fasta</span> <span class="n">dolphin</span><span class="o">.</span><span class="n">pep</span><span class="o">.</span><span class="n">fasta</span>
 </pre></div>
 </div>
 <p>User databases will be searched with CRBB; this runs <cite>blastx</cite>, so if you supply ridiculously huge
@@ -117,14 +120,11 @@ databases lack useful IDs, your annotations will too.</p>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -135,8 +135,8 @@ databases lack useful IDs, your annotations will too.</p>
       &copy;2015, Camille Scott.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.3</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.6</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
       
       |
       <a href="_sources/usage.txt"

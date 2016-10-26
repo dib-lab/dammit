@@ -1,0 +1,339 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>dammit.fileio package &#8212; dammit 1.0.dev0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0.dev0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="author" title="About these documents" href="about.html" />
+    <link rel="top" title="dammit 1.0.dev0 documentation" href="index.html" />
+    <link rel="up" title="dammit package" href="dammit.html" />
+    <link rel="next" title="dammit.tasks package" href="dammit.tasks.html" />
+    <link rel="prev" title="dammit package" href="dammit.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="dammit-fileio-package">
+<h1>dammit.fileio package<a class="headerlink" href="#dammit-fileio-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-dammit.fileio.base">
+<span id="dammit-fileio-base-module"></span><h2>dammit.fileio.base module<a class="headerlink" href="#module-dammit.fileio.base" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="dammit.fileio.base.BaseParser">
+<em class="property">class </em><code class="descclassname">dammit.fileio.base.</code><code class="descname">BaseParser</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/fileio/base.html#BaseParser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.fileio.base.BaseParser" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="dammit.fileio.base.BaseParser.raise_empty">
+<code class="descname">raise_empty</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/fileio/base.html#BaseParser.raise_empty"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.fileio.base.BaseParser.raise_empty" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="dammit.fileio.base.ChunkParser">
+<em class="property">class </em><code class="descclassname">dammit.fileio.base.</code><code class="descname">ChunkParser</code><span class="sig-paren">(</span><em>filename</em>, <em>chunksize=10000</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/fileio/base.html#ChunkParser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.fileio.base.ChunkParser" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#dammit.fileio.base.BaseParser" title="dammit.fileio.base.BaseParser"><code class="xref py py-class docutils literal"><span class="pre">dammit.fileio.base.BaseParser</span></code></a></p>
+<dl class="method">
+<dt id="dammit.fileio.base.ChunkParser.empty">
+<code class="descname">empty</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/fileio/base.html#ChunkParser.empty"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.fileio.base.ChunkParser.empty" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="dammit.fileio.base.ChunkParser.read">
+<code class="descname">read</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/fileio/base.html#ChunkParser.read"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.fileio.base.ChunkParser.read" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read the entire file at once and return as a single DataFrame.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="exception">
+<dt id="dammit.fileio.base.EmptyFile">
+<em class="property">exception </em><code class="descclassname">dammit.fileio.base.</code><code class="descname">EmptyFile</code><a class="reference internal" href="_modules/dammit/fileio/base.html#EmptyFile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.fileio.base.EmptyFile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">Exception</span></code></p>
+</dd></dl>
+
+<dl class="function">
+<dt id="dammit.fileio.base.convert_dtypes">
+<code class="descclassname">dammit.fileio.base.</code><code class="descname">convert_dtypes</code><span class="sig-paren">(</span><em>df</em>, <em>dtypes</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/fileio/base.html#convert_dtypes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.fileio.base.convert_dtypes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert the columns of a DataFrame to the types specified
+in the given dictionary, inplace.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>df</strong> (<em>DataFrame</em>) &#8211; The DataFrame to convert.</li>
+<li><strong>dtypes</strong> (<em>dict</em>) &#8211; Dictionary mapping columns to types.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="dammit.fileio.base.next_or_raise">
+<code class="descclassname">dammit.fileio.base.</code><code class="descname">next_or_raise</code><span class="sig-paren">(</span><em>fp</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/fileio/base.html#next_or_raise"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.fileio.base.next_or_raise" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="dammit.fileio.base.warn_empty">
+<code class="descclassname">dammit.fileio.base.</code><code class="descname">warn_empty</code><span class="sig-paren">(</span><em>msg</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/fileio/base.html#warn_empty"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.fileio.base.warn_empty" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-dammit.fileio.gff3">
+<span id="dammit-fileio-gff3-module"></span><h2>dammit.fileio.gff3 module<a class="headerlink" href="#module-dammit.fileio.gff3" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="dammit.fileio.gff3.GFF3Parser">
+<em class="property">class </em><code class="descclassname">dammit.fileio.gff3.</code><code class="descname">GFF3Parser</code><span class="sig-paren">(</span><em>filename</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/fileio/gff3.html#GFF3Parser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.fileio.gff3.GFF3Parser" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#dammit.fileio.base.ChunkParser" title="dammit.fileio.base.ChunkParser"><code class="xref py py-class docutils literal"><span class="pre">dammit.fileio.base.ChunkParser</span></code></a></p>
+<dl class="attribute">
+<dt id="dammit.fileio.gff3.GFF3Parser.columns">
+<code class="descname">columns</code><em class="property"> = [('seqid', &lt;class 'str'&gt;), ('source', &lt;class 'str'&gt;), ('type', &lt;class 'str'&gt;), ('start', &lt;class 'float'&gt;), ('end', &lt;class 'float'&gt;), ('score', &lt;class 'float'&gt;), ('strand', &lt;class 'str'&gt;), ('phase', &lt;class 'float'&gt;), ('attributes', &lt;class 'str'&gt;)]</em><a class="headerlink" href="#dammit.fileio.gff3.GFF3Parser.columns" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="staticmethod">
+<dt id="dammit.fileio.gff3.GFF3Parser.decompose_attr_column">
+<em class="property">static </em><code class="descname">decompose_attr_column</code><span class="sig-paren">(</span><em>col</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/fileio/gff3.html#GFF3Parser.decompose_attr_column"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.fileio.gff3.GFF3Parser.decompose_attr_column" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="dammit.fileio.gff3.GFF3Parser.empty">
+<code class="descname">empty</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/fileio/gff3.html#GFF3Parser.empty"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.fileio.gff3.GFF3Parser.empty" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="dammit.fileio.gff3.GFF3Writer">
+<em class="property">class </em><code class="descclassname">dammit.fileio.gff3.</code><code class="descname">GFF3Writer</code><span class="sig-paren">(</span><em>filename=None</em>, <em>converter=None</em>, <em>**converter_kwds</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/fileio/gff3.html#GFF3Writer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.fileio.gff3.GFF3Writer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="dammit.fileio.gff3.GFF3Writer.convert">
+<code class="descname">convert</code><span class="sig-paren">(</span><em>data_df</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/fileio/gff3.html#GFF3Writer.convert"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.fileio.gff3.GFF3Writer.convert" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="staticmethod">
+<dt id="dammit.fileio.gff3.GFF3Writer.mangle_coordinates">
+<em class="property">static </em><code class="descname">mangle_coordinates</code><span class="sig-paren">(</span><em>gff3_df</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/fileio/gff3.html#GFF3Writer.mangle_coordinates"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.fileio.gff3.GFF3Writer.mangle_coordinates" title="Permalink to this definition">¶</a></dt>
+<dd><p>Although 1-based fully closed intervals are of the Beast,
+we will respect the convention in the interests of peace between
+worlds and compatibility.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>gff3_df</strong> (<em>DataFrame</em>) &#8211; The DataFrame to &#8220;fix&#8221;.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="dammit.fileio.gff3.GFF3Writer.version_line">
+<code class="descname">version_line</code><em class="property"> = '##gff-version 3.2.1'</em><a class="headerlink" href="#dammit.fileio.gff3.GFF3Writer.version_line" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="dammit.fileio.gff3.GFF3Writer.write">
+<code class="descname">write</code><span class="sig-paren">(</span><em>data_df</em>, <em>version_line=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/fileio/gff3.html#GFF3Writer.write"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.fileio.gff3.GFF3Writer.write" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write the given data to a GFF3 file, using the converter if given.</p>
+<p>Generates an empty file if given an empty DataFrame.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>version_line</strong> (<em>bool</em>) &#8211; If True, write the GFF3 version line at the.</li>
+<li><strong>that this will cause an existing file to be overwritten, but</strong> (<em>Note</em>) &#8211; </li>
+<li><strong>only be added in the first call to write.</strong> (<em>will</em>) &#8211; </li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="dammit.fileio.gff3.cmscan_to_gff3">
+<code class="descclassname">dammit.fileio.gff3.</code><code class="descname">cmscan_to_gff3</code><span class="sig-paren">(</span><em>cmscan_df</em>, <em>tag=''</em>, <em>database=''</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/fileio/gff3.html#cmscan_to_gff3"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.fileio.gff3.cmscan_to_gff3" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="dammit.fileio.gff3.hmmscan_to_gff3">
+<code class="descclassname">dammit.fileio.gff3.</code><code class="descname">hmmscan_to_gff3</code><span class="sig-paren">(</span><em>hmmscan_df</em>, <em>tag=''</em>, <em>database=''</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/fileio/gff3.html#hmmscan_to_gff3"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.fileio.gff3.hmmscan_to_gff3" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="dammit.fileio.gff3.id_gen_wrapper">
+<code class="descclassname">dammit.fileio.gff3.</code><code class="descname">id_gen_wrapper</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/fileio/gff3.html#id_gen_wrapper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.fileio.gff3.id_gen_wrapper" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="dammit.fileio.gff3.maf_to_gff3">
+<code class="descclassname">dammit.fileio.gff3.</code><code class="descname">maf_to_gff3</code><span class="sig-paren">(</span><em>maf_df</em>, <em>tag=''</em>, <em>database=''</em>, <em>ftype='translated_nucleotide_match'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/fileio/gff3.html#maf_to_gff3"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.fileio.gff3.maf_to_gff3" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="dammit.fileio.gff3.next_ID">
+<code class="descclassname">dammit.fileio.gff3.</code><code class="descname">next_ID</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dammit.fileio.gff3.next_ID" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="dammit.fileio.gff3.shmlast_to_gff3">
+<code class="descclassname">dammit.fileio.gff3.</code><code class="descname">shmlast_to_gff3</code><span class="sig-paren">(</span><em>df</em>, <em>database=''</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/fileio/gff3.html#shmlast_to_gff3"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.fileio.gff3.shmlast_to_gff3" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-dammit.fileio.hmmer">
+<span id="dammit-fileio-hmmer-module"></span><h2>dammit.fileio.hmmer module<a class="headerlink" href="#module-dammit.fileio.hmmer" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="dammit.fileio.hmmer.HMMerParser">
+<em class="property">class </em><code class="descclassname">dammit.fileio.hmmer.</code><code class="descname">HMMerParser</code><span class="sig-paren">(</span><em>filename</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/fileio/hmmer.html#HMMerParser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.fileio.hmmer.HMMerParser" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#dammit.fileio.base.ChunkParser" title="dammit.fileio.base.ChunkParser"><code class="xref py py-class docutils literal"><span class="pre">dammit.fileio.base.ChunkParser</span></code></a></p>
+<dl class="attribute">
+<dt id="dammit.fileio.hmmer.HMMerParser.columns">
+<code class="descname">columns</code><em class="property"> = [('target_name', &lt;class 'str'&gt;), ('target_accession', &lt;class 'str'&gt;), ('tlen', &lt;class 'int'&gt;), ('query_name', &lt;class 'str'&gt;), ('query_accession', &lt;class 'str'&gt;), ('query_len', &lt;class 'int'&gt;), ('full_evalue', &lt;class 'float'&gt;), ('full_score', &lt;class 'float'&gt;), ('full_bias', &lt;class 'float'&gt;), ('domain_num', &lt;class 'int'&gt;), ('domain_total', &lt;class 'int'&gt;), ('domain_c_evalue', &lt;class 'float'&gt;), ('domain_i_evalue', &lt;class 'float'&gt;), ('domain_score', &lt;class 'float'&gt;), ('domain_bias', &lt;class 'float'&gt;), ('hmm_coord_from', &lt;class 'int'&gt;), ('hmm_coord_to', &lt;class 'int'&gt;), ('ali_coord_from', &lt;class 'int'&gt;), ('ali_coord_to', &lt;class 'int'&gt;), ('env_coord_from', &lt;class 'int'&gt;), ('env_coord_to', &lt;class 'int'&gt;), ('accuracy', &lt;class 'float'&gt;), ('description', &lt;class 'str'&gt;)]</em><a class="headerlink" href="#dammit.fileio.hmmer.HMMerParser.columns" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-dammit.fileio.infernal">
+<span id="dammit-fileio-infernal-module"></span><h2>dammit.fileio.infernal module<a class="headerlink" href="#module-dammit.fileio.infernal" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="dammit.fileio.infernal.InfernalParser">
+<em class="property">class </em><code class="descclassname">dammit.fileio.infernal.</code><code class="descname">InfernalParser</code><span class="sig-paren">(</span><em>filename</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/fileio/infernal.html#InfernalParser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.fileio.infernal.InfernalParser" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#dammit.fileio.base.ChunkParser" title="dammit.fileio.base.ChunkParser"><code class="xref py py-class docutils literal"><span class="pre">dammit.fileio.base.ChunkParser</span></code></a></p>
+<dl class="attribute">
+<dt id="dammit.fileio.infernal.InfernalParser.columns">
+<code class="descname">columns</code><em class="property"> = [('target_name', &lt;class 'str'&gt;), ('target_accession', &lt;class 'str'&gt;), ('query_name', &lt;class 'str'&gt;), ('query_accession', &lt;class 'str'&gt;), ('mdl', &lt;class 'str'&gt;), ('mdl_from', &lt;class 'int'&gt;), ('mdl_to', &lt;class 'int'&gt;), ('seq_from', &lt;class 'int'&gt;), ('seq_to', &lt;class 'int'&gt;), ('strand', &lt;class 'str'&gt;), ('trunc', &lt;class 'str'&gt;), ('pass', &lt;class 'str'&gt;), ('gc', &lt;class 'float'&gt;), ('bias', &lt;class 'float'&gt;), ('score', &lt;class 'float'&gt;), ('e_value', &lt;class 'float'&gt;), ('inc', &lt;class 'str'&gt;), ('description', &lt;class 'str'&gt;)]</em><a class="headerlink" href="#dammit.fileio.infernal.InfernalParser.columns" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-dammit.fileio.maf">
+<span id="dammit-fileio-maf-module"></span><h2>dammit.fileio.maf module<a class="headerlink" href="#module-dammit.fileio.maf" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="dammit.fileio.maf.MafParser">
+<em class="property">class </em><code class="descclassname">dammit.fileio.maf.</code><code class="descname">MafParser</code><span class="sig-paren">(</span><em>filename</em>, <em>aln_strings=False</em>, <em>chunksize=10000</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/fileio/maf.html#MafParser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.fileio.maf.MafParser" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#dammit.fileio.base.ChunkParser" title="dammit.fileio.base.ChunkParser"><code class="xref py py-class docutils literal"><span class="pre">dammit.fileio.base.ChunkParser</span></code></a></p>
+<dl class="attribute">
+<dt id="dammit.fileio.maf.MafParser.columns">
+<code class="descname">columns</code><em class="property"> = [('E', &lt;class 'float'&gt;), ('EG2', &lt;class 'float'&gt;), ('q_aln_len', &lt;class 'int'&gt;), ('q_len', &lt;class 'int'&gt;), ('q_name', &lt;class 'str'&gt;), ('q_start', &lt;class 'int'&gt;), ('q_strand', &lt;class 'str'&gt;), ('s_aln_len', &lt;class 'int'&gt;), ('s_len', &lt;class 'int'&gt;), ('s_name', &lt;class 'str'&gt;), ('s_start', &lt;class 'int'&gt;), ('s_strand', &lt;class 'str'&gt;), ('score', &lt;class 'float'&gt;), ('bitscore', &lt;class 'float'&gt;)]</em><a class="headerlink" href="#dammit.fileio.maf.MafParser.columns" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-dammit.fileio">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-dammit.fileio" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">dammit.fileio package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-dammit.fileio.base">dammit.fileio.base module</a></li>
+<li><a class="reference internal" href="#module-dammit.fileio.gff3">dammit.fileio.gff3 module</a></li>
+<li><a class="reference internal" href="#module-dammit.fileio.hmmer">dammit.fileio.hmmer module</a></li>
+<li><a class="reference internal" href="#module-dammit.fileio.infernal">dammit.fileio.infernal module</a></li>
+<li><a class="reference internal" href="#module-dammit.fileio.maf">dammit.fileio.maf module</a></li>
+<li><a class="reference internal" href="#module-dammit.fileio">Module contents</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="dammit.html">dammit package</a><ul>
+      <li>Previous: <a href="dammit.html" title="previous chapter">dammit package</a></li>
+      <li>Next: <a href="dammit.tasks.html" title="next chapter">dammit.tasks package</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/dammit.fileio.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2015, Camille Scott.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="_sources/dammit.fileio.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
