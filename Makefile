@@ -18,8 +18,11 @@ acceptance-huge: FORCE
 publish: FORCE
 		python setup.py sdist upload
 
-gh-pages:
+doc: FORCE
+		sphinx-apidoc  -o doc/ dammit/ -f
 		cd doc; make clean html
+
+gh-pages: doc
 		touch doc/_build/html/.nojekyll
 		git add doc/
 		git commit -m "Generated gh-pages for `git log master -1 --pretty=short --abbrev-commit`"

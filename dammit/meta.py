@@ -1,3 +1,6 @@
+'''
+Program metadata: the version, install path, description, and default config.
+'''
 import json
 import os
 
@@ -9,6 +12,11 @@ __date__ = 2016
 
 
 def get_config():
+    '''Parse the default JSON config files and return them as dictionaries.
+
+    Returns:
+        tuple: The config and databases dictionaries.
+    '''
     with open(os.path.join(__path__, 'config.json')) as fp:
         config_d = json.load(fp)
     with open(os.path.join(__path__, 'databases.json'), 'r') as fp:

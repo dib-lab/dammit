@@ -12,6 +12,9 @@ import six
 
 
 def cleaned_actions(actions):
+    '''Get a cleanup list of actions: Python actions have their <locals> portion
+    stripped, which clutters up PythonActions that are closures.
+    '''
     txt = ''
     for action in actions:
         txt_rep = six.text_type(action)

@@ -34,7 +34,6 @@ def get_handler(config):
 
     handler = TaskHandler(config['database_dir'],
                           logger, 
-                          config=config,
                           db='databases',
                           backend=config['doit_backend'],
                           verbosity=config['verbosity'])

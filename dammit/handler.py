@@ -12,9 +12,35 @@ from .utils import Move
 from . import ui
 
 class TaskHandler(TaskLoader):
+    '''Stores tasks and the files they operate on, along with
+    doit config and other metadata. This is the core of the pipelines:
+    it passes its tasks along to doit for execution, and can check task
+    and pipeline completion status.
 
-    def __init__(self, directory, logger, config=None, files=None, 
+    Attributes:
+        files (dict): Files used by the tasks.
+        directory (str): Working directory for execution.
+        tasks (OrderedDict): The tasks to execute.
+        dep_file (str): Path of the doit database.
+        doit_config (dict): The doit configuration given to the task runner.
+        doit_dep_mgr (doit.dependency.Dependency): Doit object to track task
+            status.
+        profile (bool): Whether to run the profiler on tasks.
+        logger (logging.Logger): Logger to use.
+    '''
+
+    def __init__(self, directory, logger, files=None, 
                  profile=False, db=None, **doit_config_kwds):
+        '''
+        Args:
+            directory (str): The directory in which to run the tasks. Will be
+                created it it doesn't exist.
+            logger (logging.Logger): Logger to record to.
+            files (dict): Files used by the handler. Starts empty if omitted.
+            profile (bool): If True, profile task execution.
+            db (str): Name of the doit database.
+            **doit_config_kwds: Keyword arguments passed to doit.
+        '''
 
         super(TaskHandler, self).__init__()
 
@@ -49,6 +75,22 @@ class TaskHandler(TaskLoader):
         
 
     def register_task(self, name, task, files=None):
+        '''Register a new task and its files with the handler.
+
+        It may seem redundant or confusing to give the tasks a name different
+        than their internal doit name. I do this because doit tasks need to have 
+        names as unique as possible, so that they can be reused in different
+        projects. A particular TaskHandler instance is only used for one
+        pipeline run, and allowing different names makes it easier to reference
+        tasks from elsewhere.
+
+        Args:
+            name (str): Name of the task. Does not have to correspond to doit's
+                internal task name.
+            task (:obj:): Either a dictionary or Task object.
+            files (dict): Dictionary of files used.
+        '''
+
         if files is None:
             files = {}
         if type(files) is not dict:
@@ -60,10 +102,24 @@ class TaskHandler(TaskLoader):
                           '  with files {2}'.format(name, task, files))
 
     def clear_tasks(self):
+        '''Empty the task dictionary.'''
+
         self.logger.debug('Clearing {0} tasks'.format(len(self.tasks)))
         self.tasks = {}
 
-    def get_status(self, task):
+    def get_status(self, task, move=False):
+        '''Get the up-to-date status of a single task.
+
+        Args:
+            task (str): The task name to look up.
+            move (bool): If True, move to the handler's directory before
+                checking. Whether this is necessary depends mostly on whether
+                the task uses relative or absolute paths.
+        Returns:
+            str: The string represenation of the status. Either "run" or
+            "uptodate".
+        '''
+
         if type(task) is str:
             try:
                 task = self.tasks[task]
@@ -71,8 +127,13 @@ class TaskHandler(TaskLoader):
                 self.logger.error('Task not found:{0}'.format(task))
                 raise
         self.logger.debug('Getting status for task {0}'.format(task.name))
-        status = self.doit_dep_mgr.get_status(task, self.tasks.values(),
-                                              get_log=True)
+        if move:
+            with Move(self.directory):
+                status = self.doit_dep_mgr.get_status(task, self.tasks.values(),
+                                                      get_log=True)
+        else:
+            status = self.doit_dep_mgr.get_status(task, self.tasks.values(),
+                                                      get_log=True)
         self.logger.debug('Task {0} had status {1}'.format(task, status.status))
         try:
             self.logger.debug('Task {0} had reasons {1}'.format(task, status.reasons))
@@ -82,6 +143,15 @@ class TaskHandler(TaskLoader):
         return status.status
 
     def print_statuses(self, uptodate_msg='All tasks up-to-date!'):
+        '''Print the up-to-date status of all tasks.
+
+        Args:
+            uptodate_msg (str): The message to print if all tasks are up to
+            date.
+        Returns:
+            tuple: A bool (True if all up to date) and a dictionary of statuses.
+        '''
+
         uptodate, statuses = self.check_uptodate()
         if uptodate:
             print(ui.paragraph(uptodate_msg))
@@ -97,6 +167,14 @@ class TaskHandler(TaskLoader):
         return uptodate, statuses
 
     def check_uptodate(self):
+        '''Check if all tasks are up-to-date, ie if the pipeline is complete.
+        Note that this moves to the handler's directory to lessen issues with
+        relative versus absolute paths.
+
+        Returns:
+            bool: True if all are up to date.
+        '''
+
         with Move(self.directory):
             statuses = {}
             outofdate = False
@@ -106,11 +184,24 @@ class TaskHandler(TaskLoader):
             return all(statuses.values()), statuses
         
     def load_tasks(self, cmd, opt_values, pos_args):
+        '''Internal to doit -- triggered by the TaskLoader.'''
+
         self.logger.debug('loading {0} tasks'.format(len(self.tasks)))
         return self.tasks.values(), self.doit_config
 
     def run(self, doit_args=None, verbose=True):
-        print(ui.header('Run Tasks', level=4))
+        '''Run the pipeline. Movees to the directory, loads the tasks into doit,
+        and executes that tasks that are not up-to-date.
+
+        Args:
+            doit_args (list): Args that would be passed to the doit shell
+                command. By default, just run.
+            verbose (bool): If True, print UI stuff.
+        Returns:
+            int: Exit status of the doit command.
+        '''
+        if verbose:
+            print(ui.header('Run Tasks', level=4))
         if doit_args is None:
             doit_args = ['run']
         runner = DoitMain(self)

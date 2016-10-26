@@ -56,7 +56,6 @@ def get_handler(config, databases):
     directory = path.abspath(out_dir)
 
     handler = TaskHandler(directory, logger, 
-                          config=config,
                           db='annotate',
                           backend=config['doit_backend'],
                           verbosity=config['verbosity'],

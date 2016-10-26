@@ -18,6 +18,8 @@ def header(msg, level=1):
 
 
 def checkbox(msg, checked=False):
+    '''Generate a Github markdown checkbox for the message.'''
+
     if checked:
         return '- [x] ' + msg
     else:
@@ -25,10 +27,14 @@ def checkbox(msg, checked=False):
 
 
 def paragraph(msg, wrap=80):
+    '''Generate a wrapped paragraph.'''
+
     return '\n' + '\n'.join(textwrap.wrap(msg, wrap)) + '\n'
 
  
 def listing(d):
+    '''Generate a markdown list.
+    '''
     if type(d) is str or type(d) is bytes:
         return d
     elif type(d) is dict:
@@ -41,6 +47,8 @@ def listing(d):
 
 
 class GithubMarkdownReporter(ConsoleReporter):
+    '''Specialized doit reporter to make task output Github Markdown compliant.
+    '''
 
     def execute_task(self, task):
         """called when excution starts"""
