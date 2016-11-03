@@ -127,7 +127,7 @@ def build_default_pipeline(handler, config, databases, with_uniref=False):
     register_pfam_tasks(handler, config['hmmer']['hmmpress'], databases)
     register_rfam_tasks(handler, config['infernal']['cmpress'], databases)
     register_orthodb_tasks(handler, config['last']['lastdb'], databases)
-    register_busco_tasks(handler, config['busco'], databases)
+    register_busco_tasks(handler, config, databases)
     if with_uniref:
         register_uniref90_tasks(handler, config['last']['lastdb'], databases)
 
@@ -180,14 +180,15 @@ def register_orthodb_tasks(handler, params, databases):
 
 def register_busco_tasks(handler, config, databases):
     busco = databases['BUSCO']
-    busco_dir = path.join(handler.directory, config['db_dir'])
-    for group_name in busco:
-        group = busco[group_name]
-        files = {'BUSCO-{0}'.format(group_name): path.join(busco_dir, group_name)}
-        handler.register_task('download:BUSCO-{0}'.format(group_name),
+    busco_dir = path.join(handler.directory, config['busco']['db_dir'])
+    
+    group_name = config['busco_group']
+    group = busco[group_name]
+    files = {'BUSCO-{0}'.format(group_name): path.join(busco_dir, group_name)}
+    handler.register_task('download:BUSCO-{0}'.format(group_name),
                               get_download_and_untar_task(group['url'],
-                                                         busco_dir,
-                                                         label=group_name),
+                                                          busco_dir,
+                                                          label=group_name),
                               files=files)
     return handler
 

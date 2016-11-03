@@ -72,6 +72,7 @@ def get_download_and_untar_task(url, target_dir, label=None):
     cmd1 = 'mkdir -p {target_dir}; curl {url} | tar -xz -C {target_dir}'.format(**locals())
     name = 'download_and_untar:{0}-{1}'.format(os.path.basename(target_dir), label)
     done = os.path.join(target_dir, name) + '.done'
+    print(done)
     cmd2 = 'touch {done}'.format(done=done)
 
     return {'name': name,

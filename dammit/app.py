@@ -2,6 +2,7 @@
 from __future__ import print_function
 
 import argparse
+import glob
 import logging
 import os
 import sys
@@ -116,6 +117,12 @@ class DammitApp(object):
                                      ' and conditional reciprocal best'\
                                      ' LAST from a protein database.')
 
+        migrate_parser= subparsers.add_parser('migrate')
+        migrate_parser.add_argument('--destructive', default=False,
+                                    action='store_true')
+        add_common_args(migrate_parser)
+        migrate_parser.set_defaults(func=self.handle_migrate)
+
 
         '''
         Add the databases subcommand.
@@ -221,6 +228,17 @@ class DammitApp(object):
         annotate_parser.set_defaults(func=self.handle_annotate)
 
         return parser
+
+    def handle_migrate(self):
+        with utils.Move(self.args.database_dir):
+            odb_files = glob.glob('aa_seq_euk.fasta.db.*')
+            for fn in odb_files:
+                pre, _, suf = fn.partition('.db')
+                newfn = pre + suf
+                if self.args.destructive:
+                    os.rename(fn, newfn)
+                else:
+                    os.symlink(fn, newfn)
 
     def handle_dependencies(self):
         log.start_logging()
