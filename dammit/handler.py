@@ -12,26 +12,14 @@ from .utils import Move
 from . import ui
 
 class TaskHandler(TaskLoader):
-    '''Stores tasks and the files they operate on, along with
-    doit config and other metadata. This is the core of the pipelines:
-    it passes its tasks along to doit for execution, and can check task
-    and pipeline completion status.
-
-    Attributes:
-        files (dict): Files used by the tasks.
-        directory (str): Working directory for execution.
-        tasks (OrderedDict): The tasks to execute.
-        dep_file (str): Path of the doit database.
-        doit_config (dict): The doit configuration given to the task runner.
-        doit_dep_mgr (doit.dependency.Dependency): Doit object to track task
-            status.
-        profile (bool): Whether to run the profiler on tasks.
-        logger (logging.Logger): Logger to use.
-    '''
 
     def __init__(self, directory, logger, files=None, 
                  profile=False, db=None, **doit_config_kwds):
-        '''
+        '''Stores tasks and the files they operate on, along with
+        doit config and other metadata. This is the core of the pipelines:
+        it passes its tasks along to doit for execution, and can check task
+        and pipeline completion status.
+
         Args:
             directory (str): The directory in which to run the tasks. Will be
                 created it it doesn't exist.
@@ -40,6 +28,17 @@ class TaskHandler(TaskLoader):
             profile (bool): If True, profile task execution.
             db (str): Name of the doit database.
             **doit_config_kwds: Keyword arguments passed to doit.
+
+        Attributes:
+            files (dict): Files used by the tasks.
+            directory (str): Working directory for execution.
+            tasks (OrderedDict): The tasks to execute.
+            dep_file (str): Path of the doit database.
+            doit_config (dict): The doit configuration given to the task runner.
+            doit_dep_mgr (doit.dependency.Dependency): Doit object to track task
+                status.
+            profile (bool): Whether to run the profiler on tasks.
+            logger (logging.Logger): Logger to use.
         '''
 
         super(TaskHandler, self).__init__()

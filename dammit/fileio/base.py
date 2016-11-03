@@ -8,10 +8,13 @@ class EmptyFile(Exception):
 
 
 def warn_empty(msg):
+    '''Warn that a file is empty.'''
     print('\nWARNING: Empty file: {0}\n'.format(msg), file=stderr)
 
 
 def next_or_raise(fp):
+    '''Get the next line and raise an exception if its empty.
+    '''
     counter = count()
     def func(raise_exc=True):
         line = fp.readline()
@@ -50,6 +53,12 @@ class BaseParser(object):
 class ChunkParser(BaseParser):
 
     def __init__(self, filename, chunksize=10000):
+        '''
+        Args:
+            filename (str): Path to the file to parse.
+            chunksize (int): Number of entries to yield per call.
+        '''
+
         self.chunksize = chunksize
         super(ChunkParser, self).__init__(filename)
 
@@ -67,6 +76,9 @@ class ChunkParser(BaseParser):
             return self.empty()
 
     def empty(self):
+        '''Get an empty DataFrame with the appropriate columns.
+        '''
+
         df = pd.DataFrame(columns=[k for k, _ in self.columns])
         convert_dtypes(df, dict(self.columns))
         return df
