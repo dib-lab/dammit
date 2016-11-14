@@ -79,6 +79,15 @@ class DammitApp(object):
                                      ' the organism being annotated.'
                                 )
 
+            parser.add_argument('--n_threads',
+                                type=int,
+                                default=1,
+                                help='For annotate, number of threads to pass to '\
+                                     'programs  supporting multithreading. For '\
+                                     'databases, number of simultaneous tasks '\
+                                     'to execute.'
+                                )
+
             parser.add_argument('--config-file',
                                 )
 
@@ -194,13 +203,6 @@ class DammitApp(object):
                                      help='Output directory. By default this will'\
                                           ' be the name of the transcriptome file'\
                                           ' with `.dammit` appended'
-                                     )
-
-        annotate_parser.add_argument('--n_threads',
-                                     type=int,
-                                     default=1,
-                                     help='Number of threads to pass to programs'\
-                                          ' supporting multithreading'
                                      )
 
         annotate_parser.add_argument('--user-databases',
