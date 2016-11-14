@@ -81,6 +81,18 @@ class GFF3Parser(ChunkParser):
 
 def maf_to_gff3(maf_df, tag='', database='',
                    ftype='translated_nucleotide_match'):
+    '''Convert a MAF DataFrame to a GFF3 DataFrame ready to be written to disk.
+
+    Args:
+        maf_df (pandas.DataFrame): The MAF DataFrame. See
+            dammit.fileio.maf.MafParser for column specs.
+        tag (str): Extra tag to add to the source column.
+        database (str): For the database entry in the attributes column.
+        ftype (str): The feature type; GMOD compliant if possible.
+    
+    Returns:
+        pandas.DataFrame: The GFF3 compliant DataFrame.
+    '''
 
     gff3_df = pd.DataFrame()
     gff3_df['seqid'] = maf_df['q_name']
