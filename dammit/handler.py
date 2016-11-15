@@ -14,7 +14,7 @@ from . import ui
 class TaskHandler(TaskLoader):
 
     def __init__(self, directory, logger, files=None, 
-                 profile=False, db=None, **doit_config_kwds):
+                 profile=False, db=None, n_threads=1, **doit_config_kwds):
         '''Stores tasks and the files they operate on, along with
         doit config and other metadata. This is the core of the pipelines:
         it passes its tasks along to doit for execution, and can check task
@@ -68,7 +68,7 @@ class TaskHandler(TaskLoader):
                                 reporter=ui.GithubMarkdownReporter,
                                 **doit_config_kwds)
         self.doit_dep_mgr = Dependency(SqliteDB, dep_file)
-
+        self.n_threads = n_threads
         self.profile = profile
         self.logger = logger
         
@@ -203,6 +203,9 @@ class TaskHandler(TaskLoader):
             print(ui.header('Run Tasks', level=4))
         if doit_args is None:
             doit_args = ['run']
+            if self.n_threads > 1:
+                doit_args.extend(['-n', str(self.n_threads)])
+
         runner = DoitMain(self)
 
         with Move(self.directory):
