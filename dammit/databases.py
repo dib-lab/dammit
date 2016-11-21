@@ -36,7 +36,8 @@ def get_handler(config):
                           logger, 
                           db='databases',
                           backend=config['doit_backend'],
-                          verbosity=config['verbosity'])
+                          verbosity=config['verbosity'],
+                          n_threads=config['n_threads'])
 
     return handler
 

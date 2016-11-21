@@ -23,8 +23,8 @@ class GFF3Parser(ChunkParser):
     columns = [('seqid', str),
                 ('source', str),
                 ('type', str),
-                ('start', float),
-                ('end', float),
+                ('start', int),
+                ('end', int),
                 ('score', float),
                 ('strand', str),
                 ('phase', float),
@@ -68,6 +68,7 @@ class GFF3Parser(ChunkParser):
                                     dtype=dict(self.columns)):
 
             # Generate a new DataFrame from the attributes dicts, and merge it in
+            group.reset_index(drop=True, inplace=True)
             df = pd.merge(group, pd.DataFrame(list(group.attributes)),
                           left_index=True, right_index=True)
             del df['attributes']
