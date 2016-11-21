@@ -1,3 +1,5 @@
+import re
+
 import pandas as pd
 from .base import next_or_raise, convert_dtypes, ChunkParser
 
@@ -27,7 +29,12 @@ class HMMerParser(ChunkParser):
                 ('accuracy', float),
                 ('description', str)]
 
-    def __init__(self, filename, **kwargs):
+    def __init__(self, filename, query_regex=None, **kwargs):
+        if query_regex is None:
+            self.query_regex = re.compile(r'(?P<name>Transcript_[0-9]*)')
+        else:
+            self.query_regex = query_regex
+
         super(HMMerParser, self).__init__(filename, **kwargs)
 
     def __iter__(self):
@@ -70,7 +77,12 @@ class HMMerParser(ChunkParser):
             self.raise_empty()
 
         def split_query(item):
-            q, _, _ = item.rpartition('|')
+            results = self.query_regex.search(item).groupdict()
+            try:
+                q = results['name']
+            except KeyError as e:
+                e.message = 'Header regex should have a "name" field.'
+                raise
             return q
 
         df = pd.DataFrame(data, columns=[k for k, _ in self.columns])
