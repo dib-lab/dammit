@@ -178,7 +178,7 @@ class AnnotateHandler(object):
                                self.args.evalue,
                                self.args.n_threads, 
                                common.CONFIG['settings']['hmmer']['hmmscan'],
-                               n_nodes=self.args.n_nodes)
+                               pbs=self.args.sshloginfile)
 
         yield get_remap_hmmer_task(self.transdecoder_pfam_fn,
                                    self.transdecoder_orf_gff3_fn,
@@ -202,7 +202,7 @@ class AnnotateHandler(object):
                                self.args.evalue,
                                self.args.n_threads, 
                                cmscan_cfg,
-                               n_nodes=self.args.n_nodes)
+                               pbs=self.args.sshloginfile)
 
     def orthodb_task(self):
         '''Run LAST to get homologies with OrthoDB. We use LAST here because
@@ -218,7 +218,7 @@ class AnnotateHandler(object):
                                translate=True,
                                cutoff=self.args.evalue,
                                n_threads=self.args.n_threads,
-                               n_nodes=self.args.n_nodes)
+                               pbs=self.args.sshloginfile)
 
     def uniref_task(self):
 
@@ -231,7 +231,7 @@ class AnnotateHandler(object):
                                translate=True,
                                cutoff=self.args.evalue,
                                n_threads=self.args.n_threads,
-                               n_nodes=self.args.n_nodes)
+                               pbs=self.args.sshloginfile)
 
     def user_crb_tasks(self):
         '''Run conditional recipricol best hits LAST (CRBL) against the

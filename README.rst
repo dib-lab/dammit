@@ -50,17 +50,17 @@ Install some packages manually::
     export PATH=$HOME/last-658/scripts:$PATH
 
     cd
-    curl -LO http://busco.ezlab.org/files/BUSCO_v1.1b1.tar.gz
-    tar -xvzf BUSCO_v1.1b1.tar.gz
-    chmod +x BUSCO_v1.1b1/*.py
-    export PATH=$HOME/BUSCO_v1.1b1:$PATH
+    curl -LO http://busco.ezlab.org/v1/files/BUSCO_v1.22.tar.gz 
+    tar -xvzf BUSCO_v1.22.tar.gz
+    chmod +x BUSCO_v1.22/*.py
+    export PATH=$HOME/BUSCO_v1.22:$PATH
     cd
 
 To add these to your environment permanently::
 
     echo 'export PATH=$PATH:$HOME/TransDecoder-2.0.1' >> $HOME/.bashrc
     echo 'export PATH=$PATH:$HOME/last-658/src' >> $HOME/.bashrc
-    echo 'export PATH=$PATH:$HOME/BUSCO_v1.1b1' >> $HOME/.bashrc
+    echo 'export PATH=$HOME/BUSCO_v1.22:$PATH' >> $HOME/.bashrc
 
 Now, install dammit::
 
@@ -114,6 +114,7 @@ Known Issues
   EMBOSS, which is not searched for. Although the installation instructions cover these
   dependencies, users who *cough* don't read the directions *cough* might be confused that a
   dependency is marked as installed but still doesn't work.
+* dammit 0.3 does not support BUSCO v2. dammit 1.0 is building 2.0 support in.
 
 
 Acknowledgements

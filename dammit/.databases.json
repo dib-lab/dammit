@@ -48,25 +48,37 @@
         "metazoa": {
             "access": "download",
             "db_type": "hmm",
-            "url": "http://busco.ezlab.org/files/metazoa_buscos.tar.gz"
+            "url": "http://busco.ezlab.org/v1/files/metazoa_buscos.tar.gz"
         },
 
         "vertebrata": {
             "access": "download",
             "db_type": "hmm",
-            "url": "http://busco.ezlab.org/files/vertebrata_buscos.tar.gz"
+            "url": "http://busco.ezlab.org/v1/files/vertebrata_buscos.tar.gz"
         },
 
         "arthropoda": {
             "access": "download",
             "db_type": "hmm",
-            "url": "http://busco.ezlab.org/files/arthropoda_buscos.tar.gz"
+            "url": "http://busco.ezlab.org/v1/files/arthropoda_buscos.tar.gz"
         },
 
         "eukaryota": {
             "access": "download",
             "db_type": "hmm",
-            "url": "http://busco.ezlab.org/files/eukaryota_buscos.tar.gz"
+            "url": "http://busco.ezlab.org/v1/files/eukaryota_buscos.tar.gz"
+        },
+
+        "fungi": {
+            "access": "download",
+            "db_type": "hmm",
+            "url": "http://busco.ezlab.org/v1/files/fungi_buscos.tar.gz"
+        },
+
+        "plantae": {
+            "access": "download",
+            "db_type": "hmm",
+            "url": "http://busco.ezlab.org/v1/files/plant_early_release.tar.gz"
         }
     }
 

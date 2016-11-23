@@ -10,7 +10,6 @@ from doit.dependency import Dependency, SqliteDB
 
 from .common import which
 from . import common
-from .tasks import get_download_and_untar_task
 
 
 class DependencyHandler(object):
@@ -118,12 +117,18 @@ def check_blast(logger):
 
 
 def check_busco(logger):
-    busco = which('BUSCO_v1.1b1.py')
+    versions = [(122, 'BUSCO_v1.22.py'),
+                (111, 'BUSCO_v1.1b1.py')]
+    for version, exc in versions:
+        busco = which(exc)
+        if busco is not None:
+            break
     if busco is None:
         return False, 'Not found on $PATH'
     else:
-        logger.debug('BUSCO:' + busco)
-        return True, os.path.dirname(busco)
+        if logger:
+            logger.debug('BUSCO:' + busco)
+        return True, busco
 
 
 def check_transdecoder(logger):

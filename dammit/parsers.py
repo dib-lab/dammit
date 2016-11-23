@@ -16,6 +16,7 @@ Example:
 
 '''
 import csv
+import re
 import sys
 import numpy as np
 import pandas as pd
@@ -244,6 +245,7 @@ def parse_gff3(fn, chunksize=10000):
                                 chunksize=chunksize, header=None,
                                 dtype=dict(gff_cols)):
 
+        group.reset_index(drop=True, inplace=True)
         # Generate a new DataFrame from the attributes dicts, and merge it in
         gtf_df = pd.merge(group,
                           pd.DataFrame(list(group.attributes)),
@@ -316,7 +318,8 @@ def busco_to_df(fn_list, dbs=['metazoa', 'vertebrata']):
     return df
 
 
-def hmmscan_to_df_iter(fn, chunksize=10000):
+def hmmscan_to_df_iter(fn, chunksize=10000, 
+                       query_regex=re.compile(r'(?P<name>Transcript_[0-9]*)')):
     '''Iterator over DataFrames of length chunksize from a given
     hmmscan result file.
 
@@ -327,11 +330,19 @@ def hmmscan_to_df_iter(fn, chunksize=10000):
     Args:
         fn (str): Path to the hmmscan file.
         chunksize (int): Hits per iteration.
+        query_regex (re): Compiled regex to retrieve transcript name.
     Yields:
         DataFrame: Pandas DataFrame with the hmmscan hits.
     '''
+
+
     def split_query(item):
-        q, _, _ = item.rpartition('|')
+        results = query_regex.search(item).groupdict()
+        try:
+            q = results['name']
+        except KeyError as e:
+            e.message = 'Header regex should have a "name" field.'
+            raise
         return q
 
     def build_df(data):
@@ -379,6 +390,8 @@ def cmscan_to_df_iter(fn, chunksize=10000):
     def build_df(data):
         df = pd.DataFrame(data, columns=[k for k, _ in cmscan_cols])
         convert_dtypes(df, dict(cmscan_cols))
+        sidx = df.seq_from > df.seq_to
+        df.loc[sidx, 'seq_from'], df.loc[sidx, 'seq_to'] = df.loc[sidx, 'seq_to'], df.loc[sidx, 'seq_from']
         df.mdl_from = df.mdl_from - 1
         df.seq_from = df.seq_from - 1
         return df

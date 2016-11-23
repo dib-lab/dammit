@@ -18,6 +18,7 @@ import pandas as pd
 from khmer import HLLCounter, ReadParser
 
 from common import which
+from dependencies import check_busco
 from . import parsers
 from .hits import BestHits
 from .fileio import maf
@@ -46,24 +47,21 @@ def clean_folder(target):
         pass
 
 
-def parallel_fasta(input_filename, n_jobs):
-    file_size = 'S=`stat -c "%%s" {0}`; B=`expr $S / {1}`;'.format(input_filename,
-                                                                 n_jobs)
+def parallel_fasta(input_filename, output_filename, command, n_jobs, pbs=None):
+
     exc = which('parallel')
-    cmd = [file_size, 'cat', input_filename, '|', exc, '--block', '$B',
-           '--pipe', '--recstart', '">"', '--gnu', '-j', str(n_jobs)]
+    cmd = ['cat', input_filename, '|', exc, '--round-robin', '--pipe', '-L', 2,
+           '-N', 10000, '--gnu']
+    if pbs is not None:
+        cmd.extend(['--sshloginfile', pbs, '--workdir $PWD'])
+    else:
+        cmd.extend(['-j', n_jobs])
+    cmd.extend(['-a', input_filename])
 
-    return ' '.join(cmd)
-
-def multinode_parallel_fasta(input_filename, ppn, nodes):
-    file_size = 'S=`stat -c "%%s" {0}`; B=`expr $S / {1}`;'.format(input_filename,
-                                                                   nodes * ppn)
-    exc = which('parallel')
-    cmd = [file_size, 'cat', input_filename, '|', exc, '--block', '$B',
-           '--pipe', '--recstart', '">"', '--gnu', '--jobs', str(ppn),
-           '--sshloginfile $PBS_NODEFILE', '--workdir $PWD']
-
-    return ' '.join(cmd)
+    if isinstance(command, list):
+        command = ' '.join(command)
+    cmd.extend([command, '>', output_filename])
+    return ' '.join(map(str, cmd))
 
 
 seq_ext = re.compile(r'(.fasta)|(.fa)|(.fastq)|(.fq)')
@@ -282,7 +280,7 @@ def get_lastdb_task(db_fn, db_out_prefix, lastdb_cfg, prot=True):
 
 @create_task_object
 def get_lastal_task(query, db, out_fn, cfg, translate=False, 
-                    cutoff=0.00001, n_threads=1, n_nodes=None):
+                    cutoff=0.00001, n_threads=1, pbs=None):
     '''Create a pydoit task to run lastal
 
     Args:
@@ -308,13 +306,7 @@ def get_lastal_task(query, db, out_fn, cfg, translate=False,
     lastal_cmd.append(db)
     lastal_cmd = '"{0}"'.format(' '.join(lastal_cmd))
 
-    if n_nodes is None:
-        parallel = parallel_fasta(query, n_threads)
-    else:
-        parallel = multinode_parallel_fasta(query, n_threads, n_nodes)
-
-    cmd = [parallel, lastal_cmd, '<', query, '>', out_fn]
-    cmd = ' '.join(cmd)
+    cmd = parallel_fasta(query, out_fn, lastal_cmd, n_threads, pbs=pbs)
 
     name = 'lastal:{0}'.format(os.path.join(out_fn))
 
@@ -380,7 +372,7 @@ def get_busco_task(input_filename, output_name, busco_db_dir, input_type,
     name = 'busco:' + os.path.basename(input_filename) + '-' + os.path.basename(busco_db_dir)
 
     assert input_type in ['genome', 'OGS', 'trans']
-    exc = which('BUSCO_v1.1b1.py')
+    _, exc = check_busco(None)
     # BUSCO chokes on file paths as output names
     output_name = os.path.basename(output_name)
 
@@ -411,23 +403,19 @@ def get_cmpress_task(db_filename, infernal_cfg):
 
 @create_task_object
 def get_cmscan_task(input_filename, output_filename, db_filename,
-                    cutoff, n_threads, infernal_cfg, n_nodes=None):
+                    cutoff, n_threads, infernal_cfg, pbs=None):
 
     name = 'cmscan:' + os.path.basename(input_filename) + '.x.' + \
            os.path.basename(db_filename)
 
     exc = which('cmscan')
-    if n_nodes is None:
-        parallel_cmd = parallel_fasta(input_filename, n_threads)
-    else:
-        parallel_cmd = multinode_parallel_fasta(input_filename, n_threads,
-                                                n_nodes)
-
+    
     stat = output_filename + '.cmscan.out'
-    cmd = [parallel_cmd, exc, '--cpu', '1', '--rfam', '--nohmmonly',
+    cmd = [exc, '--cpu', '1', '--rfam', '--nohmmonly',
            '-E', str(cutoff), '--tblout', '/dev/stdout', '-o', stat,
-           db_filename, '/dev/stdin', '>', output_filename]
-    cmd = ' '.join(cmd)
+           db_filename, '/dev/stdin']
+    cmd = parallel_fasta(input_filename, output_filename, cmd,
+                         n_threads, pbs=pbs)
 
     return {'name': name,
             'title': title_with_actions,
@@ -454,24 +442,17 @@ def get_hmmpress_task(db_filename, hmmer_cfg):
 
 @create_task_object
 def get_hmmscan_task(input_filename, output_filename, db_filename,
-                     cutoff, n_threads, hmmer_cfg, n_nodes=None):
+                     cutoff, n_threads, hmmer_cfg, pbs=None):
 
     name = 'hmmscan:' + os.path.basename(input_filename) + '.x.' + \
                 os.path.basename(db_filename)
 
     hmmscan_exc = which('hmmscan')
     
-    if n_nodes is None:
-        parallel_cmd = parallel_fasta(input_filename, n_threads)
-    else:
-        parallel_cmd = multinode_parallel_fasta(input_filename, n_threads,
-                                                n_nodes)
-
     stat = output_filename + '.out'
-    cmd = [parallel_cmd, hmmscan_exc, '--cpu', '1', '--domtblout', '/dev/stdout', 
-           '-E', str(cutoff), '-o', stat, db_filename, '/dev/stdin',
-           '>', output_filename]
-    cmd = ' '.join(cmd)
+    cmd = [hmmscan_exc, '--cpu', '1', '--domtblout', '/dev/stdout', 
+           '-E', str(cutoff), '-o', stat, db_filename, '/dev/stdin']
+    cmd = parallel_fasta(input_filename, output_filename, cmd, n_threads, pbs=pbs)
     
     return {'name': name,
             'title': title_with_actions,
