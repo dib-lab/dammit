@@ -17,8 +17,6 @@ if sys.version_info < (2, 4):
     print >> sys.stderr, "ERROR: dammit! requires python 2.4 or greater"
     sys.exit()
 
-import numpy
-
 cmdclass = {}
 
 version = open('dammit/VERSION').read().strip()
@@ -36,7 +34,7 @@ def main():
             packages = find_packages(),
             scripts = glob('bin/*'),
             install_requires = ['setuptools>=0.6.35',
-                                'pandas==0.18.1',
+                                'pandas>=0.18.1',
                                 'khmer>=2.0',
                                 'doit==0.29.0',
                                 'Sphinx>1.3.1',
