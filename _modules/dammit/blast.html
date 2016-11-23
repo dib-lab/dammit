@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>dammit.blast &mdash; dammit 0.3 documentation</title>
+    <title>dammit.blast &#8212; dammit 0.3.1 documentation</title>
     
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.3',
+        VERSION:     '0.3.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,14 +26,19 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="author" title="About these documents" href="../../about.html" />
-    <link rel="top" title="dammit 0.3 documentation" href="../../index.html" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="top" title="dammit 0.3.1 documentation" href="../../index.html" />
     <link rel="up" title="Module code" href="../index.html" />
    
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head>
-  <body role="document">  
+  <body role="document">
+  
 
     <div class="document">
       <div class="documentwrapper">
@@ -41,11 +46,11 @@
           <div class="body" role="main">
             
   <h1>Source code for dammit.blast</h1><div class="highlight"><pre>
-<span class="c">#!/usr/bin/env python</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">csv</span>
 <span class="kn">import</span> <span class="nn">sys</span>
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 
 
 <div class="viewcode-block" id="fix_coords_single"><a class="viewcode-back" href="../../dammit.html#dammit.blast.fix_coords_single">[docs]</a><span class="k">def</span> <span class="nf">fix_coords_single</span><span class="p">(</span><span class="n">sstart</span><span class="p">,</span> <span class="n">send</span><span class="p">,</span> <span class="n">qstart</span><span class="p">,</span> <span class="n">qend</span><span class="p">):</span>
@@ -60,7 +65,7 @@
 <span class="sd">        ndarray: Numpy array with values [sstart, send, qstart, qend, sstrand, qstrand],</span>
 <span class="sd">        where sstrand and qstrand are the subject and query strands as a 1 or -1.</span>
 <span class="sd">    &#39;&#39;&#39;</span>
-    <span class="n">res</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">long</span><span class="p">)</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">long</span><span class="p">)</span>
     
     <span class="k">if</span> <span class="n">sstart</span> <span class="o">&lt;</span> <span class="n">send</span><span class="p">:</span>
         <span class="n">res</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">sstart</span> <span class="o">-</span> <span class="mi">1</span>
@@ -96,7 +101,7 @@
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">sstart</span><span class="p">)</span>
     <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="n">res</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">n</span><span class="p">,</span><span class="mi">6</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">long</span><span class="p">)</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">n</span><span class="p">,</span><span class="mi">6</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">long</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
         <span class="n">res</span><span class="p">[</span><span class="n">i</span><span class="p">,:]</span> <span class="o">=</span> <span class="n">fix_coords_single</span><span class="p">(</span><span class="n">sstart</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">send</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">qstart</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">qend</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
     <span class="k">return</span> <span class="n">res</span></div>
@@ -104,12 +109,12 @@
 
 <div class="viewcode-block" id="remap_blast_coords_df"><a class="viewcode-back" href="../../dammit.html#dammit.blast.remap_blast_coords_df">[docs]</a><span class="k">def</span> <span class="nf">remap_blast_coords_df</span><span class="p">(</span><span class="n">df</span><span class="p">):</span>
     <span class="n">coords</span> <span class="o">=</span> <span class="n">fix_blast_coords</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">sstart</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">df</span><span class="o">.</span><span class="n">send</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">df</span><span class="o">.</span><span class="n">qstart</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">df</span><span class="o">.</span><span class="n">qend</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
-    <span class="n">df</span><span class="p">[</span><span class="s">&#39;sstart&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">coords</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span>
-    <span class="n">df</span><span class="p">[</span><span class="s">&#39;send&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">coords</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span>
-    <span class="n">df</span><span class="p">[</span><span class="s">&#39;qstart&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">coords</span><span class="p">[:,</span><span class="mi">2</span><span class="p">]</span>
-    <span class="n">df</span><span class="p">[</span><span class="s">&#39;qend&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">coords</span><span class="p">[:,</span><span class="mi">3</span><span class="p">]</span>
-    <span class="n">df</span><span class="p">[</span><span class="s">&#39;sstrand&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">coords</span><span class="p">[:,</span><span class="mi">4</span><span class="p">]</span>
-    <span class="n">df</span><span class="p">[</span><span class="s">&#39;qstrand&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">coords</span><span class="p">[:,</span><span class="mi">5</span><span class="p">]</span></div>
+    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;sstart&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">coords</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;send&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">coords</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;qstart&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">coords</span><span class="p">[:,</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;qend&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">coords</span><span class="p">[:,</span><span class="mi">3</span><span class="p">]</span>
+    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;sstrand&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">coords</span><span class="p">[:,</span><span class="mi">4</span><span class="p">]</span>
+    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;qstrand&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">coords</span><span class="p">[:,</span><span class="mi">5</span><span class="p">]</span></div>
 </pre></div>
 
           </div>
@@ -128,14 +133,11 @@
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -146,8 +148,8 @@
       &copy;2015, Camille Scott.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.3</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.6</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.8</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
       
     </div>
 

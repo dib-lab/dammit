@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>dammit package &mdash; dammit 0.3 documentation</title>
+    <title>dammit package &#8212; dammit 0.3.1 documentation</title>
     
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.3',
+        VERSION:     '0.3.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,14 +26,19 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="author" title="About these documents" href="about.html" />
-    <link rel="top" title="dammit 0.3 documentation" href="index.html" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="top" title="dammit 0.3.1 documentation" href="index.html" />
     <link rel="prev" title="Databases" href="databases.html" />
    
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head>
-  <body role="document">  
+  <body role="document">
+  
 
     <div class="document">
       <div class="documentwrapper">
@@ -53,14 +58,14 @@
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 <dl class="method">
 <dt id="dammit.annotate.AnnotateHandler.busco_task">
-<code class="descname">busco_task</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dammit.annotate.AnnotateHandler.busco_task" title="Permalink to this definition">¶</a></dt>
+<code class="descname">busco_task</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/annotate.html#AnnotateHandler.busco_task"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.annotate.AnnotateHandler.busco_task" title="Permalink to this definition">¶</a></dt>
 <dd><p>BUSCO assesses completeness using a series of curated databases of core
 conserved genes.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="dammit.annotate.AnnotateHandler.cmscan_task">
-<code class="descname">cmscan_task</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dammit.annotate.AnnotateHandler.cmscan_task" title="Permalink to this definition">¶</a></dt>
+<code class="descname">cmscan_task</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/annotate.html#AnnotateHandler.cmscan_task"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.annotate.AnnotateHandler.cmscan_task" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run Infernal. Infernal uses covariance models to detect
 RNA secondary structures. Here we use Rfam as our reference
 database.</p>
@@ -68,29 +73,29 @@ database.</p>
 
 <dl class="method">
 <dt id="dammit.annotate.AnnotateHandler.get_tasks">
-<code class="descname">get_tasks</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dammit.annotate.AnnotateHandler.get_tasks" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_tasks</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/annotate.html#AnnotateHandler.get_tasks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.annotate.AnnotateHandler.get_tasks" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="dammit.annotate.AnnotateHandler.handle">
-<code class="descname">handle</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dammit.annotate.AnnotateHandler.handle" title="Permalink to this definition">¶</a></dt>
+<code class="descname">handle</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/annotate.html#AnnotateHandler.handle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.annotate.AnnotateHandler.handle" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="dammit.annotate.AnnotateHandler.orthodb_task">
-<code class="descname">orthodb_task</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dammit.annotate.AnnotateHandler.orthodb_task" title="Permalink to this definition">¶</a></dt>
+<code class="descname">orthodb_task</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/annotate.html#AnnotateHandler.orthodb_task"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.annotate.AnnotateHandler.orthodb_task" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run LAST to get homologies with OrthoDB. We use LAST here because
 it is much faster than BLAST+, and OrthoDB is pretty huge.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="dammit.annotate.AnnotateHandler.rename_task">
-<code class="descname">rename_task</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dammit.annotate.AnnotateHandler.rename_task" title="Permalink to this definition">¶</a></dt>
+<code class="descname">rename_task</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/annotate.html#AnnotateHandler.rename_task"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.annotate.AnnotateHandler.rename_task" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="dammit.annotate.AnnotateHandler.run_tasks">
-<code class="descname">run_tasks</code><span class="sig-paren">(</span><em>doit_args=['run']</em><span class="sig-paren">)</span><a class="headerlink" href="#dammit.annotate.AnnotateHandler.run_tasks" title="Permalink to this definition">¶</a></dt>
+<code class="descname">run_tasks</code><span class="sig-paren">(</span><em>doit_args=['run']</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/annotate.html#AnnotateHandler.run_tasks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.annotate.AnnotateHandler.run_tasks" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set up doit&#8217;s config for the actual analysis tasks.
 We&#8217;ll put the doit database for these tasks into the output
 directory so that we don&#8217;t end up scattering them around the
@@ -100,7 +105,7 @@ metadata from every analysis ever run by the user!</p>
 
 <dl class="method">
 <dt id="dammit.annotate.AnnotateHandler.stats_task">
-<code class="descname">stats_task</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dammit.annotate.AnnotateHandler.stats_task" title="Permalink to this definition">¶</a></dt>
+<code class="descname">stats_task</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/annotate.html#AnnotateHandler.stats_task"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.annotate.AnnotateHandler.stats_task" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate assembly information. First it runs some basic stats like N50 and
 number of contigs, and uses the HyperLogLog counter from khmer to
 estimate unique k-mers for checking redundancy. Then it runs BUSCO to
@@ -109,7 +114,7 @@ assess completeness. These tasks are grouped under the &#8216;assess&#8217; task
 
 <dl class="method">
 <dt id="dammit.annotate.AnnotateHandler.transdecoder_tasks">
-<code class="descname">transdecoder_tasks</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dammit.annotate.AnnotateHandler.transdecoder_tasks" title="Permalink to this definition">¶</a></dt>
+<code class="descname">transdecoder_tasks</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/annotate.html#AnnotateHandler.transdecoder_tasks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.annotate.AnnotateHandler.transdecoder_tasks" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run TransDecoder. TransDecoder first finds long ORFs with
 TransDecoder.LongOrfs, which are output as a FASTA file of protein
 sequences. We can then use these sequences to search against Pfam-A for
@@ -119,18 +124,18 @@ model for prediction of gene features.</p>
 
 <dl class="method">
 <dt id="dammit.annotate.AnnotateHandler.transeq_task">
-<code class="descname">transeq_task</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dammit.annotate.AnnotateHandler.transeq_task" title="Permalink to this definition">¶</a></dt>
+<code class="descname">transeq_task</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/annotate.html#AnnotateHandler.transeq_task"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.annotate.AnnotateHandler.transeq_task" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run transeq to do full six-frame protein translation.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="dammit.annotate.AnnotateHandler.uniref_task">
-<code class="descname">uniref_task</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dammit.annotate.AnnotateHandler.uniref_task" title="Permalink to this definition">¶</a></dt>
+<code class="descname">uniref_task</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/annotate.html#AnnotateHandler.uniref_task"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.annotate.AnnotateHandler.uniref_task" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="dammit.annotate.AnnotateHandler.user_crb_tasks">
-<code class="descname">user_crb_tasks</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dammit.annotate.AnnotateHandler.user_crb_tasks" title="Permalink to this definition">¶</a></dt>
+<code class="descname">user_crb_tasks</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/annotate.html#AnnotateHandler.user_crb_tasks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.annotate.AnnotateHandler.user_crb_tasks" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run conditional recipricol best hits LAST (CRBL) against the
 user-supplied databases.</p>
 </dd></dl>
@@ -248,17 +253,17 @@ executable.</p>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 <dl class="method">
 <dt id="dammit.databases.DatabaseHandler.check">
-<code class="descname">check</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dammit.databases.DatabaseHandler.check" title="Permalink to this definition">¶</a></dt>
+<code class="descname">check</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/databases.html#DatabaseHandler.check"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.databases.DatabaseHandler.check" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="dammit.databases.DatabaseHandler.check_or_fail">
-<code class="descname">check_or_fail</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dammit.databases.DatabaseHandler.check_or_fail" title="Permalink to this definition">¶</a></dt>
+<code class="descname">check_or_fail</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/databases.html#DatabaseHandler.check_or_fail"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.databases.DatabaseHandler.check_or_fail" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="dammit.databases.DatabaseHandler.get_tasks">
-<code class="descname">get_tasks</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dammit.databases.DatabaseHandler.get_tasks" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_tasks</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/databases.html#DatabaseHandler.get_tasks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.databases.DatabaseHandler.get_tasks" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate tasks for installing the bundled databases.</p>
 <p>These tasks download the databases, unpack them, and format them for use.
 Current bundled databases are:</p>
@@ -286,7 +291,7 @@ list: A list of the doit tasks.</td>
 
 <dl class="method">
 <dt id="dammit.databases.DatabaseHandler.handle">
-<code class="descname">handle</code><span class="sig-paren">(</span><em>doit_args=['run']</em><span class="sig-paren">)</span><a class="headerlink" href="#dammit.databases.DatabaseHandler.handle" title="Permalink to this definition">¶</a></dt>
+<code class="descname">handle</code><span class="sig-paren">(</span><em>doit_args=['run']</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/databases.html#DatabaseHandler.handle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.databases.DatabaseHandler.handle" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -300,7 +305,7 @@ list: A list of the doit tasks.</td>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 <dl class="method">
 <dt id="dammit.dependencies.DependencyHandler.add_dependency_check">
-<code class="descname">add_dependency_check</code><span class="sig-paren">(</span><em>name</em>, <em>function</em><span class="sig-paren">)</span><a class="headerlink" href="#dammit.dependencies.DependencyHandler.add_dependency_check" title="Permalink to this definition">¶</a></dt>
+<code class="descname">add_dependency_check</code><span class="sig-paren">(</span><em>name</em>, <em>function</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/dependencies.html#DependencyHandler.add_dependency_check"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.dependencies.DependencyHandler.add_dependency_check" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add a new dependency to the handler.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -320,22 +325,22 @@ takes a Logger object.</li>
 
 <dl class="method">
 <dt id="dammit.dependencies.DependencyHandler.check_or_fail">
-<code class="descname">check_or_fail</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dammit.dependencies.DependencyHandler.check_or_fail" title="Permalink to this definition">¶</a></dt>
+<code class="descname">check_or_fail</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/dependencies.html#DependencyHandler.check_or_fail"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.dependencies.DependencyHandler.check_or_fail" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="dammit.dependencies.DependencyHandler.clear_dependency_checks">
-<code class="descname">clear_dependency_checks</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dammit.dependencies.DependencyHandler.clear_dependency_checks" title="Permalink to this definition">¶</a></dt>
+<code class="descname">clear_dependency_checks</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/dependencies.html#DependencyHandler.clear_dependency_checks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.dependencies.DependencyHandler.clear_dependency_checks" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="dammit.dependencies.DependencyHandler.handle">
-<code class="descname">handle</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dammit.dependencies.DependencyHandler.handle" title="Permalink to this definition">¶</a></dt>
+<code class="descname">handle</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/dependencies.html#DependencyHandler.handle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.dependencies.DependencyHandler.handle" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="dammit.dependencies.DependencyHandler.run_checks">
-<code class="descname">run_checks</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dammit.dependencies.DependencyHandler.run_checks" title="Permalink to this definition">¶</a></dt>
+<code class="descname">run_checks</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/dependencies.html#DependencyHandler.run_checks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.dependencies.DependencyHandler.run_checks" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -436,7 +441,7 @@ demon peddlers of the fully closed and fully open intervals, sowers of discord!
 Doom and damnation, dammit!</p>
 <p class="rubric">Example</p>
 <p>(for those wishing to attain holiness):</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">dammit</span> <span class="kn">import</span> <span class="n">parsers</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">dammit</span> <span class="k">import</span> <span class="n">parsers</span>
 <span class="k">for</span> <span class="n">group_df</span> <span class="ow">in</span> <span class="n">parsers</span><span class="o">.</span><span class="n">cmscan_to_df_iter</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
     <span class="n">do_stuff</span><span class="p">(</span><span class="n">group_df</span><span class="p">)</span>
 </pre></div>
@@ -562,7 +567,7 @@ it uses under the hood.</p>
 
 <dl class="function">
 <dt id="dammit.parsers.hmmscan_to_df_iter">
-<code class="descclassname">dammit.parsers.</code><code class="descname">hmmscan_to_df_iter</code><span class="sig-paren">(</span><em>fn</em>, <em>chunksize=10000</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/parsers.html#hmmscan_to_df_iter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.parsers.hmmscan_to_df_iter" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">dammit.parsers.</code><code class="descname">hmmscan_to_df_iter</code><span class="sig-paren">(</span><em>fn</em>, <em>chunksize=10000</em>, <em>query_regex=&lt;_sre.SRE_Pattern object&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/parsers.html#hmmscan_to_df_iter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.parsers.hmmscan_to_df_iter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Iterator over DataFrames of length chunksize from a given
 hmmscan result file.</p>
 <p>HMMER uses 1-based, fully open intervals. Another format of the devil.</p>
@@ -574,6 +579,7 @@ hmmscan result file.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>fn</strong> (<em>str</em>) &#8211; Path to the hmmscan file.</li>
 <li><strong>chunksize</strong> (<em>int</em>) &#8211; Hits per iteration.</li>
+<li><strong>query_regex</strong> (<em>re</em>) &#8211; Compiled regex to retrieve transcript name.</li>
 </ul>
 </td>
 </tr>
@@ -840,13 +846,8 @@ objects</p>
 <dd></dd></dl>
 
 <dl class="function">
-<dt id="dammit.tasks.multinode_parallel_fasta">
-<code class="descclassname">dammit.tasks.</code><code class="descname">multinode_parallel_fasta</code><span class="sig-paren">(</span><em>input_filename</em>, <em>ppn</em>, <em>nodes</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/tasks.html#multinode_parallel_fasta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.tasks.multinode_parallel_fasta" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
 <dt id="dammit.tasks.parallel_fasta">
-<code class="descclassname">dammit.tasks.</code><code class="descname">parallel_fasta</code><span class="sig-paren">(</span><em>input_filename</em>, <em>n_jobs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/tasks.html#parallel_fasta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.tasks.parallel_fasta" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">dammit.tasks.</code><code class="descname">parallel_fasta</code><span class="sig-paren">(</span><em>input_filename</em>, <em>output_filename</em>, <em>command</em>, <em>n_jobs</em>, <em>pbs=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/tasks.html#parallel_fasta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.tasks.parallel_fasta" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
@@ -911,14 +912,11 @@ objects</p>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -929,8 +927,8 @@ objects</p>
       &copy;2015, Camille Scott.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.3</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.6</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.8</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
       
       |
       <a href="_sources/dammit.txt"
