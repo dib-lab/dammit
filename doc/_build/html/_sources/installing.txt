@@ -65,14 +65,14 @@ dammit also runs BUSCO to assess completeness. To install it, run the following
 commands::
 
     cd
-    curl -LO http://busco.ezlab.org/files/BUSCO_v1.1b1.tar.gz
-    tar -xvzf BUSCO_v1.1b1.tar.gz
-    chmod +x BUSCO_v1.1b1/*.py
-    export PATH=$HOME/BUSCO_v1.1b1:$PATH
+    curl -LO http://busco.ezlab.org/v1/files/BUSCO_v1.22.tar.gz 
+    tar -xvzf BUSCO_v1.22.tar.gz
+    chmod +x BUSCO_v1.22/*.py
+    export PATH=$HOME/BUSCO_v1.22:$PATH
 
 ...and once again, to install it permanently::
 
-    echo 'export PATH=$HOME/BUSCO_v1.1b1:$PATH' >> $HOME/.bashrc
+    echo 'export PATH=$HOME/BUSCO_v1.22:$PATH' >> $HOME/.bashrc
 
 Python Dependencies
 --------------------
