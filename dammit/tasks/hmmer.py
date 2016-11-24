@@ -7,6 +7,7 @@ import os
 import pandas as pd
 from sys import stderr
 
+from .utils import DependentTask, InstallationError
 from ..profile import profile_task
 from ..parallel import parallel_fasta
 from ..fileio.hmmer import HMMerParser
@@ -14,81 +15,101 @@ from ..fileio.gff3 import GFF3Parser
 from ..utils import doit_task, which
 
 
-@doit_task
-@profile_task
-def get_hmmscan_task(input_filename, output_filename, db_filename,
-                     cutoff=0.00001, n_threads=1, pbs=False, 
-                     params=None):
-    '''Run HMMER's hmmscan with the given database on the given FASTA file.
+class HMMScanTask(DependentTask):
 
-    Args:
-        input_filename (str): The path to the input FASTA.
-        output_filename (str): Path to save the results.
-        db_filename (str): Path to the formatted database.
-        cutoff (float): The e-value cutoff to filter with.
-        n_threads (int): Number of threads to use.
-        pbs (bool): If True, pass the right parameters to gnu-parallel
-            to run on a cluster.
-        params (list): Extra parameters to pass to executable.
+    def deps(self):
+        hmmscan = which('hmmscan')
+        if hmmscan is None:
+            raise InstallationError('hmmscan not found.')
+        if self.logger:
+            self.logger.debug('hmmscan:' + hmmscan)
+        return hmmscan
 
-    Returns:
-        dict: A doit task.
-    '''
+    @doit_task
+    @profile_task
+    def task(self, input_filename, output_filename, db_filename,
+                   cutoff=0.00001, n_threads=1, pbs=False, 
+                   params=None):
+        '''Run HMMER's hmmscan with the given database on the given FASTA file.
 
-    name = 'hmmscan:' + os.path.basename(input_filename) + '.x.' + \
-                    os.path.basename(db_filename)
-    stat = output_filename + '.hmmscan.out'
-    
-    hmmscan_exc = which('hmmscan')
-    cmd = [hmmscan_exc]
-    if params is not None:
-        cmd.extend([str(p) for p in params])
-    cmd.extend(['--cpu', '1', '--domtblout', '/dev/stdout', 
-                '-E', str(cutoff), '-o', stat, db_filename, '/dev/stdin'])
-    
-    cmd = parallel_fasta(input_filename, output_filename, cmd, n_threads, pbs=pbs)
+        Args:
+            input_filename (str): The path to the input FASTA.
+            output_filename (str): Path to save the results.
+            db_filename (str): Path to the formatted database.
+            cutoff (float): The e-value cutoff to filter with.
+            n_threads (int): Number of threads to use.
+            pbs (bool): If True, pass the right parameters to gnu-parallel
+                to run on a cluster.
+            params (list): Extra parameters to pass to executable.
+
+        Returns:
+            dict: A doit task.
+        '''
+
+        name = 'hmmscan:' + os.path.basename(input_filename) + '.x.' + \
+                        os.path.basename(db_filename)
+        stat = output_filename + '.hmmscan.out'
         
-    return {'name': name,
-            'actions': [cmd],
-            'file_dep': [input_filename, db_filename, db_filename+'.h3p'],
-            'targets': [output_filename, stat],
-            'clean': [clean_targets]}
+        hmmscan_exc = self.deps()
+        cmd = [hmmscan_exc]
+        if params is not None:
+            cmd.extend([str(p) for p in params])
+        cmd.extend(['--cpu', '1', '--domtblout', '/dev/stdout', 
+                    '-E', str(cutoff), '-o', stat, db_filename, '/dev/stdin'])
+        
+        cmd = parallel_fasta(input_filename, output_filename, cmd, n_threads, pbs=pbs)
+            
+        return {'name': name,
+                'actions': [cmd],
+                'file_dep': [input_filename, db_filename, db_filename+'.h3p'],
+                'targets': [output_filename, stat],
+                'clean': [clean_targets]}
 
 
-@doit_task
-@profile_task
-def get_hmmpress_task(db_filename, params=None, task_dep=None):
-    '''Run hmmpress on a profile HMM database.
+class HMMPressTask(DependentTask):
 
-    Args:
-        db_filename (str): The database to run on.
-        params (list): Extra parameters to pass to executable.
-        task_dep (str): Task dep to add to doit task.
+    def deps(self):
+        hmmpress = which('hmmpress')
+        if hmmpress is None:
+            raise InstallationError('hmmpress not found.')
+        if self.logger is not None:
+            self.logger.debug('hmmpress:' + hmmpress)
+        return hmmpress
 
-    Returns:
-        dict: A doit task.
-    '''
+    @doit_task
+    @profile_task
+    def task(self, db_filename, params=None, task_dep=None):
+        '''Run hmmpress on a profile HMM database.
 
-    name = 'hmmpress:' + os.path.basename(db_filename)
-    exc = which('hmmpress')
+        Args:
+            db_filename (str): The database to run on.
+            params (list): Extra parameters to pass to executable.
+            task_dep (str): Task dep to add to doit task.
 
-    cmd = [exc]
-    if params is not None:
-        cmd.extend([str(p) for p in params])
-    cmd.append(db_filename)
+        Returns:
+            dict: A doit task.
+        '''
 
-    cmd = ' '.join(cmd)
+        name = 'hmmpress:' + os.path.basename(db_filename)
+        exc = self.deps()
 
-    task_d =  {'name': name,
-               'actions': [cmd],
-               'targets': [db_filename + ext for ext in ['.h3f', '.h3i', '.h3m', '.h3p']],
-               'uptodate': [True],
-               'clean': [clean_targets]}
+        cmd = [exc]
+        if params is not None:
+            cmd.extend([str(p) for p in params])
+        cmd.append(db_filename)
 
-    if task_dep is not None:
-        task_d['task_dep'] = task_dep
+        cmd = ' '.join(cmd)
 
-    return task_d
+        task_d =  {'name': name,
+                   'actions': [cmd],
+                   'targets': [db_filename + ext for ext in ['.h3f', '.h3i', '.h3m', '.h3p']],
+                   'uptodate': [True],
+                   'clean': [clean_targets]}
+
+        if task_dep is not None:
+            task_d['task_dep'] = task_dep
+
+        return task_d
 
 
 @doit_task

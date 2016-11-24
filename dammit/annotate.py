@@ -234,14 +234,14 @@ def register_transdecoder_tasks(handler, config, databases,
     pfam_fn = None
     if include_hmmer is True:
         pfam_fn = path.join(transdecoder_dir, 'longest_orfs.pep.x.pfam.tbl')
-        handler.register_task('hmmscan:Pfam-A',
-                              get_hmmscan_task(handler.files['longest_orfs'],
-                                               pfam_fn,
-                                               databases['Pfam-A'],
-                                               cutoff=config['evalue'],
-                                               n_threads=config['n_threads'],
-                                               pbs=config['pbs'],
-                                               params=config['hmmer']['hmmscan']),
+        task = HMMScanTask().task(handler.files['longest_orfs'],
+                                   pfam_fn,
+                                   databases['Pfam-A'],
+                                   cutoff=config['evalue'],
+                                   n_threads=config['n_threads'],
+                                   pbs=config['pbs'],
+                                   params=config['hmmer']['hmmscan'])
+        handler.register_task('hmmscan:Pfam-A', task,
                               files={'longest_orfs_pfam': pfam_fn})
 
         pfam_csv_fn = '{0}.x.pfam-A.csv'.format(input_fn)

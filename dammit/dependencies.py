@@ -83,28 +83,13 @@ def get_handler():
 
 
 def register_builtin_checks(handler):
-    checks = {'HMMER': check_hmmer,
-               'Infernal': check_infernal,
-               'BLAST+': check_blast,
-               'BUSCO': check_busco,
+    checks = {'Infernal': check_infernal,
                'TransDecoder': check_transdecoder,
                'LAST': check_last,
-               'crb-blast': check_crb_blast,
                'gnu-parallel': check_parallel}
     for name, func in checks.items():
         handler.register_dependency_check(name, func)
     return handler
-
-
-def check_hmmer(logger):
-    hmmscan = which('hmmscan')
-    hmmpress = which('hmmpress')
-    if hmmscan is None or hmmpress is None:
-        return False, 'Not found on $PATH'
-    else:
-        logger.debug('hmmscan:' + hmmscan)
-        logger.debug('hmmpress:' + hmmpress)
-        return True, os.path.dirname(hmmscan)
 
 
 def check_infernal(logger):
@@ -116,35 +101,6 @@ def check_infernal(logger):
         logger.debug('cmscan:' + cmscan)
         logger.debug('cmpress:' + cmpress)
         return True, os.path.dirname(cmscan)
-
-
-def check_blast(logger):
-    blastp = which('blastp')
-    blastx = which('blastx')
-    tblastn = which('tblastn')
-    makeblastdb = which('makeblastdb')
-    if (blastp is None) or (blastx is None) \
-        or (tblastn is None) or (makeblastdb is None):
-        
-        return False, 'Not found on $PATH'
-    else:
-        logger.debug('blastp:' + blastp)
-        logger.debug('blastx:' + blastx)
-        logger.debug('tblastn:' + tblastn)
-        logger.debug('makeblastdb:' + makeblastdb)
-        return True, os.path.dirname(blastp)
-
-
-def check_busco(logger):
-    busco = which('BUSCO_v1.1b1.py')
-    transeq = which('transeq')
-    if busco is None:
-        return False, 'Not found on $PATH'
-    elif transeq is None:
-        return False, 'EMBOSS transeq not found, which is a BUSCO dependency.'
-    else:
-        logger.debug('BUSCO:' + busco)
-        return True, os.path.dirname(busco)
 
 
 def check_transdecoder(logger):
@@ -199,10 +155,3 @@ def check_last(logger):
             return True, os.path.dirname(lastal)
 
 
-def check_crb_blast(logger):
-    crb_blast = which('crb-blast')
-    if crb_blast is None:
-        return False, ''
-    else:
-        logger.debug('crb-blast:' + crb_blast)
-        return True, os.path.dirname(crb_blast)

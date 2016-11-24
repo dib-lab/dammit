@@ -11,7 +11,7 @@ from shmlast.last import lastdb_task as get_lastdb_task
 
 from . import ui
 from .handler import TaskHandler
-from .tasks.hmmer import get_hmmpress_task
+from .tasks.hmmer import HMMPressTask
 from .tasks.infernal import get_cmpress_task
 from .tasks.shell import (get_download_and_gunzip_task,
                           get_download_and_untar_task,
@@ -154,8 +154,8 @@ def register_pfam_tasks(handler, params, databases):
     handler.register_task('gunzip:Pfam-A', gz_task,
                           files={'Pfam-A': target_fn})
     handler.register_task('hmmpress:Pfam-A',
-                          get_hmmpress_task(target_fn, 
-                                            params=params))
+                          HMMPressTask().task(target_fn, 
+                                              params=params))
     return handler
 
 
