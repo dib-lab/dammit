@@ -26,8 +26,8 @@ from .tasks.gff import (get_maf_gff3_task,
                         get_maf_best_hits_task)
 from .tasks.hmmer import HMMScanTask, get_remap_hmmer_task
 from .tasks.infernal import CMScanTask
-from .tasks.transdecoder import (get_transdecoder_predict_task,
-                                       get_transdecoder_orf_task)
+from .tasks.transdecoder import (TransDecoderPredictTask,
+                                 TransDecoderLongOrfsTask)
 from . import ui
 from . import log
 
@@ -227,8 +227,8 @@ def register_transdecoder_tasks(handler, config, databases,
     transdecoder_dir = '{0}.transdecoder_dir'.format(input_fn)
     
     handler.register_task('TransDecoder.LongOrfs',
-                          get_transdecoder_orf_task(input_fn, 
-                                                    params=config['transdecoder']['longorfs']),
+                          TransDecoderLongOrfsTask().task(input_fn, 
+                                                          params=config['transdecoder']['longorfs']),
                           files={'longest_orfs': path.join(transdecoder_dir, 'longest_orfs.pep')})
     
     pfam_fn = None
@@ -262,9 +262,9 @@ def register_transdecoder_tasks(handler, config, databases,
     transdecoder_pep = '{0}.transdecoder.pep'.format(input_fn)
     transdecoder_gff3 = '{0}.transdecoder.gff3'.format(input_fn)
     handler.register_task('TransDecoder.Predict',
-                          get_transdecoder_predict_task(input_fn, 
-                                                        pfam_filename=pfam_fn,
-                                                        params=predict_params),
+                          TransDecoderPredictTask().task(input_fn, 
+                                                         pfam_filename=pfam_fn,
+                                                         params=predict_params),
                           files={'transdecoder-pep': transdecoder_pep,
                                  'transdecoder-gff3': transdecoder_gff3})
 

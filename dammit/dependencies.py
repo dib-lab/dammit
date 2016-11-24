@@ -83,24 +83,12 @@ def get_handler():
 
 
 def register_builtin_checks(handler):
-    checks = {'TransDecoder': check_transdecoder,
-               'LAST': check_last}
+    checks = {'LAST': check_last}
     for name, func in checks.items():
         handler.register_dependency_check(name, func)
     return handler
 
-
-def check_transdecoder(logger):
-    longorfs = which('TransDecoder.LongOrfs')
-    predict = which('TransDecoder.Predict')
-    if longorfs is None or predict is None:
-        return False, 'Not found on $PATH'
-    else:
-        logger.debug('TransDecoder.LongOrfs:' + longorfs)
-        logger.debug('TransDecoder.Predict:' + predict)
-        return True, os.path.dirname(longorfs)
-
-
+ 
 def check_last(logger):
     lastdb = which('lastdb')
     lastal = which('lastal')
