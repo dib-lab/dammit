@@ -23,10 +23,11 @@ class DammitApp(object):
 
     def __init__(self, arg_src=sys.argv[1:]):
         self.logger = logging.getLogger(self.__class__.__name__)
-        self.parser = self.get_parser()
-        self.args = self.parser.parse_args(arg_src)
 
         self.config_d, self.databases_d = get_config()
+        self.parser = self.get_parser()
+
+        self.args = self.parser.parse_args(arg_src)
         if hasattr(self.args, 'config_file') and self.args.config_file is not None:
             with open(self.args.config_file) as fp:
                 self.config_d.update(json.load(fp))
@@ -74,8 +75,7 @@ class DammitApp(object):
 
             parser.add_argument('--busco-group',
                                 default='metazoa',
-                                choices=['metazoa', 'eukaryota', 'vertebrata',
-                                         'arthropoda'],
+                                choices=list(self.databases_d['BUSCO'].keys()),
                                 help='Which BUSCO group to use. Depends on'\
                                      ' the organism being annotated.'
                                 )
@@ -90,6 +90,8 @@ class DammitApp(object):
                                 )
 
             parser.add_argument('--config-file',
+                                help='A JSON file providing values to override'\
+                                     ' built-in config. Advanced use only!'
                                 )
 
             parser.add_argument('--verbosity',

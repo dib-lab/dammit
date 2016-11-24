@@ -208,7 +208,7 @@ def register_busco_tasks(handler, config, databases):
     
     group_name = config['busco_group']
     group = busco[group_name]
-    files = {'BUSCO-{0}'.format(group_name): path.join(busco_dir, group_name)}
+    files = {'BUSCO-{0}'.format(group_name): path.join(busco_dir, group['folder'])}
     handler.register_task('download:BUSCO-{0}'.format(group_name),
                               get_download_and_untar_task(group['url'],
                                                           busco_dir,
