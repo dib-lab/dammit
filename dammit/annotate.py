@@ -8,7 +8,6 @@ from os import path
 import sys
 
 from shmlast.app import CRBL
-from shmlast.last import lastal_task as get_lastal_task
 
 from .handler import TaskHandler
 from .profile import add_profile_actions
@@ -24,6 +23,7 @@ from .tasks.gff import (get_maf_gff3_task,
                         get_cmscan_gff3_task,
                         get_gff3_merge_task,
                         get_maf_best_hits_task)
+from .tasks.last import LastalTask
 from .tasks.hmmer import HMMScanTask, get_remap_hmmer_task
 from .tasks.infernal import CMScanTask
 from .tasks.transdecoder import (TransDecoderPredictTask,
@@ -321,7 +321,8 @@ def register_lastal_tasks(handler, config, databases,
     for name, db in dbs.items():
         output_fn = '{0}.x.{1}.maf'.format(input_fn, name)
         handler.register_task('lastal:{0}'.format(name),
-                          add_profile_actions(get_lastal_task(input_fn,
+                          add_profile_actions(
+                              LastalTask().task(input_fn,
                                               db,
                                               output_fn,
                                               translate=True,

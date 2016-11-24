@@ -15,7 +15,6 @@ from .annotate import (build_quick_pipeline,
                       build_default_pipeline,
                       build_full_pipeline)
 from . import databases
-from . import dependencies
 from . import log
 
 
@@ -162,20 +161,6 @@ class DammitApp(object):
         databases_parser.set_defaults(func=self.handle_databases)
 
         '''
-        Add the dependencies subcommand.
-        '''
-        desc = '''Checks for dependencies on system PATH. Unlike with the
-               databases, dependencies are not downloaded when missing and must
-               be installed by the user.'''
-        dependencies_parser = subparsers.add_parser(
-                                  'dependencies',
-                                  description=desc,
-                                  help=desc
-                                  )
-        dependencies_parser.add_argument('--config-file')
-        dependencies_parser.set_defaults(func=self.handle_dependencies)
-
-        '''
         Add the annotation subcommand.
         '''
         desc = '''The main annotation pipeline. Calculates assembly stats;
@@ -249,17 +234,9 @@ class DammitApp(object):
                 else:
                     os.symlink(fn, newfn)
 
-    def handle_dependencies(self):
-        log.start_logging()
-        print(ui.header('submodule: dependencies', level=2))
-
-        dependencies.get_handler().print_all_statuses()
-
     def handle_databases(self):
         log.start_logging()
         print(ui.header('submodule: databases', level=2))
-
-        dependencies.get_handler().check_or_fail()
 
         handler = databases.get_handler(self.config_d)
         databases.build_default_pipeline(handler, 
@@ -274,8 +251,6 @@ class DammitApp(object):
     def handle_annotate(self):
         log.start_logging()
         print(ui.header('submodule: annotate', level=2))
-
-        dependencies.get_handler().check_or_fail()
 
         db_handler = databases.get_handler(self.config_d)
         databases.build_default_pipeline(db_handler, 

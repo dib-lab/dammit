@@ -7,10 +7,10 @@ from os import path
 import sys
 
 from doit.dependency import Dependency, SqliteDB
-from shmlast.last import lastdb_task as get_lastdb_task
 
 from . import ui
 from .handler import TaskHandler
+from .tasks.last import LastDBTask
 from .tasks.hmmer import HMMPressTask
 from .tasks.infernal import CMPressTask
 from .tasks.shell import (get_download_and_gunzip_task,
@@ -195,7 +195,7 @@ def register_orthodb_tasks(handler, params, databases):
     handler.register_task('gunzip:OrthoDB', gz_task,
                           files={'OrthoDB': target_fn})
     handler.register_task('lastdb:OrthoDB',
-                          get_lastdb_task(target_fn, 
+                          LastDBTask().task(target_fn, 
                                           target_fn, 
                                           prot=True,
                                           params=params))
@@ -226,7 +226,7 @@ def register_uniref90_tasks(handler, params, databases):
                           task,
                           files={'uniref90': filename})
     handler.register_task('lastdb:uniref90',
-                          get_lastdb_task(filename,
+                          LastDBTask().task(filename,
                                           filename,
                                           prot=True,
                                           params=params,
