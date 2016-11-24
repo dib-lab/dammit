@@ -83,10 +83,8 @@ def get_handler():
 
 
 def register_builtin_checks(handler):
-    checks = {
-               'TransDecoder': check_transdecoder,
-               'LAST': check_last,
-               'gnu-parallel': check_parallel}
+    checks = {'TransDecoder': check_transdecoder,
+               'LAST': check_last}
     for name, func in checks.items():
         handler.register_dependency_check(name, func)
     return handler
@@ -101,26 +99,6 @@ def check_transdecoder(logger):
         logger.debug('TransDecoder.LongOrfs:' + longorfs)
         logger.debug('TransDecoder.Predict:' + predict)
         return True, os.path.dirname(longorfs)
-
-
-def check_parallel(logger):
-    parallel = which('parallel')
-    if parallel is None:
-        return False, 'parallel not found on $PATH.'
-    else:
-        try:
-            version_string = subprocess.check_output(['parallel', '--version'])
-        except subprocess.CalledProcessError as e:
-            return False, 'Error checking parallel version: [{0}] {1}'.format(e.returncode, e.output)
-        except OSError as e:
-            return False, 'Error checking parallel version: [{0}] {1}'.format(e.errno, str(e))
-        else:
-            version = version_string.strip().split()[2]
-            logger.debug('parallel version:{0}'.format(version))
-            if int(version) < 20150000:
-                return False, 'parallel version {0} < 20150000, please update'.format(version)
-            logger.debug('parallel:' + parallel)
-            return True, os.path.dirname(parallel)
 
 
 def check_last(logger):

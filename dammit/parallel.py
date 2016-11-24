@@ -1,9 +1,38 @@
 #!/usr/bin/env python
 import os
+import subprocess
+
 from .utils import which, doit_task
+from .tasks.utils import InstallationError
 
 
-def parallel_fasta(input_filename, output_filename, command, n_jobs, pbs=False):
+def check_parallel(logger=None):
+    parallel = which('parallel')
+    if parallel is None:
+        raise InstallationError('parallel not found.')
+    else:
+        try:
+            version_string = subprocess.check_output(['parallel', '--version'])
+        except subprocess.CalledProcessError as e:
+            raise InstallationError('Error checking parallel '\
+                                    'version: [{0}] {1}'.format(e.returncode, e.output))
+        except OSError as e:
+            raise InstallationError('Error checking parallel version: '\
+                                    '[{0}] {1}'.format(e.errno, str(e)))
+        else:
+            version = version_string.strip().split()[2]
+            if logger:
+                logger.debug('parallel version:{0}'.format(version))
+            if int(version) < 20150000:
+                raise InstallationError('parallel version {0} < 20150000, '\
+                                        'please update'.format(version))
+            if logger:
+                logger.debug('parallel:' + parallel)
+            return parallel
+
+
+def parallel_fasta(input_filename, output_filename, command, n_jobs,
+                   pbs=False, check_dep=True, logger=None):
     '''Given an input FASTA source, target, shell command, and number of jobs,
     construct a gnu-parallel command to act on the sequences.
 
@@ -17,10 +46,9 @@ def parallel_fasta(input_filename, output_filename, command, n_jobs, pbs=False):
         $PBS_NODEFILE before running dammit.
     Returns:
         str: The constructed shell command.
-
     '''
-
-    exc = which('parallel')
+    
+    exc = which('parallel') if not check_dep else check_parallel(logger=logger)
     cmd = ['cat', input_filename, '|', exc, '--progress', '--pipe', '-L', 2, '-N', 400,
            '--gnu', '-j', n_jobs, '-a', input_filename]
     if pbs:
