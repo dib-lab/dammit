@@ -40,14 +40,20 @@ class DammitApp(object):
         print(about)
         self.args.func()
 
+    def description(self):
+        return ui.header('dammit: ' + __description__)
+
+    def epilog(self):
+        return 'Available BUSCO groups are: '\
+               '{0}'.format(', '.join(sorted(self.databases_d['BUSCO'].keys())))
+
     def get_parser(self):
         '''
         Build the main parser.
         '''
         parser = argparse.ArgumentParser(
-                     description=ui.header('dammit: ' + __description__),
-                     formatter_class=argparse.RawDescriptionHelpFormatter
-                     )
+                 description=self.description(),
+                 formatter_class=argparse.RawDescriptionHelpFormatter)
         parser.set_defaults(func=parser.print_help)
 
         parser.add_argument('--debug', action='store_true', default=False)
@@ -74,9 +80,11 @@ class DammitApp(object):
 
             parser.add_argument('--busco-group',
                                 default='metazoa',
+                                metavar='[metazoa, eukaryota, vertebrata, ...]',
                                 choices=list(self.databases_d['BUSCO'].keys()),
-                                help='Which BUSCO group to use. Depends on'\
-                                     ' the organism being annotated.'
+                                help='Which BUSCO group to use. Should be chosen'\
+                                     ' based on the organism being annotated.'\
+                                     ' Full list of options is below.'
                                 )
 
             parser.add_argument('--n_threads',
@@ -147,6 +155,7 @@ class DammitApp(object):
         databases_parser = subparsers.add_parser(
                                'databases',
                                 description=desc,
+                                epilog=self.epilog(),
                                 help=desc
                                 )
 
@@ -172,6 +181,7 @@ class DammitApp(object):
                               'annotate',
                               usage='%(prog)s <transcriptome> [OPTIONS]',
                               description=desc,
+                              epilog=self.epilog(),
                               help=desc
                               )
 
