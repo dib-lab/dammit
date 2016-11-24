@@ -83,24 +83,13 @@ def get_handler():
 
 
 def register_builtin_checks(handler):
-    checks = {'Infernal': check_infernal,
+    checks = {
                'TransDecoder': check_transdecoder,
                'LAST': check_last,
                'gnu-parallel': check_parallel}
     for name, func in checks.items():
         handler.register_dependency_check(name, func)
     return handler
-
-
-def check_infernal(logger):
-    cmscan = which('cmscan')
-    cmpress = which('cmpress')
-    if cmscan is None or cmpress is None:
-        return False, 'Not found on $PATH'
-    else:
-        logger.debug('cmscan:' + cmscan)
-        logger.debug('cmpress:' + cmpress)
-        return True, os.path.dirname(cmscan)
 
 
 def check_transdecoder(logger):

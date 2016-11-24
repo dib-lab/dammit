@@ -25,7 +25,7 @@ from .tasks.gff import (get_maf_gff3_task,
                         get_gff3_merge_task,
                         get_maf_best_hits_task)
 from .tasks.hmmer import HMMScanTask, get_remap_hmmer_task
-from .tasks.infernal import get_cmscan_task
+from .tasks.infernal import CMScanTask
 from .tasks.transdecoder import (get_transdecoder_predict_task,
                                        get_transdecoder_orf_task)
 from . import ui
@@ -278,13 +278,13 @@ def register_rfam_tasks(handler, config, databases):
     input_fn = handler.files['transcriptome']
     output_fn = '{0}.x.rfam.tbl'.format(input_fn)
     handler.register_task('cmscan:Rfam',
-                          get_cmscan_task(input_fn,
-                                          output_fn,
-                                          databases['Rfam'],
-                                          cutoff=config['evalue'],
-                                          n_threads=config['n_threads'],
-                                          pbs=config['pbs'],
-                                          params=config['infernal']['cmscan']),
+                          CMScanTask().task(input_fn,
+                                            output_fn,
+                                            databases['Rfam'],
+                                            cutoff=config['evalue'],
+                                            n_threads=config['n_threads'],
+                                            pbs=config['pbs'],
+                                            params=config['infernal']['cmscan']),
                           files={'Rfam': output_fn})
 
     rfam_gff3 = '{0}.x.rfam.gff3'.format(input_fn)

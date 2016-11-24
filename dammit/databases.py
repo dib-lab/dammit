@@ -12,7 +12,7 @@ from shmlast.last import lastdb_task as get_lastdb_task
 from . import ui
 from .handler import TaskHandler
 from .tasks.hmmer import HMMPressTask
-from .tasks.infernal import get_cmpress_task
+from .tasks.infernal import CMPressTask
 from .tasks.shell import (get_download_and_gunzip_task,
                           get_download_and_untar_task,
                           get_download_task,
@@ -174,8 +174,8 @@ def register_rfam_tasks(handler, params, databases):
     handler.register_task('gunzip:Rfam', gz_task,
                           files={'Rfam': target_fn})
     handler.register_task('cmpress:Rfam',
-                          get_cmpress_task(target_fn,
-                                           params=params))
+                          CMPressTask().task(target_fn,
+                                             params=params))
     return handler
 
 
