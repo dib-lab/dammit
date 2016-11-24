@@ -8,47 +8,67 @@ from doit.tools import run_once
 from doit.task import clean_targets
 import pandas as pd
 
-from .utils import clean_folder
+from .utils import clean_folder, DependentTask, InstallationError
 from ..profile import profile_task
 from ..utils import doit_task, which
 
 
-@doit_task
-@profile_task
-def get_busco_task(input_filename, output_name, busco_db_dir, 
-                   input_type='trans', n_threads=1, params=None):
-    '''Get a task to run BUSCO on the given FASTA file.
+class BuscoTask(DependentTask):
 
-    Args:
-        input_filename (str): The FASTA file to run BUSCO on.
-        output_name (str): Base name for the BUSCO output directory.
-        busco_db_dir (str): Directory with the BUSCO databases.
-        input_type (str): By default, `trans` for transcriptome.
-        n_threads (int): Number of threads to use.
-        params (list): Extra parameters to pass to the executable.
+    def deps(self):
+        busco = which('BUSCO.py')
+        tblastn = which('tblastn')
+        makeblastdb = which('makeblastdb')
+        if busco is None:
+            raise InstallationError('BUSCO.py not found. NOTE: '\
+                                    'dammit 1.0 requires BUSCO v2.')
+        if tblastn is None:
+            raise InstallationError('tblastn not found, required for BUSCO.')
+        if makeblastdb is None:
+            raise InstallationError('makeblastdb not found, required for BUSCO.')
+        if self.logger:
+            logger.debug('BUSCO:' + busco)
+        return busco
 
-    Returns:
-        dict: A doit task.
-    '''
+    @doit_task
+    @profile_task
+    def task(self, input_filename, output_name, busco_db_dir, 
+                   input_type='tran', n_threads=1, params=None):
+        '''Get a task to run BUSCO on the given FASTA file.
 
-    name = 'busco:{0}-{1}'.format(os.path.basename(input_filename),
-                                  os.path.basename(busco_db_dir))
+        Args:
+            input_filename (str): The FASTA file to run BUSCO on.
+            output_name (str): Base name for the BUSCO output directory.
+            busco_db_dir (str): Directory with the BUSCO databases.
+            input_type (str): By default, `trans` for transcriptome.
+            n_threads (int): Number of threads to use.
+            params (list): Extra parameters to pass to the executable.
 
-    assert input_type in ['genome', 'OGS', 'trans']
-    exc = which('BUSCO_v1.1b1.py')
-    # BUSCO chokes on file paths as output names
-    output_name = os.path.basename(output_name)
-    cmd = ['python3', exc, '-in', input_filename, '-f', '-o', output_name,
-           '-l', busco_db_dir, '-m', input_type, '-c', str(n_threads)]
-    if params is not None:
-        cmd.extend(params)
-    cmd = ' '.join(cmd)
+        Returns:
+            dict: A doit task.
+        '''
 
-    return {'name': name,
-            'actions': [cmd],
-            'file_dep': [input_filename],
-            'uptodate': [run_once],
-            'clean': [(clean_folder, ['run_' + output_name])]}
+        name = 'busco:{0}-{1}'.format(os.path.basename(input_filename),
+                                      os.path.basename(busco_db_dir))
+
+        exc = self.deps()
+
+        # BUSCO chokes on file paths as output names
+        output_name = os.path.basename(output_name)
+        cmd = ['python3', exc, '-i', input_filename, '-f', '-o', output_name,
+               '-l', busco_db_dir, '-m', input_type, '-c', str(n_threads)]
+        if params is not None:
+            cmd.extend(params)
+        cmd = ' '.join(cmd)
+
+        output_folder = 'run_' + output_name
+        target_fn = os.path.join(output_folder, 'full_table_{0}.tsv'.format(output_name))
+
+        return {'name': name,
+                'actions': [cmd],
+                'file_dep': [input_filename],
+                'targets': [target_fn],
+                'clean': [(clean_folder, [output_folder])]}
 
 
 def parse_busco_full(fn):

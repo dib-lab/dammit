@@ -16,7 +16,7 @@ from .profile import add_profile_actions
 from .tasks.fastx import (get_transcriptome_stats_task,
                           get_rename_transcriptome_task)
 from .tasks.report import get_annotate_fasta_task
-from .tasks.busco import get_busco_task
+from .tasks.busco import BuscoTask
 from .tasks.utils import get_group_task
 from .tasks.gff import (get_maf_gff3_task,
                         get_shmlast_gff3_task,
@@ -24,7 +24,7 @@ from .tasks.gff import (get_maf_gff3_task,
                         get_cmscan_gff3_task,
                         get_gff3_merge_task,
                         get_maf_best_hits_task)
-from .tasks.hmmer import get_hmmscan_task, get_remap_hmmer_task
+from .tasks.hmmer import HMMScanTask, get_remap_hmmer_task
 from .tasks.infernal import get_cmscan_task
 from .tasks.transdecoder import (get_transdecoder_predict_task,
                                        get_transdecoder_orf_task)
@@ -200,13 +200,13 @@ def register_busco_task(handler, config, databases):
     busco_basename = '{0}.{1}.busco.results'.format(input_fn, busco_group)
     busco_out_dir = 'run_{0}'.format(busco_basename)
 
-    handler.register_task('BUSCO-{0}'.format(busco_group),
-                          get_busco_task(input_fn,
-                                         busco_basename,
-                                         busco_database,
-                                         input_type='trans',
-                                         n_threads=config['n_threads'],
-                                         params=config['busco']['params']),
+    task = BuscoTask().task(input_fn,
+                             busco_basename,
+                             busco_database,
+                             n_threads=config['n_threads'],
+                             params=config['busco']['params'])
+
+    handler.register_task('BUSCO-{0}'.format(busco_group), task,
                           files={'BUSCO': busco_out_dir})
 
 

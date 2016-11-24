@@ -18,6 +18,21 @@ def clean_folder(target):
     except OSError:
         pass
 
+class DependentTask:
+
+    def __init__(self, logger=None):
+        self.logger = logger
+
+    def deps(self):
+        raise NotImplementedError()
+
+    def task(self, *args, **kwargs):
+        raise NotImplementedError()
+
+
+class InstallationError(RuntimeError):
+    pass
+
 
 @doit_task
 def get_group_task(group_name, tasks):
