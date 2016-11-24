@@ -103,6 +103,11 @@ class DammitApp(object):
                                 default=False,
                                 action='store_true',
                                 help='Profile task execution.')
+            
+            parser.add_argument('--force',
+                                default=False,
+                                action='store_true',
+                                help='Ignore missing database tasks.')
 
             pgroup = parser.add_mutually_exclusive_group()
             pgroup.add_argument('--full',
@@ -275,7 +280,14 @@ class DammitApp(object):
                                          self.config_d,
                                          self.databases_d,
                                          with_uniref=self.args.full)
-        databases.check_or_fail(db_handler)
+        if self.config_d['force'] is True:
+            utd_msg = '*All database tasks up-to-date.*'
+            ood_msg = '*Some database tasks out-of-date; '\
+                      'FORCE is True, ignoring!'
+            uptodate, statuses = db_handler.print_statuses(uptodate_msg=utd_msg,
+                                                           outofdate_msg=ood_msg)
+        else:
+            databases.check_or_fail(db_handler)
 
         annotate_handler = annotate.get_handler(self.config_d, db_handler.files)
         if self.args.quick:

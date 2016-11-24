@@ -14,7 +14,9 @@ from .handler import TaskHandler
 from .tasks.hmmer import get_hmmpress_task
 from .tasks.infernal import get_cmpress_task
 from .tasks.shell import (get_download_and_gunzip_task,
-                          get_download_and_untar_task)
+                          get_download_and_untar_task,
+                          get_download_task,
+                          get_gunzip_task)
 
 def get_handler(config):
     '''Build the TaskHandler for the database prep pipeline. The
@@ -74,6 +76,7 @@ def print_meta(handler):
     info = {'Doit Database': handler.dep_file,
             'Database Directory': handler.directory}
     print(ui.listing(info))
+
 
 def install(handler):
     '''Run the database prep pipeline from the given handler.
@@ -137,45 +140,65 @@ def build_default_pipeline(handler, config, databases, with_uniref=False):
 
 def register_pfam_tasks(handler, params, databases):
     pfam_A = databases['Pfam-A']
-    filename = path.join(handler.directory, pfam_A['filename'])
-    task = get_download_and_gunzip_task(pfam_A['url'],
-                                        filename)
-    handler.register_task('download:Pfam-A', task,
-                          files={'Pfam-A': filename})
+    archive_fn = '{0}.{1}'.format(pfam_A['filename'], pfam_A['fileformat'])
+    target_fn = path.join(handler.directory, pfam_A['filename'])
+    
+    dl_task = get_download_task(pfam_A['url'],
+                                archive_fn,
+                                md5=pfam_A['md5'])
+
+    gz_task = get_gunzip_task(archive_fn, target_fn)
+
+    handler.register_task('download:Pfam-A', dl_task,
+                          files={'Pfam-A-gz': archive_fn})
+    handler.register_task('gunzip:Pfam-A', gz_task,
+                          files={'Pfam-A': target_fn})
     handler.register_task('hmmpress:Pfam-A',
-                          get_hmmpress_task(filename, 
-                                            params=params,
-                                            task_dep=[task.name]))
+                          get_hmmpress_task(target_fn, 
+                                            params=params))
     return handler
 
 
 def register_rfam_tasks(handler, params, databases):
     rfam = databases['Rfam']
-    filename = path.join(handler.directory, rfam['filename'])
-    task = get_download_and_gunzip_task(rfam['url'], 
-                                        filename)
-    handler.register_task('download:Rfam', task,
-                           files={'Rfam': filename})
+    archive_fn = '{0}.{1}'.format(rfam['filename'], rfam['fileformat'])
+    target_fn = path.join(handler.directory, rfam['filename'])
+    
+    dl_task = get_download_task(rfam['url'],
+                                archive_fn,
+                                md5=rfam['md5'])
+    gz_task = get_gunzip_task(archive_fn, target_fn)
+
+    handler.register_task('download:Rfam', dl_task,
+                          files={'Rfam-gz': archive_fn})
+    handler.register_task('gunzip:Rfam', gz_task,
+                          files={'Rfam': target_fn})
     handler.register_task('cmpress:Rfam',
-                          get_cmpress_task(filename,
-                                           task_dep=[task.name],
+                          get_cmpress_task(target_fn,
                                            params=params))
     return handler
 
 
 def register_orthodb_tasks(handler, params, databases):
     orthodb = databases['OrthoDB']
-    filename = path.join(handler.directory, orthodb['filename'])
-    task = get_download_and_gunzip_task(orthodb['url'], 
-                                        filename)
-    handler.register_task('download:OrthoDB', task,
-                          files={'OrthoDB': filename})
+    archive_fn = '{0}.{1}'.format(orthodb['filename'], 
+                                  orthodb['fileformat'])
+    target_fn = path.join(handler.directory, orthodb['filename'])
+    
+    dl_task = get_download_task(orthodb['url'],
+                                archive_fn,
+                                md5=orthodb['md5'])
+    gz_task = get_gunzip_task(archive_fn, target_fn)
+
+    handler.register_task('download:OrthoDB', dl_task,
+                          files={'OrthoDB-gz': archive_fn})
+    handler.register_task('gunzip:OrthoDB', gz_task,
+                          files={'OrthoDB': target_fn})
     handler.register_task('lastdb:OrthoDB',
-                          get_lastdb_task(filename, 
-                                          filename, 
+                          get_lastdb_task(target_fn, 
+                                          target_fn, 
                                           prot=True,
-                                          params=params,
-                                          task_dep=[task.name]))
+                                          params=params))
     return handler
 
 

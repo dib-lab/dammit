@@ -3,6 +3,7 @@
         "access": "download",
         "db_type": "hmm",
         "filename": "Pfam-A.hmm",
+        "md5": "dd73e1e085566c7cc0c1d7ed9a649f46",
 		"fileformat": "gz",
         "version": 28.0,
         "url": "ftp://ftp.ebi.ac.uk/pub/databases/Pfam/releases/Pfam28.0/Pfam-A.hmm.gz"
@@ -12,15 +13,18 @@
 		"access": "download",
 		"db_type": "cm",
 		"filename": "Rfam.cm",
+        "md5": "28c9dd98037799761efc0953b72574ab",
 		"fileformat": "gz",
-        "version": "current",
-		"url": "ftp://ftp.ebi.ac.uk/pub/databases/Rfam/CURRENT/Rfam.cm.gz"
+        "version": "12.1",
+		"url": "ftp://ftp.ebi.ac.uk/pub/databases/Rfam/12.1/Rfam.cm.gz"
 	},
+
 	"uniref90": {
 		"access": "download",
 		"db_type": "prot",
 		"filename": "uniref90.fasta",
 		"fileformat": "gz",
+        "metalink": "ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/uniref/uniref90/RELEASE.metalink",
         "version": "current",
 		"url": "ftp://ftp.uniprot.org/pub/databases/uniprot/uniref/uniref90/uniref90.fasta.gz"
 	},
@@ -29,6 +33,7 @@
 		"access": "download",
 		"db_type": "prot",
 		"filename": "aa_seq_euk.fasta",
+        "md5": "f40da35b9135c5f326380089f0ddb7a2",
 		"fileformat": "gz",
         "version": 8,
 		"url": "ftp://cegg.unige.ch/OrthoDB8/Eukaryotes/FASTA/aa_seq_euk.fasta.gz"
@@ -38,6 +43,7 @@
         "access": "download",
         "db_type": "txt",
         "filename": "ODB8_EukOGs_genes_ALL_levels.txt",
+        "md5": null,
         "fileformat": "gz",
         "version": 8,
         "url": "ftp://cegg.unige.ch/OrthoDB8/Eukaryotes/Genes_to_OGs/ODB8_EukOGs_genes_ALL_levels.txt.gz"
@@ -48,25 +54,29 @@
         "metazoa": {
             "access": "download",
             "db_type": "hmm",
-            "url": "http://busco.ezlab.org/files/metazoa_buscos.tar.gz"
+            "url": "http://busco.ezlab.org/files/metazoa_buscos.tar.gz",
+            "fileformat": "tar.gz"
         },
 
         "vertebrata": {
             "access": "download",
             "db_type": "hmm",
-            "url": "http://busco.ezlab.org/files/vertebrata_buscos.tar.gz"
+            "url": "http://busco.ezlab.org/files/vertebrata_buscos.tar.gz",
+            "fileformat": "tar.gz"
         },
 
         "arthropoda": {
             "access": "download",
             "db_type": "hmm",
-            "url": "http://busco.ezlab.org/files/arthropoda_buscos.tar.gz"
+            "url": "http://busco.ezlab.org/files/arthropoda_buscos.tar.gz",
+            "fileformat": "tar.gz"
         },
 
         "eukaryota": {
             "access": "download",
             "db_type": "hmm",
-            "url": "http://busco.ezlab.org/files/eukaryota_buscos.tar.gz"
+            "url": "http://busco.ezlab.org/files/eukaryota_buscos.tar.gz",
+            "fileformat": "tar.gz"
         }
     }
 

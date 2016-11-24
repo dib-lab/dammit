@@ -1,17 +1,54 @@
 #!/usr/bin/env python
 from __future__ import print_function
 import os
+import sys
 
 from doit.action import CmdAction
-from doit.tools import LongRunning
+from doit.exceptions import TaskFailed
+from doit.tools import LongRunning, run_once
 from doit.task import clean_targets
 
 from .utils import clean_folder
 from ..utils import which, doit_task
 
 
+def hashfile(path, hasher=None, blocksize=65536):
+    """
+    A function to hash files.
+
+    See: http://stackoverflow.com/questions/3431825
+    """
+    import hashlib
+    import gzip
+
+    if hasher is None: hasher = hashlib.md5()
+
+    try:
+        f = gzip.open(path, "rb")
+        buf = f.read(blocksize)
+    except OSError:
+        f = open(path, "rb")
+        buf = f.read(blocksize)
+
+    while len(buf) > 0:
+        hasher.update(buf)
+        buf = f.read(blocksize)
+
+    f.close()
+    return hasher.hexdigest()
+
+
+def check_hash(target_fn, expected):
+    print('    * Checking hash of {0}'.format(target_fn), file=sys.stderr)
+    if expected == hashfile(target_fn):
+        return True
+    else:
+        os.remove(target_fn)
+        return TaskFailed('{0} has non-matching hash; download error?'.format(target_fn))
+
+
 @doit_task
-def get_download_task(url, target_fn):
+def get_download_task(url, target_fn, md5=None, metalink=None):
     '''Creates a doit task to download the given URL.
     
     Args:
@@ -21,11 +58,71 @@ def get_download_task(url, target_fn):
         dict: doit task.
     '''
 
-    cmd = 'curl -o {target_fn} {url}'.format(**locals())
-    name = 'download_gunzip:{0}'.format(os.path.basename(target_fn))
+    cmd = ['curl', '-o', target_fn]
+    if metalink is not None:
+        cmd.extend(['--metalink', metalink])
+    cmd.append(url)
+    cmd = ' '.join(cmd)
+    name = 'download:{0}'.format(os.path.basename(target_fn))
+
+    actions = [LongRunning(cmd)]
+
+    if md5 is not None:
+        actions.append((check_hash, [target_fn, md5]))
+
+    return {'name': name,
+            'actions': actions,
+            'targets': [target_fn],
+            'clean': [clean_targets],
+            'uptodate': [True]}
+
+
+@doit_task
+def get_untargz_task(archive_fn, target_dir, label=None):
+    '''Create a doit task to untar and gunip a *.tar.gz archive.
+
+    Args:
+        archive_fn (str): The .tar.gz file.
+        target_dir (str): The folder to untar into.
+        label (str): Optional label to resolve doit task name conflicts.
+    Returns:
+        dict: doit task.
+    '''
+
+    if label is None:
+        label = os.path.basename(url)
+
+    cmd = 'tar -xzf -C {target_dir} {archive_fn}'.format(**locals())
+    name = 'untargz:{0}-{1}'.format(os.path.basename(target_dir), label)
+    done = os.path.join(target_dir, name) + '.done'
+    touch = 'touch {done}'.format(done=done)
+
+    return {'name': name,
+            'actions': ['mkdir -p {0}'.format(target_dir),
+                        LongRunning(cmd),
+                        touch],
+            'targets': [done],
+            'clean': [(clean_folder, [target_dir])],
+            'uptodate': [True]}
+
+
+@doit_task
+def get_gunzip_task(archive_fn, target_fn):
+    '''Create a doit task to gunzip a gzip archive.
+
+    Args:
+        archive_fn (str): The gzip file.
+        target_fn (str): Output filename.
+    Returns:
+        dict: doit task.
+    '''
+
+    name = 'gunzip:{0}'.format(os.path.basename(target_fn))
+    cmd = 'gunzip -c {archive_fn} > {target_fn}'.format(**locals())
 
     return {'name': name,
             'actions': [LongRunning(cmd)],
+            'file_dep': [archive_fn],
             'targets': [target_fn],
             'clean': [clean_targets],
             'uptodate': [True]}
