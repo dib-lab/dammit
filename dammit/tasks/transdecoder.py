@@ -70,7 +70,7 @@ def get_transdecoder_predict_task(input_filename, pfam_filename=None, params=Non
             'actions': [cmd],
             'file_dep': file_dep,
             'targets': [input_filename + '.transdecoder' + ext \
-                        for ext in ['.bed', '.cds', '.pep', '.gff3', '.mRNA']],
+                        for ext in ['.bed', '.cds', '.pep', '.gff3']],
             'clean': [clean_targets,
                      (clean_folder, [input_filename + '.transdecoder_dir'])]}
 
