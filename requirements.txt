@@ -1,12 +1,13 @@
 setuptools>=0.6.35
-pandas>=0.17
+pandas>=0.18.1
 khmer>=2.0
 doit>=0.29.0
 Sphinx>1.3.1
 sphinx-rtd-theme>=0.1.9
+sphinxcontrib-napoleon>=0.3.11
 nose>=1.3.4
 nose-capturestderr>=1.0
 ficus>=0.1
 matplotlib>=1.0
 numexpr>=2.3.1
-shmlast>=0.2
+shmlast>=1.0.3
