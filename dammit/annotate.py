@@ -239,7 +239,7 @@ def register_transdecoder_tasks(handler, config, databases,
                                    databases['Pfam-A'],
                                    cutoff=config['evalue'],
                                    n_threads=config['n_threads'],
-                                   pbs=config['pbs'],
+                                   sshloginfile=config['sshloginfile'],
                                    params=config['hmmer']['hmmscan'])
         handler.register_task('hmmscan:Pfam-A', task,
                               files={'longest_orfs_pfam': pfam_fn})
@@ -283,7 +283,7 @@ def register_rfam_tasks(handler, config, databases):
                                             databases['Rfam'],
                                             cutoff=config['evalue'],
                                             n_threads=config['n_threads'],
-                                            pbs=config['pbs'],
+                                            sshloginfile=config['sshloginfile'],
                                             params=config['infernal']['cmscan']),
                           files={'Rfam': output_fn})
 
@@ -329,7 +329,7 @@ def register_lastal_tasks(handler, config, databases,
                                               cutoff=config['evalue'],
                                               n_threads=config['n_threads'],
                                               frameshift=lastal_cfg['frameshift'],
-                                              pbs=config['pbs'],
+                                              pbs=config['sshloginfile'],
                                               params=lastal_cfg['params'])),
                               files={name: output_fn})
 

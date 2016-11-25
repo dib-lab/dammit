@@ -28,7 +28,7 @@ class HMMScanTask(DependentTask):
     @doit_task
     @profile_task
     def task(self, input_filename, output_filename, db_filename,
-                   cutoff=0.00001, n_threads=1, pbs=False, 
+                   cutoff=0.00001, n_threads=1, sshloginfile=None, 
                    params=None):
         '''Run HMMER's hmmscan with the given database on the given FASTA file.
 
@@ -57,7 +57,8 @@ class HMMScanTask(DependentTask):
         cmd.extend(['--cpu', '1', '--domtblout', '/dev/stdout', 
                     '-E', str(cutoff), '-o', stat, db_filename, '/dev/stdin'])
         
-        cmd = parallel_fasta(input_filename, output_filename, cmd, n_threads, pbs=pbs)
+        cmd = parallel_fasta(input_filename, output_filename, cmd, n_threads, 
+                             sshloginfile=sshloginfile)
             
         return {'name': name,
                 'actions': [cmd],

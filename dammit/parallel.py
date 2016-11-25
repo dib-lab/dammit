@@ -31,8 +31,8 @@ def check_parallel(logger=None):
             return parallel
 
 
-def parallel_fasta(input_filename, output_filename, command, n_jobs,
-                   pbs=False, check_dep=True, logger=None):
+def parallel_fasta(input_filename, output_filename, command, n_jobs, 
+                   sshloginfile=None, check_dep=True, logger=None):
     '''Given an input FASTA source, target, shell command, and number of jobs,
     construct a gnu-parallel command to act on the sequences.
 
@@ -41,18 +41,22 @@ def parallel_fasta(input_filename, output_filename, command, n_jobs,
         output_filename (str): The target.
         command (list): The shell command (in subprocess format).
         n_jobs (int): Number of cores or nodes to split to.
-        pbs (bool): If True, add the appropriate flags for running on a
-        multinode system. Note that this means the user needs to export
-        $PBS_NODEFILE before running dammit.
+        sshloginfile (str): Path to file with node addresses.
+        check_dep (bool): If True, check for the gnu-parallel executable.
+        logger (logging.Logger): A logger to use.
     Returns:
         str: The constructed shell command.
     '''
-    
+
     exc = which('parallel') if not check_dep else check_parallel(logger=logger)
-    cmd = ['cat', input_filename, '|', exc, '--progress', '--pipe', '-L', 2, '-N', 400,
-           '--gnu', '-j', n_jobs, '-a', input_filename]
-    if pbs:
-        cmd.extend(['--sshloginfile $PBS_NODEFILE', '--workdir $PWD'])
+    cmd = ['cat', input_filename, '|', exc, '--round-robin', '--pipe', '-L', 2,
+           '-N', 10000, '--gnu']
+    if sshloginfile is not None:
+        cmd.extend(['--sshloginfile', sshloginfile, '--workdir $PWD'])
+    else:
+        cmd.extend(['-j', n_jobs])
+    cmd.extend(['-a', input_filename])
+
     if isinstance(command, list):
         command = ' '.join(command)
     cmd.extend([command, '>', output_filename])

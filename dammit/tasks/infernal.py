@@ -66,7 +66,7 @@ class CMScanTask(DependentTask):
     @doit_task
     @profile_task
     def task(self, input_filename, output_filename, db_filename,
-                   cutoff=0.00001, n_threads=1, pbs=False, params=None):
+                   cutoff=0.00001, n_threads=1, sshloginfile=None, params=None):
         '''Run Infernal's `cmscan` on the given FASTA and covariance model database.
 
         Args:
@@ -95,7 +95,7 @@ class CMScanTask(DependentTask):
                '-E', str(cutoff), '--tblout', '/dev/stdout', '-o', stat,
                db_filename, '/dev/stdin'])
         cmd = parallel_fasta(input_filename, output_filename, cmd, n_threads,
-                             pbs=pbs)
+                             sshloginfile=sshloginfile)
 
         return {'name': name,
                 'actions': [cmd],
