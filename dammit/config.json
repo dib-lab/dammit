@@ -17,7 +17,7 @@
     },
 
     "busco": {
-        "db_dir": "buscodb",
+        "db_dir": "busco2db",
         "output_suffix": ".busco.results",
         "params": []
     },
