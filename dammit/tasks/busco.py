@@ -8,6 +8,7 @@ from doit.tools import run_once
 from doit.task import clean_targets
 import pandas as pd
 
+from dammit import meta
 from .utils import clean_folder, DependentTask, InstallationError
 from ..profile import profile_task
 from ..utils import doit_task, which
@@ -16,19 +17,21 @@ from ..utils import doit_task, which
 class BuscoTask(DependentTask):
 
     def deps(self):
-        busco = which('BUSCO.py')
+        buscov2 = which('BUSCO.py')
+        buscov3 = which('run_BUSCO.py')
+
         tblastn = which('tblastn')
         makeblastdb = which('makeblastdb')
-        if busco is None:
-            raise InstallationError('BUSCO.py not found. NOTE: '\
-                                    'dammit 1.0 requires BUSCO v2.')
+        if buscov2 is None and buscov3 is None:
+            raise InstallationError('BUSCO not found. NOTE: '\
+                                    'dammit 1.0 requires BUSCO v2 or greater')
         if tblastn is None:
             raise InstallationError('tblastn not found, required for BUSCO.')
         if makeblastdb is None:
             raise InstallationError('makeblastdb not found, required for BUSCO.')
         if self.logger:
             logger.debug('BUSCO:' + busco)
-        return busco
+        return buscov3 if buscov3 is not None else buscov2
 
     @doit_task
     @profile_task
@@ -52,10 +55,12 @@ class BuscoTask(DependentTask):
                                       os.path.basename(busco_db_dir))
 
         exc = self.deps()
+        config_file = os.path.join(meta.__path__, 'busco_config.ini')
 
         # BUSCO chokes on file paths as output names
         output_name = os.path.basename(output_name)
-        cmd = ['python3', exc, '-i', input_filename, '-f', '-o', output_name,
+        cmd = ['BUSCO_CONFIG_FILE="{0}"'.format(config_file),
+               'python3', exc, '-i', input_filename, '-f', '-o', output_name,
                '-l', busco_db_dir, '-m', input_type, '-c', str(n_threads)]
         if params is not None:
             cmd.extend(params)
