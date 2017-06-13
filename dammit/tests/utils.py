@@ -2,7 +2,7 @@
 from __future__ import print_function
 from __future__ import absolute_import
 
-import nose
+from distutils import dir_util
 import os
 from io import StringIO
 import logging
@@ -17,6 +17,8 @@ from tempfile import mkdtemp
 from doit.cmd_base import TaskLoader
 from doit.doit_cmd import DoitMain
 from doit.dependency import Dependency, DbmDB
+
+from pytest import fixture
 
 from dammit import log
 log.start_logging(test=True)
@@ -84,151 +86,24 @@ def touch(filename):
     open(filename, 'a').close()
     os.chmod(filename, stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
 
+@fixture
+def datadir(tmpdir, request):
+    '''
+    Fixture responsible for locating the test data directory and copying it
+    into a temporary directory.
+    '''
+    filename = request.module.__file__
+    test_dir = os.path.dirname(filename)
+    data_dir = os.path.join(test_dir, 'test-data') 
+    dir_util.copy_tree(data_dir, str(tmpdir))
 
-class TestData(object):
+    def getter(filename, as_str=True):
+        filepath = tmpdir.join(filename)
+        if as_str:
+            return str(filepath)
+        return filepath
 
-    def __init__(self, filename, dest_dir):
-        self.filepath = None
-        try:
-            self.filepath = resource_filename(Requirement.parse("dammit"), 
-                                              "dammit/tests/test-data/"     + filename)
-        except ResolutionError:
-            pass
-        if not self.filepath or not os.path.isfile(self.filepath):
-            self.filepath = os.path.join(os.path.dirname(__file__), 
-                                          'test-data', filename)
-        shutil.copy(self.filepath, dest_dir)
-        self.filepath = os.path.join(dest_dir, filename)
-    
-    def __enter__(self):
-        return self.filepath
-
-    def __exit__(self, exc_type, exc_value, traceback):
-        try:
-            os.remove(self.filepath)
-        except OSError:
-            pass
-        if exc_type:
-            return False
-
-
-class TemporaryFile(object):
-
-    def __init__(self, directory):
-        self.filepath = os.path.join(directory, str(hash(self)))
-
-    def __enter__(self):
-        return self.filepath
-
-    def __exit__(self, exc_type, exc_value, traceback):
-        try:
-            os.remove(self.filepath)
-        except OSError:
-            pass
-        if exc_type:
-            return False
-
-
-class Move(object):
-
-    def __init__(self, target):
-        print('Move to', target, file=sys.stderr)
-        self.target = target
-   
-    def __enter__(self):
-        self.cwd = os.getcwd()
-        print('cwd:', self.cwd, file=sys.stderr)
-        os.chdir(self.target)
-
-    def __exit__(self, exc_type, exc_value, traceback):
-        os.chdir(self.cwd)
-        if exc_type:
-            return False
-
-
-class TemporaryDirectory(object):
-    """Create and return a temporary directory.  This has the same
-    behavior as mkdtemp but can be used as a context manager.  For
-    example:
-
-        with TemporaryDirectory() as tmpdir:
-            ...
-
-    Upon exiting the context, the directory and everything contained
-    in it are removed.
-
-    Note:
-        Taken from http://stackoverflow.com/questions/19296146/tempfile-temporarydirectory-context-manager-in-python-2-7
-    """
-
-    def __init__(self, suffix="", prefix="tmp", dir=None):
-        self._closed = False
-        self.name = None # Handle mkdtemp raising an exception
-        self.name = mkdtemp(suffix, prefix, dir)
-
-    def __repr__(self):
-        return "<{} {!r}>".format(self.__class__.__name__, self.name)
-
-    def __enter__(self):
-        return self.name
-
-    def cleanup(self, _warn=False):
-        if self.name and not self._closed:
-            try:
-                self._rmtree(self.name)
-            except (TypeError, AttributeError) as ex:
-                # Issue #10188: Emit a warning on stderr
-                # if the directory could not be cleaned
-                # up due to missing globals
-                if "None" not in str(ex):
-                    raise
-                print >>_sys.stderr, "ERROR: {!r} while cleaning up {!r}".format(ex, self,)
-                return
-            self._closed = True
-            if _warn:
-                self._warn("Implicitly cleaning up {!r}".format(self), ResourceWarning)
-
-    def __exit__(self, exc, value, tb):
-        self.cleanup()
-        if exc is not None:
-            return False
-
-    def __del__(self):
-        # Issue a ResourceWarning if implicit cleanup needed
-        self.cleanup(_warn=True)
-
-    # XXX (ncoghlan): The following code attempts to make
-    # this class tolerant of the module nulling out process
-    # that happens during CPython interpreter shutdown
-    # Alas, it doesn't actually manage it. See issue #10188
-    _listdir = staticmethod(os.listdir)
-    _path_join = staticmethod(os.path.join)
-    _isdir = staticmethod(os.path.isdir)
-    _islink = staticmethod(os.path.islink)
-    _remove = staticmethod(os.remove)
-    _rmdir = staticmethod(os.rmdir)
-    _warn = _warnings.warn
-
-    def _rmtree(self, path):
-        # Essentially a stripped down version of shutil.rmtree.  We can't
-        # use globals because they may be None'ed out at shutdown.
-        for name in self._listdir(path):
-            fullname = self._path_join(path, name)
-            try:
-                isdir = self._isdir(fullname) and not self._islink(fullname)
-            except OSError:
-                isdir = False
-            if isdir:
-                self._rmtree(fullname)
-            else:
-                try:
-                    self._remove(fullname)
-                except OSError:
-                    pass
-        try:
-            self._rmdir(path)
-        except OSError:
-            pass
+    return getter
 
 
 '''
@@ -275,8 +150,6 @@ def _runscript(scriptname):
             if os.path.isfile(scriptfile):
                 exec(compile(open(scriptfile).read(), scriptfile, 'exec'), ns)
                 return 0
-        elif sandbox:
-            raise nose.SkipTest("sandbox tests are only run in a repository.")
 
     return -1
 
@@ -313,8 +186,6 @@ def runscript(scriptname, args, in_directory=None,
             print('arguments', sysargs, file=oldout)
 
             status = _runscript(scriptname)
-        except nose.SkipTest:
-            raise
         except SystemExit as e:
             status = e.code
         except:
