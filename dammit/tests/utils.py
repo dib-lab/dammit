@@ -199,7 +199,10 @@ def runscript(scriptname, args, in_directory=None,
         os.chdir(cwd)
 
     if status != 0 and not fail_ok:
-        assert False, (status, out, err)
+        print('STATUS:', status)
+        print('STDOUT:', out)
+        print('STDERR:', err)
+        assert False
 
     return status, out, err
 
