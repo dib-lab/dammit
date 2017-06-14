@@ -7,13 +7,13 @@ install: deps
 		python setup.py install
 
 test: FORCE
-		python setup.py nosetests --attr !long,!huge
+		python setup.py pytest -m "not long and not huge"
 
 long-test: FORCE
-		python setup.py nosetests --attr !huge -x
+		python setup.py pytest -m "not huge"
 
 acceptance-huge: FORCE
-		python setup.py nosetests
+		python setup.py pytest
 
 publish: FORCE
 		python setup.py sdist upload
