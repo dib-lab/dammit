@@ -5,19 +5,17 @@ import json
 import os
 import sys
 
-from nose.plugins.attrib import attr
-from unittest import TestCase
 import pandas as pd
 
-from utils import TemporaryDirectory, Move, TestData, touch, TemporaryFile
+from utils import touch, datadir
 from utils import run_task, run_tasks, check_status
-from dammit.tasks.infernal import get_cmpress_task as cmpress_task
-from dammit.tasks.infernal import get_cmscan_task as cmscan_task
+from dammit.tasks.infernal import CMPressTask, CMScanTask
 from dammit.fileio.infernal import InfernalParser
 from dammit.meta import get_config
 
+import pytest
 
-class TestInfernalTasks(TestCase):
+class TestInfernalTasks():
 
     @classmethod
     def setup_class(cls):
@@ -26,77 +24,74 @@ class TestInfernalTasks(TestCase):
         cls.cmpress_cfg = cfg['infernal']['cmscan']
         cls.extensions = ['.i1f', '.i1i', '.i1m', '.i1p']
 
-    def test_cmpress_task(self):
-        with TemporaryDirectory() as td:
-            with Move(td):
-                with TestData('test-covariance-model.cm', td) as tf:
-                    task = cmpress_task(tf, self.cmpress_cfg)
-                    run_tasks([task], ['run'])
-                    status = check_status(task)
-                    print(os.listdir(td), file=sys.stderr)
+    def test_cmpress_task(self, tmpdir, datadir):
+        with tmpdir.as_cwd():
+            tf = datadir('test-covariance-model.cm')
+            task = CMPressTask().task(tf, params=self.cmpress_cfg)
+            run_tasks([task], ['run'])
+            status = check_status(task)
+            print(os.listdir(), file=sys.stderr)
+            
+            for ext in self.extensions:
+                assert os.path.isfile(tf + ext)
+
+            assert status.status == 'up-to-date'
+
+    def test_cmpress_task_existing(self, tmpdir, datadir):
+        with tmpdir.as_cwd():
+            tf = datadir('test-covariance-model.cm')
+            for ext in self.extensions:
+                touch(tf + ext)
+
+            task = CMPressTask().task(tf, params=self.cmpress_cfg)
+            run_tasks([task], ['run'])
+            print(os.listdir(), file=sys.stderr)
+            print(task, file=sys.stderr)
+            status = check_status(task)
+            
+            assert status.status == 'up-to-date'
+
+    def test_cmscan_task(self, tmpdir, datadir):
+        with tmpdir.as_cwd():
+            transcript = datadir('test-transcript.fa')
+            cm = datadir('test-covariance-model.cm')
+            out = str(tmpdir.join('test.out'))
+                
+            db_task = CMPressTask().task(cm, params=self.cmpress_cfg)
+            aln_task = CMScanTask().task(transcript, out, cm, 
+                                         cutoff=1.0, n_threads=1)
+            run_tasks([db_task, aln_task], ['run'])
+            print(os.listdir(), file=sys.stderr)
+            aln = ''.join(open(out).readlines())
+            print(aln, file=sys.stderr)
+
+            # TODO: better correctness check
+            assert aln.count('accession') == 2
+            assert 'E-value' in aln
+
+    def test_cmscan_task_multithreaded(self, tmpdir, datadir):
+        with tmpdir.as_cwd():
+            transcript = datadir('rnaseP-bsu.fa')
+            cm = datadir('rnaseP-eubact.c.cm')
+            out_single = str(tmpdir.join('single'))
+            out_multi = str(tmpdir.join('multi'))
+
+            for n_threads in (2,3,4,5):
                     
-                    for ext in self.extensions:
-                        self.assertTrue(os.path.isfile(tf + ext))
+                db_task = CMPressTask().task(cm, params=self.cmpress_cfg)
+                aln_tasks_single = CMScanTask().task(transcript, out_single, 
+                                                     cm, cutoff=1.0, 
+                                                     n_threads=1)
+                aln_tasks_multi = CMScanTask().task(transcript, out_multi, 
+                                                    cm, cutoff=1.0,
+                                                    n_threads=n_threads)
+                run_tasks([db_task, aln_tasks_single], ['run'])
+                run_task(aln_tasks_multi)
 
-                    self.assertEquals(status.status, 'up-to-date')
-    
-    def test_cmpress_task_existing(self):
-        with TemporaryDirectory() as td:
-            with Move(td):
-                with TestData('test-covariance-model.cm', td) as tf:
-                    for ext in self.extensions:
-                        touch(tf + ext)
+                alns_single = pd.concat(InfernalParser(out_single))
+                alns_multi = pd.concat(InfernalParser(out_multi))
 
-                    task = cmpress_task(tf, self.cmpress_cfg)
-                    run_tasks([task], ['run'])
-                    print(os.listdir(td), file=sys.stderr)
-                    print(task, file=sys.stderr)
-                    status = check_status(task)
-                    
-                    self.assertEquals(status.status, 'up-to-date')
-
-    def test_cmscan_task(self):
-        with TemporaryDirectory() as td:
-            with Move(td):
-                with TestData('test-transcript.fa', td) as transcript, \
-                     TestData('test-covariance-model.cm', td) as cm, \
-                     TemporaryFile(td) as out:
-                        
-                    db_task = cmpress_task(cm, self.cmpress_cfg)
-                    aln_task = cmscan_task(transcript, out, cm, 1.0, 1)
-                    run_tasks([db_task, aln_task], ['run'])
-                    print(os.listdir(td), file=sys.stderr)
-                    aln = ''.join(open(out).readlines())
-                    print(aln, file=sys.stderr)
-
-                    # TODO: better correctness check
-                    self.assertEquals(aln.count('accession'), 2)
-                    self.assertIn('E-value', aln)
-
-    @attr('long')
-    def test_cmscan_task_multithreaded(self):
-        with TemporaryDirectory() as td:
-            with Move(td):
-                with TestData('rnaseP-bsu.fa', td) as transcript, \
-                     TestData('rnaseP-eubact.c.cm', td) as cm, \
-                     TemporaryFile(td) as out_single,\
-                     TemporaryFile(td) as out_multi:
-
-                    for n_threads in (2,3,4,5):
-                            
-                        db_task = cmpress_task(cm, self.cmpress_cfg)
-                        aln_tasks_single = cmscan_task(transcript, out_single, 
-                                                                cm, 1.0, 1)
-                        aln_tasks_multi = cmscan_task(transcript, out_multi, 
-                                                                cm, 1.0,
-                                                                n_threads)
-                        run_tasks([db_task, aln_tasks_single], ['run'])
-                        run_task(aln_tasks_multi)
-
-                        alns_single = pd.concat(InfernalParser(out_single))
-                        alns_multi = pd.concat(InfernalParser(out_multi))
-
-                        self.assertTrue(all(alns_single['e_value'].sort_values() == \
-                                            alns_multi['e_value'].sort_values()))
+                assert all(alns_single['e_value'].sort_values() == \
+                           alns_multi['e_value'].sort_values())
 
 
