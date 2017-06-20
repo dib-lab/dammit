@@ -26,6 +26,7 @@ def compare_gff(fn_a, fn_b):
 
 
 @pytest.mark.long
+@pytest.mark.requires_databases
 class TestDammitAnnotate:
 
     def setup_method(self):

@@ -97,6 +97,7 @@ class TestDatabases():
         if saved_env is not None:
             os.environ['DAMMIT_DB_DIR'] = saved_env
 
+    @pytest.mark.requires_databases
     def test_dammit_databases_check(self):
         '''Test the database check subcommand.
         '''
@@ -120,6 +121,7 @@ class TestDatabases():
         args = ['databases', '--install', '--database-dir', str(tmpdir)]
         status, out, err = run(args)
 
+    @pytest.mark.requires_databases
     def test_check_or_fail_succeed(self):
         '''Check that check_or_fail succeeds properly.
         '''

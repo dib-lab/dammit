@@ -9,6 +9,9 @@ install: deps
 test: FORCE
 		py.test -m "not long and not huge"
 
+ci-test: FORCE
+		py.test -m "not long and not huge and not requires_databases"
+
 long-test: FORCE
 		py.test -m "not huge"
 
