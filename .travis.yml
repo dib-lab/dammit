@@ -21,6 +21,7 @@ install:
   - pip install codecov
   - git clone https://github.com/Linuxbrew/brew.git $HOME/.linuxbrew
   - export PATH="$HOME/.linuxbrew/bin:$PATH"
+  - brew tap homebrew/science
   - brew update
   - brew install homebrew/science/last homebrew/science/transdecoder parallel homebrew/science/infernal homebrew/science/hmmer
   - brew install --build-from-source --without-test homebrew/science/blast
