@@ -19,7 +19,7 @@ install:
   - pip install shmlast --no-deps
   - pip install codecov
   - git clone https://github.com/Linuxbrew/brew.git $HOME/.linuxbrew
-  - export PATH="/home/linuxbrew/.linuxbrew/bin:$PATH"
+  - export PATH="$HOME/.linuxbrew/bin:$PATH"
   - brew install homebrew/science/last homebrew/science/transdecoder parallel homebrew/science/blast homebrew/science/infernal homebrew/science/hmmer
   - pushd $HOME && git clone https://gitlab.com/ezlab/busco && cd busco && python setup.py install && popd
   - export PATH="$HOME/busco/scripts:$PATH"
