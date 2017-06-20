@@ -26,4 +26,5 @@ install:
   - brew install homebrew/science/last homebrew/science/transdecoder parallel homebrew/science/infernal homebrew/science/hmmer
   - pushd $HOME && git clone https://gitlab.com/ezlab/busco && cd busco && python setup.py install && popd
   - export PATH="$HOME/busco/scripts:$PATH"
+  - make install
 script: make ci-test
