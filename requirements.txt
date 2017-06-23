@@ -8,6 +8,6 @@ sphinxcontrib-napoleon>=0.3.11
 ficus>=0.1
 matplotlib>=1.0
 numexpr>=2.3.1
-shmlast>=1.0.3
+shmlast>=1.2
 pytest>3
 pytest-cov>2.3

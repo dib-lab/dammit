@@ -43,7 +43,7 @@ def main():
                                 'ficus>=0.1',
                                 'matplotlib>=1.0',
                                 'numexpr>=2.3.1',
-                                'shmlast>=1.0.3'],
+                                'shmlast>=1.2'],
             include_package_data = True,
             zip_safe = False,  )
 
