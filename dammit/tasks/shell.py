@@ -2,6 +2,9 @@
 from __future__ import print_function
 import os
 import sys
+import hashlib
+import gzip
+
 
 from doit.action import CmdAction
 from doit.exceptions import TaskFailed
@@ -18,17 +21,19 @@ def hashfile(path, hasher=None, blocksize=65536):
 
     See: http://stackoverflow.com/questions/3431825
     """
-    import hashlib
-    import gzip
 
     if hasher is None: hasher = hashlib.md5()
 
     try:
-        f = gzip.open(path, "rb")
-        buf = f.read(blocksize)
-    except OSError:
-        f = open(path, "rb")
-        buf = f.read(blocksize)
+        try:
+            f = gzip.open(path, "rb")
+            buf = f.read(blocksize)
+        except OSError:
+            f = open(path, "rb")
+            buf = f.read(blocksize)
+    except FileNotFoundError:
+        raise RuntimeError('Function hashfile could not find referenced file.'\
+                           ' Is there a problem with curl?')
 
     while len(buf) > 0:
         hasher.update(buf)
