@@ -136,6 +136,12 @@ def build_default_pipeline(handler, config, databases, with_uniref=False):
         register_uniref90_tasks(handler, config['last']['lastdb'], databases)
 
     return handler
+
+
+def build_quick_pipeline(handler, config, databases):
+    register_busco_tasks(handler, config, databases)
+
+    return handler
                           
 
 def register_pfam_tasks(handler, params, databases):

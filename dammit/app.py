@@ -247,10 +247,15 @@ class DammitApp(object):
         print(ui.header('submodule: databases', level=2))
 
         handler = databases.get_handler(self.config_d)
-        databases.build_default_pipeline(handler, 
-                                         self.config_d,
-                                         self.databases_d,
-                                         with_uniref=self.args.full)
+        if self.args.quick:
+            databases.build_quick_pipeline(handler,
+                                           self.config_d,
+                                           self.databases_d)
+        else:
+            databases.build_default_pipeline(handler, 
+                                             self.config_d,
+                                             self.databases_d,
+                                             with_uniref=self.args.full)
         if self.args.install:
             databases.install(handler)
         else:
@@ -261,10 +266,16 @@ class DammitApp(object):
         print(ui.header('submodule: annotate', level=2))
 
         db_handler = databases.get_handler(self.config_d)
-        databases.build_default_pipeline(db_handler, 
-                                         self.config_d,
-                                         self.databases_d,
-                                         with_uniref=self.args.full)
+
+        if self.args.quick:
+            databases.build_quick_pipeline(db_handler,
+                                           self.config_d,
+                                           self.databases_d)
+        else:
+            databases.build_default_pipeline(db_handler, 
+                                             self.config_d,
+                                             self.databases_d,
+                                             with_uniref=self.args.full)
         if self.config_d['force'] is True:
             utd_msg = '*All database tasks up-to-date.*'
             ood_msg = '*Some database tasks out-of-date; '\
