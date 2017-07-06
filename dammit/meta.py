@@ -8,7 +8,7 @@ __path__ = os.path.dirname(__file__)
 __version__ = open(os.path.join(__path__, 'VERSION')).read().strip()
 __authors__ = ['Camille Scott']
 __description__ = 'a tool for easy de novo transcriptome annotation'
-__date__ = 2016
+__date__ = 2017
 
 
 def get_config():
