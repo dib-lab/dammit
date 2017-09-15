@@ -76,7 +76,7 @@ class TransDecoderPredictTask(DependentTask):
         name = 'TransDecoder.Predict:' + os.path.basename(input_filename)
 
         exc = self.deps()
-        cmd = [exc, '-t', input_filename]
+        cmd = [exc, '-t', input_filename, '--cpu', str(n_threads)]
         file_dep = [input_filename,
                     input_filename + '.transdecoder_dir/longest_orfs.pep']
         if pfam_filename is not None:
