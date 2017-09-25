@@ -88,10 +88,10 @@ def install(handler):
     uptodate, statuses = handler.print_statuses(uptodate_msg=msg)
     if not uptodate:
         print('Installing...')
-        handler.run()
+        return handler.run()
     else:
         print('Nothing to install!')
-        sys.exit(0)
+        return 0
 
 
 def check_or_fail(handler):

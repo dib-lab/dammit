@@ -38,7 +38,7 @@ class DammitApp(object):
         about = '\nby {0}\n\n**v{1}**, {2}\n'.format(', '.join(__authors__),
                                            __version__, __date__)
         print(about)
-        self.args.func()
+        return self.args.func()
 
     def description(self):
         return ui.header('dammit: ' + __description__)
@@ -257,7 +257,7 @@ class DammitApp(object):
                                              self.databases_d,
                                              with_uniref=self.args.full)
         if self.args.install:
-            databases.install(handler)
+            return databases.install(handler)
         else:
             databases.check_or_fail(handler)
 
@@ -298,4 +298,4 @@ class DammitApp(object):
             build_default_pipeline(annotate_handler, 
                                    self.config_d, 
                                    db_handler.files)
-        annotate.run_annotation(annotate_handler)
+        return annotate.run_annotation(annotate_handler)

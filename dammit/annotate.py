@@ -91,7 +91,7 @@ def run_annotation(handler):
     msg = '*All annotation tasks up-to-date.*'
     uptodate, statuses = handler.print_statuses(uptodate_msg=msg)
     if not uptodate:
-        handler.run()
+        return handler.run()
     else:
         print('**Pipeline is already completed!**')
         sys.exit(0)
@@ -248,7 +248,8 @@ def register_transdecoder_tasks(handler, config, databases,
         handler.register_task('hmmscan:Pfam-A:remap',
                               get_remap_hmmer_task(handler.files['longest_orfs_pfam'],
                                                    path.join(transdecoder_dir, 'longest_orfs.gff3'),
-                                                   pfam_csv_fn),
+                                                   pfam_csv_fn,
+                                                   transcript_basename=config['name']),
                               files={'Pfam-A-csv': pfam_csv_fn})
         
         pfam_gff3 = '{0}.x.pfam-A.gff3'.format(input_fn)
