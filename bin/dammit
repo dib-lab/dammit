@@ -6,4 +6,4 @@ from dammit import app
 import sys
 
 if __name__ == '__main__':
-    app.DammitApp(arg_src=sys.argv[1:]).run()
+    sys.exit(app.DammitApp(arg_src=sys.argv[1:]).run())

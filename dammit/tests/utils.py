@@ -202,7 +202,6 @@ def runscript(scriptname, args, in_directory=None,
         print('STATUS:', status)
         print('STDOUT:', out)
         print('STDERR:', err)
-        assert False
 
     return status, out, err
 
