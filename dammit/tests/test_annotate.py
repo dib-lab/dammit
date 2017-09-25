@@ -2,6 +2,8 @@ import os
 import stat
 import pandas as pd
 import pytest
+import traceback
+import sys
 
 from dammit.app import DammitApp
 from dammit.fileio import gff3
@@ -161,6 +163,7 @@ class TestDammitAnnotate:
             gff3_fn = os.path.join(outdir, 'pom.single.fa.dammit.gff3')
             fasta_fn = os.path.join(outdir, 'pom.single.fa.dammit.fasta')
 
+            assert status == 0
             assert compare_gff(gff3_fn, exp_gff3)
             assert open(fasta_fn).read() == open(exp_fasta).read()
 
@@ -173,10 +176,12 @@ class TestDammitAnnotate:
 
             args = ['annotate', transcripts, '--name', 'Test']
             status, out, err = run(args)
+
             outdir = '{0}.dammit'.format(transcripts)
             fn = os.path.join(outdir, os.path.basename(transcripts))
             assert os.path.isfile(fn)
+
             contents = open(fn).read()
             assert 'Test_0' in contents
 
-
+            assert status == 0
