@@ -53,7 +53,7 @@ class DammitApp(object):
         '''
         parser = argparse.ArgumentParser(
                  description=self.description(),
-                 formatter_class=argparse.RawDescriptionHelpFormatter)
+                 formatter_class=argparse.ArgumentDefaultsHelpFormatter)
         parser.set_defaults(func=parser.print_help)
 
         parser.add_argument('--debug', action='store_true', default=False)
@@ -156,7 +156,8 @@ class DammitApp(object):
                                'databases',
                                 description=desc,
                                 epilog=self.epilog(),
-                                help=desc
+                                help=desc,
+                                formatter_class=argparse.ArgumentDefaultsHelpFormatter
                                 )
 
         databases_parser.add_argument('--install',
@@ -182,7 +183,8 @@ class DammitApp(object):
                               usage='%(prog)s <transcriptome> [OPTIONS]',
                               description=desc,
                               epilog=self.epilog(),
-                              help=desc
+                              help=desc,
+                              formatter_class=argparse.ArgumentDefaultsHelpFormatter
                               )
 
         annotate_parser.add_argument('transcriptome',
