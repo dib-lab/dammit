@@ -22,3 +22,5 @@ dammit.egg-info/
 
 *.tags*
 *.DS_Store
+
+.ipynb_checkpoints/
