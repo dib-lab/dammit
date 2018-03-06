@@ -2,29 +2,25 @@ language: python
 sudo: required
 dist: trusty
 group: edge
-python:
-  - "3.5"
+python: 3.6
 before_install:
   - sudo apt-get -qq update
 install:
+  - pip install tox
   - sudo apt-get update -y
-  - sudo apt-get install build-essential curl file git python-setuptools ruby liburi-escape-xs-perl emboss liburi-perl libsm6 libxrender1 libfontconfig1 ncbi-blast+
+  - sudo apt-get install build-essential curl file git
   - wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh && bash miniconda.sh -b -p $HOME/miniconda
   - export PATH="$HOME/miniconda/bin:$PATH"
   - hash -r
   - conda config --set always_yes yes --set changeps1 no
   - conda update -q conda
   - conda info -a
-  - conda create -q -n test numpy scipy pandas matplotlib pytest pytest-cov coverage seaborn
+  - conda config --add channels defaults
+  - conda config --add channels conda-forge
+  - conda config --add channels bioconda
+  - conda create -q -n test numpy pandas numexpr>=2.3.1 khmer>=2.0 sphinx >1.3.1 sphinx_rtd_theme>=0.1.9 nose==1.3.4 nose-capturestderr==1.0 ficus>=0.1 doit>=0.29.0 matplotlib infernal blast crb-blast hmmer transdecoder last busco==3.0.2 parallel
   - source activate test
   - pip install shmlast --no-deps
   - pip install codecov
-  - git clone https://github.com/Linuxbrew/brew.git $HOME/.linuxbrew
-  - export PATH="$HOME/.linuxbrew/bin:$PATH"
-  - brew tap homebrew/science
-  - brew update
-  - brew install homebrew/science/last homebrew/science/transdecoder parallel homebrew/science/infernal homebrew/science/hmmer
-  - pushd $HOME && git clone https://gitlab.com/ezlab/busco && cd busco && python setup.py install && popd
-  - export PATH="$HOME/busco/scripts:$PATH"
   - make install
 script: make ci-test
