@@ -5,7 +5,7 @@ dammit!
    :alt: Join the chat at https://gitter.im/camillescott/dammit
    :target: https://gitter.im/camillescott/dammit?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
 
-.. image:: https://travis-ci.org/camillescott/dammit.svg?branch=master
+.. image:: https://travis-ci.org/camillescott/dammit.svg?branch=refactor%2F1.0
     :target: https://travis-ci.org/camillescott/dammit
 
 *"I love writing BLAST parsers!" -- no one, ever*
