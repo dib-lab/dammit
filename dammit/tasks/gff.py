@@ -1,4 +1,9 @@
-#!/usr/bin/env python
+# Copyright (C) 2015-2018 Camille Scott
+# All rights reserved.
+#
+# This software may be modified and distributed under the terms
+# of the BSD license.  See the LICENSE file for details.
+
 import os
 
 from doit.tools import run_once, create_folder, LongRunning
@@ -6,13 +11,14 @@ from doit.task import clean_targets, dict_to_task
 import pandas as pd
 from shmlast.hits import BestHits
 
-from ..utils import which, doit_task, touch
-from ..fileio import EmptyFile
-from ..fileio.maf import MafParser
-from ..fileio.infernal import InfernalParser
-from ..fileio.hmmer import HMMerParser
-from ..fileio.gff3 import (GFF3Writer, maf_to_gff3, shmlast_to_gff3,
+from dammit.utils import which, doit_task, touch
+from dammit.fileio import EmptyFile
+from dammit.fileio.maf import MafParser
+from dammit.fileio.infernal import InfernalParser
+from dammit.fileio.hmmer import HMMerParser
+from dammit.fileio.gff3 import (GFF3Writer, maf_to_gff3, shmlast_to_gff3,
                            hmmscan_to_gff3, cmscan_to_gff3)
+
 
 @doit_task
 def get_maf_best_hits_task(maf_fn, output_fn):

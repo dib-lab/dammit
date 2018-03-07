@@ -1,14 +1,18 @@
-#!/usr/bin/env python
-from __future__ import print_function
+# Copyright (C) 2015-2018 Camille Scott
+# All rights reserved.
+#
+# This software may be modified and distributed under the terms
+# of the BSD license.  See the LICENSE file for details.
+
 import os
 
 from doit.action import CmdAction
 from doit.task import clean_targets
 
-from .utils import DependentTask, InstallationError
-from ..profile import profile_task
-from ..utils import which, doit_task
-from ..parallel import parallel_fasta
+from dammit.tasks.utils import DependentTask, InstallationError
+from dammit.profile import profile_task
+from dammit.utils import which, doit_task
+from dammit.parallel import parallel_fasta
 
 
 class CMPressTask(DependentTask):

@@ -1,5 +1,8 @@
-#!/usr/bin/env python
-from __future__ import print_function
+# Copyright (C) 2015-2018 Camille Scott
+# All rights reserved.
+#
+# This software may be modified and distributed under the terms
+# of the BSD license.  See the LICENSE file for details.
 
 from functools import wraps
 import os
@@ -12,8 +15,9 @@ import six
 
 
 def cleaned_actions(actions):
-    '''Get a cleanup list of actions: Python actions have their <locals> portion
-    stripped, which clutters up PythonActions that are closures.
+    '''Get a cleanup list of actions: Python actions
+    have their <locals> portion stripped, which clutters 
+    up PythonActions that are closures.
     '''
     txt = ''
     for action in actions:
@@ -37,7 +41,8 @@ class DammitTask(Task):
                '\n    actions: {actions}'\
                '\n   file_dep: {file_dep}'\
                '\n   task_dep: {task_dep}'\
-               '\n    targets: {targets} }}'.format(actions=self.actions, **vars(self))
+               '\n    targets: {targets} }}'.format(actions=self.actions,
+                                                    **vars(self))
 
     def title(self):
         if self.custom_title:

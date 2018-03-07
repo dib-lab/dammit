@@ -1,3 +1,8 @@
+# Copyright (C) 2015-2018 Camille Scott
+# All rights reserved.
+#
+# This software may be modified and distributed under the terms
+# of the BSD license.  See the LICENSE file for details.
 
 import csv
 from itertools import count
@@ -5,8 +10,8 @@ import pandas as pd
 import sys
 import warnings
 
-from .base import convert_dtypes, ChunkParser, EmptyFile, warn_empty
-from ..utils import touch
+from dammit.fileio.base import convert_dtypes, ChunkParser, EmptyFile, warn_empty
+from dammit.utils import touch
 
 gff_version = '3.2.1'
 

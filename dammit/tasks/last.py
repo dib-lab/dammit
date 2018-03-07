@@ -1,11 +1,14 @@
-#!/usr/bin/env python
-from __future__ import print_function
+# Copyright (C) 2015-2018 Camille Scott
+# All rights reserved.
+#
+# This software may be modified and distributed under the terms
+# of the BSD license.  See the LICENSE file for details.
 
 import subprocess
 
-from .utils import DependentTask, InstallationError
-from ..utils import which, doit_task
-from ..profile import profile_task
+from dammit.tasks.utils import DependentTask, InstallationError
+from dammit.utils import which, doit_task
+from dammit.profile import profile_task
 
 from shmlast.last import lastdb_task
 from shmlast.last import lastal_task
