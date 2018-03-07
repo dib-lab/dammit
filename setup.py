@@ -44,7 +44,8 @@ def main():
                                 'ficus>=0.1',
                                 'matplotlib>=1.0',
                                 'numexpr>=2.3.1',
-                                'shmlast>=1.2'],
+                                'shmlast>=1.2',
+                                'filelock'],
             include_package_data = True,
             zip_safe = False,  )
 

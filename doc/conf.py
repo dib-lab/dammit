@@ -22,8 +22,7 @@ class Mock(MagicMock):
     def __getattr__(cls, name):
             return MagicMock()
 
-MOCK_MODULES = ['numpy', 'pandas', 'shmlast', 'khmer', 'matplotlib', 'doit', 
-				'ficus']
+MOCK_MODULES = ['numpy', 'pandas', 'khmer', 'matplotlib']
 sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
 
 __version__ = open(os.path.join('../dammit', 'VERSION')).read().strip()
