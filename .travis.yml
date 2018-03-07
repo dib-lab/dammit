@@ -19,7 +19,7 @@ install:
   - conda config --add channels bioconda
   - conda create -q -y -n test numpy pandas numexpr khmer sphinx sphinx_rtd_theme nose doit matplotlib python=3
   - source activate test
-  - conda install -y infernal blast crb-blast hmmer transdecoder last busco=3.0.2 parallel
+  - conda install -y infernal hmmer transdecoder last busco=3.0.2 parallel
   - pip install shmlast ficus --no-deps
   - pip install codecov nose-capturestderr
   - make install
