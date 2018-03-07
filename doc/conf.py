@@ -23,7 +23,7 @@ class Mock(MagicMock):
             return MagicMock()
 
 MOCK_MODULES = ['numpy', 'pandas', 'khmer', 'matplotlib', 'matplotlib.pyplot',
-                'shmlast.app.CRBL', 'shmlast', 'shmlast.app']
+                'shmlast.app.CRBL', 'shmlast', 'shmlast.app', 'filelock']
 sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
 
 __version__ = open(os.path.join('../dammit', 'VERSION')).read().strip()
