@@ -79,7 +79,7 @@ already have a recent versions installed; the ones available in the Ubuntu 14.04
 just too old.
 
 Dev Version
-===========
+-----------
 
 If you want the latest features (and bugs), you can install dammit from github::
 
