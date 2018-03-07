@@ -36,14 +36,6 @@ dammit.databases module
     :undoc-members:
     :show-inheritance:
 
-dammit.dependencies module
---------------------------
-
-.. automodule:: dammit.dependencies
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 dammit.handler module
 ---------------------
 
