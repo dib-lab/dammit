@@ -1,4 +1,4 @@
-dammit package
+API Docs
 ==============
 
 Subpackages
