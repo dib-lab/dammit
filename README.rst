@@ -8,6 +8,10 @@ dammit!
 .. image:: https://travis-ci.org/camillescott/dammit.svg?branch=refactor%2F1.0
     :target: https://travis-ci.org/camillescott/dammit
 
+.. image:: https://readthedocs.org/projects/dammit/badge/?version=refactor-1.0
+    :target: http://dammit.readthedocs.io/en/refactor-1.0/?badge=refactor-1.0
+    :alt: Documentation Status
+
 *"I love writing BLAST parsers!" -- no one, ever*
 
 dammit is a simple de novo transcriptome annotator. It was born out of the
