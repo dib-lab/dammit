@@ -22,7 +22,7 @@ __version__ = open(os.path.join('../dammit', 'VERSION')).read().strip()
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
-#sys.path.insert(0, os.path.abspath('..'))
+sys.path.insert(0, os.path.abspath('..'))
 
 # -- General configuration ------------------------------------------------
 
@@ -55,7 +55,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'dammit'
-copyright = u'2015, Camille Scott'
+copyright = u'2015-2018, Camille Scott'
 author = u'Camille Scott'
 
 # The version info for the project you're documenting, acts as replacement for
