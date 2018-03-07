@@ -10,8 +10,7 @@ from dammit.tasks.utils import DependentTask, InstallationError
 from dammit.utils import which, doit_task
 from dammit.profile import profile_task
 
-from shmlast.last import lastdb_task
-from shmlast.last import lastal_task
+from shmlast import last
 
 
 def check_version(exc):
@@ -47,7 +46,7 @@ class LastDBTask(DependentTask):
 
     def task(self, *args, **kwargs):
         exc = self.deps()
-        return lastdb_task(*args, **kwargs)
+        return last.lastdb_task(*args, **kwargs)
 
 
 class LastalTask(DependentTask):
@@ -67,4 +66,4 @@ class LastalTask(DependentTask):
     
     def task(self, *args, **kwargs):
         exc = self.deps()
-        return lastal_task(*args, **kwargs)
+        return last.lastal_task(*args, **kwargs)
