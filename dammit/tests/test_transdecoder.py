@@ -46,7 +46,7 @@ class TestTransDecoderTasks():
 
     def test_predict_task(self, tmpdir, datadir):
         with tmpdir.as_cwd():
-            transcript = datadir('test-transcript.fa')
+            transcript = datadir('pom.50.fa')
             pfam = datadir('test-protein-x-pfam-a.tbl')
 
             orf_task = TransDecoderLongOrfsTask().task(transcript,

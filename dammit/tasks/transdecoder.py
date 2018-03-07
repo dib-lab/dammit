@@ -47,6 +47,7 @@ class TransDecoderLongOrfsTask(DependentTask):
                 'targets': [input_filename + '.transdecoder_dir/longest_orfs.pep'],
                 'clean': [(clean_folder, [input_filename + '.transdecoder_dir'])]}
 
+
 class TransDecoderPredictTask(DependentTask):
 
     def deps(self):
