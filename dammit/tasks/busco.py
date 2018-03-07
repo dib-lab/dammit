@@ -12,9 +12,9 @@ from doit.task import clean_targets
 import pandas as pd
 
 from dammit import meta
-from dammit.utils import clean_folder, DependentTask, InstallationError
 from dammit.profile import profile_task
 from dammit.utils import doit_task, which
+from dammit.tasks.utils import clean_folder, DependentTask, InstallationError
 
 
 class BuscoTask(DependentTask):
