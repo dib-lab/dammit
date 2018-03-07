@@ -9,7 +9,7 @@ import os
 from doit.tools import run_once, create_folder, LongRunning
 from doit.task import clean_targets, dict_to_task
 import pandas as pd
-from shmlast.hits import BestHits
+from shmlast import hits
 
 from dammit.utils import which, doit_task, touch
 from dammit.fileio import EmptyFile
@@ -32,7 +32,7 @@ def get_maf_best_hits_task(maf_fn, output_fn):
         dict: A doit task.
     '''
 
-    hits_mgr = BestHits()
+    hits_mgr = hits.BestHits()
 
     def cmd():
         # can write out an empty file
