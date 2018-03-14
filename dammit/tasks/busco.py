@@ -36,7 +36,8 @@ class BuscoTask(DependentTask):
     @doit_task
     @profile_task
     def task(self, input_filename, output_name, busco_db_dir, 
-                   input_type='tran', n_threads=1, params=None):
+                   input_type='tran', n_threads=1, config_file=None,
+                   params=None):
         '''Get a task to run BUSCO on the given FASTA file.
 
         Args:
@@ -55,13 +56,16 @@ class BuscoTask(DependentTask):
                                       os.path.basename(busco_db_dir))
 
         exc = self.deps()
-        config_file = os.path.join(meta.__path__, 'busco_config.ini')
 
         # BUSCO chokes on file paths as output names
         output_name = os.path.basename(output_name)
-        cmd = ['BUSCO_CONFIG_FILE="{0}"'.format(config_file),
-               'python3', exc, '-i', input_filename, '-f', '-o', output_name,
-               '-l', busco_db_dir, '-m', input_type, '-c', str(n_threads)]
+        cmd = []
+        if config_file is not None:
+            cmd.append('BUSCO_CONFIG_FILE="{0}"'.format(config_file))
+
+        cmd.extend(['python3', exc, '-i', input_filename, '-f', '-o', output_name,
+                    '-l', busco_db_dir, '-m', input_type, '-c', str(n_threads)])
+
         if params is not None:
             cmd.extend(params)
         cmd = ' '.join(cmd)

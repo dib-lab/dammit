@@ -65,10 +65,12 @@ def get_handler(config, databases):
     input_fn = path.join(directory, path.basename(config['transcriptome']))
     name_map_fn = input_fn + '.dammit.namemap.csv'
     handler.register_task('rename-transcriptome',
-                          get_rename_transcriptome_task(path.abspath(config['transcriptome']),
-                                                        input_fn,
-                                                        name_map_fn,
-                                                        config['name']),
+                          get_rename_transcriptome_task(
+                              path.abspath(config['transcriptome']),
+                              input_fn,
+                              name_map_fn,
+                              config['name']
+                          ),
                           files={'transcriptome': input_fn,
                                  'name_map': name_map_fn})
     
@@ -204,6 +206,7 @@ def register_busco_task(handler, config, databases):
                              busco_basename,
                              busco_database,
                              n_threads=config['n_threads'],
+                             config_file=config.get('busco_config_file', None),
                              params=config['busco']['params'])
 
     handler.register_task('BUSCO-{0}'.format(busco_group), task,

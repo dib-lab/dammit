@@ -101,6 +101,13 @@ class DammitApp(object):
                                      ' built-in config. Advanced use only!'
                                 )
 
+            parser.add_argument('--busco-config-file',
+                                help='Path to an alternative BUSCO config'\
+                                     ' file; otherwise, BUSCO will attempt'\
+                                     ' to use its default installation'\
+                                     ' which will likely only work on'\
+                                     ' bioconda. Advanced use only!')
+
             parser.add_argument('--verbosity',
                                 default=0,
                                 type=int,
