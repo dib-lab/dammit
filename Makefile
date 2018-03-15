@@ -7,19 +7,25 @@ install: deps
 		python setup.py install
 
 test: FORCE
-		python setup.py nosetests --attr !long,!huge
+		py.test -m "not long and not huge"
 
-acceptance: FORCE
-		python setup.py nosetests --attr !huge -x
+ci-test: FORCE
+		py.test -m "not long and not huge and not requires_databases"
+
+long-test: FORCE
+		py.test -m "not huge"
 
 acceptance-huge: FORCE
-		python setup.py nosetests
+		py.test 
 
 publish: FORCE
 		python setup.py sdist upload
 
-gh-pages:
+doc: FORCE
+		sphinx-apidoc  -o doc/ dammit/ -f
 		cd doc; make clean html
+
+gh-pages: doc
 		touch doc/_build/html/.nojekyll
 		git add doc/
 		git commit -m "Generated gh-pages for `git log master -1 --pretty=short --abbrev-commit`"

@@ -1,0 +1,305 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>dammit.handler &#8212; dammit 1.0.dev0 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.0.dev0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="author" title="About these documents" href="../../about.html" />
+    <link rel="top" title="dammit 1.0.dev0 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for dammit.handler</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+
+<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">OrderedDict</span>
+<span class="kn">from</span> <span class="nn">os</span> <span class="k">import</span> <span class="n">mkdir</span><span class="p">,</span> <span class="n">path</span>
+
+<span class="kn">from</span> <span class="nn">doit.cmd_base</span> <span class="k">import</span> <span class="n">TaskLoader</span>
+<span class="kn">from</span> <span class="nn">doit.doit_cmd</span> <span class="k">import</span> <span class="n">DoitMain</span>
+<span class="kn">from</span> <span class="nn">doit.dependency</span> <span class="k">import</span> <span class="n">Dependency</span><span class="p">,</span> <span class="n">SqliteDB</span>
+
+<span class="kn">from</span> <span class="nn">.profile</span> <span class="k">import</span> <span class="n">StartProfiler</span>
+<span class="kn">from</span> <span class="nn">.utils</span> <span class="k">import</span> <span class="n">Move</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">ui</span>
+
+<div class="viewcode-block" id="TaskHandler"><a class="viewcode-back" href="../../dammit.html#dammit.handler.TaskHandler">[docs]</a><span class="k">class</span> <span class="nc">TaskHandler</span><span class="p">(</span><span class="n">TaskLoader</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Stores tasks and the files they operate on, along with</span>
+<span class="sd">    doit config and other metadata. This is the core of the pipelines:</span>
+<span class="sd">    it passes its tasks along to doit for execution, and can check task</span>
+<span class="sd">    and pipeline completion status.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        files (dict): Files used by the tasks.</span>
+<span class="sd">        directory (str): Working directory for execution.</span>
+<span class="sd">        task (OrderedDict): The tasks to execute.</span>
+<span class="sd">        dep_file (str): Path of the doit database.</span>
+<span class="sd">        doit_config (dict): The doit configuration given to the task runner.</span>
+<span class="sd">        doit_dep_mgr (doit.dependency.Dependency): Doit object to track task</span>
+<span class="sd">            status.</span>
+<span class="sd">        profile (bool): Whether to run the profiler on tasks.</span>
+<span class="sd">        logger (logging.Logger): Logger to use.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">directory</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">files</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> 
+                 <span class="n">profile</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">db</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">doit_config_kwds</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Args:</span>
+<span class="sd">            directory (str): The directory in which to run the tasks. Will be</span>
+<span class="sd">                created it it doesn&#39;t exist.</span>
+<span class="sd">            logger (logging.Logger): Logger to record to.</span>
+<span class="sd">            files (dict): Files used by the handler. Starts empty if omitted.</span>
+<span class="sd">            profile (bool): If True, profile task execution.</span>
+<span class="sd">            db (str): Name of the doit database.</span>
+<span class="sd">            **doit_config_kwds: Keyword arguments passed to doit.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">TaskHandler</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">files</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">files</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">files</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">dict</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;files must be of type dict&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">files</span> <span class="o">=</span> <span class="n">files</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">tasks</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">directory</span> <span class="o">=</span> <span class="n">directory</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">mkdir</span><span class="p">(</span><span class="n">directory</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+        <span class="k">if</span> <span class="n">db</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">dep_file</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">directory</span><span class="p">,</span> <span class="s1">&#39;doit.db&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">dep_file</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">directory</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">.doit.db&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">db</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dep_file</span> <span class="o">=</span> <span class="n">dep_file</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Dependency Database File: </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dep_file</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">doit_config</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">dep_file</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dep_file</span><span class="p">,</span>
+                                <span class="n">reporter</span><span class="o">=</span><span class="n">ui</span><span class="o">.</span><span class="n">GithubMarkdownReporter</span><span class="p">,</span>
+                                <span class="o">**</span><span class="n">doit_config_kwds</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">doit_dep_mgr</span> <span class="o">=</span> <span class="n">Dependency</span><span class="p">(</span><span class="n">SqliteDB</span><span class="p">,</span> <span class="n">dep_file</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">profile</span> <span class="o">=</span> <span class="n">profile</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">logger</span>
+        
+
+<div class="viewcode-block" id="TaskHandler.register_task"><a class="viewcode-back" href="../../dammit.html#dammit.handler.TaskHandler.register_task">[docs]</a>    <span class="k">def</span> <span class="nf">register_task</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">task</span><span class="p">,</span> <span class="n">files</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Register a new task and its files with the handler.</span>
+
+<span class="sd">        It may seem redundant or confusing to give the tasks a name different</span>
+<span class="sd">        than their internal doit name. I do this because doit tasks need to have </span>
+<span class="sd">        names as unique as possible, so that they can be reused in different</span>
+<span class="sd">        projects. A particular TaskHandler instance is only used for one</span>
+<span class="sd">        pipeline run, and allowing different names makes it easier to reference</span>
+<span class="sd">        tasks from elsewhere.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            name (str): Name of the task. Does not have to correspond to doit&#39;s</span>
+<span class="sd">                internal task name.</span>
+<span class="sd">            task (:obj:): Either a dictionary or Task object.</span>
+<span class="sd">            files (dict): Dictionary of files used.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="k">if</span> <span class="n">files</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">files</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">files</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">dict</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;files must be of type dict&#39;</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">tasks</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">task</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">files</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">files</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;registered task </span><span class="si">{0}</span><span class="s1">: </span><span class="si">{1}</span><span class="se">\n</span><span class="s1">&#39;</span>
+                          <span class="s1">&#39;  with files </span><span class="si">{2}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">task</span><span class="p">,</span> <span class="n">files</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="TaskHandler.clear_tasks"><a class="viewcode-back" href="../../dammit.html#dammit.handler.TaskHandler.clear_tasks">[docs]</a>    <span class="k">def</span> <span class="nf">clear_tasks</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Empty the task dictionary.&#39;&#39;&#39;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Clearing </span><span class="si">{0}</span><span class="s1"> tasks&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tasks</span><span class="p">)))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tasks</span> <span class="o">=</span> <span class="p">{}</span></div>
+
+<div class="viewcode-block" id="TaskHandler.get_status"><a class="viewcode-back" href="../../dammit.html#dammit.handler.TaskHandler.get_status">[docs]</a>    <span class="k">def</span> <span class="nf">get_status</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task</span><span class="p">,</span> <span class="n">move</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Get the up-to-date status of a single task.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            task (str): The task name to look up.</span>
+<span class="sd">            move (bool): If True, move to the handler&#39;s directory before</span>
+<span class="sd">                checking. Whether this is necessary depends mostly on whether</span>
+<span class="sd">                the task uses relative or absolute paths.</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            str: The string represenation of the status. Either &quot;run&quot; or</span>
+<span class="sd">            &quot;uptodate&quot;.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">task</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">str</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">task</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tasks</span><span class="p">[</span><span class="n">task</span><span class="p">]</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Task not found:</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task</span><span class="p">))</span>
+                <span class="k">raise</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Getting status for task </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">move</span><span class="p">:</span>
+            <span class="k">with</span> <span class="n">Move</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">directory</span><span class="p">):</span>
+                <span class="n">status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">doit_dep_mgr</span><span class="o">.</span><span class="n">get_status</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tasks</span><span class="o">.</span><span class="n">values</span><span class="p">(),</span>
+                                                      <span class="n">get_log</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">doit_dep_mgr</span><span class="o">.</span><span class="n">get_status</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tasks</span><span class="o">.</span><span class="n">values</span><span class="p">(),</span>
+                                                      <span class="n">get_log</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Task </span><span class="si">{0}</span><span class="s1"> had status </span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">status</span><span class="o">.</span><span class="n">status</span><span class="p">))</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Task </span><span class="si">{0}</span><span class="s1"> had reasons </span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">status</span><span class="o">.</span><span class="n">reasons</span><span class="p">))</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+        <span class="k">return</span> <span class="n">status</span><span class="o">.</span><span class="n">status</span></div>
+
+<div class="viewcode-block" id="TaskHandler.print_statuses"><a class="viewcode-back" href="../../dammit.html#dammit.handler.TaskHandler.print_statuses">[docs]</a>    <span class="k">def</span> <span class="nf">print_statuses</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uptodate_msg</span><span class="o">=</span><span class="s1">&#39;All tasks up-to-date!&#39;</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Print the up-to-date status of all tasks.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            uptodate_msg (str): The message to print if all tasks are up to</span>
+<span class="sd">            date.</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            tuple: A bool (True if all up to date) and a dictionary of statuses.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="n">uptodate</span><span class="p">,</span> <span class="n">statuses</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_uptodate</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">uptodate</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">ui</span><span class="o">.</span><span class="n">paragraph</span><span class="p">(</span><span class="n">uptodate_msg</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">uptodate_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">t</span> <span class="k">for</span> <span class="n">t</span><span class="p">,</span><span class="n">s</span> <span class="ow">in</span> <span class="n">statuses</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">s</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">]</span>
+            <span class="n">outofdate_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">t</span> <span class="k">for</span> <span class="n">t</span><span class="p">,</span><span class="n">s</span> <span class="ow">in</span> <span class="n">statuses</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">s</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">uptodate_list</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Up-to-date tasks:&#39;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">ui</span><span class="o">.</span><span class="n">listing</span><span class="p">(</span><span class="n">uptodate_list</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">outofdate_list</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Out-of-date tasks:&#39;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">ui</span><span class="o">.</span><span class="n">listing</span><span class="p">(</span><span class="n">outofdate_list</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">uptodate</span><span class="p">,</span> <span class="n">statuses</span></div>
+
+<div class="viewcode-block" id="TaskHandler.check_uptodate"><a class="viewcode-back" href="../../dammit.html#dammit.handler.TaskHandler.check_uptodate">[docs]</a>    <span class="k">def</span> <span class="nf">check_uptodate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Check if all tasks are up-to-date, ie if the pipeline is complete.</span>
+<span class="sd">        Note that this moves to the handler&#39;s directory to lessen issues with</span>
+<span class="sd">        relative versus absolute paths.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: True if all are up to date.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="k">with</span> <span class="n">Move</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">directory</span><span class="p">):</span>
+            <span class="n">statuses</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">outofdate</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">for</span> <span class="n">task_name</span><span class="p">,</span> <span class="n">task</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tasks</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_status</span><span class="p">(</span><span class="n">task</span><span class="p">)</span>
+                <span class="n">statuses</span><span class="p">[</span><span class="n">task_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">status</span> <span class="o">==</span> <span class="s1">&#39;up-to-date&#39;</span>
+            <span class="k">return</span> <span class="nb">all</span><span class="p">(</span><span class="n">statuses</span><span class="o">.</span><span class="n">values</span><span class="p">()),</span> <span class="n">statuses</span></div>
+        
+<div class="viewcode-block" id="TaskHandler.load_tasks"><a class="viewcode-back" href="../../dammit.html#dammit.handler.TaskHandler.load_tasks">[docs]</a>    <span class="k">def</span> <span class="nf">load_tasks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cmd</span><span class="p">,</span> <span class="n">opt_values</span><span class="p">,</span> <span class="n">pos_args</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Internal to doit -- triggered by the TaskLoader.&#39;&#39;&#39;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;loading </span><span class="si">{0}</span><span class="s1"> tasks&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tasks</span><span class="p">)))</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tasks</span><span class="o">.</span><span class="n">values</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">doit_config</span></div>
+
+<div class="viewcode-block" id="TaskHandler.run"><a class="viewcode-back" href="../../dammit.html#dammit.handler.TaskHandler.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">doit_args</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Run the pipeline. Movees to the directory, loads the tasks into doit,</span>
+<span class="sd">        and executes that tasks that are not up-to-date.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            doit_args (list): Args that would be passed to the doit shell</span>
+<span class="sd">                command. By default, just run.</span>
+<span class="sd">            verbose (bool): If True, print UI stuff.</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            int: Exit status of the doit command.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">ui</span><span class="o">.</span><span class="n">header</span><span class="p">(</span><span class="s1">&#39;Run Tasks&#39;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="mi">4</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">doit_args</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">doit_args</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;run&#39;</span><span class="p">]</span>
+        <span class="n">runner</span> <span class="o">=</span> <span class="n">DoitMain</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="k">with</span> <span class="n">Move</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">directory</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="n">profile_fn</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">directory</span><span class="p">,</span> <span class="s1">&#39;profile.csv&#39;</span><span class="p">)</span>
+                <span class="k">with</span> <span class="n">StartProfiler</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="n">profile_fn</span><span class="p">):</span>
+                    <span class="k">return</span> <span class="n">runner</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">doit_args</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">runner</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">doit_args</span><span class="p">)</span></div></div>
+
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2015, Camille Scott.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

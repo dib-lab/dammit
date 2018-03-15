@@ -1,19 +1,30 @@
 import pandas as pd
 import numpy as np
-from .base import ChunkParser
+from .base import ChunkParser, next_or_raise, convert_dtypes
+
 
 class MafParser(ChunkParser):
+
+    columns = [('E', float),
+               ('EG2', float),
+               ('q_aln_len', int),
+               ('q_len', int),
+               ('q_name', str),
+               ('q_start', int),
+               ('q_strand', str),
+               ('s_aln_len', int),
+               ('s_len', int),
+               ('s_name', str),
+               ('s_start', int),
+               ('s_strand', str),
+               ('score', float),
+               ('bitscore', float)]
 
     def __init__(self, filename, aln_strings=False, chunksize=10000, **kwargs):
         self.aln_strings = aln_strings
         self.LAMBDA = None
         self.K = None
         super(MafParser, self).__init__(filename, chunksize=chunksize, **kwargs)
-
-    def read(self):
-        '''Read the entire file at once and return as a single DataFrame.
-        '''
-        return pd.concat(self, ignore_index=True)
 
     def __iter__(self):
         '''Iterator yielding DataFrames of length chunksize holding MAF alignments.
@@ -28,12 +39,14 @@ class MafParser(ChunkParser):
             DataFrame: Pandas DataFrame with the alignments.
         '''
         data = []
+        n_entries = 0
         with open(self.filename) as fp:
+            guarded_next = next_or_raise(fp)
             while (True):
-                try:
-                    line = fp.next().strip()
-                except StopIteration:
+                line = guarded_next(raise_exc=False)
+                if line == '':
                     break
+                line = line.strip()
                 if not line:
                     continue
                 if line.startswith('#'):
@@ -45,6 +58,7 @@ class MafParser(ChunkParser):
                     else:
                         continue
                 if line.startswith('a'):
+                    n_entries += 1
                     cur_aln = {}
 
                     # Alignment info
@@ -54,7 +68,7 @@ class MafParser(ChunkParser):
                         cur_aln[key] = float(val)
 
                     # First sequence info
-                    line = fp.next()
+                    line = guarded_next()
                     tokens = line.split()
                     cur_aln['s_name'] = tokens[1]
                     cur_aln['s_start'] = int(tokens[2])
@@ -65,7 +79,7 @@ class MafParser(ChunkParser):
                         cur_aln['s_aln'] = tokens[6]
 
                     # First sequence info
-                    line = fp.next()
+                    line = guarded_next() 
                     tokens = line.split()
                     cur_aln['q_name'] = tokens[1]
                     cur_aln['q_start'] = int(tokens[2])
@@ -82,10 +96,14 @@ class MafParser(ChunkParser):
                         yield self._build_df(data)
                         data = []
 
+        if n_entries == 0:
+            self.raise_empty()
         if data:
             yield self._build_df(data)
 
     def _build_df(self, data):
+        if not data:
+            self.raise_empty()
 
         def _fix_sname(name):
             new, _, _ = name.partition(',')

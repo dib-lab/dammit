@@ -1,0 +1,347 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>dammit.fileio.gff3 &#8212; dammit 1.0.dev0 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.0.dev0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="author" title="About these documents" href="../../../about.html" />
+    <link rel="top" title="dammit 1.0.dev0 documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for dammit.fileio.gff3</h1><div class="highlight"><pre>
+<span></span>
+<span class="kn">import</span> <span class="nn">csv</span>
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="k">import</span> <span class="n">count</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+
+<span class="kn">from</span> <span class="nn">.base</span> <span class="k">import</span> <span class="n">convert_dtypes</span><span class="p">,</span> <span class="n">ChunkParser</span><span class="p">,</span> <span class="n">EmptyFile</span><span class="p">,</span> <span class="n">warn_empty</span>
+<span class="kn">from</span> <span class="nn">..utils</span> <span class="k">import</span> <span class="n">touch</span>
+
+<span class="n">gff_version</span> <span class="o">=</span> <span class="s1">&#39;3.2.1&#39;</span>
+
+<div class="viewcode-block" id="id_gen_wrapper"><a class="viewcode-back" href="../../../dammit.fileio.html#dammit.fileio.gff3.id_gen_wrapper">[docs]</a><span class="k">def</span> <span class="nf">id_gen_wrapper</span><span class="p">():</span>
+    <span class="n">ID_GEN</span> <span class="o">=</span> <span class="n">count</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">get_next</span><span class="p">():</span>
+        <span class="k">return</span> <span class="nb">next</span><span class="p">(</span><span class="n">ID_GEN</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">get_next</span></div>
+
+<span class="n">next_ID</span> <span class="o">=</span> <span class="n">id_gen_wrapper</span><span class="p">()</span>
+
+<div class="viewcode-block" id="GFF3Parser"><a class="viewcode-back" href="../../../dammit.fileio.html#dammit.fileio.gff3.GFF3Parser">[docs]</a><span class="k">class</span> <span class="nc">GFF3Parser</span><span class="p">(</span><span class="n">ChunkParser</span><span class="p">):</span>
+
+    <span class="n">columns</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;seqid&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">),</span>
+                <span class="p">(</span><span class="s1">&#39;source&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">),</span>
+                <span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">),</span>
+                <span class="p">(</span><span class="s1">&#39;start&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span>
+                <span class="p">(</span><span class="s1">&#39;end&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span>
+                <span class="p">(</span><span class="s1">&#39;score&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span>
+                <span class="p">(</span><span class="s1">&#39;strand&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">),</span>
+                <span class="p">(</span><span class="s1">&#39;phase&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span>
+                <span class="p">(</span><span class="s1">&#39;attributes&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">)]</span>
+    
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">GFF3Parser</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="GFF3Parser.decompose_attr_column"><a class="viewcode-back" href="../../../dammit.fileio.html#dammit.fileio.gff3.GFF3Parser.decompose_attr_column">[docs]</a>    <span class="k">def</span> <span class="nf">decompose_attr_column</span><span class="p">(</span><span class="n">col</span><span class="p">):</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">col</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;;&#39;</span><span class="p">):</span>
+            <span class="n">key</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">val</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">partition</span><span class="p">(</span><span class="s1">&#39;=&#39;</span><span class="p">)</span>
+            <span class="n">d</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">d</span></div>
+
+<div class="viewcode-block" id="GFF3Parser.empty"><a class="viewcode-back" href="../../../dammit.fileio.html#dammit.fileio.gff3.GFF3Parser.empty">[docs]</a>    <span class="k">def</span> <span class="nf">empty</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">GFF3Parser</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">empty</span><span class="p">()</span>
+        <span class="n">df</span><span class="p">[</span><span class="s1">&#39;ID&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">df</span><span class="p">[</span><span class="s1">&#39;Name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">df</span><span class="p">[</span><span class="s1">&#39;Target&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="n">df</span></div>
+
+    <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Yields DataFrames of length chunksize from a given</span>
+<span class="sd">        GTF/GFF file.</span>
+
+<span class="sd">        GFF3 uses a 1-based, fully closed interval. Truly the devil&#39;s format.</span>
+
+<span class="sd">        We convert to proper 0-based, half-open intervals.</span>
+
+<span class="sd">        Yields:</span>
+<span class="sd">            DataFrame: Pandas DataFrame with the results.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="c1"># Read everything into a DataFrame</span>
+        <span class="n">n_chunks</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span>  <span class="n">pd</span><span class="o">.</span><span class="n">read_table</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">comment</span><span class="o">=</span><span class="s1">&#39;#&#39;</span><span class="p">,</span>
+                                    <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">_</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="p">],</span> <span class="n">na_values</span><span class="o">=</span><span class="s1">&#39;.&#39;</span><span class="p">,</span>
+                                    <span class="n">converters</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;attributes&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">decompose_attr_column</span><span class="p">},</span>
+                                    <span class="n">chunksize</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">chunksize</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                    <span class="n">dtype</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="p">)):</span>
+
+            <span class="c1"># Generate a new DataFrame from the attributes dicts, and merge it in</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">attributes</span><span class="p">)),</span>
+                          <span class="n">left_index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">right_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">del</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;attributes&#39;</span><span class="p">]</span>
+
+            <span class="c1"># Repent, repent!</span>
+            <span class="n">df</span><span class="o">.</span><span class="n">start</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">start</span> <span class="o">-</span> <span class="mi">1</span>
+
+            <span class="n">n_chunks</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">yield</span> <span class="n">df</span></div>
+
+
+<div class="viewcode-block" id="maf_to_gff3"><a class="viewcode-back" href="../../../dammit.fileio.html#dammit.fileio.gff3.maf_to_gff3">[docs]</a><span class="k">def</span> <span class="nf">maf_to_gff3</span><span class="p">(</span><span class="n">maf_df</span><span class="p">,</span> <span class="n">tag</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">database</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+                   <span class="n">ftype</span><span class="o">=</span><span class="s1">&#39;translated_nucleotide_match&#39;</span><span class="p">):</span>
+
+    <span class="n">gff3_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+    <span class="n">gff3_df</span><span class="p">[</span><span class="s1">&#39;seqid&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">maf_df</span><span class="p">[</span><span class="s1">&#39;q_name&#39;</span><span class="p">]</span>
+    <span class="n">source</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">.LAST&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">tag</span><span class="p">)</span> <span class="k">if</span> <span class="n">tag</span> <span class="k">else</span> <span class="s1">&#39;LAST&#39;</span>
+    <span class="n">gff3_df</span><span class="p">[</span><span class="s1">&#39;source&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">source</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">maf_df</span><span class="p">)</span>
+    <span class="n">gff3_df</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">ftype</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">maf_df</span><span class="p">)</span>
+    <span class="n">gff3_df</span><span class="p">[</span><span class="s1">&#39;start&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">maf_df</span><span class="p">[</span><span class="s1">&#39;q_start&#39;</span><span class="p">]</span>
+    <span class="n">gff3_df</span><span class="p">[</span><span class="s1">&#39;end&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">maf_df</span><span class="p">[</span><span class="s1">&#39;q_start&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">maf_df</span><span class="p">[</span><span class="s1">&#39;q_aln_len&#39;</span><span class="p">]</span>
+    <span class="n">gff3_df</span><span class="p">[</span><span class="s1">&#39;score&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">maf_df</span><span class="p">[</span><span class="s1">&#39;E&#39;</span><span class="p">]</span>
+    <span class="n">gff3_df</span><span class="p">[</span><span class="s1">&#39;strand&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">maf_df</span><span class="p">[</span><span class="s1">&#39;q_strand&#39;</span><span class="p">]</span>
+    <span class="n">gff3_df</span><span class="p">[</span><span class="s1">&#39;phase&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;.&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">maf_df</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">build_attr</span><span class="p">(</span><span class="n">row</span><span class="p">):</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;ID=homology:</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">next_ID</span><span class="p">()))</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;Name=</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">s_name</span><span class="p">))</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;Target=</span><span class="si">{0}</span><span class="s1"> </span><span class="si">{1}</span><span class="s1"> </span><span class="si">{2}</span><span class="s1"> </span><span class="si">{3}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">s_name</span><span class="p">,</span> <span class="n">row</span><span class="o">.</span><span class="n">s_start</span><span class="p">,</span>
+                                                 <span class="n">row</span><span class="o">.</span><span class="n">s_start</span> <span class="o">+</span> <span class="n">row</span><span class="o">.</span><span class="n">s_aln_len</span><span class="p">,</span>
+                                                 <span class="n">row</span><span class="o">.</span><span class="n">s_strand</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">database</span><span class="p">:</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;database=</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">database</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="s1">&#39;;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+    <span class="n">gff3_df</span><span class="p">[</span><span class="s1">&#39;attributes&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">maf_df</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">build_attr</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">GFF3Writer</span><span class="o">.</span><span class="n">mangle_coordinates</span><span class="p">(</span><span class="n">gff3_df</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">gff3_df</span></div>
+
+
+<div class="viewcode-block" id="shmlast_to_gff3"><a class="viewcode-back" href="../../../dammit.fileio.html#dammit.fileio.gff3.shmlast_to_gff3">[docs]</a><span class="k">def</span> <span class="nf">shmlast_to_gff3</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">database</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">maf_to_gff3</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">tag</span><span class="o">=</span><span class="s1">&#39;shmlast&#39;</span><span class="p">,</span> <span class="n">database</span><span class="o">=</span><span class="n">database</span><span class="p">,</span>
+                          <span class="n">ftype</span><span class="o">=</span><span class="s1">&#39;conditional_reciprocal_best_LAST&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="hmmscan_to_gff3"><a class="viewcode-back" href="../../../dammit.fileio.html#dammit.fileio.gff3.hmmscan_to_gff3">[docs]</a><span class="k">def</span> <span class="nf">hmmscan_to_gff3</span><span class="p">(</span><span class="n">hmmscan_df</span><span class="p">,</span> <span class="n">tag</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">database</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+
+    <span class="n">gff3_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+    <span class="n">gff3_df</span><span class="p">[</span><span class="s1">&#39;seqid&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">hmmscan_df</span><span class="p">[</span><span class="s1">&#39;query_name&#39;</span><span class="p">]</span>
+    <span class="n">source</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">.HMMER&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">tag</span><span class="p">)</span> <span class="k">if</span> <span class="n">tag</span> <span class="k">else</span> <span class="s1">&#39;HMMER&#39;</span>
+    <span class="n">gff3_df</span><span class="p">[</span><span class="s1">&#39;source&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">source</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">hmmscan_df</span><span class="p">)</span>
+    <span class="n">gff3_df</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;protein_hmm_match&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">hmmscan_df</span><span class="p">)</span>
+
+    <span class="n">gff3_df</span><span class="p">[</span><span class="s1">&#39;start&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">hmmscan_df</span><span class="p">[</span><span class="s1">&#39;ali_coord_from&#39;</span><span class="p">]</span>
+    <span class="n">gff3_df</span><span class="p">[</span><span class="s1">&#39;end&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">hmmscan_df</span><span class="p">[</span><span class="s1">&#39;ali_coord_to&#39;</span><span class="p">]</span>
+
+    <span class="c1"># Confirm whether this is the appropriate value to use</span>
+    <span class="n">gff3_df</span><span class="p">[</span><span class="s1">&#39;score&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">hmmscan_df</span><span class="p">[</span><span class="s1">&#39;domain_i_evalue&#39;</span><span class="p">]</span>
+    <span class="n">gff3_df</span><span class="p">[</span><span class="s1">&#39;strand&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;.&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">hmmscan_df</span><span class="p">)</span>
+    <span class="n">gff3_df</span><span class="p">[</span><span class="s1">&#39;phase&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;.&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">hmmscan_df</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">build_attr</span><span class="p">(</span><span class="n">row</span><span class="p">):</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;ID=homology:</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">next_ID</span><span class="p">()))</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;Name=</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">target_name</span><span class="p">))</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;Target=</span><span class="si">{0}</span><span class="s1"> </span><span class="si">{1}</span><span class="s1"> </span><span class="si">{2}</span><span class="s1"> +&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">target_name</span><span class="p">,</span>
+                                                    <span class="n">row</span><span class="o">.</span><span class="n">hmm_coord_from</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span>
+                                                    <span class="n">row</span><span class="o">.</span><span class="n">hmm_coord_to</span><span class="p">))</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;Note=</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">description</span><span class="p">))</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;accuracy=</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">accuracy</span><span class="p">))</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;env_coords=</span><span class="si">{0}</span><span class="s1"> </span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">env_coord_from</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span>
+                                                <span class="n">row</span><span class="o">.</span><span class="n">env_coord_to</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">database</span><span class="p">:</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;Dbxref=&quot;</span><span class="si">{0}</span><span class="s1">:</span><span class="si">{1}</span><span class="s1">&quot;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">database</span><span class="p">,</span>
+                                                  <span class="n">row</span><span class="o">.</span><span class="n">target_accession</span><span class="p">))</span>
+        <span class="k">return</span> <span class="s1">&#39;;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+    <span class="n">gff3_df</span><span class="p">[</span><span class="s1">&#39;attributes&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">hmmscan_df</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">build_attr</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">GFF3Writer</span><span class="o">.</span><span class="n">mangle_coordinates</span><span class="p">(</span><span class="n">gff3_df</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">gff3_df</span></div>
+
+
+<div class="viewcode-block" id="cmscan_to_gff3"><a class="viewcode-back" href="../../../dammit.fileio.html#dammit.fileio.gff3.cmscan_to_gff3">[docs]</a><span class="k">def</span> <span class="nf">cmscan_to_gff3</span><span class="p">(</span><span class="n">cmscan_df</span><span class="p">,</span> <span class="n">tag</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">database</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+
+    <span class="n">gff3_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+    <span class="n">gff3_df</span><span class="p">[</span><span class="s1">&#39;seqid&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cmscan_df</span><span class="p">[</span><span class="s1">&#39;query_name&#39;</span><span class="p">]</span>
+    <span class="n">source</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">.Infernal&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">tag</span><span class="p">)</span> <span class="k">if</span> <span class="n">tag</span> <span class="k">else</span> <span class="s1">&#39;Infernal&#39;</span>
+    <span class="n">gff3_df</span><span class="p">[</span><span class="s1">&#39;source&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">source</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">cmscan_df</span><span class="p">)</span>
+
+    <span class="c1"># For now, using:</span>
+    <span class="c1">#  http://www.sequenceontology.org/browser/current_svn/term/SO:0000122</span>
+    <span class="c1"># There are more specific features for secondary structure which should</span>
+    <span class="c1"># be extracted from the Rfam results eventually</span>
+    <span class="n">gff3_df</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;RNA_sequence_secondary_structure&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">cmscan_df</span><span class="p">)</span>
+
+    <span class="n">gff3_df</span><span class="p">[</span><span class="s1">&#39;start&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cmscan_df</span><span class="p">[</span><span class="s1">&#39;seq_from&#39;</span><span class="p">]</span>
+    <span class="n">gff3_df</span><span class="p">[</span><span class="s1">&#39;end&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cmscan_df</span><span class="p">[</span><span class="s1">&#39;seq_to&#39;</span><span class="p">]</span>
+    <span class="n">gff3_df</span><span class="p">[</span><span class="s1">&#39;score&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cmscan_df</span><span class="p">[</span><span class="s1">&#39;e_value&#39;</span><span class="p">]</span>
+    <span class="n">gff3_df</span><span class="p">[</span><span class="s1">&#39;strand&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cmscan_df</span><span class="p">[</span><span class="s1">&#39;strand&#39;</span><span class="p">]</span>
+    <span class="n">gff3_df</span><span class="p">[</span><span class="s1">&#39;phase&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;.&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">cmscan_df</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">build_attr</span><span class="p">(</span><span class="n">row</span><span class="p">):</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;ID=homology:</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">next_ID</span><span class="p">()))</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;Name=</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">target_name</span><span class="p">))</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;Target=</span><span class="si">{0}</span><span class="s1"> </span><span class="si">{1}</span><span class="s1"> </span><span class="si">{2}</span><span class="s1"> +&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">target_name</span><span class="p">,</span>
+                                                    <span class="n">row</span><span class="o">.</span><span class="n">mdl_from</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span>
+                                                    <span class="n">row</span><span class="o">.</span><span class="n">mdl_to</span><span class="p">))</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;Note=</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">description</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">database</span><span class="p">:</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;Dbxref=&quot;</span><span class="si">{0}</span><span class="s1">:</span><span class="si">{1}</span><span class="s1">&quot;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">database</span><span class="p">,</span>
+                                                  <span class="n">row</span><span class="o">.</span><span class="n">target_accession</span><span class="p">))</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;trunc=</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">trunc</span><span class="p">))</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;bitscore=</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">score</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="s1">&#39;;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+    <span class="n">gff3_df</span><span class="p">[</span><span class="s1">&#39;attributes&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cmscan_df</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">build_attr</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">GFF3Writer</span><span class="o">.</span><span class="n">mangle_coordinates</span><span class="p">(</span><span class="n">gff3_df</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">gff3_df</span></div>
+
+
+<div class="viewcode-block" id="GFF3Writer"><a class="viewcode-back" href="../../../dammit.fileio.html#dammit.fileio.gff3.GFF3Writer">[docs]</a><span class="k">class</span> <span class="nc">GFF3Writer</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+    <span class="n">version_line</span> <span class="o">=</span> <span class="s1">&#39;##gff-version 3.2.1&#39;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">converter</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">converter_kwds</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">converter</span> <span class="o">=</span> <span class="n">converter</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">converter_kwds</span> <span class="o">=</span> <span class="n">converter_kwds</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">created</span> <span class="o">=</span> <span class="kc">False</span>
+
+<div class="viewcode-block" id="GFF3Writer.convert"><a class="viewcode-back" href="../../../dammit.fileio.html#dammit.fileio.gff3.GFF3Writer.convert">[docs]</a>    <span class="k">def</span> <span class="nf">convert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_df</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">converter</span><span class="p">(</span><span class="n">data_df</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">converter_kwds</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GFF3Writer.write"><a class="viewcode-back" href="../../../dammit.fileio.html#dammit.fileio.gff3.GFF3Writer.write">[docs]</a>    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_df</span><span class="p">,</span> <span class="n">version_line</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Write the given data to a GFF3 file, using the converter if given.</span>
+
+<span class="sd">        Generates an empty file if given an empty DataFrame.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            version_line (bool): If True, write the GFF3 version line at the.</span>
+<span class="sd">            Note that this will cause an existing file to be overwritten, but</span>
+<span class="sd">            will only be added in the first call to `write`.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Trying to write to filename None! Give GFF3Writer&#39;</span>
+                             <span class="s1">&#39; a filename.&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">data_df</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">warn_empty</span><span class="p">(</span><span class="s1">&#39;Writing out an empty GFF3 file to </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">))</span>
+            <span class="n">touch</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
+            <span class="k">return</span>
+            
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">created</span> <span class="ow">and</span> <span class="n">version_line</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
+                <span class="n">fp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">version_line</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">created</span> <span class="o">=</span> <span class="kc">True</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">converter</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">data_df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">data_df</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">mangle_coordinates</span><span class="p">(</span><span class="n">data_df</span><span class="p">)</span>
+
+            <span class="n">data_df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">na_rep</span><span class="o">=</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">GFF3Parser</span><span class="o">.</span><span class="n">columns</span><span class="p">],</span>
+                           <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">quoting</span><span class="o">=</span><span class="n">csv</span><span class="o">.</span><span class="n">QUOTE_NONE</span><span class="p">,</span>
+                           <span class="n">float_format</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%.6e</span><span class="s1">&#39;</span><span class="p">)</span></div>
+
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="GFF3Writer.mangle_coordinates"><a class="viewcode-back" href="../../../dammit.fileio.html#dammit.fileio.gff3.GFF3Writer.mangle_coordinates">[docs]</a>    <span class="k">def</span> <span class="nf">mangle_coordinates</span><span class="p">(</span><span class="n">gff3_df</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Although 1-based fully closed intervals are of the Beast,</span>
+<span class="sd">        we will respect the convention in the interests of peace between</span>
+<span class="sd">        worlds and compatibility.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            gff3_df (DataFrame): The DataFrame to &quot;fix&quot;.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">gff3_df</span><span class="o">.</span><span class="n">start</span> <span class="o">+=</span> <span class="mi">1</span></div></div>
+
+
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2015, Camille Scott.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

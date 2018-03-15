@@ -3,194 +3,239 @@ from __future__ import print_function
 
 import logging
 import os
+from os import path
 import sys
 
 from doit.dependency import Dependency, SqliteDB
 
-from . import common
-from .log import LogReporter
-from .tasks import get_download_and_gunzip_task, \
-                   get_hmmpress_task, \
-                   get_cmpress_task, \
-                   get_download_and_untar_task, \
-                   get_lastdb_task, \
-                   print_tasks
+from . import ui
+from .handler import TaskHandler
+from .tasks.last import LastDBTask
+from .tasks.hmmer import HMMPressTask
+from .tasks.infernal import CMPressTask
+from .tasks.shell import (get_download_and_gunzip_task,
+                          get_download_and_untar_task,
+                          get_download_task,
+                          get_gunzip_task)
+
+def get_handler(config):
+    '''Build the TaskHandler for the database prep pipeline. The
+    handler will not have registered tasks when returned.
+
+    Args:
+        config (dict): Config dictionary, which contains the command
+            line arguments and the entries from the config file.
+        databases (dict): The database dictionary from `databases.json`.
+
+    Returns:
+        handler.TaskHandler: A constructed TaskHandler.
+    '''
+
+    logger = logging.getLogger('DatabaseHandler')
+    logger.debug('get_handler')
+
+    handler = TaskHandler(config['database_dir'],
+                          logger, 
+                          db='databases',
+                          backend=config['doit_backend'],
+                          verbosity=config['verbosity'],
+                          n_threads=config['n_threads'])
+
+    return handler
 
 
-class DatabaseHandler(object):
+def default_database_dir(logger):
+    '''Get the default database directory: checks the environment
+    for a DAMMIT_DB_DIR variable, and if it is not found, returns
+    the default location of `$HOME/.dammit/databases`.
 
-    def __init__(self, args):
+    Args:
+        logger (logging.logger): Logger to write to.
+    Returns:
+        str: Path to the database directory.
+    '''
 
-        self.args = args
-        self.logger = logging.getLogger(self.__class__.__name__)
-
-        if args.database_dir is None:
-            try:
-                directory = os.environ['DAMMIT_DB_DIR']
-                self.logger.debug('found DAMMIT_DB_DIR env variable')
-            except KeyError:
-                self.logger.debug('no DAMMIT_DB_DIR or --database-dir, using'\
-                                  ' default')
-                directory = os.path.join(common.get_dammit_dir(), 
-                                         common.CONFIG['settings']['db_dir'])
-        else:
-            directory = args.database_dir
-        self.directory = os.path.abspath(directory)
-
-        self.doit_config = {
-                            'reporter': LogReporter(self.logger),
-                            'backend': common.DOIT_BACKEND,
-                            'verbosity': self.args.verbosity,
-                            'continue': True,
-                            'dep_file': os.path.join(self.directory, 'databases.doit.db')
-                           }
-        self.logger.debug('doit_config:{0}'.format(self.doit_config))
-
-        self.logger.debug('database dir: {0}'.format(self.directory))
-        try:
-            os.mkdir(self.directory)
-        except OSError:
-            self.logger.debug('database dir already exists')
-
-        self.databases, self.tasks = self.get_tasks()
+    try:
+        directory = os.environ['DAMMIT_DB_DIR']
+        logger.debug('found DAMMIT_DB_DIR env variable')
+    except KeyError:
+        logger.debug('no DAMMIT_DB_DIR or --database-dir, using'\
+                     'default')
+        directory = path.join(os.environ['HOME'], '.dammit', 'databases')
+    return directory
 
 
-    def handle(self, doit_args=['run']):
+def print_meta(handler):
+    '''Print metadata about the database pipeline.
 
-        missing = self.check()
-        print_tasks(self.tasks, logger=self.logger)
-        
-        if self.args.install:
-            if missing:
-                common.print_header('Installing databases', level=2)
-                common.run_tasks(self.tasks, doit_args, config=self.doit_config)
-            else:
-                common.print_header('Nothing to install', level=2)
-        else:
-            if missing:
-                sys.exit(1)
+    Args:
+        handler (handler.TaskHandler): The database task handler.
+    '''
 
-    def check_or_fail(self):
-        missing = self.check()
-        if missing:
-            self.logger.error('Install databases to continue.')
-            common.print_header('to prepare databases, run: dammit databases'\
-                                ' --install', level=2)
-            sys.exit(1)
+    print(ui.header('Info', level=4))
+    info = {'Doit Database': handler.dep_file,
+            'Database Directory': handler.directory}
+    print(ui.listing(info))
 
-    def check(self):
 
-        common.print_header('Checking for database prep (dir: {0})'.format(self.directory),
-                            level=2)
+def install(handler):
+    '''Run the database prep pipeline from the given handler.
+    '''
 
-        dep_manager = Dependency(SqliteDB, self.doit_config['dep_file'])
-        missing = False
-        for task in self.tasks:
-            status = dep_manager.get_status(task, self.tasks)
-            self.logger.debug('{0}:{1}'.format(task.name, status.status))
-            if status.status != 'up-to-date':
-                missing = True
-                self.logger.warning('[ ] {0}'.format(task.name))
-            else:
-                self.logger.info('[x] {0}'.format(task.name))
+    print(ui.header('Database Install', level=3))
+    print_meta(handler)
+    msg = '*All database tasks up-to-date.*'
+    uptodate, statuses = handler.print_statuses(uptodate_msg=msg)
+    if not uptodate:
+        print('Installing...')
+        return handler.run()
+    else:
+        print('Nothing to install!')
+        return 0
 
-        common.print_header('Database results', level=2)
 
-        if missing:
-            self.logger.warning('Database prep incomplete...')
-        else:
-            self.logger.info('All databases prepared!')
+def check_or_fail(handler):
+    '''Check that the handler's tasks are complete, and if not, exit
+    with status 2.
+    '''
 
-        return missing
+    print(ui.header('Database Check', level=3))
+    print_meta(handler)
+    msg = '*All database tasks up-to-date.*'
+    uptodate, statuses = handler.print_statuses(uptodate_msg=msg)
+    if not uptodate:
+        print(ui.paragraph('Must install databases to continue. To do so,'
+                           ' run `dammit databases --install`. If you have'
+                           ' already installed them, make sure you\'ve given'
+                           ' the correct location to `--database-dir` or have'
+                           ' exported the $DAMMIT_DB_DIR environment'
+                           ' variable.'))
+        sys.exit(2)
 
-    def get_tasks(self):
-        '''Generate tasks for installing the bundled databases. 
-        
-        These tasks download the databases, unpack them, and format them for use.
-        Current bundled databases are:
 
-            * Pfam-A (protein domans)
-            * Rfam (RNA models)
-            * OrthoDB8 (conserved ortholog groups)
-            * uniref90 (protiens, if --full selected)
-        
-        User-supplied databases are downloaded separately.
+def build_default_pipeline(handler, config, databases, with_uniref=False):
+    '''Register tasks for dammit's builtin database prep pipeline.
 
-        Returns:
-            dict: A dictionary of the final database paths.
-            list: A list of the doit tasks.
+    Args:
+        handler (handler.TaskHandler): The task handler to register on.
+        config (dict): Config dictionary, which contains the command
+            line arguments and the entries from the config file.
+        databases (dict): The dictionary of files from `databases.json`.
+        with_uniref (bool): If True, download and install the uniref90
+            database. Note that this will take 16+Gb of RAM and a looong
+            time to prepare with `lastdb`.
+    Returns:
+        handler.TaskHandler: The handler passed in.
+    '''
 
-        '''
+    register_pfam_tasks(handler, config['hmmer']['hmmpress'], databases)
+    register_rfam_tasks(handler, config['infernal']['cmpress'], databases)
+    register_orthodb_tasks(handler, config['last']['lastdb'], databases)
+    register_busco_tasks(handler, config, databases)
+    if with_uniref:
+        register_uniref90_tasks(handler, config['last']['lastdb'], databases)
 
-        tasks = []
-        databases = {}
+    return handler
 
-        # Get Pfam-A and prepare it for use with hmmer
-        PFAM = os.path.join(self.directory, common.DATABASES['pfam']['filename'])
-        tasks.append(
-            get_download_and_gunzip_task(common.DATABASES['pfam']['url'], PFAM)
-        )
-        tasks.append(
-            get_hmmpress_task(PFAM, common.CONFIG['settings']['hmmer'])
-        )
-        databases['PFAM'] = os.path.abspath(PFAM)
 
-        # Get Rfam and prepare it for use with Infernal
-        RFAM = os.path.join(self.directory, common.DATABASES['rfam']['filename'])
-        tasks.append(
-            get_download_and_gunzip_task(common.DATABASES['rfam']['url'], RFAM)
-        )
-        tasks.append(
-            get_cmpress_task(RFAM, common.CONFIG['settings']['infernal'])
-        )
-        databases['RFAM'] = os.path.abspath(RFAM)
+def build_quick_pipeline(handler, config, databases):
+    register_busco_tasks(handler, config, databases)
 
-        # Get OrthoDB and prepare it for BLAST use
-        ORTHODB = os.path.join(self.directory, common.DATABASES['orthodb']['filename'])
-        tasks.append(
-            get_download_and_gunzip_task(common.DATABASES['orthodb']['url'], ORTHODB)
-        )
+    return handler
+                          
 
-        lastdb_cfg = common.CONFIG['settings']['last']['lastdb']
-        tasks.append(
-            get_lastdb_task(ORTHODB, ORTHODB + '.db', lastdb_cfg, prot=True)
-        )
-        ORTHODB += '.db'
-        databases['ORTHODB'] = os.path.abspath(ORTHODB)
+def register_pfam_tasks(handler, params, databases):
+    pfam_A = databases['Pfam-A']
+    archive_fn = '{0}.{1}'.format(pfam_A['filename'], pfam_A['fileformat'])
+    target_fn = path.join(handler.directory, pfam_A['filename'])
+    
+    dl_task = get_download_task(pfam_A['url'],
+                                archive_fn,
+                                md5=pfam_A['md5'])
 
-        ORTHODB_GENES = os.path.join(self.directory,
-                                     common.DATABASES['orthodb_genes']['filename'])
-        tasks.append(
-            get_download_and_gunzip_task(common.DATABASES['orthodb_genes']['url'],
-                                         ORTHODB_GENES)
-        )
-        databases['ORTHODB_GENES'] = os.path.abspath(ORTHODB_GENES)
+    gz_task = get_gunzip_task(archive_fn, target_fn)
 
-        # A little confusing. First, we get the top-level BUSCO path:
-        BUSCO = os.path.join(self.directory, 'buscodb')
-        tasks.append(
-            # That top-level path is given to the download task:
-            get_download_and_untar_task(common.DATABASES['busco'][self.args.busco_group]['url'], 
-                                        BUSCO,
-                                        label=self.args.busco_group)
-        )
-        # The untarred arhive has a folder named after the group:
-        databases['BUSCO'] = os.path.abspath(os.path.join(BUSCO, self.args.busco_group))
+    handler.register_task('download:Pfam-A', dl_task,
+                          files={'Pfam-A-gz': archive_fn})
+    handler.register_task('gunzip:Pfam-A', gz_task,
+                          files={'Pfam-A': target_fn})
+    handler.register_task('hmmpress:Pfam-A',
+                          HMMPressTask().task(target_fn, 
+                                              params=params))
+    return handler
 
-        # Get uniref90 if the user specifies
-        # Ignoring this until we have working CRBL
-        if self.args.full:
-            UNIREF = os.path.join(self.directory, 
-                                  common.DATABASES['uniref90']['filename'])
-            tasks.append(
-                get_download_and_gunzip_task(common.DATABASES['uniref90']['url'], 
-                                             UNIREF)
-            )
-            tasks.append(
-                get_lastdb_task(UNIREF, UNIREF + '.db', lastdb_cfg, True)
-            )
-            UNIREF += '.db'
-            databases['UNIREF'] = os.path.abspath(UNIREF)
 
-        return databases, tasks
+def register_rfam_tasks(handler, params, databases):
+    rfam = databases['Rfam']
+    archive_fn = '{0}.{1}'.format(rfam['filename'], rfam['fileformat'])
+    target_fn = path.join(handler.directory, rfam['filename'])
+    
+    dl_task = get_download_task(rfam['url'],
+                                archive_fn,
+                                md5=rfam['md5'])
+    gz_task = get_gunzip_task(archive_fn, target_fn)
+
+    handler.register_task('download:Rfam', dl_task,
+                          files={'Rfam-gz': archive_fn})
+    handler.register_task('gunzip:Rfam', gz_task,
+                          files={'Rfam': target_fn})
+    handler.register_task('cmpress:Rfam',
+                          CMPressTask().task(target_fn,
+                                             params=params))
+    return handler
+
+
+def register_orthodb_tasks(handler, params, databases):
+    orthodb = databases['OrthoDB']
+    archive_fn = '{0}.{1}'.format(orthodb['filename'], 
+                                  orthodb['fileformat'])
+    target_fn = path.join(handler.directory, orthodb['filename'])
+    
+    dl_task = get_download_task(orthodb['url'],
+                                archive_fn,
+                                md5=orthodb['md5'])
+    gz_task = get_gunzip_task(archive_fn, target_fn)
+
+    handler.register_task('download:OrthoDB', dl_task,
+                          files={'OrthoDB-gz': archive_fn})
+    handler.register_task('gunzip:OrthoDB', gz_task,
+                          files={'OrthoDB': target_fn})
+    handler.register_task('lastdb:OrthoDB',
+                          LastDBTask().task(target_fn, 
+                                          target_fn, 
+                                          prot=True,
+                                          params=params))
+    return handler
+
+
+def register_busco_tasks(handler, config, databases):
+    busco = databases['BUSCO']
+    busco_dir = path.join(handler.directory, config['busco']['db_dir'])
+    
+    group_name = config['busco_group']
+    group = busco[group_name]
+    files = {'BUSCO-{0}'.format(group_name): path.join(busco_dir, group['folder'])}
+    handler.register_task('download:BUSCO-{0}'.format(group_name),
+                              get_download_and_untar_task(group['url'],
+                                                          busco_dir,
+                                                          label=group_name),
+                              files=files)
+    return handler
+
+
+def register_uniref90_tasks(handler, params, databases):
+    uniref90 = databases['uniref90']
+    task = get_download_and_gunzip_task(uniref90['url'],
+                                        uniref90['filename'])
+    filename = path.join(handler.directory, uniref90['filename'])
+    handler.register_task('download:uniref90',
+                          task,
+                          files={'uniref90': filename})
+    handler.register_task('lastdb:uniref90',
+                          LastDBTask().task(filename,
+                                          filename,
+                                          prot=True,
+                                          params=params,
+                                          task_dep=[task.name]))
+    return handler
 

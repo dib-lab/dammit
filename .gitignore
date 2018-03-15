@@ -8,6 +8,8 @@
 *.dammit
 *.dammit.evalue10
 *.dammit.udb
+*.dammit.full
+.cache
 .eggs/
 deps/
 build/
@@ -19,3 +21,6 @@ dammit.egg-info/
 *~
 
 *.tags*
+*.DS_Store
+
+.ipynb_checkpoints/

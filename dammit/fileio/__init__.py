@@ -1,1 +1,1 @@
-from . import maf
+from .base import EmptyFile

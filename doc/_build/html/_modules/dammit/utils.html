@@ -1,0 +1,253 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>dammit.utils &#8212; dammit 1.0.dev0 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.0.dev0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="author" title="About these documents" href="../../about.html" />
+    <link rel="top" title="dammit 1.0.dev0 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for dammit.utils</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
+
+<span class="kn">from</span> <span class="nn">functools</span> <span class="k">import</span> <span class="n">wraps</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">stat</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="kn">from</span> <span class="nn">doit.action</span> <span class="k">import</span> <span class="n">PythonAction</span>
+<span class="kn">from</span> <span class="nn">doit.task</span> <span class="k">import</span> <span class="n">Task</span><span class="p">,</span> <span class="n">InvalidTask</span>
+<span class="kn">import</span> <span class="nn">six</span>
+
+
+<div class="viewcode-block" id="cleaned_actions"><a class="viewcode-back" href="../../dammit.html#dammit.utils.cleaned_actions">[docs]</a><span class="k">def</span> <span class="nf">cleaned_actions</span><span class="p">(</span><span class="n">actions</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Get a cleanup list of actions: Python actions have their &lt;locals&gt; portion</span>
+<span class="sd">    stripped, which clutters up PythonActions that are closures.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">txt</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="k">for</span> <span class="n">action</span> <span class="ow">in</span> <span class="n">actions</span><span class="p">:</span>
+        <span class="n">txt_rep</span> <span class="o">=</span> <span class="n">six</span><span class="o">.</span><span class="n">text_type</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">action</span><span class="p">,</span> <span class="n">PythonAction</span><span class="p">):</span>
+            <span class="c1"># clean up inner fuctions in Python actions</span>
+            <span class="n">txt_rep</span> <span class="o">=</span> <span class="n">txt_rep</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;&lt;locals&gt;.&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">txt_rep</span> <span class="o">=</span> <span class="n">txt_rep</span><span class="p">[:</span><span class="mi">5</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;`&#39;</span> <span class="o">+</span> <span class="n">txt_rep</span><span class="p">[</span><span class="mi">5</span><span class="p">:]</span> <span class="o">+</span> <span class="s1">&#39;`&#39;</span>
+        <span class="n">txt</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">    * </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">txt_rep</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">txt</span></div>
+
+
+<div class="viewcode-block" id="DammitTask"><a class="viewcode-back" href="../../dammit.html#dammit.utils.DammitTask">[docs]</a><span class="k">class</span> <span class="nc">DammitTask</span><span class="p">(</span><span class="n">Task</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Subclass doit.task.Task for dammit. Updates the string __repr__</span>
+<span class="sd">    and adds a uniform updated title function.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;{{ DammitTask: </span><span class="si">{name}</span><span class="s1">&#39;</span>\
+               <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">    actions: </span><span class="si">{actions}</span><span class="s1">&#39;</span>\
+               <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">   file_dep: </span><span class="si">{file_dep}</span><span class="s1">&#39;</span>\
+               <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">   task_dep: </span><span class="si">{task_dep}</span><span class="s1">&#39;</span>\
+               <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">    targets: </span><span class="si">{targets}</span><span class="s1"> }}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">actions</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">actions</span><span class="p">,</span> <span class="o">**</span><span class="nb">vars</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+
+<div class="viewcode-block" id="DammitTask.title"><a class="viewcode-back" href="../../dammit.html#dammit.utils.DammitTask.title">[docs]</a>    <span class="k">def</span> <span class="nf">title</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">custom_title</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">custom_title</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">actions</span><span class="p">:</span>
+                <span class="n">title</span> <span class="o">=</span> <span class="n">cleaned_actions</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">actions</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">title</span> <span class="o">=</span> <span class="s2">&quot;Group: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">task_dep</span><span class="p">)</span>
+            <span class="k">return</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">title</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="dict_to_task"><a class="viewcode-back" href="../../dammit.html#dammit.utils.dict_to_task">[docs]</a><span class="k">def</span> <span class="nf">dict_to_task</span><span class="p">(</span><span class="n">task_dict</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Given a doit task dict, return a DammitTask.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        task_dict (dict): A doit task dict.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        DammitTask: Subclassed doit task.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="k">if</span> <span class="s1">&#39;actions&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">task_dict</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">InvalidTask</span><span class="p">(</span><span class="s2">&quot;Task </span><span class="si">%s</span><span class="s2"> must contain &#39;actions&#39; field. </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span>
+                          <span class="p">(</span><span class="n">task_dict</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">],</span> <span class="n">task_dict</span><span class="p">))</span>
+
+    <span class="n">task_attrs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">task_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+    <span class="n">valid_attrs</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">Task</span><span class="o">.</span><span class="n">valid_attr</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">task_attrs</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">valid_attrs</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">InvalidTask</span><span class="p">(</span><span class="s2">&quot;Task </span><span class="si">%s</span><span class="s2"> contains invalid field: &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span><span class="o">%</span>
+                              <span class="p">(</span><span class="n">task_dict</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">],</span> <span class="n">key</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">DammitTask</span><span class="p">(</span><span class="o">**</span><span class="n">task_dict</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="doit_task"><a class="viewcode-back" href="../../dammit.html#dammit.utils.doit_task">[docs]</a><span class="k">def</span> <span class="nf">doit_task</span><span class="p">(</span><span class="n">task_dict_func</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Wrapper to decorate functions returning pydoit</span>
+<span class="sd">    Task dictionaries and have them return pydoit Task</span>
+<span class="sd">    objects</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="nd">@wraps</span><span class="p">(</span><span class="n">task_dict_func</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">d_to_t</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">task_dict</span> <span class="o">=</span> <span class="n">task_dict_func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">dict_to_task</span><span class="p">(</span><span class="n">task_dict</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">d_to_t</span></div>
+
+
+<div class="viewcode-block" id="touch"><a class="viewcode-back" href="../../dammit.html#dammit.utils.touch">[docs]</a><span class="k">def</span> <span class="nf">touch</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Perform the equivalent of bash&#39;s touch on the file.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        filename (str): File path to touch.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="Move"><a class="viewcode-back" href="../../dammit.html#dammit.utils.Move">[docs]</a><span class="k">class</span> <span class="nc">Move</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Context manager to change current working directory.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">create</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Move to specified directory.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            target (str): Directory to change to.</span>
+<span class="sd">            create (bool): If True, create the directory.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span> <span class="o">=</span> <span class="n">verbose</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">target</span> <span class="o">=</span> <span class="n">target</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">create</span> <span class="o">=</span> <span class="n">create</span>
+   
+    <span class="k">def</span> <span class="nf">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cwd</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Move to `</span><span class="si">{0}</span><span class="s1">` from cwd: `</span><span class="si">{1}</span><span class="s1">`&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="p">,</span> 
+                                                     <span class="bp">self</span><span class="o">.</span><span class="n">cwd</span><span class="p">,</span> 
+                                                     <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">))</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">create</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
+                <span class="k">pass</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_value</span><span class="p">,</span> <span class="n">traceback</span><span class="p">):</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cwd</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">exc_type</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="which"><a class="viewcode-back" href="../../dammit.html#dammit.utils.which">[docs]</a><span class="k">def</span> <span class="nf">which</span><span class="p">(</span><span class="n">program</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Checks whether the given program (or program path) is valid and</span>
+<span class="sd">    executable.</span>
+
+<span class="sd">    NOTE: Sometimes copypasta is okay! This function came from stackoverflow:</span>
+
+<span class="sd">        http://stackoverflow.com/a/377028/5109965</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        program (str): Either a program name or full path to a program.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Return the path to the executable or None if not found</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">def</span> <span class="nf">is_exe</span><span class="p">(</span><span class="n">fpath</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">fpath</span><span class="p">)</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">access</span><span class="p">(</span><span class="n">fpath</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">X_OK</span><span class="p">)</span>
+
+    <span class="n">fpath</span><span class="p">,</span> <span class="n">fname</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">program</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">fpath</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">is_exe</span><span class="p">(</span><span class="n">program</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">program</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;PATH&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">pathsep</span><span class="p">):</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;&quot;&#39;</span><span class="p">)</span>
+            <span class="n">exe_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">program</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">is_exe</span><span class="p">(</span><span class="n">exe_file</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">exe_file</span>
+
+    <span class="k">return</span> <span class="kc">None</span></div>
+
+
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2015, Camille Scott.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

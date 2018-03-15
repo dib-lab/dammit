@@ -1,0 +1,363 @@
+{
+    "Pfam-A": {
+        "access": "download",
+        "db_type": "hmm",
+        "filename": "Pfam-A.hmm",
+        "md5": "dd73e1e085566c7cc0c1d7ed9a649f46",
+		"fileformat": "gz",
+        "version": 28.0,
+        "url": "ftp://ftp.ebi.ac.uk/pub/databases/Pfam/releases/Pfam28.0/Pfam-A.hmm.gz"
+    },
+
+	"Rfam": {
+		"access": "download",
+		"db_type": "cm",
+		"filename": "Rfam.cm",
+        "md5": "28c9dd98037799761efc0953b72574ab",
+		"fileformat": "gz",
+        "version": "12.1",
+		"url": "ftp://ftp.ebi.ac.uk/pub/databases/Rfam/12.1/Rfam.cm.gz"
+	},
+
+	"uniref90": {
+		"access": "download",
+		"db_type": "prot",
+		"filename": "uniref90.fasta",
+		"fileformat": "gz",
+        "metalink": "ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/uniref/uniref90/RELEASE.metalink",
+        "version": "current",
+		"url": "ftp://ftp.uniprot.org/pub/databases/uniprot/uniref/uniref90/uniref90.fasta.gz"
+	},
+
+	"OrthoDB": {
+		"access": "download",
+		"db_type": "prot",
+		"filename": "aa_seq_euk.fasta",
+        "md5": "f40da35b9135c5f326380089f0ddb7a2",
+		"fileformat": "gz",
+        "version": 8,
+		"url": "ftp://cegg.unige.ch/OrthoDB8/Eukaryotes/FASTA/aa_seq_euk.fasta.gz"
+	},
+
+    "orthodb_genes": {
+        "access": "download",
+        "db_type": "txt",
+        "filename": "ODB8_EukOGs_genes_ALL_levels.txt",
+        "md5": null,
+        "fileformat": "gz",
+        "version": 8,
+        "url": "ftp://cegg.unige.ch/OrthoDB8/Eukaryotes/Genes_to_OGs/ODB8_EukOGs_genes_ALL_levels.txt.gz"
+    },
+
+    "BUSCO": {
+        "deltaepsilonsub": {
+            "url": "http://busco.ezlab.org/v2/datasets/deltaepsilonsub_odb9.tar.gz",
+            "access": "download",
+            "fileformat": "tar.gz",
+            "folder": "deltaepsilonsub_odb9",
+            "db_type": "BUSCO"
+        },
+        "basidiomycota": {
+            "url": "http://busco.ezlab.org/v2/datasets/basidiomycota_odb9.tar.gz",
+            "access": "download",
+            "fileformat": "tar.gz",
+            "folder": "basidiomycota_odb9",
+            "db_type": "BUSCO"
+        },
+        "bacteria": {
+            "url": "http://busco.ezlab.org/v2/datasets/bacteria_odb9.tar.gz",
+            "access": "download",
+            "fileformat": "tar.gz",
+            "folder": "bacteria_odb9",
+            "db_type": "BUSCO"
+        },
+        "dikarya": {
+            "url": "http://busco.ezlab.org/v2/datasets/dikarya_odb9.tar.gz",
+            "access": "download",
+            "fileformat": "tar.gz",
+            "folder": "dikarya_odb9",
+            "db_type": "BUSCO"
+        },
+        "fungi": {
+            "url": "http://busco.ezlab.org/v2/datasets/fungi_odb9.tar.gz",
+            "access": "download",
+            "fileformat": "tar.gz",
+            "folder": "fungi_odb9",
+            "db_type": "BUSCO"
+        },
+        "eurotiomycetes": {
+            "url": "http://busco.ezlab.org/v2/datasets/eurotiomycetes_odb9.tar.gz",
+            "access": "download",
+            "fileformat": "tar.gz",
+            "folder": "eurotiomycetes_odb9",
+            "db_type": "BUSCO"
+        },
+        "alveolata_stramenophiles": {
+            "url": "http://busco.ezlab.org/v2/datasets/alveolata_stramenophiles_ensembl.tar.gz",
+            "access": "download",
+            "fileformat": "tar.gz",
+            "folder": "alveolata_stramenophiles_ensembl",
+            "db_type": "BUSCO"
+        },
+        "pezizomycotina": {
+            "url": "http://busco.ezlab.org/v2/datasets/pezizomycotina_odb9.tar.gz",
+            "access": "download",
+            "fileformat": "tar.gz",
+            "folder": "pezizomycotina_odb9",
+            "db_type": "BUSCO"
+        },
+        "proteobacteria": {
+            "url": "http://busco.ezlab.org/v2/datasets/proteobacteria_odb9.tar.gz",
+            "access": "download",
+            "fileformat": "tar.gz",
+            "folder": "proteobacteria_odb9",
+            "db_type": "BUSCO"
+        },
+        "laurasiatheria": {
+            "url": "http://busco.ezlab.org/v2/datasets/laurasiatheria_odb9.tar.gz",
+            "access": "download",
+            "fileformat": "tar.gz",
+            "folder": "laurasiatheria_odb9",
+            "db_type": "BUSCO"
+        },
+        "arthropoda": {
+            "url": "http://busco.ezlab.org/v2/datasets/arthropoda_odb9.tar.gz",
+            "access": "download",
+            "fileformat": "tar.gz",
+            "folder": "arthropoda_odb9",
+            "db_type": "BUSCO"
+        },
+        "tetrapoda": {
+            "url": "http://busco.ezlab.org/v2/datasets/tetrapoda_odb9.tar.gz",
+            "access": "download",
+            "fileformat": "tar.gz",
+            "folder": "tetrapoda_odb9",
+            "db_type": "BUSCO"
+        },
+        "clostridia": {
+            "url": "http://busco.ezlab.org/v2/datasets/clostridia_odb9.tar.gz",
+            "access": "download",
+            "fileformat": "tar.gz",
+            "folder": "clostridia_odb9",
+            "db_type": "BUSCO"
+        },
+        "protists": {
+            "url": "http://busco.ezlab.org/v2/datasets/protists_ensembl.tar.gz",
+            "access": "download",
+            "fileformat": "tar.gz",
+            "folder": "protists_ensembl",
+            "db_type": "BUSCO"
+        },
+        "enterobacteriales": {
+            "url": "http://busco.ezlab.org/v2/datasets/enterobacteriales_odb9.tar.gz",
+            "access": "download",
+            "fileformat": "tar.gz",
+            "folder": "enterobacteriales_odb9",
+            "db_type": "BUSCO"
+        },
+        "gammaproteobacteria": {
+            "url": "http://busco.ezlab.org/v2/datasets/gammaproteobacteria_odb9.tar.gz",
+            "access": "download",
+            "fileformat": "tar.gz",
+            "folder": "gammaproteobacteria_odb9",
+            "db_type": "BUSCO"
+        },
+        "mammalia": {
+            "url": "http://busco.ezlab.org/v2/datasets/mammalia_odb9.tar.gz",
+            "access": "download",
+            "fileformat": "tar.gz",
+            "folder": "mammalia_odb9",
+            "db_type": "BUSCO"
+        },
+        "rhizobiales": {
+            "url": "http://busco.ezlab.org/v2/datasets/rhizobiales_odb9.tar.gz",
+            "access": "download",
+            "fileformat": "tar.gz",
+            "folder": "rhizobiales_odb9",
+            "db_type": "BUSCO"
+        },
+        "nematoda": {
+            "url": "http://busco.ezlab.org/v2/datasets/nematoda_odb9.tar.gz",
+            "access": "download",
+            "fileformat": "tar.gz",
+            "folder": "nematoda_odb9",
+            "db_type": "BUSCO"
+        },
+        "tenericutes": {
+            "url": "http://busco.ezlab.org/v2/datasets/tenericutes_odb9.tar.gz",
+            "access": "download",
+            "fileformat": "tar.gz",
+            "folder": "tenericutes_odb9",
+            "db_type": "BUSCO"
+        },
+        "saccharomyceta": {
+            "url": "http://busco.ezlab.org/v2/datasets/saccharomyceta_odb9.tar.gz",
+            "access": "download",
+            "fileformat": "tar.gz",
+            "folder": "saccharomyceta_odb9",
+            "db_type": "BUSCO"
+        },
+        "saccharomycetales": {
+            "url": "http://busco.ezlab.org/v2/datasets/saccharomycetales_odb9.tar.gz",
+            "access": "download",
+            "fileformat": "tar.gz",
+            "folder": "saccharomycetales_odb9",
+            "db_type": "BUSCO"
+        },
+        "firmicutes": {
+            "url": "http://busco.ezlab.org/v2/datasets/firmicutes_odb9.tar.gz",
+            "access": "download",
+            "fileformat": "tar.gz",
+            "folder": "firmicutes_odb9",
+            "db_type": "BUSCO"
+        },
+        "bacteroidetes": {
+            "url": "http://busco.ezlab.org/v2/datasets/bacteroidetes_odb9.tar.gz",
+            "access": "download",
+            "fileformat": "tar.gz",
+            "folder": "bacteroidetes_odb9",
+            "db_type": "BUSCO"
+        },
+        "sordariomyceta": {
+            "url": "http://busco.ezlab.org/v2/datasets/sordariomyceta_odb9.tar.gz",
+            "access": "download",
+            "fileformat": "tar.gz",
+            "folder": "sordariomyceta_odb9",
+            "db_type": "BUSCO"
+        },
+        "ascomycota": {
+            "url": "http://busco.ezlab.org/v2/datasets/ascomycota_odb9.tar.gz",
+            "access": "download",
+            "fileformat": "tar.gz",
+            "folder": "ascomycota_odb9",
+            "db_type": "BUSCO"
+        },
+        "bacillales": {
+            "url": "http://busco.ezlab.org/v2/datasets/bacillales_odb9.tar.gz",
+            "access": "download",
+            "fileformat": "tar.gz",
+            "folder": "bacillales_odb9",
+            "db_type": "BUSCO"
+        },
+        "insecta": {
+            "url": "http://busco.ezlab.org/v2/datasets/insecta_odb9.tar.gz",
+            "access": "download",
+            "fileformat": "tar.gz",
+            "folder": "insecta_odb9",
+            "db_type": "BUSCO"
+        },
+        "diptera": {
+            "url": "http://busco.ezlab.org/v2/datasets/diptera_odb9.tar.gz",
+            "access": "download",
+            "fileformat": "tar.gz",
+            "folder": "diptera_odb9",
+            "db_type": "BUSCO"
+        },
+        "actinopterygii": {
+            "url": "http://busco.ezlab.org/v2/datasets/actinopterygii_odb9.tar.gz",
+            "access": "download",
+            "fileformat": "tar.gz",
+            "folder": "actinopterygii_odb9",
+            "db_type": "BUSCO"
+        },
+        "hymenoptera": {
+            "url": "http://busco.ezlab.org/v2/datasets/hymenoptera_odb9.tar.gz",
+            "access": "download",
+            "fileformat": "tar.gz",
+            "folder": "hymenoptera_odb9",
+            "db_type": "BUSCO"
+        },
+        "euarchontoglires": {
+            "url": "http://busco.ezlab.org/v2/datasets/euarchontoglires_odb9.tar.gz",
+            "access": "download",
+            "fileformat": "tar.gz",
+            "folder": "euarchontoglires_odb9",
+            "db_type": "BUSCO"
+        },
+        "aves": {
+            "url": "http://busco.ezlab.org/v2/datasets/aves_odb9.tar.gz",
+            "access": "download",
+            "fileformat": "tar.gz",
+            "folder": "aves_odb9",
+            "db_type": "BUSCO"
+        },
+        "betaproteobacteria": {
+            "url": "http://busco.ezlab.org/v2/datasets/betaproteobacteria_odb9.tar.gz",
+            "access": "download",
+            "fileformat": "tar.gz",
+            "folder": "betaproteobacteria_odb9",
+            "db_type": "BUSCO"
+        },
+        "cyanobacteria": {
+            "url": "http://busco.ezlab.org/v2/datasets/cyanobacteria_odb9.tar.gz",
+            "access": "download",
+            "fileformat": "tar.gz",
+            "folder": "cyanobacteria_odb9",
+            "db_type": "BUSCO"
+        },
+        "endopterygota": {
+            "url": "http://busco.ezlab.org/v2/datasets/endopterygota_odb9.tar.gz",
+            "access": "download",
+            "fileformat": "tar.gz",
+            "folder": "endopterygota_odb9",
+            "db_type": "BUSCO"
+        },
+        "embryophyta": {
+            "url": "http://busco.ezlab.org/v2/datasets/embryophyta_odb9.tar.gz",
+            "access": "download",
+            "fileformat": "tar.gz",
+            "folder": "embryophyta_odb9",
+            "db_type": "BUSCO"
+        },
+        "microsporidia": {
+            "url": "http://busco.ezlab.org/v2/datasets/microsporidia_odb9.tar.gz",
+            "access": "download",
+            "fileformat": "tar.gz",
+            "folder": "microsporidia_odb9",
+            "db_type": "BUSCO"
+        },
+        "lactobacillales": {
+            "url": "http://busco.ezlab.org/v2/datasets/lactobacillales_odb9.tar.gz",
+            "access": "download",
+            "fileformat": "tar.gz",
+            "folder": "lactobacillales_odb9",
+            "db_type": "BUSCO"
+        },
+        "eukaryota": {
+            "url": "http://busco.ezlab.org/v2/datasets/eukaryota_odb9.tar.gz",
+            "access": "download",
+            "fileformat": "tar.gz",
+            "folder": "eukaryota_odb9",
+            "db_type": "BUSCO"
+        },
+        "metazoa": {
+            "url": "http://busco.ezlab.org/v2/datasets/metazoa_odb9.tar.gz",
+            "access": "download",
+            "fileformat": "tar.gz",
+            "folder": "metazoa_odb9",
+            "db_type": "BUSCO"
+        },
+        "actinobacteria": {
+            "url": "http://busco.ezlab.org/v2/datasets/actinobacteria_odb9.tar.gz",
+            "access": "download",
+            "fileformat": "tar.gz",
+            "folder": "actinobacteria_odb9",
+            "db_type": "BUSCO"
+        },
+        "spirochaetes": {
+            "url": "http://busco.ezlab.org/v2/datasets/spirochaetes_odb9.tar.gz",
+            "access": "download",
+            "fileformat": "tar.gz",
+            "folder": "spirochaetes_odb9",
+            "db_type": "BUSCO"
+        },
+        "vertebrata": {
+            "url": "http://busco.ezlab.org/v2/datasets/vertebrata_odb9.tar.gz",
+            "access": "download",
+            "fileformat": "tar.gz",
+            "folder": "vertebrata_odb9",
+            "db_type": "BUSCO"
+        }
+    }
+
+}

@@ -1,0 +1,259 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>dammit.tasks.fastx &#8212; dammit 1.0.dev0 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.0.dev0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="author" title="About these documents" href="../../../about.html" />
+    <link rel="top" title="dammit 1.0.dev0 documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for dammit.tasks.fastx</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
+
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="k">import</span> <span class="n">count</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">re</span>
+
+<span class="kn">from</span> <span class="nn">doit.tools</span> <span class="k">import</span> <span class="n">run_once</span><span class="p">,</span> <span class="n">create_folder</span><span class="p">,</span> <span class="n">LongRunning</span>
+<span class="kn">from</span> <span class="nn">doit.task</span> <span class="k">import</span> <span class="n">clean_targets</span><span class="p">,</span> <span class="n">dict_to_task</span>
+<span class="kn">from</span> <span class="nn">khmer</span> <span class="k">import</span> <span class="n">HLLCounter</span><span class="p">,</span> <span class="n">ReadParser</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="kn">from</span> <span class="nn">..fileio.gff3</span> <span class="k">import</span> <span class="n">GFF3Parser</span>
+<span class="kn">from</span> <span class="nn">..profile</span> <span class="k">import</span> <span class="n">profile_task</span>
+<span class="kn">from</span> <span class="nn">..utils</span> <span class="k">import</span> <span class="n">which</span><span class="p">,</span> <span class="n">doit_task</span>
+
+<span class="n">seq_ext</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">r&#39;(.fasta)|(.fa)|(.fastq)|(.fq)&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="strip_seq_extension"><a class="viewcode-back" href="../../../dammit.tasks.html#dammit.tasks.fastx.strip_seq_extension">[docs]</a><span class="k">def</span> <span class="nf">strip_seq_extension</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">seq_ext</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">fn</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span></div>
+
+    
+<span class="nd">@doit_task</span>
+<div class="viewcode-block" id="get_rename_transcriptome_task"><a class="viewcode-back" href="../../../dammit.tasks.html#dammit.tasks.fastx.get_rename_transcriptome_task">[docs]</a><span class="k">def</span> <span class="nf">get_rename_transcriptome_task</span><span class="p">(</span><span class="n">transcriptome_fn</span><span class="p">,</span> <span class="n">output_fn</span><span class="p">,</span> <span class="n">names_fn</span><span class="p">,</span>
+                                  <span class="n">transcript_basename</span><span class="p">,</span> <span class="n">split_regex</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Create a doit task to copy a FASTA file and rename the headers.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        transcriptome_fn (str): The FASTA file.</span>
+<span class="sd">        output_fn (str): Destination to copy to.</span>
+<span class="sd">        names_fn (str): Destination to the store mapping from old to new names.</span>
+<span class="sd">        transcript_basename (str): String to contruct new names from.</span>
+<span class="sd">        split_regex (regex): Regex to split the input names with; must contain</span>
+<span class="sd">            a `name` field.</span>
+<span class="sd">    </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        dict: A doit task.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="kn">import</span> <span class="nn">re</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">transcriptome_fn</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">split_regex</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">counter</span> <span class="o">=</span> <span class="n">count</span><span class="p">()</span>
+        <span class="n">header_func</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">name</span><span class="p">:</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">_</span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">transcript_basename</span><span class="p">,</span> <span class="nb">next</span><span class="p">(</span><span class="n">counter</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">def</span> <span class="nf">header_func</span><span class="p">(</span><span class="n">header</span><span class="p">):</span>
+            <span class="n">results</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">split_regex</span><span class="p">,</span> <span class="n">header</span><span class="p">)</span><span class="o">.</span><span class="n">groupdict</span><span class="p">()</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">header</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
+            <span class="k">except</span> <span class="ne">KeyError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+                <span class="n">err</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="s1">&#39;Header regex should have a name field!&#39;</span>
+                <span class="k">raise</span>
+            <span class="k">return</span> <span class="n">header</span>
+
+    <span class="k">def</span> <span class="nf">fix</span><span class="p">():</span>
+        <span class="n">names</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">output_fn</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">record</span> <span class="ow">in</span> <span class="n">ReadParser</span><span class="p">(</span><span class="n">transcriptome_fn</span><span class="p">):</span>
+                <span class="n">header</span> <span class="o">=</span> <span class="n">header_func</span><span class="p">(</span><span class="n">record</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+                <span class="n">fp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;&gt;</span><span class="si">{0}</span><span class="se">\n</span><span class="si">{1}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">header</span><span class="p">,</span> <span class="n">record</span><span class="o">.</span><span class="n">sequence</span><span class="p">))</span>
+                <span class="n">names</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">record</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">header</span><span class="p">))</span>
+        <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">names</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;original&#39;</span><span class="p">,</span> <span class="s1">&#39;renamed&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">names_fn</span><span class="p">,</span>
+                                                                    <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span>
+            <span class="s1">&#39;actions&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">fix</span><span class="p">],</span>
+            <span class="s1">&#39;targets&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">output_fn</span><span class="p">,</span> <span class="n">names_fn</span><span class="p">],</span>
+            <span class="s1">&#39;file_dep&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">transcriptome_fn</span><span class="p">],</span>
+            <span class="s1">&#39;clean&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">clean_targets</span><span class="p">]}</span></div>
+
+
+<span class="nd">@doit_task</span>
+<span class="nd">@profile_task</span>
+<div class="viewcode-block" id="get_transcriptome_stats_task"><a class="viewcode-back" href="../../../dammit.tasks.html#dammit.tasks.fastx.get_transcriptome_stats_task">[docs]</a><span class="k">def</span> <span class="nf">get_transcriptome_stats_task</span><span class="p">(</span><span class="n">transcriptome</span><span class="p">,</span> <span class="n">output_fn</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Create a doit task to run basic metrics on a transcriptome.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        transcriptome (str): The input FASTA file.</span>
+<span class="sd">        output_fn (str): File to store the results.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        dict: A doit task.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="kn">import</span> <span class="nn">re</span>
+
+    <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;transcriptome_stats:&#39;</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">transcriptome</span><span class="p">)</span>
+    <span class="n">K</span> <span class="o">=</span> <span class="mi">25</span>
+    <span class="n">DNA</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">r&#39;[ACGTN]*$&#39;</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
+        <span class="n">hll</span> <span class="o">=</span> <span class="n">HLLCounter</span><span class="p">(</span><span class="o">.</span><span class="mi">01</span><span class="p">,</span> <span class="n">K</span><span class="p">)</span>
+        <span class="n">lens</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">names</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">gc_len</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">n_ambiguous</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">contig</span> <span class="ow">in</span> <span class="n">ReadParser</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
+            <span class="n">sequence</span> <span class="o">=</span> <span class="n">contig</span><span class="o">.</span><span class="n">sequence</span>
+            <span class="n">lens</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">sequence</span><span class="p">))</span>
+            <span class="n">names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">contig</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">DNA</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">sequence</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;non-ACGTN characters not supported. &#39;</span>\
+                                   <span class="s1">&#39;Offending transcript: </span><span class="se">\n</span><span class="s1">&gt;</span><span class="si">{0}</span><span class="se">\n</span><span class="si">{1}</span><span class="se">\n</span><span class="s1">bad&#39;</span>\
+                                   <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">contig</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">contig</span><span class="o">.</span><span class="n">sequence</span><span class="p">))</span>
+            <span class="k">if</span> <span class="s1">&#39;N&#39;</span> <span class="ow">in</span> <span class="n">sequence</span><span class="p">:</span>
+                <span class="n">sequence</span> <span class="o">=</span> <span class="n">sequence</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;N&#39;</span><span class="p">,</span> <span class="s1">&#39;A&#39;</span><span class="p">)</span>
+                <span class="n">n_ambiguous</span> <span class="o">+=</span> <span class="mi">1</span>
+
+            <span class="n">hll</span><span class="o">.</span><span class="n">consume_string</span><span class="p">(</span><span class="n">sequence</span><span class="p">)</span>
+            <span class="n">gc_len</span> <span class="o">+=</span> <span class="n">contig</span><span class="o">.</span><span class="n">sequence</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s1">&#39;C&#39;</span><span class="p">)</span>
+            <span class="n">gc_len</span> <span class="o">+=</span> <span class="n">contig</span><span class="o">.</span><span class="n">sequence</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s1">&#39;G&#39;</span><span class="p">)</span>
+        <span class="n">S</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">lens</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">names</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">S</span><span class="o">.</span><span class="n">sort_values</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="n">S</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+        <span class="n">gc_perc</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">gc_len</span><span class="p">)</span> <span class="o">/</span> <span class="n">S</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">S</span><span class="p">,</span> <span class="n">hll</span><span class="o">.</span><span class="n">estimate_cardinality</span><span class="p">(),</span> <span class="n">gc_perc</span><span class="p">,</span> <span class="n">n_ambiguous</span>
+
+    <span class="k">def</span> <span class="nf">calc_NX</span><span class="p">(</span><span class="n">lens</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+        <span class="n">N</span> <span class="o">=</span> <span class="n">lens</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+        <span class="n">threshold</span> <span class="o">=</span> <span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">X</span><span class="p">)</span> <span class="o">/</span> <span class="mf">100.0</span><span class="p">)</span> <span class="o">*</span> <span class="n">N</span>
+
+        <span class="n">NXlen</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">NXpos</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">cms</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">lens</span><span class="p">):</span>
+            <span class="n">cms</span> <span class="o">+=</span> <span class="n">l</span>
+            <span class="k">if</span> <span class="n">cms</span> <span class="o">&gt;=</span> <span class="n">threshold</span><span class="p">:</span>
+                <span class="n">NXlen</span> <span class="o">=</span> <span class="n">l</span>
+                <span class="n">NXpos</span> <span class="o">=</span> <span class="n">n</span>
+                <span class="k">break</span>
+        <span class="k">return</span> <span class="n">NXlen</span><span class="p">,</span> <span class="n">NXpos</span>
+
+    <span class="k">def</span> <span class="nf">cmd</span><span class="p">():</span>
+        <span class="n">lens</span><span class="p">,</span> <span class="n">uniq_kmers</span><span class="p">,</span> <span class="n">gc_perc</span><span class="p">,</span> <span class="n">n_amb</span> <span class="o">=</span> <span class="n">parse</span><span class="p">(</span><span class="n">transcriptome</span><span class="p">)</span>
+
+        <span class="n">exp_kmers</span> <span class="o">=</span> <span class="p">(</span><span class="n">lens</span> <span class="o">-</span> <span class="p">(</span><span class="n">K</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+        <span class="n">redundancy</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">exp_kmers</span> <span class="o">-</span> <span class="n">uniq_kmers</span><span class="p">)</span> <span class="o">/</span> <span class="n">exp_kmers</span>
+        <span class="k">if</span> <span class="n">redundancy</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">redundancy</span> <span class="o">=</span> <span class="mf">0.0</span>
+
+        <span class="n">N50len</span><span class="p">,</span> <span class="n">N50pos</span> <span class="o">=</span> <span class="n">calc_NX</span><span class="p">(</span><span class="n">lens</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span>
+        <span class="n">stats</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;N&#39;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">lens</span><span class="p">),</span>
+                 <span class="s1">&#39;sum&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">lens</span><span class="o">.</span><span class="n">sum</span><span class="p">()),</span>
+                 <span class="s1">&#39;min&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">lens</span><span class="o">.</span><span class="n">min</span><span class="p">()),</span>
+                 <span class="s1">&#39;max&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">lens</span><span class="o">.</span><span class="n">max</span><span class="p">()),</span>
+                 <span class="s1">&#39;med&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">lens</span><span class="o">.</span><span class="n">median</span><span class="p">()),</span>
+                 <span class="s1">&#39;mean&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">lens</span><span class="o">.</span><span class="n">mean</span><span class="p">()),</span>
+                 <span class="s1">&#39;N50len&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">N50len</span><span class="p">),</span>
+                 <span class="s1">&#39;N50pos&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">N50pos</span><span class="p">),</span>
+                 <span class="s1">&#39;25_mers&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">exp_kmers</span><span class="p">),</span>
+                 <span class="s1">&#39;25_mers_unique&#39;</span><span class="p">:</span> <span class="n">uniq_kmers</span><span class="p">,</span>
+                 <span class="s1">&#39;n_ambiguous&#39;</span><span class="p">:</span> <span class="n">n_amb</span><span class="p">,</span>
+                 <span class="s1">&#39;redundancy&#39;</span><span class="p">:</span> <span class="n">redundancy</span><span class="p">,</span>
+                 <span class="s1">&#39;GCperc&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">gc_perc</span><span class="p">)}</span>
+        
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">output_fn</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
+            <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">stats</span><span class="p">,</span> <span class="n">fp</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">output_fn</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+
+    <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span>
+            <span class="s1">&#39;actions&#39;</span><span class="p">:</span> <span class="p">[(</span><span class="n">cmd</span><span class="p">,</span> <span class="p">[])],</span>
+            <span class="s1">&#39;file_dep&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">transcriptome</span><span class="p">],</span>
+            <span class="s1">&#39;targets&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">output_fn</span><span class="p">],</span>
+            <span class="s1">&#39;clean&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">clean_targets</span><span class="p">]}</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2015, Camille Scott.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

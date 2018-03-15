@@ -2,9 +2,10 @@
 from __future__ import print_function
 from __future__ import absolute_import
 
-import nose
+from distutils import dir_util
 import os
 from io import StringIO
+import logging
 import traceback
 import shutil
 import stat
@@ -13,9 +14,15 @@ import warnings as _warnings
 from pkg_resources import Requirement, resource_filename, ResolutionError
 from tempfile import mkdtemp
 
-from dammit.common import run_tasks
+from doit.cmd_base import TaskLoader
+from doit.doit_cmd import DoitMain
 from doit.dependency import Dependency, DbmDB
 
+from pytest import fixture
+
+from dammit import log
+log.start_logging(test=True)
+logger = logging.getLogger('Tests')
 
 '''
 BATCH EFFECTS -- The Notorious A.T.G.
@@ -44,13 +51,28 @@ except ImportError:
     from io import StringIO
 
 
-def check_status(task, dep_file='.doit.db'):
+def check_status(task, tasks=None, dep_file='.doit.db'):
+    if tasks is None:
+        tasks = [task]
     mgr = Dependency(DbmDB, os.path.abspath(dep_file))
-    status = mgr.get_status(task, [task])
+    status = mgr.get_status(task, tasks)
     return status
 
 
-def run_task(task, cmd='run', verbosity=2):
+def run_tasks(tasks, args, config={'verbosity': 0}):
+    
+    if type(tasks) is not list:
+        raise TypeError('tasks must be a list')
+   
+    class Loader(TaskLoader):
+        @staticmethod
+        def load_tasks(cmd, opt_values, pos_args):
+            return tasks, config
+   
+    return DoitMain(Loader()).run(args)
+
+
+def run_task(task, cmd='run', verbosity=0):
     return run_tasks([task], [cmd], config={'verbosity': verbosity})
 
 
@@ -64,151 +86,24 @@ def touch(filename):
     open(filename, 'a').close()
     os.chmod(filename, stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
 
+@fixture
+def datadir(tmpdir, request):
+    '''
+    Fixture responsible for locating the test data directory and copying it
+    into a temporary directory.
+    '''
+    filename = request.module.__file__
+    test_dir = os.path.dirname(filename)
+    data_dir = os.path.join(test_dir, 'test-data') 
+    dir_util.copy_tree(data_dir, str(tmpdir))
 
-class TestData(object):
+    def getter(filename, as_str=True):
+        filepath = tmpdir.join(filename)
+        if as_str:
+            return str(filepath)
+        return filepath
 
-    def __init__(self, filename, dest_dir):
-        self.filepath = None
-        try:
-            self.filepath = resource_filename(Requirement.parse("dammit"), 
-                                              "dammit/tests/test-data/"     + filename)
-        except ResolutionError:
-            pass
-        if not self.filepath or not os.path.isfile(self.filepath):
-            self.filepath = os.path.join(os.path.dirname(__file__), 
-                                          'test-data', filename)
-        shutil.copy(self.filepath, dest_dir)
-        self.filepath = os.path.join(dest_dir, filename)
-    
-    def __enter__(self):
-        return self.filepath
-
-    def __exit__(self, exc_type, exc_value, traceback):
-        try:
-            os.remove(self.filepath)
-        except OSError:
-            pass
-        if exc_type:
-            return False
-
-
-class TemporaryFile(object):
-
-    def __init__(self, directory):
-        self.filepath = os.path.join(directory, str(hash(self)))
-
-    def __enter__(self):
-        return self.filepath
-
-    def __exit__(self, exc_type, exc_value, traceback):
-        try:
-            os.remove(self.filepath)
-        except OSError:
-            pass
-        if exc_type:
-            return False
-
-
-class Move(object):
-
-    def __init__(self, target):
-        print('Move to', target, file=sys.stderr)
-        self.target = target
-   
-    def __enter__(self):
-        self.cwd = os.getcwd()
-        print('cwd:', self.cwd, file=sys.stderr)
-        os.chdir(self.target)
-
-    def __exit__(self, exc_type, exc_value, traceback):
-        os.chdir(self.cwd)
-        if exc_type:
-            return False
-
-
-class TemporaryDirectory(object):
-    """Create and return a temporary directory.  This has the same
-    behavior as mkdtemp but can be used as a context manager.  For
-    example:
-
-        with TemporaryDirectory() as tmpdir:
-            ...
-
-    Upon exiting the context, the directory and everything contained
-    in it are removed.
-
-    Note:
-        Taken from http://stackoverflow.com/questions/19296146/tempfile-temporarydirectory-context-manager-in-python-2-7
-    """
-
-    def __init__(self, suffix="", prefix="tmp", dir=None):
-        self._closed = False
-        self.name = None # Handle mkdtemp raising an exception
-        self.name = mkdtemp(suffix, prefix, dir)
-
-    def __repr__(self):
-        return "<{} {!r}>".format(self.__class__.__name__, self.name)
-
-    def __enter__(self):
-        return self.name
-
-    def cleanup(self, _warn=False):
-        if self.name and not self._closed:
-            try:
-                self._rmtree(self.name)
-            except (TypeError, AttributeError) as ex:
-                # Issue #10188: Emit a warning on stderr
-                # if the directory could not be cleaned
-                # up due to missing globals
-                if "None" not in str(ex):
-                    raise
-                print >>_sys.stderr, "ERROR: {!r} while cleaning up {!r}".format(ex, self,)
-                return
-            self._closed = True
-            if _warn:
-                self._warn("Implicitly cleaning up {!r}".format(self), ResourceWarning)
-
-    def __exit__(self, exc, value, tb):
-        self.cleanup()
-        if exc is not None:
-            return False
-
-    def __del__(self):
-        # Issue a ResourceWarning if implicit cleanup needed
-        self.cleanup(_warn=True)
-
-    # XXX (ncoghlan): The following code attempts to make
-    # this class tolerant of the module nulling out process
-    # that happens during CPython interpreter shutdown
-    # Alas, it doesn't actually manage it. See issue #10188
-    _listdir = staticmethod(os.listdir)
-    _path_join = staticmethod(os.path.join)
-    _isdir = staticmethod(os.path.isdir)
-    _islink = staticmethod(os.path.islink)
-    _remove = staticmethod(os.remove)
-    _rmdir = staticmethod(os.rmdir)
-    _warn = _warnings.warn
-
-    def _rmtree(self, path):
-        # Essentially a stripped down version of shutil.rmtree.  We can't
-        # use globals because they may be None'ed out at shutdown.
-        for name in self._listdir(path):
-            fullname = self._path_join(path, name)
-            try:
-                isdir = self._isdir(fullname) and not self._islink(fullname)
-            except OSError:
-                isdir = False
-            if isdir:
-                self._rmtree(fullname)
-            else:
-                try:
-                    self._remove(fullname)
-                except OSError:
-                    pass
-        try:
-            self._rmdir(path)
-        except OSError:
-            pass
+    return getter
 
 
 '''
@@ -235,7 +130,7 @@ def scriptpath(scriptname='dammit'):
             return path
 
 
-def _runscript(scriptname, sandbox=False):
+def _runscript(scriptname):
     """
     Find & run a script with exec (i.e. not via os.system or subprocess).
     """
@@ -248,24 +143,19 @@ def _runscript(scriptname, sandbox=False):
         pkg_resources.get_distribution("dammit").run_script(scriptname, ns)
         return 0
     except pkg_resources.ResolutionError as err:
-        if sandbox:
-            path = os.path.join(os.path.dirname(__file__), "../sandbox")
-        else:
-            path = scriptpath()
+        path = scriptpath()
 
         scriptfile = os.path.join(path, scriptname)
         if os.path.isfile(scriptfile):
             if os.path.isfile(scriptfile):
                 exec(compile(open(scriptfile).read(), scriptfile, 'exec'), ns)
                 return 0
-        elif sandbox:
-            raise nose.SkipTest("sandbox tests are only run in a repository.")
 
     return -1
 
 
 def runscript(scriptname, args, in_directory=None,
-              fail_ok=False, sandbox=False):
+              fail_ok=False):
     """Run a Python script using exec().
     Run the given Python script, with the given args, in the given directory,
     using 'exec'.  Mimic proper shell functionality with argv, and capture
@@ -295,9 +185,7 @@ def runscript(scriptname, args, in_directory=None,
             print('running:', scriptname, 'in:', in_directory, file=oldout)
             print('arguments', sysargs, file=oldout)
 
-            status = _runscript(scriptname, sandbox=sandbox)
-        except nose.SkipTest:
-            raise
+            status = _runscript(scriptname)
         except SystemExit as e:
             status = e.code
         except:
@@ -311,9 +199,9 @@ def runscript(scriptname, args, in_directory=None,
         os.chdir(cwd)
 
     if status != 0 and not fail_ok:
-        #print(out)
-        #print(err)
-        assert False, (status, out, err)
+        print('STATUS:', status)
+        print('STDOUT:', out)
+        print('STDERR:', err)
 
     return status, out, err
 

@@ -1,0 +1,39 @@
+{
+    "dammit_dir": ".dammit",
+    "dep_dir": "dependencies",
+    "db_dir": "databases",
+    "doit_backend": "sqlite3",
+    
+    "last": {
+        "lastal": {
+            "params": [],
+            "frameshift": 15
+        },
+        "lastdb": ["-w3"]
+    },
+
+    "crb-blast": {
+        "evalue": 1e-5
+    },
+
+    "busco": {
+        "db_dir": "busco2db",
+        "output_suffix": ".busco.results",
+        "params": []
+    },
+
+    "hmmer": {
+        "hmmscan": [],
+        "hmmpress": []
+    },
+
+    "infernal": {
+        "cmscan": [],
+        "cmpress": []
+    },
+
+    "transdecoder": {
+        "longorfs":["-m 80"],
+        "predict": ["--retain_long_orfs 600"]
+    }
+}

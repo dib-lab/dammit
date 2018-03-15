@@ -5,70 +5,59 @@ import json
 import os
 import sys
 
-from unittest import TestCase
 from doit.dependency import Dependency, DbmDB
 
-from utils import TemporaryDirectory, Move, TestData, touch, TemporaryFile
-from utils import run_task, check_status
-from dammit import common
-from dammit import tasks
-from dammit.common import run_tasks
+from utils import touch, datadir
+from utils import run_task, run_tasks, check_status
+from dammit.tasks.fastx import get_transcriptome_stats_task
+
+class TestTranscriptomeStatsTask():
+
+    def test_output(self, tmpdir, datadir):
+        with tmpdir.as_cwd():
+            transcript = datadir('test-transcript.fa')
+
+            output_fn = str(tmpdir.join('test'))
+            tsk = get_transcriptome_stats_task(transcript,
+                                               output_fn)
+            run_tasks([tsk], ['run'])
+
+            with open(output_fn) as fp:
+                results = json.load(fp)
+
+            assert 'n_ambiguous' in results
+            assert results['n_ambiguous'] == 0
 
 
-class TestTranscriptomeStatsTask(TestCase):
+            assert 'N' in results
+            assert results['N'] == 1
 
-    def test_output(self):
-        with TemporaryDirectory() as td:
-            with Move(td):
-                with TestData('test-transcript.fa', td) as transcript:
+    def test_non_acgt(self, tmpdir, datadir):
+        with tmpdir.as_cwd():
+            transcript = datadir('non-actg-transcripts.fa')
+            output_fn = str(tmpdir.join('test'))
 
-                    output_fn = os.path.join(td, 'test')
-                    tsk = tasks.get_transcriptome_stats_task(transcript,
-                                                             output_fn)
-                    run_tasks([tsk], ['run'])
+            tsk = get_transcriptome_stats_task(transcript,
+                                               output_fn)
+            stat = run_task(tsk)
 
-                    with open(output_fn) as fp:
-                        results = json.load(fp)
+            assert stat == 2
 
-                    self.assertIn('n_ambiguous', results)
-                    self.assertEquals(results['n_ambiguous'], 0)
+    def test_ambiguous_transcript(self, tmpdir, datadir):
+        with tmpdir.as_cwd():
+            transcript = datadir('test-transcript-N.fa')
+            output_fn = str(tmpdir.join('test'))
 
+            tsk = get_transcriptome_stats_task(transcript,
+                                               output_fn)
+            stat = run_task(tsk)
 
-                    self.assertIn('N', results)
-                    self.assertEquals(results['N'], 1)
+            with open(output_fn) as fp:
+                results = json.load(fp)
 
-    def test_non_acgt(self):
-        with TemporaryDirectory() as td:
-            with Move(td):
-                with TestData('non-actg-transcripts.fa', td) as transcript:
+            assert 'n_ambiguous' in results
+            assert results['n_ambiguous'] == 1
 
-                    output_fn = os.path.join(td, 'test')
-                    tsk = tasks.get_transcriptome_stats_task(transcript,
-                                                             output_fn)
-                    stat = run_task(tsk)
-
-                    self.assertEquals(stat, 2)
-
-    def test_ambiguous_transcript(self):
-        with TemporaryDirectory() as td:
-            with Move(td):
-                with TestData('test-transcript-N.fa', td) as transcript:
-
-                    output_fn = os.path.join(td, 'test')
-                    tsk = tasks.get_transcriptome_stats_task(transcript,
-                                                             output_fn)
-                    stat = run_task(tsk)
-
-                    self.assertEquals(stat, 0)
-
-                    print(os.listdir(td))
-                    with open(output_fn) as fp:
-                        results = json.load(fp)
-
-                    self.assertIn('n_ambiguous', results)
-                    self.assertEquals(results['n_ambiguous'], 1)
-
-
-                    self.assertIn('N', results)
-                    self.assertEquals(results['N'], 1)
-                    print(results)
+            assert 'N' in results
+            assert results['N'] == 1
+            print(results)

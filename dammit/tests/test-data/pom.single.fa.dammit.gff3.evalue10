@@ -1,20 +1,20 @@
 ##gff-version 3.2.1
-Transcript_0	HMMER	protein_hmm_match	1111	1203	0.13	.	.	ID=homology:7;Name=Poxvirus_B22R_N;Target=Poxvirus_B22R_N 33 63 +;Note=Poxvirus B22R protein N-terminal;accuracy=0.8;env_coords=1045 1227;Dbxref="Pfam:PF13169.2"
-Transcript_0	HMMER	protein_hmm_match	2428	2499	3900.0	.	.	ID=homology:8;Name=Poxvirus_B22R_N;Target=Poxvirus_B22R_N 53 77 +;Note=Poxvirus B22R protein N-terminal;accuracy=0.78;env_coords=2407 2514;Dbxref="Pfam:PF13169.2"
-Transcript_0	HMMER	protein_hmm_match	3604	4089	2.1e-10	.	.	ID=homology:3;Name=DEAD;Target=DEAD 10 174 +;Note=DEAD/DEAH box helicase;accuracy=0.75;env_coords=3580 4092;Dbxref="Pfam:PF00270.25"
-Transcript_0	HMMER	protein_hmm_match	4207	4548	3.2e-18	.	.	ID=homology:1;Name=Helicase_C;Target=Helicase_C 8 105 +;Note=Helicase conserved C-terminal domain;accuracy=0.87;env_coords=4186 4548;Dbxref="Pfam:PF00271.27"
-Transcript_0	HMMER	protein_hmm_match	5218	5274	11000.0	.	.	ID=homology:2;Name=Helicase_C;Target=Helicase_C 16 34 +;Note=Helicase conserved C-terminal domain;accuracy=0.78;env_coords=5203 5307;Dbxref="Pfam:PF00271.27"
-Transcript_0	HMMER	protein_hmm_match	5413	5460	0.067	.	.	ID=homology:5;Name=zf-CCHC;Target=zf-CCHC 2 17 +;Note=Zinc knuckle;accuracy=0.93;env_coords=5410 5463;Dbxref="Pfam:PF00098.19"
-Transcript_0	HMMER	protein_hmm_match	58	75	7000.0	.	.	ID=homology:4;Name=zf-CCHC;Target=zf-CCHC 2 7 +;Note=Zinc knuckle;accuracy=0.85;env_coords=58 75;Dbxref="Pfam:PF00098.19"
-Transcript_0	HMMER	protein_hmm_match	790	852	6800.0	.	.	ID=homology:6;Name=Poxvirus_B22R_N;Target=Poxvirus_B22R_N 47 68 +;Note=Poxvirus B22R protein N-terminal;accuracy=0.73;env_coords=742 870;Dbxref="Pfam:PF13169.2"
-Transcript_0	Infernal	RNA_sequence_secondary_structure	3799	3912	7.9	+	.	ID=homology:11;Name=SPRY4-IT1_2;Target=SPRY4-IT1_2 1 121 +;Note=-;Dbxref="Rfam:RF02039";trunc=no;bitscore=13.6
-Transcript_0	Infernal	RNA_sequence_secondary_structure	4609	4665	8.3	+	.	ID=homology:12;Name=ceN69;Target=ceN69 1 107 +;Note=-;Dbxref="Rfam:RF01651";trunc=no;bitscore=17.4
-Transcript_0	Infernal	RNA_sequence_secondary_structure	4992	4925	9.6	-	.	ID=homology:13;Name=SNORD75;Target=SNORD75 1 62 +;Note=-;Dbxref="Rfam:RF00612";trunc=no;bitscore=14.1
-Transcript_0	Infernal	RNA_sequence_secondary_structure	5160	5255	1.2	+	.	ID=homology:9;Name=mir-598;Target=mir-598 1 97 +;Note=-;Dbxref="Rfam:RF01059";trunc=no;bitscore=22.3
-Transcript_0	Infernal	RNA_sequence_secondary_structure	5504	5472	3.3	-	.	ID=homology:10;Name=CRISPR-DR63;Target=CRISPR-DR63 1 37 +;Note=-;Dbxref="Rfam:RF01376";trunc=no;bitscore=22.2
-Transcript_0	LAST	translated_nucleotide_match	1	5661	0.0	+	.	ID=homology:0;Name=TLH2_SCHPO;Target=TLH2_SCHPO 0 1887 +;database=OrthoDB
-Transcript_0	transdecoder	CDS	1	5661	.	+	.	ID=cds.Transcript_0|m.1;Parent=Transcript_0|m.1
-Transcript_0	transdecoder	exon	1	5662	.	+	.	ID=Transcript_0|m.1.exon1;Parent=Transcript_0|m.1
-Transcript_0	transdecoder	gene	1	5662	.	+	.	ID=Transcript_0|g.1;Name=ORF%20Transcript_0%7Cg.1%20Transcript_0%7Cm.1%20type%3A3prime_partial%20len%3A1888%20%28%2B%29
-Transcript_0	transdecoder	mRNA	1	5662	.	+	.	ID=Transcript_0|m.1;Parent=Transcript_0|g.1;Name=ORF%20Transcript_0%7Cg.1%20Transcript_0%7Cm.1%20type%3A3prime_partial%20len%3A1888%20%28%2B%29
-Transcript_0	transdecoder	three_prime_UTR	5662	5662	.	+	.	ID=Transcript_0|m.1.utr3p1;Parent=Transcript_0|m.1
+Transcript_0	HMMER	protein_hmm_match	1111	1203	1.300000e-01	.	.	ID=homology:6;Name=Poxvirus_B22R_N;Target=Poxvirus_B22R_N 33 63 +;Note=Poxvirus B22R protein N-terminal;accuracy=0.8;env_coords=1045 1227;Dbxref="Pfam:PF13169.2"
+Transcript_0	HMMER	protein_hmm_match	2428	2499	3.900000e+03	.	.	ID=homology:7;Name=Poxvirus_B22R_N;Target=Poxvirus_B22R_N 53 77 +;Note=Poxvirus B22R protein N-terminal;accuracy=0.78;env_coords=2407 2514;Dbxref="Pfam:PF13169.2"
+Transcript_0	HMMER	protein_hmm_match	3604	4089	2.100000e-10	.	.	ID=homology:2;Name=DEAD;Target=DEAD 10 174 +;Note=DEAD/DEAH box helicase;accuracy=0.75;env_coords=3580 4092;Dbxref="Pfam:PF00270.25"
+Transcript_0	HMMER	protein_hmm_match	4207	4548	3.200000e-18	.	.	ID=homology:0;Name=Helicase_C;Target=Helicase_C 8 105 +;Note=Helicase conserved C-terminal domain;accuracy=0.87;env_coords=4186 4548;Dbxref="Pfam:PF00271.27"
+Transcript_0	HMMER	protein_hmm_match	5218	5274	1.100000e+04	.	.	ID=homology:1;Name=Helicase_C;Target=Helicase_C 16 34 +;Note=Helicase conserved C-terminal domain;accuracy=0.78;env_coords=5203 5307;Dbxref="Pfam:PF00271.27"
+Transcript_0	HMMER	protein_hmm_match	5413	5460	6.700000e-02	.	.	ID=homology:4;Name=zf-CCHC;Target=zf-CCHC 2 17 +;Note=Zinc knuckle;accuracy=0.93;env_coords=5410 5463;Dbxref="Pfam:PF00098.19"
+Transcript_0	HMMER	protein_hmm_match	58	75	7.000000e+03	.	.	ID=homology:3;Name=zf-CCHC;Target=zf-CCHC 2 7 +;Note=Zinc knuckle;accuracy=0.85;env_coords=58 75;Dbxref="Pfam:PF00098.19"
+Transcript_0	HMMER	protein_hmm_match	790	852	6.800000e+03	.	.	ID=homology:5;Name=Poxvirus_B22R_N;Target=Poxvirus_B22R_N 47 68 +;Note=Poxvirus B22R protein N-terminal;accuracy=0.73;env_coords=742 870;Dbxref="Pfam:PF13169.2"
+Transcript_0	Infernal	RNA_sequence_secondary_structure	3799	3912	7.900000e+00	+	.	ID=homology:10;Name=SPRY4-IT1_2;Target=SPRY4-IT1_2 1 121 +;Note=-;Dbxref="Rfam:RF02039";trunc=no;bitscore=13.6
+Transcript_0	Infernal	RNA_sequence_secondary_structure	4609	4665	8.300000e+00	+	.	ID=homology:11;Name=ceN69;Target=ceN69 1 107 +;Note=-;Dbxref="Rfam:RF01651";trunc=no;bitscore=17.4
+Transcript_0	Infernal	RNA_sequence_secondary_structure	4925	4992	9.600000e+00	-	.	ID=homology:12;Name=SNORD75;Target=SNORD75 1 62 +;Note=-;Dbxref="Rfam:RF00612";trunc=no;bitscore=14.1
+Transcript_0	Infernal	RNA_sequence_secondary_structure	5160	5255	1.200000e+00	+	.	ID=homology:8;Name=mir-598;Target=mir-598 1 97 +;Note=-;Dbxref="Rfam:RF01059";trunc=no;bitscore=22.3
+Transcript_0	Infernal	RNA_sequence_secondary_structure	5472	5504	3.300000e+00	-	.	ID=homology:9;Name=CRISPR-DR63;Target=CRISPR-DR63 1 37 +;Note=-;Dbxref="Rfam:RF01376";trunc=no;bitscore=22.2
+Transcript_0	LAST	translated_nucleotide_match	1	5661	0.000000e+00	+	.	ID=homology:13;Name=TLH2_SCHPO;Target=TLH2_SCHPO 0 1887 +;database=OrthoDB
+Transcript_0	transdecoder	CDS	1	5661	.	+	0	ID=cds.Gene.1::Transcript_0::g.1::m.1;Parent=Gene.1::Transcript_0::g.1::m.1
+Transcript_0	transdecoder	exon	1	5662	.	+	.	ID=Gene.1::Transcript_0::g.1::m.1.exon1;Parent=Gene.1::Transcript_0::g.1::m.1
+Transcript_0	transdecoder	gene	1	5662	.	+	.	ID=Gene.1::Transcript_0::g.1;Name=ORF%20type%3A3prime_partial%20len%3A1888%20%28%2B%29
+Transcript_0	transdecoder	mRNA	1	5662	.	+	.	ID=Gene.1::Transcript_0::g.1::m.1;Parent=Gene.1::Transcript_0::g.1;Name=ORF%20type%3A3prime_partial%20len%3A1888%20%28%2B%29
+Transcript_0	transdecoder	three_prime_UTR	5662	5662	.	+	.	ID=Gene.1::Transcript_0::g.1::m.1.utr3p1;Parent=Gene.1::Transcript_0::g.1::m.1

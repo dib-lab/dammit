@@ -2,42 +2,59 @@
 from __future__ import print_function
 
 import argparse
+import glob
 import logging
 import os
 import sys
 
-from dammit import __version__
-from dammit import common
-from dammit import annotate
-from dammit import databases
-from dammit import dependencies
-from dammit import log
-from dammit.tasks import print_tasks
+from .meta import __version__, __authors__, __description__, __date__, get_config
+from . import utils
+from . import ui
+from . import annotate
+from .annotate import (build_quick_pipeline,
+                      build_default_pipeline,
+                      build_full_pipeline)
+from . import databases
+from . import log
 
 
 class DammitApp(object):
 
     def __init__(self, arg_src=sys.argv[1:]):
         self.logger = logging.getLogger(self.__class__.__name__)
-        self.meta = '{0}\n{1} {2}'.format(common.CONFIG['meta']['description'],
-                                          ', '.join(common.CONFIG['meta']['authors']),
-                                          common.CONFIG['meta']['date'])
 
+        self.config_d, self.databases_d = get_config()
         self.parser = self.get_parser()
-        self.args = self.parser.parse_args(arg_src)
 
+        self.args = self.parser.parse_args(arg_src)
+        if hasattr(self.args, 'config_file') and self.args.config_file is not None:
+            with open(self.args.config_file) as fp:
+                self.config_d.update(json.load(fp))
+        self.config_d.update(vars(self.args))
+ 
     def run(self):
-        common.print_header(self.meta, 0)
-        self.args.func()
+        print(ui.header('dammit'))
+        print(ui.header(__description__, level=2))
+        about = '\nby {0}\n\n**v{1}**, {2}\n'.format(', '.join(__authors__),
+                                           __version__, __date__)
+        print(about)
+        return self.args.func()
+
+    def description(self):
+        return ui.header('dammit: ' + __description__)
+
+    def epilog(self):
+        return 'Available BUSCO groups are: '\
+               '{0}'.format(', '.join(sorted(self.databases_d['BUSCO'].keys())))
 
     def get_parser(self):
         '''
         Build the main parser.
         '''
         parser = argparse.ArgumentParser(
-                     description=common.add_header(self.meta, 0),
-                     formatter_class=argparse.RawDescriptionHelpFormatter
-                     )
+                 description=self.description(),
+                 formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+        parser.set_defaults(func=parser.print_help)
 
         parser.add_argument('--debug', action='store_true', default=False)
         parser.add_argument('--version', action='version',
@@ -54,35 +71,88 @@ class DammitApp(object):
                 parser (object): The parser to which arguments will be added.
             '''
             parser.add_argument('--database-dir',
-                                default=None,
+                                default=databases.default_database_dir(self.logger),
                                 help='Directory to store databases. Existing'\
                                      ' databases will not be overwritten.'\
                                      ' By default, the database directory is'\
                                      ' $HOME/.dammit/databases.'
                                 )
 
-            parser.add_argument('--full',
-                                action='store_true',
-                                default=False,
-                                help='Do complete run with uniref90. By default'\
-                                     ' uniref90 is left out, as it is huge '\
-                                     ' and homology searches take a long'\
-                                     ' time.'
-                                )
-
             parser.add_argument('--busco-group',
                                 default='metazoa',
-                                choices=['metazoa', 'eukaryota', 'vertebrata',
-                                         'arthropoda'],
-                                help='Which BUSCO group to use. Depends on'\
-                                     ' the organism being annotated.'
+                                metavar='[metazoa, eukaryota, vertebrata, ...]',
+                                choices=list(self.databases_d['BUSCO'].keys()),
+                                help='Which BUSCO group to use. Should be chosen'\
+                                     ' based on the organism being annotated.'\
+                                     ' Full list of options is below.'
                                 )
+
+            parser.add_argument('--n_threads',
+                                type=int,
+                                default=1,
+                                help='For annotate, number of threads to pass to '\
+                                     'programs  supporting multithreading. For '\
+                                     'databases, number of simultaneous tasks '\
+                                     'to execute.'
+                                )
+
+            parser.add_argument('--config-file',
+                                help='A JSON file providing values to override'\
+                                     ' built-in config. Advanced use only!'
+                                )
+
+            parser.add_argument('--busco-config-file',
+                                help='Path to an alternative BUSCO config'\
+                                     ' file; otherwise, BUSCO will attempt'\
+                                     ' to use its default installation'\
+                                     ' which will likely only work on'\
+                                     ' bioconda. Advanced use only!')
+
             parser.add_argument('--verbosity',
                                 default=0,
                                 type=int,
                                 choices=[0,1,2],
                                 help='Verbosity level for doit tasks.'
                                 )
+
+            parser.add_argument('--profile',
+                                default=False,
+                                action='store_true',
+                                help='Profile task execution.')
+            
+            parser.add_argument('--force',
+                                default=False,
+                                action='store_true',
+                                help='Ignore missing database tasks.')
+
+            pgroup = parser.add_mutually_exclusive_group()
+            pgroup.add_argument('--full',
+                                action='store_true',
+                                default=False,
+                                help='Run a "complete" annotation; includes'\
+                                     ' uniref90, which is left out of the'\
+                                     ' default pipeline because it is huge'\
+                                     ' and homology searches take a long'\
+                                     ' time.'
+                                )
+
+            pgroup.add_argument('--quick',
+                                default=False,
+                                action='store_true',
+                                help='Run a "quick" annotation; excludes'\
+                                     ' the Infernal Rfam tasks, the HMMER'\
+                                     ' Pfam tasks, and the LAST OrthoDB'\
+                                     ' and uniref90 tasks. Best for users'\
+                                     ' just looking to get basic stats'\
+                                     ' and conditional reciprocal best'\
+                                     ' LAST from a protein database.')
+
+        migrate_parser= subparsers.add_parser('migrate')
+        migrate_parser.add_argument('--destructive', default=False,
+                                    action='store_true')
+        add_common_args(migrate_parser)
+        migrate_parser.set_defaults(func=self.handle_migrate)
+
 
         '''
         Add the databases subcommand.
@@ -92,7 +162,9 @@ class DammitApp(object):
         databases_parser = subparsers.add_parser(
                                'databases',
                                 description=desc,
-                                help=desc
+                                epilog=self.epilog(),
+                                help=desc,
+                                formatter_class=argparse.ArgumentDefaultsHelpFormatter
                                 )
 
         databases_parser.add_argument('--install',
@@ -106,19 +178,6 @@ class DammitApp(object):
         databases_parser.set_defaults(func=self.handle_databases)
 
         '''
-        Add the dependencies subcommand.
-        '''
-        desc = '''Checks for dependencies on system PATH. Unlike with the
-               databases, dependencies are not downloaded when missing and must
-               be installed by the user.'''
-        dependencies_parser = subparsers.add_parser(
-                                  'dependencies',
-                                  description=desc,
-                                  help=desc
-                                  )
-        dependencies_parser.set_defaults(func=self.handle_dependencies)
-
-        '''
         Add the annotation subcommand.
         '''
         desc = '''The main annotation pipeline. Calculates assembly stats;
@@ -130,7 +189,9 @@ class DammitApp(object):
                               'annotate',
                               usage='%(prog)s <transcriptome> [OPTIONS]',
                               description=desc,
-                              help=desc
+                              epilog=self.epilog(),
+                              help=desc,
+                              formatter_class=argparse.ArgumentDefaultsHelpFormatter
                               )
 
         annotate_parser.add_argument('transcriptome',
@@ -162,21 +223,16 @@ class DammitApp(object):
                                           ' with `.dammit` appended'
                                      )
 
-        annotate_parser.add_argument('--n_threads',
-                                     type=int,
-                                     default=1,
-                                     help='Number of threads to pass to programs'\
-                                          ' supporting multithreading'
-                                     )
-
         annotate_parser.add_argument('--user-databases',
                                      nargs='+',
                                      default=[],
                                      help='Optional additional protein databases. '\
                                           ' These will be searched with CRB-blast.'
                                      )
-        annotate_parser.add_argument('--sshloginfile', default=None,
-                                      help='Distribute execution across the specified nodes.')
+
+        annotate_parser.add_argument('--sshloginfile',
+                                     default=None,
+                                     help='Distribute execution across the specified nodes.')
                                     
 
         add_common_args(annotate_parser)
@@ -184,26 +240,71 @@ class DammitApp(object):
 
         return parser
 
+    def handle_migrate(self):
+        with utils.Move(self.args.database_dir):
+            odb_files = glob.glob('aa_seq_euk.fasta.db.*')
+            for fn in odb_files:
+                pre, _, suf = fn.partition('.db')
+                newfn = pre + suf
+                if self.args.destructive:
+                    os.rename(fn, newfn)
+                else:
+                    os.symlink(fn, newfn)
+
     def handle_databases(self):
-        common.print_header('submodule: databases', level=1)
+        log.start_logging()
+        print(ui.header('submodule: databases', level=2))
 
-        dependencies.DependencyHandler().check_or_fail()
-
-        databases.DatabaseHandler(self.args).handle()
-
-
-    def handle_dependencies(self):
-        common.print_header('submodule: dependencies', level=1)
-
-        dependencies.DependencyHandler().handle()
+        handler = databases.get_handler(self.config_d)
+        if self.args.quick:
+            databases.build_quick_pipeline(handler,
+                                           self.config_d,
+                                           self.databases_d)
+        else:
+            databases.build_default_pipeline(handler, 
+                                             self.config_d,
+                                             self.databases_d,
+                                             with_uniref=self.args.full)
+        if self.args.install:
+            return databases.install(handler)
+        else:
+            databases.check_or_fail(handler)
 
     def handle_annotate(self):
+        log.start_logging()
+        print(ui.header('submodule: annotate', level=2))
 
-        common.print_header('submodule: annotate', level=1)
+        db_handler = databases.get_handler(self.config_d)
 
-        dependencies.DependencyHandler().check_or_fail()
+        if self.args.quick:
+            databases.build_quick_pipeline(db_handler,
+                                           self.config_d,
+                                           self.databases_d)
+        else:
+            databases.build_default_pipeline(db_handler, 
+                                             self.config_d,
+                                             self.databases_d,
+                                             with_uniref=self.args.full)
+        if self.config_d['force'] is True:
+            utd_msg = '*All database tasks up-to-date.*'
+            ood_msg = '*Some database tasks out-of-date; '\
+                      'FORCE is True, ignoring!'
+            uptodate, statuses = db_handler.print_statuses(uptodate_msg=utd_msg,
+                                                           outofdate_msg=ood_msg)
+        else:
+            databases.check_or_fail(db_handler)
 
-        db_handler = databases.DatabaseHandler(self.args)
-        db_handler.check_or_fail()
-
-        annotate.AnnotateHandler(self.args, db_handler.databases).handle()
+        annotate_handler = annotate.get_handler(self.config_d, db_handler.files)
+        if self.args.quick:
+            build_quick_pipeline(annotate_handler, 
+                                 self.config_d, 
+                                 db_handler.files)
+        elif self.args.full:
+            build_full_pipeline(annotate_handler, 
+                                self.config_d, 
+                                db_handler.files)
+        else:
+            build_default_pipeline(annotate_handler, 
+                                   self.config_d, 
+                                   db_handler.files)
+        return annotate.run_annotation(annotate_handler)

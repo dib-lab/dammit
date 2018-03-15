@@ -1,6 +1,14 @@
 dammit package
 ==============
 
+Subpackages
+-----------
+
+.. toctree::
+
+    dammit.fileio
+    dammit.tasks
+
 Submodules
 ----------
 
@@ -12,18 +20,10 @@ dammit.annotate module
     :undoc-members:
     :show-inheritance:
 
-dammit.blast module
--------------------
+dammit.app module
+-----------------
 
-.. automodule:: dammit.blast
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-dammit.common module
---------------------
-
-.. automodule:: dammit.common
+.. automodule:: dammit.app
     :members:
     :undoc-members:
     :show-inheritance:
@@ -44,37 +44,62 @@ dammit.dependencies module
     :undoc-members:
     :show-inheritance:
 
-dammit.gff module
------------------
-
-.. automodule:: dammit.gff
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-dammit.parsers module
+dammit.handler module
 ---------------------
 
-.. automodule:: dammit.parsers
+.. automodule:: dammit.handler
     :members:
     :undoc-members:
     :show-inheritance:
 
-dammit.report module
---------------------
+dammit.log module
+-----------------
 
-.. automodule:: dammit.report
+.. automodule:: dammit.log
     :members:
     :undoc-members:
     :show-inheritance:
 
-dammit.tasks module
+dammit.meta module
+------------------
+
+.. automodule:: dammit.meta
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+dammit.parallel module
+----------------------
+
+.. automodule:: dammit.parallel
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+dammit.profile module
+---------------------
+
+.. automodule:: dammit.profile
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+dammit.ui module
+----------------
+
+.. automodule:: dammit.ui
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+dammit.utils module
 -------------------
 
-.. automodule:: dammit.tasks
+.. automodule:: dammit.utils
     :members:
     :undoc-members:
     :show-inheritance:
+
 
 Module contents
 ---------------

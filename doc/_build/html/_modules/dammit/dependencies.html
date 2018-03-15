@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>dammit.dependencies &#8212; dammit 0.3.1 documentation</title>
+    <title>dammit.dependencies &#8212; dammit 1.0.dev0 documentation</title>
     
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.3.1',
+        VERSION:     '1.0.dev0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,9 +26,7 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="author" title="About these documents" href="../../about.html" />
-    <link rel="index" title="Index" href="../../genindex.html" />
-    <link rel="search" title="Search" href="../../search.html" />
-    <link rel="top" title="dammit 0.3.1 documentation" href="../../index.html" />
+    <link rel="top" title="dammit 1.0.dev0 documentation" href="../../index.html" />
     <link rel="up" title="Module code" href="../index.html" />
    
   <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
@@ -56,23 +54,18 @@
 
 <span class="kn">from</span> <span class="nn">doit.dependency</span> <span class="k">import</span> <span class="n">Dependency</span><span class="p">,</span> <span class="n">SqliteDB</span>
 
-<span class="kn">from</span> <span class="nn">.common</span> <span class="k">import</span> <span class="n">which</span>
-<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">common</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">ui</span>
+<span class="kn">from</span> <span class="nn">.utils</span> <span class="k">import</span> <span class="n">which</span>
+<span class="kn">from</span> <span class="nn">.tasks.shell</span> <span class="k">import</span> <span class="n">get_download_and_untar_task</span>
 
 
 <div class="viewcode-block" id="DependencyHandler"><a class="viewcode-back" href="../../dammit.html#dammit.dependencies.DependencyHandler">[docs]</a><span class="k">class</span> <span class="nc">DependencyHandler</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">checks</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;HMMER&#39;</span><span class="p">,</span> <span class="n">check_hmmer</span><span class="p">),</span>
-                       <span class="p">(</span><span class="s1">&#39;Infernal&#39;</span><span class="p">,</span> <span class="n">check_infernal</span><span class="p">),</span>
-                       <span class="p">(</span><span class="s1">&#39;BLAST+&#39;</span><span class="p">,</span> <span class="n">check_blast</span><span class="p">),</span>
-                       <span class="p">(</span><span class="s1">&#39;BUSCO&#39;</span><span class="p">,</span> <span class="n">check_busco</span><span class="p">),</span>
-                       <span class="p">(</span><span class="s1">&#39;TransDecoder&#39;</span><span class="p">,</span> <span class="n">check_transdecoder</span><span class="p">),</span>
-                       <span class="p">(</span><span class="s1">&#39;LAST&#39;</span><span class="p">,</span> <span class="n">check_last</span><span class="p">),</span>
-                       <span class="p">(</span><span class="s1">&#39;crb-blast&#39;</span><span class="p">,</span> <span class="n">check_crb_blast</span><span class="p">)]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">checks</span> <span class="o">=</span> <span class="p">{}</span>
 
-<div class="viewcode-block" id="DependencyHandler.add_dependency_check"><a class="viewcode-back" href="../../dammit.html#dammit.dependencies.DependencyHandler.add_dependency_check">[docs]</a>    <span class="k">def</span> <span class="nf">add_dependency_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">function</span><span class="p">):</span>
+<div class="viewcode-block" id="DependencyHandler.register_dependency_check"><a class="viewcode-back" href="../../dammit.html#dammit.dependencies.DependencyHandler.register_dependency_check">[docs]</a>    <span class="k">def</span> <span class="nf">register_dependency_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">function</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Add a new dependency to the handler.</span>
 
 <span class="sd">        Args:</span>
@@ -82,47 +75,71 @@
 <span class="sd">                takes a Logger object.</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Add check function for </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">checks</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">name</span><span class="p">,</span> <span class="n">function</span><span class="p">))</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">checks</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">function</span></div>
 
 <div class="viewcode-block" id="DependencyHandler.clear_dependency_checks"><a class="viewcode-back" href="../../dammit.html#dammit.dependencies.DependencyHandler.clear_dependency_checks">[docs]</a>    <span class="k">def</span> <span class="nf">clear_dependency_checks</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Clearing </span><span class="si">{0}</span><span class="s1"> dependency checks from&#39;</span>\
                           <span class="s1">&#39; handler&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">checks</span><span class="p">)))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">checks</span> <span class="o">=</span> <span class="p">[]</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">checks</span> <span class="o">=</span> <span class="p">{}</span></div>
 
-<div class="viewcode-block" id="DependencyHandler.run_checks"><a class="viewcode-back" href="../../dammit.html#dammit.dependencies.DependencyHandler.run_checks">[docs]</a>    <span class="k">def</span> <span class="nf">run_checks</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="DependencyHandler.get_status"><a class="viewcode-back" href="../../dammit.html#dammit.dependencies.DependencyHandler.get_status">[docs]</a>    <span class="k">def</span> <span class="nf">get_status</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Run dependency function on </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">check_function</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">checks</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Check not found: </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+        <span class="n">status</span><span class="p">,</span> <span class="n">msg</span> <span class="o">=</span> <span class="n">check_function</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> has status </span><span class="si">{1}</span><span class="s1">, msg: </span><span class="si">{2}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">status</span><span class="p">,</span> <span class="n">msg</span><span class="p">))</span>
 
-        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">function</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">checks</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Run dependency function on </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
-            <span class="n">status</span><span class="p">,</span> <span class="n">msg</span> <span class="o">=</span> <span class="n">function</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> has status </span><span class="si">{1}</span><span class="s1">, msg: </span><span class="si">{2}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">status</span><span class="p">,</span> <span class="n">msg</span><span class="p">))</span>
-            <span class="k">yield</span> <span class="n">name</span><span class="p">,</span> <span class="n">status</span><span class="p">,</span> <span class="n">msg</span></div>
+        <span class="k">return</span> <span class="n">status</span><span class="p">,</span> <span class="n">msg</span></div>
 
-<div class="viewcode-block" id="DependencyHandler.handle"><a class="viewcode-back" href="../../dammit.html#dammit.dependencies.DependencyHandler.handle">[docs]</a>    <span class="k">def</span> <span class="nf">handle</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-
-        <span class="n">common</span><span class="o">.</span><span class="n">print_header</span><span class="p">(</span><span class="s1">&#39;Checking PATH for dependencies&#39;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-
-        <span class="n">missing</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">status</span><span class="p">,</span> <span class="n">msg</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">run_checks</span><span class="p">():</span>
+<div class="viewcode-block" id="DependencyHandler.get_all_statuses"><a class="viewcode-back" href="../../dammit.html#dammit.dependencies.DependencyHandler.get_all_statuses">[docs]</a>    <span class="k">def</span> <span class="nf">get_all_statuses</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">fulfilled</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">unfulfilled</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">checks</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">status</span><span class="p">,</span> <span class="n">msg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_status</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">status</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
-                <span class="n">missing</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;[ ] </span><span class="si">{0}</span><span class="s1">... </span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">msg</span><span class="p">))</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[x] </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+                <span class="n">fulfilled</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="n">unfulfilled</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">msg</span>
+        <span class="k">return</span> <span class="n">fulfilled</span><span class="p">,</span> <span class="n">unfulfilled</span></div>
 
-        <span class="n">common</span><span class="o">.</span><span class="n">print_header</span><span class="p">(</span><span class="s1">&#39;Dependency results&#39;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">missing</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> missing&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">missing</span><span class="p">)))</span>
+<div class="viewcode-block" id="DependencyHandler.print_all_statuses"><a class="viewcode-back" href="../../dammit.html#dammit.dependencies.DependencyHandler.print_all_statuses">[docs]</a>    <span class="k">def</span> <span class="nf">print_all_statuses</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">):</span>
+        <span class="n">is_fulfilled</span><span class="p">,</span> <span class="n">unfulfilled</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_all_statuses</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">is_fulfilled</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">ui</span><span class="o">.</span><span class="n">paragraph</span><span class="p">(</span><span class="s1">&#39;*All dependencies fulfilled.*&#39;</span><span class="p">),</span> <span class="n">file</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;All dependencies satisfied!&#39;</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="n">missing</span></div>
-
-<div class="viewcode-block" id="DependencyHandler.check_or_fail"><a class="viewcode-back" href="../../dammit.html#dammit.dependencies.DependencyHandler.check_or_fail">[docs]</a>    <span class="k">def</span> <span class="nf">check_or_fail</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">missing</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">handle</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">missing</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Install dependencies to continue; exiting&#39;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Some dependencies unfulfilled:&#39;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">ui</span><span class="o">.</span><span class="n">listing</span><span class="p">(</span><span class="n">unfulfilled</span><span class="p">),</span> <span class="n">file</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">is_fulfilled</span><span class="p">,</span> <span class="n">unfulfilled</span></div>
+            
+<div class="viewcode-block" id="DependencyHandler.check_or_fail"><a class="viewcode-back" href="../../dammit.html#dammit.dependencies.DependencyHandler.check_or_fail">[docs]</a>    <span class="k">def</span> <span class="nf">check_or_fail</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">ui</span><span class="o">.</span><span class="n">header</span><span class="p">(</span><span class="s1">&#39;Dependency Check&#39;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="mi">3</span><span class="p">),</span> <span class="n">file</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
+        <span class="n">is_fulfilled</span><span class="p">,</span> <span class="n">unfulfilled</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">print_all_statuses</span><span class="p">(</span><span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">is_fulfilled</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">ui</span><span class="o">.</span><span class="n">paragraph</span><span class="p">(</span><span class="s1">&#39;Must install dependencies to continue.&#39;</span>\
+                              <span class="s1">&#39; to do so, follow the directions in the&#39;</span>\
+                              <span class="s1">&#39; documentation at &#39;</span>\
+                              <span class="s1">&#39;http://www.camillescott.org/dammit/installing.html&#39;</span><span class="p">),</span>
+                 <span class="n">file</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
             <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="get_handler"><a class="viewcode-back" href="../../dammit.html#dammit.dependencies.get_handler">[docs]</a><span class="k">def</span> <span class="nf">get_handler</span><span class="p">():</span>
+    <span class="k">return</span> <span class="n">register_builtin_checks</span><span class="p">(</span><span class="n">DependencyHandler</span><span class="p">())</span></div>
+
+
+<div class="viewcode-block" id="register_builtin_checks"><a class="viewcode-back" href="../../dammit.html#dammit.dependencies.register_builtin_checks">[docs]</a><span class="k">def</span> <span class="nf">register_builtin_checks</span><span class="p">(</span><span class="n">handler</span><span class="p">):</span>
+    <span class="n">checks</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;HMMER&#39;</span><span class="p">:</span> <span class="n">check_hmmer</span><span class="p">,</span>
+               <span class="s1">&#39;Infernal&#39;</span><span class="p">:</span> <span class="n">check_infernal</span><span class="p">,</span>
+               <span class="s1">&#39;BLAST+&#39;</span><span class="p">:</span> <span class="n">check_blast</span><span class="p">,</span>
+               <span class="s1">&#39;BUSCO&#39;</span><span class="p">:</span> <span class="n">check_busco</span><span class="p">,</span>
+               <span class="s1">&#39;TransDecoder&#39;</span><span class="p">:</span> <span class="n">check_transdecoder</span><span class="p">,</span>
+               <span class="s1">&#39;LAST&#39;</span><span class="p">:</span> <span class="n">check_last</span><span class="p">,</span>
+               <span class="s1">&#39;crb-blast&#39;</span><span class="p">:</span> <span class="n">check_crb_blast</span><span class="p">,</span>
+               <span class="s1">&#39;gnu-parallel&#39;</span><span class="p">:</span> <span class="n">check_parallel</span><span class="p">}</span>
+    <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">func</span> <span class="ow">in</span> <span class="n">checks</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">handler</span><span class="o">.</span><span class="n">register_dependency_check</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">func</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">handler</span></div>
 
 
 <div class="viewcode-block" id="check_hmmer"><a class="viewcode-back" href="../../dammit.html#dammit.dependencies.check_hmmer">[docs]</a><span class="k">def</span> <span class="nf">check_hmmer</span><span class="p">(</span><span class="n">logger</span><span class="p">):</span>
@@ -165,18 +182,15 @@
 
 
 <div class="viewcode-block" id="check_busco"><a class="viewcode-back" href="../../dammit.html#dammit.dependencies.check_busco">[docs]</a><span class="k">def</span> <span class="nf">check_busco</span><span class="p">(</span><span class="n">logger</span><span class="p">):</span>
-    <span class="n">versions</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">122</span><span class="p">,</span> <span class="s1">&#39;BUSCO_v1.22.py&#39;</span><span class="p">),</span>
-                <span class="p">(</span><span class="mi">111</span><span class="p">,</span> <span class="s1">&#39;BUSCO_v1.1b1.py&#39;</span><span class="p">)]</span>
-    <span class="k">for</span> <span class="n">version</span><span class="p">,</span> <span class="n">exc</span> <span class="ow">in</span> <span class="n">versions</span><span class="p">:</span>
-        <span class="n">busco</span> <span class="o">=</span> <span class="n">which</span><span class="p">(</span><span class="n">exc</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">busco</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">break</span>
+    <span class="n">busco</span> <span class="o">=</span> <span class="n">which</span><span class="p">(</span><span class="s1">&#39;BUSCO_v1.1b1.py&#39;</span><span class="p">)</span>
+    <span class="n">transeq</span> <span class="o">=</span> <span class="n">which</span><span class="p">(</span><span class="s1">&#39;transeq&#39;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">busco</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;Not found on $PATH&#39;</span>
+    <span class="k">elif</span> <span class="n">transeq</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;EMBOSS transeq not found, which is a BUSCO dependency.&#39;</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">logger</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;BUSCO:&#39;</span> <span class="o">+</span> <span class="n">busco</span><span class="p">)</span>
-        <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="n">busco</span></div>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;BUSCO:&#39;</span> <span class="o">+</span> <span class="n">busco</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">busco</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="check_transdecoder"><a class="viewcode-back" href="../../dammit.html#dammit.dependencies.check_transdecoder">[docs]</a><span class="k">def</span> <span class="nf">check_transdecoder</span><span class="p">(</span><span class="n">logger</span><span class="p">):</span>
@@ -190,6 +204,26 @@
         <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">longorfs</span><span class="p">)</span></div>
 
 
+<div class="viewcode-block" id="check_parallel"><a class="viewcode-back" href="../../dammit.html#dammit.dependencies.check_parallel">[docs]</a><span class="k">def</span> <span class="nf">check_parallel</span><span class="p">(</span><span class="n">logger</span><span class="p">):</span>
+    <span class="n">parallel</span> <span class="o">=</span> <span class="n">which</span><span class="p">(</span><span class="s1">&#39;parallel&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">parallel</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;parallel not found on $PATH.&#39;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">version_string</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">check_output</span><span class="p">([</span><span class="s1">&#39;parallel&#39;</span><span class="p">,</span> <span class="s1">&#39;--version&#39;</span><span class="p">])</span>
+        <span class="k">except</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">CalledProcessError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;Error checking parallel version: [</span><span class="si">{0}</span><span class="s1">] </span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">returncode</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">output</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">OSError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;Error checking parallel version: [</span><span class="si">{0}</span><span class="s1">] </span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">errno</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">version</span> <span class="o">=</span> <span class="n">version_string</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">2</span><span class="p">]</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;parallel version:</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">version</span><span class="p">))</span>
+            <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">version</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">20150000</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;parallel version </span><span class="si">{0}</span><span class="s1"> &lt; 20150000, please update&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">version</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;parallel:&#39;</span> <span class="o">+</span> <span class="n">parallel</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">parallel</span><span class="p">)</span></div>
+
+
 <div class="viewcode-block" id="check_last"><a class="viewcode-back" href="../../dammit.html#dammit.dependencies.check_last">[docs]</a><span class="k">def</span> <span class="nf">check_last</span><span class="p">(</span><span class="n">logger</span><span class="p">):</span>
     <span class="n">lastdb</span> <span class="o">=</span> <span class="n">which</span><span class="p">(</span><span class="s1">&#39;lastdb&#39;</span><span class="p">)</span>
     <span class="n">lastal</span> <span class="o">=</span> <span class="n">which</span><span class="p">(</span><span class="s1">&#39;lastal&#39;</span><span class="p">)</span>
@@ -199,9 +233,9 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="n">version_string</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">check_output</span><span class="p">([</span><span class="s1">&#39;lastal&#39;</span><span class="p">,</span> <span class="s1">&#39;--version&#39;</span><span class="p">])</span>
         <span class="k">except</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">CalledProcessError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;[</span><span class="si">{0}</span><span class="s1">] </span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">returncode</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">output</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;Error checking lastal version: [</span><span class="si">{0}</span><span class="s1">] </span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">returncode</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">output</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">OSError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;[</span><span class="si">{0}</span><span class="s1">] </span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">errno</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+            <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;Error checking lastal version: [</span><span class="si">{0}</span><span class="s1">] </span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">errno</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">_</span><span class="p">,</span> <span class="n">version</span> <span class="o">=</span> <span class="n">version_string</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
             <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">version</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">600</span><span class="p">:</span>
@@ -251,7 +285,7 @@
       &copy;2015, Camille Scott.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.8</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
       
     </div>

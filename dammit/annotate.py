@@ -1,277 +1,411 @@
 #!/usr/bin/env python
 from __future__ import print_function
 
+from collections import OrderedDict
 import logging
 import os
-from platform import system
+from os import path
 import sys
 
-from . import common
-from .log import LogReporter
-from .report import get_report_tasks
-from .tasks import get_transcriptome_stats_task, \
-                   get_busco_task, \
-                   get_group_task, \
-                   get_link_file_task, \
-                   get_transdecoder_predict_task, \
-                   get_transdecoder_orf_task, \
-                   get_hmmscan_task, \
-                   get_remap_hmmer_task, \
-                   get_cmscan_task, \
-                   get_lastal_task, \
-                   get_crb_blast_task, \
-                   get_sanitize_fasta_task, \
-                   get_rename_transcriptome_task, \
-                   get_transeq_task, \
-                   print_tasks
+from shmlast.app import CRBL
+
+from .handler import TaskHandler
+from .profile import add_profile_actions
+
+from .tasks.fastx import (get_transcriptome_stats_task,
+                          get_rename_transcriptome_task)
+from .tasks.report import get_annotate_fasta_task
+from .tasks.busco import BuscoTask
+from .tasks.utils import get_group_task
+from .tasks.gff import (get_maf_gff3_task,
+                        get_shmlast_gff3_task,
+                        get_hmmscan_gff3_task,
+                        get_cmscan_gff3_task,
+                        get_gff3_merge_task,
+                        get_maf_best_hits_task)
+from .tasks.last import LastalTask
+from .tasks.hmmer import HMMScanTask, get_remap_hmmer_task
+from .tasks.infernal import CMScanTask
+from .tasks.transdecoder import (TransDecoderPredictTask,
+                                 TransDecoderLongOrfsTask)
+from . import ui
+from . import log
 
 logger = logging.getLogger(__name__)
 
-class AnnotateHandler(object):
+def get_handler(config, databases):
+    '''Build the TaskHandler for the annotation pipelines. The
+    handler will not have registered tasks when returned.
 
-    def __init__(self, args, database_dict):
-        self.args = args
-        self.logger = logging.getLogger(self.__class__.__name__)
+    Args:
+        config (dict): Config dictionary, which contains the command
+            line arguments and the entries from the config file.
+        databases (dict): The dictionary of files from a database
+            TaskHandler.
 
-        self._init_filenames()
+    Returns:
+        handler.TaskHandler: A constructed TaskHandler.
+    '''
 
-        self.doit_config = {
-                        'reporter': LogReporter(logger),
-                        'backend': common.DOIT_BACKEND,
-                        'verbosity': self.args.verbosity,
-                        'continue': False,
-                        'dep_file': os.path.join(self.directory, '.' +
-                                                 os.path.basename(self.transcriptome_fn) +
-                                                 '.doit.db')
-                      }
+    logger = logging.getLogger('AnnotateHandler')
 
-        self.database_dict = database_dict
-        self.tasks = list(self.get_tasks())
+    if config['output_dir'] is None:
+        out_dir = path.basename(config['transcriptome'] + '.dammit')
+    else:
+        out_dir = config['output_dir']
+    directory = path.abspath(out_dir)
 
-    def _init_filenames(self):
-        '''Initialize all the input/output filename atributes.
-        '''
+    handler = TaskHandler(directory, logger, 
+                          db='annotate',
+                          backend=config['doit_backend'],
+                          verbosity=config['verbosity'],
+                          profile=config['profile'])
+    log.start_logging(path.join(directory, 'dammit.log'))
 
-        self.input_transcriptome_fn = os.path.abspath(self.args.transcriptome)
-        self.transcriptome_fn = os.path.basename(self.input_transcriptome_fn)
-        self.names_fn = '{0}.dammit.names.csv'.format(self.transcriptome_fn)
-        if self.args.output_dir is None:
-            out_dir = os.path.basename(self.input_transcriptome_fn) + '.dammit'
-        else:
-            out_dir = self.args.output_dir
-        self.directory = os.path.abspath(out_dir)
+    input_fn = path.join(directory, path.basename(config['transcriptome']))
+    name_map_fn = input_fn + '.dammit.namemap.csv'
+    handler.register_task('rename-transcriptome',
+                          get_rename_transcriptome_task(
+                              path.abspath(config['transcriptome']),
+                              input_fn,
+                              name_map_fn,
+                              config['name']
+                          ),
+                          files={'transcriptome': input_fn,
+                                 'name_map': name_map_fn})
+    
+    return handler
+
+
+def run_annotation(handler):
+    '''Run the annotation pipeline from the given handler.
+
+    Prints the appropriate output and exits of the pipeline is alredy completed.
+
+    Args:
+        handler (handler.TaskHandler): Handler with tasks for the pipeline.
+    '''
+    print(ui.header('Annotation', level=3))
+    print(ui.header('Info', level=4))
+    info = {'Doit Database': handler.dep_file,
+            'Input Transcriptome': handler.files['transcriptome']}
+    print(ui.listing(info))
+    msg = '*All annotation tasks up-to-date.*'
+    uptodate, statuses = handler.print_statuses(uptodate_msg=msg)
+    if not uptodate:
+        return handler.run()
+    else:
+        print('**Pipeline is already completed!**')
+        sys.exit(0)
+
+
+def build_default_pipeline(handler, config, databases):
+    '''Register tasks for the default dammit pipeline.
+
+    This is all the main tasks, without lastal uniref90 task.
+
+    Args:
+        handler (handler.TaskHandler): The task handler to register on.
+        config (dict): Config dictionary, which contains the command
+            line arguments and the entries from the config file.
+        databases (dict): The dictionary of files from a database
+            TaskHandler.
+    
+    Returns:
+        handler.TaskHandler: The handler passed in.
+    '''
+
+    register_stats_task(handler)
+    register_busco_task(handler, config, databases)
+    register_transdecoder_tasks(handler, config, databases)
+    register_rfam_tasks(handler, config, databases)
+    register_lastal_tasks(handler, config, databases,
+                        include_uniref=False)
+    register_user_db_tasks(handler, config, databases)
+    register_annotate_tasks(handler, config, databases)
+
+    return handler
+
+
+def build_full_pipeline(handler, config, databases):
+    '''Register tasks for the full dammit pipeline (with uniref90).
+
+    Args:
+        handler (handler.TaskHandler): The task handler to register on.
+        config (dict): Config dictionary, which contains the command
+            line arguments and the entries from the config file.
+        databases (dict): The dictionary of files from a database
+            TaskHandler.
+    
+    Returns:
+        handler.TaskHandler: The handler passed in.
+    '''
+    register_stats_task(handler)
+    register_busco_task(handler, config, databases)
+    register_transdecoder_tasks(handler, config, databases)
+    register_rfam_tasks(handler, config, databases)
+    register_lastal_tasks(handler, config, databases,
+                        include_uniref=True)
+    register_user_db_tasks(handler, config, databases)
+    register_annotate_tasks(handler, config, databases)
+
+    return handler
+
+
+def build_quick_pipeline(handler, config, databases):
+    '''Register tasks for the quick annotation pipeline.
+
+    Leaves out the Pfam search (and so does not pass these hits to 
+    `TransDecoder.Predict`), the Rfam search, and the lastal searches
+    against OrthoDB and uniref90. Best suited for users who have built their
+    own protein databases and would just like to annotate off them.
+
+    Args:
+        handler (handler.TaskHandler): The task handler to register on.
+        config (dict): Config dictionary, which contains the command
+            line arguments and the entries from the config file.
+        databases (dict): The dictionary of files from a database
+            TaskHandler.
+    
+    Returns:
+        handler.TaskHandler: The handler passed in.
+    '''
+
+    register_stats_task(handler)
+    register_busco_task(handler, config, databases)
+    register_transdecoder_tasks(handler, config, databases,
+                                include_hmmer=False)
+    register_user_db_tasks(handler, config, databases)
+    register_annotate_tasks(handler, config, databases)
+
+    return handler
+
+
+def register_stats_task(handler):
+    '''Register the tasks for basic transcriptome metrics.'''
+
+    input_fn = handler.files['transcriptome']
+    stats_fn = input_fn + '.dammit.stats.json'
+    handler.register_task('transcriptome-stats',
+                          get_transcriptome_stats_task(input_fn,
+                                                       stats_fn),
+                          files={'stats': stats_fn})
+
+
+def register_busco_task(handler, config, databases):
+    '''Register tasks for BUSCO. Note that this expects
+    a proper dammit config dictionary.'''
+
+    input_fn = handler.files['transcriptome']
+    busco_group = config['busco_group']
+    busco_database = databases['BUSCO-{0}'.format(busco_group)]
+    busco_basename = '{0}.{1}.busco.results'.format(input_fn, busco_group)
+    busco_out_dir = 'run_{0}'.format(busco_basename)
+
+    task = BuscoTask().task(input_fn,
+                             busco_basename,
+                             busco_database,
+                             n_threads=config['n_threads'],
+                             config_file=config.get('busco_config_file', None),
+                             params=config['busco']['params'])
+
+    handler.register_task('BUSCO-{0}'.format(busco_group), task,
+                          files={'BUSCO': busco_out_dir})
+
+
+def register_transdecoder_tasks(handler, config, databases,
+                                include_hmmer=True):
+    '''Register tasks for TransDecoder. TransDecoder first finds long ORFs with
+    `TransDecoder.LongOrfs`, which are output as a FASTA file of protein
+    sequences. These sequences can are then used to search against Pfam-A for
+    conserved domains, and the coordinates from the resulting matches mapped
+    back relative to the original transcripts. `TransDecoder.Predict` the builds
+    the final gene models based on the training data provided by
+    `TransDecoder.LongOrfs`, optionally using the Pfam-A results to keep
+    ORFs which otherwise don't fit the model closely enough. Once again,
+    note that a proper dammit config dictionary is required.
+    '''
+
+    input_fn = handler.files['transcriptome']
+    transdecoder_dir = '{0}.transdecoder_dir'.format(input_fn)
+    
+    handler.register_task('TransDecoder.LongOrfs',
+                          TransDecoderLongOrfsTask().task(input_fn, 
+                                                          params=config['transdecoder']['longorfs']),
+                          files={'longest_orfs': path.join(transdecoder_dir, 'longest_orfs.pep')})
+    
+    pfam_fn = None
+    if include_hmmer is True:
+        pfam_fn = path.join(transdecoder_dir, 'longest_orfs.pep.x.pfam.tbl')
+        task = HMMScanTask().task(handler.files['longest_orfs'],
+                                   pfam_fn,
+                                   databases['Pfam-A'],
+                                   cutoff=config['evalue'],
+                                   n_threads=config['n_threads'],
+                                   sshloginfile=config['sshloginfile'],
+                                   params=config['hmmer']['hmmscan'])
+        handler.register_task('hmmscan:Pfam-A', task,
+                              files={'longest_orfs_pfam': pfam_fn})
+
+        pfam_csv_fn = '{0}.x.pfam-A.csv'.format(input_fn)
+        handler.register_task('hmmscan:Pfam-A:remap',
+                              get_remap_hmmer_task(handler.files['longest_orfs_pfam'],
+                                                   path.join(transdecoder_dir, 'longest_orfs.gff3'),
+                                                   pfam_csv_fn,
+                                                   transcript_basename=config['name']),
+                              files={'Pfam-A-csv': pfam_csv_fn})
         
-        self.stats_fn = self.transcriptome_fn + '.stats.json'
+        pfam_gff3 = '{0}.x.pfam-A.gff3'.format(input_fn)
+        handler.register_task('gff3:Pfam-A',
+                               get_hmmscan_gff3_task(pfam_csv_fn,
+                                                     pfam_gff3, 
+                                                     'Pfam'),
+                               files={'Pfam-A-gff3': pfam_gff3})
 
-        self.busco_basename = '{0}.{1}.busco.results'.format(self.transcriptome_fn,
-                                                             self.args.busco_group)
-        self.busco_dir = 'run_{0}'.format(self.busco_basename)
-        busco_summary_fn = 'short_summary_{0}'.format(self.transcriptome_fn)
-        self.busco_summary_fn = os.path.join(self.busco_dir,
-                                             busco_summary_fn)
-        
-        self.translated_fn = '{0}.pep'.format(self.transcriptome_fn)
-
-        self.transdecoder_dir = '{0}.transdecoder_dir'.format(self.transcriptome_fn)
-        self.transdecoder_orf_fn = os.path.join(self.transdecoder_dir,
-                                                'longest_orfs.pep')
-        self.transdecoder_orf_gff3_fn = os.path.join(self.transdecoder_dir,
-                                                     'longest_orfs.gff3')
-        self.transdecoder_pfam_fn = '{0}.pfam.tbl'.format(self.transdecoder_orf_fn)
-        self.transdecoder_pep_fn = '{0}.transdecoder.pep'.format(self.transcriptome_fn)
-        self.transdecoder_gff3_fn = '{0}.transdecoder.gff3'.format(self.transcriptome_fn)
-        
-        self.pfam_fn = '{0}.pfam.csv'.format(self.transcriptome_fn)
-        self.rfam_fn = '{0}.rfam.tbl'.format(self.transcriptome_fn)
-
-        self.orthodb_fn = '{0}.x.orthodb.maf'.format(self.transcriptome_fn)
-        self.uniref_fn = '{0}.x.uniref.maf'.format(self.transcriptome_fn)
-
-        self.user_pep_fn_dict = {}
+    predict_params = config['transdecoder']['predict']
+    transdecoder_pep = '{0}.transdecoder.pep'.format(input_fn)
+    transdecoder_gff3 = '{0}.transdecoder.gff3'.format(input_fn)
+    handler.register_task('TransDecoder.Predict',
+                          TransDecoderPredictTask().task(input_fn, 
+                                                         pfam_filename=pfam_fn,
+                                                         params=predict_params),
+                          files={'transdecoder-pep': transdecoder_pep,
+                                 'transdecoder-gff3': transdecoder_gff3})
 
 
-    def handle(self):
+def register_rfam_tasks(handler, config, databases):
+    '''Registers tasks for Infernal's `cmscan` against Rfam. Rfam is an RNA
+    secondary structure database comprising covariance models for many known
+    RNAs. This is a relatively slow step. A proper dammit config dictionary is
+    required.'''
 
-        common.print_header('Running annotate!', level=2)
-        self.logger.info('Transcriptome file: {0}'.format(self.transcriptome_fn))
-        self.logger.info('Output directory: {0}'.format(self.directory))
-        print_tasks(self.tasks, logger=self.logger)
+    input_fn = handler.files['transcriptome']
+    output_fn = '{0}.x.rfam.tbl'.format(input_fn)
+    handler.register_task('cmscan:Rfam',
+                          CMScanTask().task(input_fn,
+                                            output_fn,
+                                            databases['Rfam'],
+                                            cutoff=config['evalue'],
+                                            n_threads=config['n_threads'],
+                                            sshloginfile=config['sshloginfile'],
+                                            params=config['infernal']['cmscan']),
+                          files={'Rfam': output_fn})
 
-        self.run_tasks()
-
-    def run_tasks(self, doit_args=['run']):
-        '''
-        Set up doit's config for the actual analysis tasks.
-        We'll put the doit database for these tasks into the output
-        directory so that we don't end up scattering them around the
-        filesystem, or worse, with one master db containing dependency
-        metadata from every analysis ever run by the user!
-        '''
-
-        cwd = os.getcwd()
-        self.logger.debug('cwd: {0}'.format(cwd))
-        try:
-            if not os.path.exists(self.directory):
-                self.logger.debug('makedirs: {0}'.format(self.directory))
-                os.makedirs(self.directory)
-            os.chdir(self.directory)
-
-            common.run_tasks(self.tasks, 
-                             doit_args, 
-                             config=self.doit_config)
-        finally:
-            self.logger.debug('chdir: {0}'.format(cwd))
-            os.chdir(cwd)
-
-    def rename_task(self):
-        return get_rename_transcriptome_task(self.input_transcriptome_fn,
-                                             self.transcriptome_fn,
-                                             self.names_fn,
-                                             self.args.name)
-
-    def stats_task(self):
-        '''Calculate assembly information. First it runs some basic stats like N50 and
-        number of contigs, and uses the HyperLogLog counter from khmer to
-        estimate unique k-mers for checking redundancy. Then it runs BUSCO to
-        assess completeness. These tasks are grouped under the 'assess' task.
-        '''
-
-        return get_transcriptome_stats_task(self.transcriptome_fn, 
-                                            self.stats_fn)
-   
-    def busco_task(self):
-        '''BUSCO assesses completeness using a series of curated databases of core
-        conserved genes.
-        '''
-
-        busco_cfg = common.CONFIG['settings']['busco']
-        return get_busco_task(self.transcriptome_fn, 
-                              self.busco_basename, 
-                              self.database_dict['BUSCO'],
-                              'trans', 
-                              self.args.n_threads, 
-                              busco_cfg)
-
-    def transeq_task(self):
-        '''Run transeq to do full six-frame protein translation.
-        '''
-
-        return get_transeq_task(self.transcriptome_fn,
-                                self.translated_fn)
-
-    def transdecoder_tasks(self):
-        '''Run TransDecoder. TransDecoder first finds long ORFs with
-        TransDecoder.LongOrfs, which are output as a FASTA file of protein
-        sequences. We can then use these sequences to search against Pfam-A for
-        conserved domains. TransDecoder.Predict uses the Pfam results to train its
-        model for prediction of gene features.
-        '''
+    rfam_gff3 = '{0}.x.rfam.gff3'.format(input_fn)
+    handler.register_task('gff3:Rfam',
+                          get_cmscan_gff3_task(output_fn,
+                                               rfam_gff3, 
+                                               'Rfam'),
+                          files={'Rfam-gff3': rfam_gff3})
 
 
-        orf_cfg = common.CONFIG['settings']['transdecoder']['longorfs']
-        yield get_transdecoder_orf_task(self.transcriptome_fn, 
-                                        orf_cfg)
+def register_lastal_tasks(handler, config, databases,
+                          include_uniref=False):
+    '''Register tasks for `lastal` searches. By default, this will just
+    align the transcriptome against OrthoDB; if requested, it will align against
+    uniref90 as well, which takes considerably longer.
 
-        yield get_hmmscan_task(self.transdecoder_orf_fn, 
-                               self.transdecoder_pfam_fn,
-                               self.database_dict['PFAM'], 
-                               self.args.evalue,
-                               self.args.n_threads, 
-                               common.CONFIG['settings']['hmmer']['hmmscan'],
-                               pbs=self.args.sshloginfile)
+    Args:
+        handler (handler.TaskHandler): The task handler to register on.
+        config (dict): Config dictionary, which contains the command
+            line arguments and the entries from the config file.
+        databases (dict): The dictionary of files from a database
+            TaskHandler.
+        include_uniref (bool): If True, add tasks for searching uniref90.
+    '''
 
-        yield get_remap_hmmer_task(self.transdecoder_pfam_fn,
-                                   self.transdecoder_orf_gff3_fn,
-                                   self.pfam_fn)
+    input_fn = handler.files['transcriptome']
+    lastal_cfg = config['last']['lastal']
+    
+    dbs = OrderedDict()
+    dbs['OrthoDB'] = databases['OrthoDB']
+    if include_uniref is True:
+        dbs['uniref90'] = databases['uniref90']
 
-        predict_cfg = common.CONFIG['settings']['transdecoder']['predict']
-        yield get_transdecoder_predict_task(self.transcriptome_fn, 
-                                            self.transdecoder_pfam_fn,
-                                            predict_cfg)
+    for name, db in dbs.items():
+        output_fn = '{0}.x.{1}.maf'.format(input_fn, name)
+        handler.register_task('lastal:{0}'.format(name),
+                          add_profile_actions(
+                              LastalTask().task(input_fn,
+                                              db,
+                                              output_fn,
+                                              translate=True,
+                                              cutoff=config['evalue'],
+                                              n_threads=config['n_threads'],
+                                              frameshift=lastal_cfg['frameshift'],
+                                              pbs=config['sshloginfile'],
+                                              params=lastal_cfg['params'])),
+                              files={name: output_fn})
 
-    def cmscan_task(self):
-        '''Run Infernal. Infernal uses covariance models to detect
-        RNA secondary structures. Here we use Rfam as our reference
-        database.
-        '''
+        best_fn = '{0}.x.{1}.best.csv'.format(input_fn, name)
+        gff3_fn = '{0}.x.{1}.best.gff3'.format(input_fn, name)
 
-        cmscan_cfg = common.CONFIG['settings']['infernal']['cmscan']
-        return get_cmscan_task(self.transcriptome_fn, 
-                               self.rfam_fn,
-                               self.database_dict['RFAM'], 
-                               self.args.evalue,
-                               self.args.n_threads, 
-                               cmscan_cfg,
-                               pbs=self.args.sshloginfile)
+        handler.register_task('lastal:best-hits:{0}'.format(name),
+                              get_maf_best_hits_task(output_fn,
+                                                     best_fn),
+                              files={'{0}-best-hits'.format(name): best_fn})
+        handler.register_task('gff3:{0}'.format(name),
+                              get_maf_gff3_task(best_fn,
+                                                gff3_fn,
+                                                name),
+                              files={'{0}-gff3'.format(name): gff3_fn})
 
-    def orthodb_task(self):
-        '''Run LAST to get homologies with OrthoDB. We use LAST here because
-        it is much faster than BLAST+, and OrthoDB is pretty huge.
-        '''
-        
-        lastal_cfg = common.CONFIG['settings']['last']['lastal']
-        orthodb = self.database_dict['ORTHODB']
-        return get_lastal_task(self.transcriptome_fn, 
-                               orthodb, 
-                               self.orthodb_fn, 
-                               lastal_cfg,
-                               translate=True,
-                               cutoff=self.args.evalue,
-                               n_threads=self.args.n_threads,
-                               pbs=self.args.sshloginfile)
 
-    def uniref_task(self):
+def register_annotate_tasks(handler, config, databases):
+    '''Register tasks for aggregating the annotations into one GFF3 file
+    and writing out summary descriptions in a new FASTA file.
 
-        lastal_cfg = common.CONFIG['settings']['last']['lastal']
-        uniref = self.database_dict['UNIREF']
-        return get_lastal_task(self.transcriptome_fn,
-                               uniref,
-                               self.uniref_fn,
-                               lastal_cfg,
-                               translate=True,
-                               cutoff=self.args.evalue,
-                               n_threads=self.args.n_threads,
-                               pbs=self.args.sshloginfile)
+    Args:
+        handler (handler.TaskHandler): The task handler to register on.
+        config (dict): Config dictionary, which contains the command
+            line arguments and the entries from the config file.
+        databases (dict): The dictionary of files from a database
+            TaskHandler.
+    '''
+    input_fn = handler.files['transcriptome']
+    gff3_files = [fn for name, fn in handler.files.items() if name.endswith('-gff3')]
+    merged_gff3 = '{0}.dammit.gff3'.format(input_fn)
+    handler.register_task('gff3:merge-all',
+                          get_gff3_merge_task(gff3_files, merged_gff3),
+                          files={'merged-gff3': merged_gff3})
 
-    def user_crb_tasks(self):
-        '''Run conditional recipricol best hits LAST (CRBL) against the
-        user-supplied databases.
-        '''
+    annotated_fn = '{0}.dammit.fasta'.format(input_fn)
+    handler.register_task('annotate:fasta',
+                          get_annotate_fasta_task(input_fn,
+                                                  merged_gff3,
+                                                  annotated_fn),
+                          files={'annotated-fasta': annotated_fn})
 
-        crb_blast_cfg = common.CONFIG['settings']['crb-blast']
-        for path in self.args.user_databases:
-            key = os.path.basename(path)
-            yield get_sanitize_fasta_task(os.path.abspath(path),
-                                          key)
 
-            fn = '{0}.x.{1}.crbb.tsv'.format(self.transcriptome_fn, key)
-            self.user_pep_fn_dict[key] = fn
-            yield get_crb_blast_task(self.transcriptome_fn, 
-                                     key, 
-                                     fn, 
-                                     self.args.evalue,
-                                     crb_blast_cfg, 
-                                     self.args.n_threads)
+def register_user_db_tasks(handler, config, databases):
+    '''Run conditional recipricol best hits LAST (CRBL) against the
+    user-supplied databases.
+    '''
+    
+    if not 'user_databases' in config:
+        return
 
-    def get_tasks(self):
+    input_fn = handler.files['transcriptome']
+    for db_path in config['user_databases']:
+        db_path = path.abspath(db_path)
+        db_basename = path.basename(db_path)
 
-        yield self.rename_task()
-        yield self.stats_task()
-        yield self.busco_task()
-        #yield self.transeq_task()
-        for task in self.transdecoder_tasks():
-            yield task
-        yield self.cmscan_task()
-        yield self.orthodb_task()
-        if self.args.full:
-            yield self.uniref_task()
-        for task in self.user_crb_tasks():
-            yield task
+        results_fn = '{0}.x.{1}.crbl.csv'.format(input_fn, db_basename)
+        gff3_fn = '{0}.x.{1}.crbl.gff3'.format(input_fn, db_basename)
 
-        self.outputs, report_tasks = get_report_tasks(self.transcriptome_fn, 
-                                                      self,
-                                                      self.database_dict,
-                                                      n_threads=self.args.n_threads)
-        for task in report_tasks:
-            yield task
+        crbl = CRBL(input_fn,
+                    db_path, 
+                    results_fn, 
+                    n_threads=config['n_threads'],
+                    cutoff=config['evalue'])
+        for task in crbl.tasks():
+            task.name = 'user-database:{0}-shmlast-{1}'.format(db_basename,
+                                                               task.name)
+            handler.register_task(task.name, add_profile_actions(task))
+        handler.register_task('gff3:{0}'.format(results_fn),
+                              get_shmlast_gff3_task(results_fn,
+                                                    gff3_fn,
+                                                    db_basename),
+                              files={'{0}-crbl-gff3'.format(db_basename): gff3_fn})
+        handler.files['{0}-crbl'.format(db_basename)] = results_fn
 

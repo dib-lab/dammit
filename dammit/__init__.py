@@ -1,22 +1,18 @@
 #!/usr/bin/env python
 
-import logging
-import log
-logger = log.DammitLogger()
+'''
+from . import log
 
-from .hits import BestHits
+from . import parsers
+from . import gff
+from . import blast
+from . import tasks
 
-import parsers
-import gff
-import blast
-import tasks
-
-import annotate
-import databases
-import dependencies
-import common
-import report
-
-import os
-rel_path = os.path.dirname(__file__)
-__version__ = open(os.path.join(rel_path, 'VERSION')).read().strip()
+from . import annotate
+from . import databases
+from . import dependencies
+from . import parallel
+from . import hmmer
+from . import report
+'''
+from .meta import *
