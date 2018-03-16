@@ -1,5 +1,8 @@
-#!/usr/bin/env python
-from __future__ import print_function
+# Copyright (C) 2015-2018 Camille Scott
+# All rights reserved.
+#
+# This software may be modified and distributed under the terms
+# of the BSD license.  See the LICENSE file for details.
 
 import argparse
 import glob
@@ -7,15 +10,15 @@ import logging
 import os
 import sys
 
-from .meta import __version__, __authors__, __description__, __date__, get_config
-from . import utils
-from . import ui
-from . import annotate
-from .annotate import (build_quick_pipeline,
-                      build_default_pipeline,
-                      build_full_pipeline)
-from . import databases
-from . import log
+from dammit import annotate
+from dammit import databases
+from dammit import log
+from dammit import utils
+from dammit import ui
+from dammit.meta import __version__, __authors__, __description__, __date__, get_config
+from dammit.annotate import (build_quick_pipeline,
+                             build_default_pipeline,
+                             build_full_pipeline)
 
 
 class DammitApp(object):

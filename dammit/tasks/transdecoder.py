@@ -1,13 +1,18 @@
-#!/usr/bin/env python
+# Copyright (C) 2015-2018 Camille Scott
+# All rights reserved.
+#
+# This software may be modified and distributed under the terms
+# of the BSD license.  See the LICENSE file for details.
+
 import os
 
 from doit.action import CmdAction
 from doit.tools import LongRunning
 from doit.task import clean_targets
 
-from .utils import clean_folder, DependentTask, InstallationError
-from ..profile import profile_task
-from ..utils import which, doit_task
+from dammit.tasks.utils import clean_folder, DependentTask, InstallationError
+from dammit.profile import profile_task
+from dammit.utils import which, doit_task
 
 
 class TransDecoderLongOrfsTask(DependentTask):
@@ -46,6 +51,7 @@ class TransDecoderLongOrfsTask(DependentTask):
                 'file_dep': [input_filename],
                 'targets': [input_filename + '.transdecoder_dir/longest_orfs.pep'],
                 'clean': [(clean_folder, [input_filename + '.transdecoder_dir'])]}
+
 
 class TransDecoderPredictTask(DependentTask):
 

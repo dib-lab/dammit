@@ -1,5 +1,8 @@
-#!/usr/bin/env python
-from __future__ import print_function
+# Copyright (C) 2015-2018 Camille Scott
+# All rights reserved.
+#
+# This software may be modified and distributed under the terms
+# of the BSD license.  See the LICENSE file for details.
 
 import json
 import os
@@ -46,7 +49,7 @@ class TestTransDecoderTasks():
 
     def test_predict_task(self, tmpdir, datadir):
         with tmpdir.as_cwd():
-            transcript = datadir('test-transcript.fa')
+            transcript = datadir('pom.50.fa')
             pfam = datadir('test-protein-x-pfam-a.tbl')
 
             orf_task = TransDecoderLongOrfsTask().task(transcript,

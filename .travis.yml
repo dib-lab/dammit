@@ -14,9 +14,10 @@ install:
   - conda config --set always_yes yes --set changeps1 no
   - conda update -q conda
   - conda info -a
-  - conda config --add channels defaults
   - conda config --add channels conda-forge
+  - conda config --add channels defaults
   - conda config --add channels bioconda
   - conda build recipe/
   - conda install dammit --use-local
+
 script: make ci-test

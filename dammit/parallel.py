@@ -1,9 +1,14 @@
-#!/usr/bin/env python
+# Copyright (C) 2015-2018 Camille Scott
+# All rights reserved.
+#
+# This software may be modified and distributed under the terms
+# of the BSD license.  See the LICENSE file for details.
+
 import os
 import subprocess
 
-from .utils import which, doit_task
-from .tasks.utils import InstallationError
+from dammit.utils import which, doit_task
+from dammit.tasks.utils import InstallationError
 
 
 def check_parallel(logger=None):

@@ -1,18 +1,7 @@
-#!/usr/bin/env python
+# Copyright (C) 2015-2018 Camille Scott
+# All rights reserved.
+#
+# This software may be modified and distributed under the terms
+# of the BSD license.  See the LICENSE file for details.
 
-'''
-from . import log
-
-from . import parsers
-from . import gff
-from . import blast
-from . import tasks
-
-from . import annotate
-from . import databases
-from . import dependencies
-from . import parallel
-from . import hmmer
-from . import report
-'''
-from .meta import *
+from dammit.meta import *

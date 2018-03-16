@@ -1,5 +1,8 @@
-#!/usr/bin/enb python
-from __future__ import print_function
+# Copyright (C) 2015-2018 Camille Scott
+# All rights reserved.
+#
+# This software may be modified and distributed under the terms
+# of the BSD license.  See the LICENSE file for details.
 
 import logging
 import os
@@ -8,15 +11,16 @@ import sys
 
 from doit.dependency import Dependency, SqliteDB
 
-from . import ui
-from .handler import TaskHandler
-from .tasks.last import LastDBTask
-from .tasks.hmmer import HMMPressTask
-from .tasks.infernal import CMPressTask
-from .tasks.shell import (get_download_and_gunzip_task,
-                          get_download_and_untar_task,
-                          get_download_task,
-                          get_gunzip_task)
+from dammit import ui
+from dammit.handler import TaskHandler
+from dammit.tasks.last import LastDBTask
+from dammit.tasks.hmmer import HMMPressTask
+from dammit.tasks.infernal import CMPressTask
+from dammit.tasks.shell import (get_download_and_gunzip_task,
+                                get_download_and_untar_task,
+                                get_download_task,
+                                get_gunzip_task)
+
 
 def get_handler(config):
     '''Build the TaskHandler for the database prep pipeline. The

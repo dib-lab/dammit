@@ -15,6 +15,17 @@
 import sys
 import os
 import shlex
+from unittest.mock import MagicMock
+
+class Mock(MagicMock):
+    @classmethod
+    def __getattr__(cls, name):
+            return MagicMock()
+
+MOCK_MODULES = ['numpy', 'pandas', 'khmer', 'matplotlib', 'matplotlib.pyplot',
+                'shmlast.app.CRBL', 'shmlast', 'shmlast.app', 'filelock',
+                'shmlast.last', 'shmlast.hits']
+sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
 
 __version__ = open(os.path.join('../dammit', 'VERSION')).read().strip()
 
@@ -22,7 +33,7 @@ __version__ = open(os.path.join('../dammit', 'VERSION')).read().strip()
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
-#sys.path.insert(0, os.path.abspath('..'))
+sys.path.insert(0, os.path.abspath('..'))
 
 # -- General configuration ------------------------------------------------
 
@@ -36,7 +47,7 @@ extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.mathjax',
     'sphinx.ext.viewcode',
-    'sphinxcontrib.napoleon'
+    'sphinx.ext.napoleon'
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -55,7 +66,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'dammit'
-copyright = u'2015, Camille Scott'
+copyright = u'2015-2018, Camille Scott'
 author = u'Camille Scott'
 
 # The version info for the project you're documenting, acts as replacement for

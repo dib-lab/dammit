@@ -1,12 +1,16 @@
-dammit!
+README
 =======
 
 .. image:: https://badges.gitter.im/Join%20Chat.svg
    :alt: Join the chat at https://gitter.im/camillescott/dammit
    :target: https://gitter.im/camillescott/dammit?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
 
-.. image:: https://travis-ci.org/camillescott/dammit.svg?branch=master
+.. image:: https://travis-ci.org/camillescott/dammit.svg?branch=refactor%2F1.0
     :target: https://travis-ci.org/camillescott/dammit
+
+.. image:: https://readthedocs.org/projects/dammit/badge/?version=refactor-1.0
+    :target: http://dammit.readthedocs.io/en/refactor-1.0/?badge=refactor-1.0
+    :alt: Documentation Status
 
 *"I love writing BLAST parsers!" -- no one, ever*
 
@@ -18,83 +22,71 @@ or rely on crappy non-free software.
 Science shouldn't suck for the sake of sucking, so dammit attempts
 to make this sucky part of the process suck a little less.
 
+System Requirements
+-------------------
+
+dammit, for now, is officially supported on GNU/Linux systems via
+`bioconda <https://bioconda.github.io/index.html>`__. macOS support will
+be available via bioconda soon.
+
+For the standard pipeline, dammit needs ~18GB of space to store its prepared
+databases, plus a few hundred MB per BUSCO database. For the standard annotation
+pipeline, I recommended 16GB of RAM. This can be reduced by editing LAST parameters
+via a custom configuration file.
+
+The full pipeline, which uses uniref90, needs several hundred GB of space
+and considerable RAM to prepare the databases.
+
+
 Installation
 ------------
 
-Complete instructions with explanations and more platform options are in the documentation 
-`website <http://www.camillescott.org/dammit/>`__. For the impatient, here's a stripped 
-down version. These instructions assume you're on a clean Ubuntu 14.04 install.
-dammit will run on OSX too, though some of the dependencies will need to be 
-installed manually and are not included here.
+As of version 1.\*, the recommended installation platform for dammit is via
+`bioconda <https://bioconda.github.io/index.html>`__. If you already have anaconda
+installed, proceed to the next step. Otherwise, you can either follow the
+instructions from bioconda, or if you're on Ubuntu (or most GNU/Linux platforms),
+install it directly into your home folder with::
 
-First get packages from the Ubuntu archives::
+    wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh && bash miniconda.sh -b -p $HOME/miniconda
+    echo 'export PATH="$HOME/miniconda/bin:$PATH"' >> $HOME/.bashrc
 
-    sudo apt-get update
-    sudo apt-get install python-pip python-dev python-numpy git ruby hmmer unzip \
-        infernal ncbi-blast+ liburi-escape-xs-perl emboss liburi-perl \
-        build-essential libsm6 libxrender1 libfontconfig1 \
-        parallel
-    sudo gem install crb-blast
+It's recommended that you use `conda` environments to separate your packages,
+though it isn't strictly necessary::
 
-Install some packages manually::
+    conda create -n dammit python=3
+    source ativate dammit
 
-    cd
-    curl -LO https://github.com/TransDecoder/TransDecoder/archive/2.0.1.tar.gz
-    tar -xvzf 2.0.1.tar.gz
-    cd TransDecoder-2.0.1; make
-    export PATH=$HOME/TransDecoder-2.0.1:$PATH
+Now, add the channels and install dammit::
 
-    cd
-    curl -LO http://last.cbrc.jp/last-658.zip
-    unzip last-658.zip
-    cd last-658
-    make
-    export PATH=$HOME/last-658/src:$PATH
-    export PATH=$HOME/last-658/scripts:$PATH
+    conda config --add channels defaults
+    conda config --add channels conda-forge
+    conda config --add channels bioconda
 
-    cd
-    curl -LO http://busco.ezlab.org/v1/files/BUSCO_v1.22.tar.gz 
-    tar -xvzf BUSCO_v1.22.tar.gz
-    chmod +x BUSCO_v1.22/*.py
-    export PATH=$HOME/BUSCO_v1.22:$PATH
-    cd
+    conda install dammit
 
-To add these to your environment permanently::
-
-    echo 'export PATH=$PATH:$HOME/TransDecoder-2.0.1' >> $HOME/.bashrc
-    echo 'export PATH=$PATH:$HOME/last-658/src' >> $HOME/.bashrc
-    echo 'export PATH=$HOME/BUSCO_v1.22:$PATH' >> $HOME/.bashrc
-
-Now, install dammit::
-
-    sudo pip install -U setuptools
-    sudo pip install dammit
-
-This will spend a bit of time compiling and installing pandas if you don't 
-already have a recent versions installed; the ones available in the Ubuntu 14.04 archives are
-just too old.
-
-Dev Version
-~~~~~~~~~~~
-
-If you want the latest features (and bugs), you can install dammit from github::
-
-    pip install git+https://github.com/camillescott/dammit.git
+And that's it!
 
 Usage
 -----
-
-To check for dependencies, run::
-
-    dammit dependencies
 
 To check for databases, run::
 
     dammit databases
 
-and to download and install them, run::
+and to download and install the general databases, use::
 
     dammit databases --install
+
+A reduced database set that excludes OrthoDB, uniref, Pfam, and Rfam 
+(ie, all the homology searches other than user-supplied databases) with::
+
+    dammit databases --install --quick
+
+dammit supports all the released BUSCO databases, which can be installed with the
+`--busco-group` flag; a complete list of available groups can be seen with
+`dammit databases -h`::
+
+    dammit databases --install --busco-group fungi
 
 To annotate your transcriptome, the most basic usage is::
 
@@ -113,12 +105,6 @@ Known Issues
 * There can be errors resuming runs which were interrupted on the BUSCO stage. If the task fails on
   resume, delete the BUSCO results folder within your dammit results folder, which will have a name
   of the form `run_<name>.busco_results`.
-* The `dependencies` subcommand doesn't search for all subdependencies; for example, BUSCO relies on
-  EMBOSS, which is not searched for. Although the installation instructions cover these
-  dependencies, users who *cough* don't read the directions *cough* might be confused that a
-  dependency is marked as installed but still doesn't work.
-* dammit 0.3 does not support BUSCO v2. dammit 1.0 is building 2.0 support in.
-
 
 Acknowledgements
 ----------------
@@ -127,6 +113,6 @@ I've received input and advice from a many sources, including but probably not l
 Brown, Matt MacManes, Chris Hamm, Michael Crusoe, Russell Neches, Luiz Irber, Lisa Cohen, Sherine
 Awad, and Tamer Mansour.
 
-CS is funded by the National Human Genome Research Institute of the National Institutes of Health
-under Award Number R01HG007513 through May 2016, and also receives support from the Gordon and Betty
+CS was funded by the National Human Genome Research Institute of the National Institutes of Health
+under Award Number R01HG007513 through May 2016, and now receives support from the Gordon and Betty
 Moore Foundation under Award number GBMF4551.

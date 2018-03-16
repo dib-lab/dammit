@@ -45,6 +45,8 @@ Topics
 .. toctree::
     :maxdepth: 1
 
+    readme
+
     installing
     tutorial
     usage

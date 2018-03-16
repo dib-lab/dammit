@@ -1,5 +1,11 @@
+# Copyright (C) 2015-2018 Camille Scott
+# All rights reserved.
+#
+# This software may be modified and distributed under the terms
+# of the BSD license.  See the LICENSE file for details.
+
 import pandas as pd
-from .base import convert_dtypes, ChunkParser
+from dammit.fileio.base import convert_dtypes, ChunkParser
 
 
 class InfernalParser(ChunkParser):
@@ -30,8 +36,9 @@ class InfernalParser(ChunkParser):
         '''Yields DataFrames of length chunksize from a given
         cmscan result file.
 
-        The format uses 1-based, fully open intervals; when the strand is negative,
-        the start coordinate is larger than the end. Truly Infernal.
+        The format uses 1-based, fully open intervals; when the strand
+        is negative, the start coordinate is larger than the end. 
+        Truly Infernal.
 
         We convert to proper 0-based, half-open, ordered intervals.
 
@@ -66,7 +73,8 @@ class InfernalParser(ChunkParser):
         convert_dtypes(df, dict(self.columns))
         # fix the evil coordinate system
         sidx = df.seq_from > df.seq_to
-        df.loc[sidx, 'seq_from'], df.loc[sidx, 'seq_to'] = df.loc[sidx, 'seq_to'], df.loc[sidx, 'seq_from']
+        df.loc[sidx, 'seq_from'], df.loc[sidx, 'seq_to'] = \
+            df.loc[sidx, 'seq_to'], df.loc[sidx, 'seq_from']
         df.mdl_from = df.mdl_from - 1
         df.seq_from = df.seq_from - 1
         return df

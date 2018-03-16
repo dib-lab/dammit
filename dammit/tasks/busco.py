@@ -1,5 +1,8 @@
-#!/usr/bin/env python
-from __future__ import print_function
+# Copyright (C) 2015-2018 Camille Scott
+# All rights reserved.
+#
+# This software may be modified and distributed under the terms
+# of the BSD license.  See the LICENSE file for details.
 
 import os
 
@@ -9,9 +12,9 @@ from doit.task import clean_targets
 import pandas as pd
 
 from dammit import meta
-from .utils import clean_folder, DependentTask, InstallationError
-from ..profile import profile_task
-from ..utils import doit_task, which
+from dammit.profile import profile_task
+from dammit.utils import doit_task, which
+from dammit.tasks.utils import clean_folder, DependentTask, InstallationError
 
 
 class BuscoTask(DependentTask):
