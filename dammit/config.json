@@ -34,6 +34,6 @@
 
     "transdecoder": {
         "longorfs":["-m 80"],
-        "predict": ["--retain_long_orfs 600"]
+        "predict": []
     }
 }

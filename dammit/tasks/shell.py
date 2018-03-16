@@ -1,5 +1,9 @@
-#!/usr/bin/env python
-from __future__ import print_function
+# Copyright (C) 2015-2018 Camille Scott
+# All rights reserved.
+#
+# This software may be modified and distributed under the terms
+# of the BSD license.  See the LICENSE file for details.
+
 import os
 import sys
 import hashlib
@@ -11,8 +15,8 @@ from doit.exceptions import TaskFailed
 from doit.tools import LongRunning, run_once
 from doit.task import clean_targets
 
-from .utils import clean_folder
-from ..utils import which, doit_task
+from dammit.tasks.utils import clean_folder
+from dammit.utils import which, doit_task
 
 
 def hashfile(path, hasher=None, blocksize=65536):

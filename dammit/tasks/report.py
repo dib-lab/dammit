@@ -1,5 +1,8 @@
-#!/usr/bin/env python
-from __future__ import print_function
+# Copyright (C) 2015-2018 Camille Scott
+# All rights reserved.
+#
+# This software may be modified and distributed under the terms
+# of the BSD license.  See the LICENSE file for details.
 
 import os
 import sys
@@ -8,9 +11,9 @@ from doit.tools import run_once
 from doit.task import clean_targets
 from khmer import ReadParser
 
-from ..fileio.gff3 import GFF3Parser
-from ..profile import profile_task
-from ..utils import doit_task
+from dammit.fileio.gff3 import GFF3Parser
+from dammit.profile import profile_task
+from dammit.utils import doit_task
 
 
 def generate_sequence_name(original_name, sequence, annotation_df):

@@ -1,4 +1,9 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
+# Copyright (C) 2015-2018 Camille Scott
+# All rights reserved.
+#
+# This software may be modified and distributed under the terms
+# of the BSD license.  See the LICENSE file for details.
 
 import sys, platform
 
@@ -13,13 +18,9 @@ finally:
 
 from glob import glob
 
-if sys.version_info < (2, 4):
-    print >> sys.stderr, "ERROR: dammit! requires python 2.4 or greater"
+if sys.version_info < (3, 5):
+    print >> sys.stderr, "ERROR: dammit! requires python 3.5 or greater"
     sys.exit()
-
-import numpy
-
-cmdclass = {}
 
 version = open('dammit/VERSION').read().strip()
 
@@ -43,7 +44,8 @@ def main():
                                 'ficus>=0.1',
                                 'matplotlib>=1.0',
                                 'numexpr>=2.3.1',
-                                'shmlast>=1.2'],
+                                'shmlast>=1.2',
+                                'filelock'],
             include_package_data = True,
             zip_safe = False,  )
 

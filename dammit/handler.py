@@ -1,4 +1,8 @@
-#!/usr/bin/env python
+# Copyright (C) 2015-2018 Camille Scott
+# All rights reserved.
+#
+# This software may be modified and distributed under the terms
+# of the BSD license.  See the LICENSE file for details.
 
 from collections import OrderedDict
 from os import mkdir, path
@@ -7,9 +11,10 @@ from doit.cmd_base import TaskLoader
 from doit.doit_cmd import DoitMain
 from doit.dependency import Dependency, SqliteDB
 
-from .profile import StartProfiler
-from .utils import Move
-from . import ui
+from dammit.profile import StartProfiler
+from dammit.utils import Move
+from dammit import ui
+
 
 class TaskHandler(TaskLoader):
 

@@ -1,5 +1,8 @@
-#!/usr/bin/env python
-from __future__ import print_function
+# Copyright (C) 2015-2018 Camille Scott
+# All rights reserved.
+#
+# This software may be modified and distributed under the terms
+# of the BSD license.  See the LICENSE file for details.
 
 from doit.action import CmdAction
 from doit.task import clean_targets
@@ -7,12 +10,12 @@ import os
 import pandas as pd
 from sys import stderr
 
-from .utils import DependentTask, InstallationError
-from ..profile import profile_task
-from ..parallel import parallel_fasta
-from ..fileio.hmmer import HMMerParser
-from ..fileio.gff3 import GFF3Parser 
-from ..utils import doit_task, which
+from dammit.tasks.utils import DependentTask, InstallationError
+from dammit.profile import profile_task
+from dammit.parallel import parallel_fasta
+from dammit.fileio.hmmer import HMMerParser
+from dammit.fileio.gff3 import GFF3Parser 
+from dammit.utils import doit_task, which
 
 
 class HMMScanTask(DependentTask):

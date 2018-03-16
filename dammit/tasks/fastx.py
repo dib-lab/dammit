@@ -1,5 +1,8 @@
-#!/usr/bin/env python
-from __future__ import print_function
+# Copyright (C) 2015-2018 Camille Scott
+# All rights reserved.
+#
+# This software may be modified and distributed under the terms
+# of the BSD license.  See the LICENSE file for details.
 
 from itertools import count
 import json
@@ -11,9 +14,10 @@ from doit.task import clean_targets, dict_to_task
 from khmer import HLLCounter, ReadParser
 import pandas as pd
 
-from ..fileio.gff3 import GFF3Parser
-from ..profile import profile_task
-from ..utils import which, doit_task
+from dammit.fileio.gff3 import GFF3Parser
+from dammit.profile import profile_task
+from dammit.utils import which, doit_task
+
 
 seq_ext = re.compile(r'(.fasta)|(.fa)|(.fastq)|(.fq)')
 def strip_seq_extension(fn):

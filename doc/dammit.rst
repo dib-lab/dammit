@@ -1,4 +1,4 @@
-dammit package
+API Docs
 ==============
 
 Subpackages
@@ -32,14 +32,6 @@ dammit.databases module
 -----------------------
 
 .. automodule:: dammit.databases
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-dammit.dependencies module
---------------------------
-
-.. automodule:: dammit.dependencies
     :members:
     :undoc-members:
     :show-inheritance:

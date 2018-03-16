@@ -1,5 +1,8 @@
-#!/usr/bin/env python
-from __future__ import print_function
+# Copyright (C) 2015-2018 Camille Scott
+# All rights reserved.
+#
+# This software may be modified and distributed under the terms
+# of the BSD license.  See the LICENSE file for details.
 
 from collections import OrderedDict
 import logging
@@ -9,29 +12,30 @@ import sys
 
 from shmlast.app import CRBL
 
-from .handler import TaskHandler
-from .profile import add_profile_actions
+from dammit.handler import TaskHandler
+from dammit.profile import add_profile_actions
 
-from .tasks.fastx import (get_transcriptome_stats_task,
+from dammit.tasks.fastx import (get_transcriptome_stats_task,
                           get_rename_transcriptome_task)
-from .tasks.report import get_annotate_fasta_task
-from .tasks.busco import BuscoTask
-from .tasks.utils import get_group_task
-from .tasks.gff import (get_maf_gff3_task,
+from dammit.tasks.report import get_annotate_fasta_task
+from dammit.tasks.busco import BuscoTask
+from dammit.tasks.utils import get_group_task
+from dammit.tasks.gff import (get_maf_gff3_task,
                         get_shmlast_gff3_task,
                         get_hmmscan_gff3_task,
                         get_cmscan_gff3_task,
                         get_gff3_merge_task,
                         get_maf_best_hits_task)
-from .tasks.last import LastalTask
-from .tasks.hmmer import HMMScanTask, get_remap_hmmer_task
-from .tasks.infernal import CMScanTask
-from .tasks.transdecoder import (TransDecoderPredictTask,
+from dammit.tasks.last import LastalTask
+from dammit.tasks.hmmer import HMMScanTask, get_remap_hmmer_task
+from dammit.tasks.infernal import CMScanTask
+from dammit.tasks.transdecoder import (TransDecoderPredictTask,
                                  TransDecoderLongOrfsTask)
-from . import ui
-from . import log
+from dammit import ui
+from dammit import log
 
 logger = logging.getLogger(__name__)
+
 
 def get_handler(config, databases):
     '''Build the TaskHandler for the annotation pipelines. The

@@ -1,3 +1,9 @@
+# Copyright (C) 2015-2018 Camille Scott
+# All rights reserved.
+#
+# This software may be modified and distributed under the terms
+# of the BSD license.  See the LICENSE file for details.
+
 import csv
 import filelock
 from functools import wraps
@@ -7,11 +13,9 @@ import warnings
 from contextlib import contextmanager
 from os import path
 
-
 from doit.task import Task as DoitTask
-import six
 
-from .utils import cleaned_actions
+from dammit.utils import cleaned_actions
 
 
 class Profiler(object):
