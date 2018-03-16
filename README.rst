@@ -5,11 +5,11 @@ README
    :alt: Join the chat at https://gitter.im/camillescott/dammit
    :target: https://gitter.im/camillescott/dammit?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
 
-.. image:: https://travis-ci.org/camillescott/dammit.svg?branch=refactor%2F1.0
+.. image:: https://travis-ci.org/camillescott/dammit.svg
     :target: https://travis-ci.org/camillescott/dammit
 
-.. image:: https://readthedocs.org/projects/dammit/badge/?version=refactor-1.0
-    :target: http://dammit.readthedocs.io/en/refactor-1.0/?badge=refactor-1.0
+.. image:: https://readthedocs.org/projects/dammit/badge/
+    :target: http://dammit.readthedocs.io/en/
     :alt: Documentation Status
 
 *"I love writing BLAST parsers!" -- no one, ever*
