@@ -117,7 +117,7 @@ def check_or_fail(handler):
         sys.exit(2)
 
 
-def build_default_pipeline(handler, config, databases, with_uniref=False):
+def build_default_pipeline(handler, config, databases, with_uniref=False, with_nr=False):
     '''Register tasks for dammit's builtin database prep pipeline.
 
     Args:
@@ -138,6 +138,8 @@ def build_default_pipeline(handler, config, databases, with_uniref=False):
     register_busco_tasks(handler, config, databases)
     if with_uniref:
         register_uniref90_tasks(handler, config['last']['lastdb'], databases)
+    if with_nr:
+        register_nr_tasks(handler, config['last']['lastdb'], databases)
 
     return handler
 
@@ -236,6 +238,22 @@ def register_uniref90_tasks(handler, params, databases):
                           task,
                           files={'uniref90': filename})
     handler.register_task('lastdb:uniref90',
+                          LastDBTask().task(filename,
+                                          filename,
+                                          prot=True,
+                                          params=params,
+                                          task_dep=[task.name]))
+    return handler
+
+def register_nr_tasks(handler, params, databases):
+    nr = databases['nr']
+    task = get_download_and_gunzip_task(nr['url'],
+                                        nr['filename'])
+    filename = path.join(handler.directory, nr['filename'])
+    handler.register_task('download:nr',
+                          task,
+                          files={'nr': filename})
+    handler.register_task('lastdb:nr',
                           LastDBTask().task(filename,
                                           filename,
                                           prot=True,

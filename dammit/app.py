@@ -133,8 +133,8 @@ class DammitApp(object):
                                 action='store_true',
                                 default=False,
                                 help='Run a "complete" annotation; includes'\
-                                     ' uniref90, which is left out of the'\
-                                     ' default pipeline because it is huge'\
+                                     ' uniref90 and nr, which are left out of the'\
+                                     ' default pipeline because they are huge'\
                                      ' and homology searches take a long'\
                                      ' time.'
                                 )
@@ -267,7 +267,8 @@ class DammitApp(object):
             databases.build_default_pipeline(handler, 
                                              self.config_d,
                                              self.databases_d,
-                                             with_uniref=self.args.full)
+                                             with_uniref=self.args.full,
+                                             with_nr=self.args.full)
         if self.args.install:
             return databases.install(handler)
         else:
@@ -287,7 +288,8 @@ class DammitApp(object):
             databases.build_default_pipeline(db_handler, 
                                              self.config_d,
                                              self.databases_d,
-                                             with_uniref=self.args.full)
+                                             with_uniref=self.args.full,
+                                             with_nr=self.args.full)
         if self.config_d['force'] is True:
             utd_msg = '*All database tasks up-to-date.*'
             ood_msg = '*Some database tasks out-of-date; '\

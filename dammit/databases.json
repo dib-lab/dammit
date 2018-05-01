@@ -28,6 +28,14 @@
         "version": "current",
 		"url": "ftp://ftp.uniprot.org/pub/databases/uniprot/uniref/uniref90/uniref90.fasta.gz"
 	},
+	"nr": {
+                "access": "download",
+                "db_type": "prot",
+                "filename": "nr",
+                "fileformat": "gz",
+        "version": "current",
+                "url": "ftp://ftp.ncbi.nih.gov/blast/db/FASTA/nr.gz"
+        },
 
 	"OrthoDB": {
 		"access": "download",
