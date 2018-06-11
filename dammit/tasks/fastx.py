@@ -23,7 +23,7 @@ seq_ext = re.compile(r'(.fasta)|(.fa)|(.fastq)|(.fq)')
 def strip_seq_extension(fn):
     return seq_ext.split(fn)[0]
 
-    
+
 @doit_task
 def get_rename_transcriptome_task(transcriptome_fn, output_fn, names_fn,
                                   transcript_basename, split_regex=None):
@@ -36,7 +36,7 @@ def get_rename_transcriptome_task(transcriptome_fn, output_fn, names_fn,
         transcript_basename (str): String to contruct new names from.
         split_regex (regex): Regex to split the input names with; must contain
             a `name` field.
-    
+
     Returns:
         dict: A doit task.
     '''
@@ -61,7 +61,8 @@ def get_rename_transcriptome_task(transcriptome_fn, output_fn, names_fn,
         names = []
         with open(output_fn, 'w') as fp:
             for record in ReadParser(transcriptome_fn):
-                header = header_func(record.name)
+                #header = header_func(record.name)
+                header = record.name
                 fp.write('>{0}\n{1}\n'.format(header, record.sequence))
                 names.append((record.name, header))
         pd.DataFrame(names, columns=['original', 'renamed']).to_csv(names_fn,
@@ -160,7 +161,7 @@ def get_transcriptome_stats_task(transcriptome, output_fn):
                  'n_ambiguous': n_amb,
                  'redundancy': redundancy,
                  'GCperc': float(gc_perc)}
-        
+
         with open(output_fn, 'w') as fp:
             json.dump(stats, fp, indent=4)
 
