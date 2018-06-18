@@ -124,7 +124,7 @@ def build_default_pipeline(handler, config, databases):
     register_transdecoder_tasks(handler, config, databases)
     register_rfam_tasks(handler, config, databases)
     register_lastal_tasks(handler, config, databases,
-                        include_uniref=False)
+                        include_uniref=False, include_nr=False)
     register_user_db_tasks(handler, config, databases)
     register_annotate_tasks(handler, config, databases)
 
@@ -149,11 +149,37 @@ def build_full_pipeline(handler, config, databases):
     register_transdecoder_tasks(handler, config, databases)
     register_rfam_tasks(handler, config, databases)
     register_lastal_tasks(handler, config, databases,
-                        include_uniref=True)
+                        include_uniref=True, include_nr=False)
     register_user_db_tasks(handler, config, databases)
     register_annotate_tasks(handler, config, databases)
 
     return handler
+
+
+def build_nr_pipeline(handler, config, databases):
+    '''Register tasks for the full+nr dammit pipeline (with uniref90 AND nr).
+
+    Args:
+        handler (handler.TaskHandler): The task handler to register on.
+        config (dict): Config dictionary, which contains the command
+            line arguments and the entries from the config file.
+        databases (dict): The dictionary of files from a database
+            TaskHandler.
+
+    Returns:
+        handler.TaskHandler: The handler passed in.
+    '''
+    register_stats_task(handler)
+    register_busco_task(handler, config, databases)
+    register_transdecoder_tasks(handler, config, databases)
+    register_rfam_tasks(handler, config, databases)
+    register_lastal_tasks(handler, config, databases,
+                        include_uniref=True, include_nr=True)
+    register_user_db_tasks(handler, config, databases)
+    register_annotate_tasks(handler, config, databases)
+
+    return handler
+
 
 
 def build_quick_pipeline(handler, config, databases):
@@ -304,7 +330,7 @@ def register_rfam_tasks(handler, config, databases):
 
 
 def register_lastal_tasks(handler, config, databases,
-                          include_uniref=False):
+                          include_uniref=False, include_nr=False):
     '''Register tasks for `lastal` searches. By default, this will just
     align the transcriptome against OrthoDB; if requested, it will align against
     uniref90 as well, which takes considerably longer.
@@ -325,6 +351,8 @@ def register_lastal_tasks(handler, config, databases,
     dbs['OrthoDB'] = databases['OrthoDB']
     if include_uniref is True:
         dbs['uniref90'] = databases['uniref90']
+    if include_nr is True:
+        dbs['nr'] = databases['nr']
 
     for name, db in dbs.items():
         output_fn = '{0}.x.{1}.maf'.format(input_fn, name)
