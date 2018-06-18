@@ -54,7 +54,7 @@ It's recommended that you use `conda` environments to separate your packages,
 though it isn't strictly necessary::
 
     conda create -n dammit python=3
-    source ativate dammit
+    source activate dammit
 
 Now, add the channels and install dammit::
 
