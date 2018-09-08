@@ -18,7 +18,8 @@ from dammit import ui
 from dammit.meta import __version__, __authors__, __description__, __date__, get_config
 from dammit.annotate import (build_quick_pipeline,
                              build_default_pipeline,
-                             build_full_pipeline)
+                             build_full_pipeline,
+                             build_nr_pipeline)
 
 
 class DammitApp(object):
@@ -133,11 +134,21 @@ class DammitApp(object):
                                 action='store_true',
                                 default=False,
                                 help='Run a "complete" annotation; includes'\
-                                     ' uniref90 and nr, which are left out of the'\
-                                     ' default pipeline because they are huge'\
+                                     ' uniref90, which is left out of the'\
+                                     ' default pipeline because it is huge'\
                                      ' and homology searches take a long'\
                                      ' time.'
                                 )
+
+            pgroup.add_argument('--nr',
+                                action='store_true',
+                                default=False,
+                                help='Also include annotation to NR database, which'\
+                                     ' is left out of the default and "full"'\
+                                     ' pipelines because it is huge and'\
+                                     ' homology searches take a long time.'
+                                )
+
 
             pgroup.add_argument('--quick',
                                 default=False,
@@ -268,7 +279,7 @@ class DammitApp(object):
                                              self.config_d,
                                              self.databases_d,
                                              with_uniref=self.args.full,
-                                             with_nr=self.args.full)
+                                             with_nr=self.args.nr)
         if self.args.install:
             return databases.install(handler)
         else:
@@ -289,7 +300,7 @@ class DammitApp(object):
                                              self.config_d,
                                              self.databases_d,
                                              with_uniref=self.args.full,
-                                             with_nr=self.args.full)
+                                             with_nr=self.args.nr)
         if self.config_d['force'] is True:
             utd_msg = '*All database tasks up-to-date.*'
             ood_msg = '*Some database tasks out-of-date; '\
@@ -306,6 +317,10 @@ class DammitApp(object):
                                  db_handler.files)
         elif self.args.full:
             build_full_pipeline(annotate_handler, 
+                                self.config_d, 
+                                db_handler.files)
+        elif self.args.nr:
+            build_nr_pipeline(annotate_handler, 
                                 self.config_d, 
                                 db_handler.files)
         else:
