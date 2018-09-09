@@ -20,13 +20,13 @@
 	},
 
 	"swissprot": {
-                "access": "download",
-                "db_type": "prot",
-                "filename": "uniprot_sprot",
-                "fileformat": "gz",
+        "access": "download",
+        "db_type": "prot",
+        "filename": "uniprot_sprot",
+        "fileformat": "gz",
         "version": "current",
-                "url": "ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/complete/uniprot_sprot.fasta.gz"
-        },
+		"url": "ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/complete/uniprot_sprot.fasta.gz"
+    },
 
 	"uniref90": {
 		"access": "download",
@@ -39,13 +39,13 @@
 	},
 	
 	"nr": {
-                "access": "download",
-                "db_type": "prot",
-                "filename": "nr",
-                "fileformat": "gz",
+        "access": "download",
+        "db_type": "prot",
+        "filename": "nr",
+        "fileformat": "gz",
         "version": "current",
-                "url": "ftp://ftp.ncbi.nih.gov/blast/db/FASTA/nr.gz"
-        },
+        "url": "ftp://ftp.ncbi.nih.gov/blast/db/FASTA/nr.gz"
+    },
 	
 	"OrthoDB": {
 		"access": "download",
