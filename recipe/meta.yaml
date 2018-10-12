@@ -13,7 +13,7 @@ build:
 requirements:
   build:
     # Python dependencies
-    - python ==3.6 
+    - python
     - numpy
     - pandas
     - numexpr >=2.3.1
@@ -35,7 +35,7 @@ requirements:
 
   run:
     # Python dependencies
-    - python ==3.6
+    - python
     - numpy
     - pandas
     - numexpr >=2.3.1
