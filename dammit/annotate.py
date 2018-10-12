@@ -349,7 +349,7 @@ def register_lastal_tasks(handler, config, databases,
 
     dbs = OrderedDict()
     dbs['OrthoDB'] = databases['OrthoDB']
-    dbs['swissprot'] = databases['swissprot']
+    dbs['sprot'] = databases['sprot']
     if include_uniref is True:
         dbs['uniref90'] = databases['uniref90']
     if include_nr is True:

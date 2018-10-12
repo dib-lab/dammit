@@ -19,7 +19,7 @@
 		"url": "ftp://ftp.ebi.ac.uk/pub/databases/Rfam/12.1/Rfam.cm.gz"
 	},
 
-	"swissprot": {
+	"sprot": {
         "access": "download",
         "db_type": "prot",
         "filename": "uniprot_sprot",

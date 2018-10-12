@@ -247,7 +247,7 @@ def register_uniref90_tasks(handler, params, databases):
     return handler
 
 def register_sprot_tasks(handler, params, databases):
-    sprot = databases['swissprot']
+    sprot = databases['sprot']
     task = get_download_and_gunzip_task(sprot['url'],
                                         sprot['filename'])
     filename = path.join(handler.directory, sprot['filename'])
