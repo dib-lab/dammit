@@ -30,7 +30,7 @@ requirements:
     - infernal
     - hmmer
     - transdecoder ==3.0.1
-    - last
+    - last ==874
     - busco ==3.0.2
 
   run:
@@ -52,7 +52,7 @@ requirements:
     - infernal
     - hmmer
     - transdecoder ==3.0.1
-    - last
+    - last ==874
     - busco ==3.0.2
     - parallel
     - bioconductor-seqlogo
