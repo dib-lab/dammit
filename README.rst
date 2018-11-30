@@ -1,12 +1,8 @@
 README
 =======
 
-.. image:: https://badges.gitter.im/Join%20Chat.svg
-   :alt: Join the chat at https://gitter.im/camillescott/dammit
-   :target: https://gitter.im/camillescott/dammit?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
-
-.. image:: https://travis-ci.org/camillescott/dammit.svg
-    :target: https://travis-ci.org/camillescott/dammit
+.. image:: https://travis-ci.org/dib-lab/dammit.svg
+    :target: https://travis-ci.org/dib-lab/dammit
 
 .. image:: https://readthedocs.org/projects/dammit/badge/
     :target: http://dammit.readthedocs.io/en/latest
