@@ -26,7 +26,7 @@ def strip_seq_extension(fn):
 
 @doit_task
 def get_rename_transcriptome_task(transcriptome_fn, output_fn, names_fn,
-                                  transcript_basename, split_regex=None):
+                                  transcript_basename, split_regex=None, no-rename=True):
     '''Create a doit task to copy a FASTA file and rename the headers.
 
     Args:
@@ -44,35 +44,36 @@ def get_rename_transcriptome_task(transcriptome_fn, output_fn, names_fn,
     import re
     name = os.path.basename(transcriptome_fn)
 
-    if split_regex is None:
-        counter = count()
-        header_func = lambda name: '{0}_{1}'.format(transcript_basename, next(counter))
-    else:
-        def header_func(header):
-            results = re.search(split_regex, header).groupdict()
-            try:
-                header = results['name']
-            except KeyError as err:
-                err.message = 'Header regex should have a name field!'
-                raise
-            return header
+    if not no-rename:
+        if split_regex is None:
+            counter = count()
+            header_func = lambda name: '{0}_{1}'.format(transcript_basename, next(counter))
+        else:
+            def header_func(header):
+                results = re.search(split_regex, header).groupdict()
+                try:
+                    header = results['name']
+                except KeyError as err:
+                    err.message = 'Header regex should have a name field!'
+                    raise
+                return header
 
-    def fix():
-        names = []
-        with open(output_fn, 'w') as fp:
-            for record in ReadParser(transcriptome_fn):
-                #header = header_func(record.name)
-                header = record.name
-                fp.write('>{0}\n{1}\n'.format(header, record.sequence))
-                names.append((record.name, header))
-        pd.DataFrame(names, columns=['original', 'renamed']).to_csv(names_fn,
+        def fix():
+            names = []
+            with open(output_fn, 'w') as fp:
+                for record in ReadParser(transcriptome_fn):
+                    header = record.name
+                    fp.write('>{0}\n{1}\n'.format(header, record.sequence))
+                    names.append((record.name, header))
+
+            pd.DataFrame(names, columns=['original', 'renamed']).to_csv(names_fn,
                                                                     index=False)
 
-    return {'name': name,
-            'actions': [fix],
-            'targets': [output_fn, names_fn],
-            'file_dep': [transcriptome_fn],
-            'clean': [clean_targets]}
+        return {'name': name,
+                'actions': [fix],
+                'targets': [output_fn, names_fn],
+                'file_dep': [transcriptome_fn],
+                'clean': [clean_targets]}
 
 
 @doit_task

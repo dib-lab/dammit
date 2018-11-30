@@ -73,7 +73,7 @@ def get_handler(config, databases):
                               path.abspath(config['transcriptome']),
                               input_fn,
                               name_map_fn,
-                              config['name']
+                              config['name'], config['no-rename']
                           ),
                           files={'transcriptome': input_fn,
                                  'name_map': name_map_fn})

@@ -128,6 +128,13 @@ class DammitApp(object):
                                 action='store_true',
                                 help='Ignore missing database tasks.')
 
+            parser.add_argument('--no-rename',
+                                default=False,
+                                action='store_true',
+                                help='Keep original transcript names.'\
+                                     ' Note: make sure your transcript names'\
+                                     ' don't contain unusual characters.')
+
             pgroup = parser.add_mutually_exclusive_group()
             pgroup.add_argument('--full',
                                 action='store_true',
