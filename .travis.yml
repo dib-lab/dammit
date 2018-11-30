@@ -18,7 +18,7 @@ install:
   - conda config --add channels bioconda
   - conda config --add channels conda-forge
   - conda create -n test python=$TRAVIS_PYTHON_VERSION
-  - conda activate test
+  - source activate test
   - conda install conda-build
   - conda build recipe/
   - conda install dammit --use-local
