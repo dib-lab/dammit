@@ -74,7 +74,7 @@ def get_handler(config, databases):
                               input_fn,
                               name_map_fn,
                               config['name'],
-							  config['no-rename']
+                              config['no-rename']
                           ),
                           files={'transcriptome': input_fn,
                                  'name_map': name_map_fn})
