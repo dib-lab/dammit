@@ -2,7 +2,7 @@ README
 =======
 
 .. image:: https://travis-ci.org/dib-lab/dammit.svg
-    :target: https://travis-ci.org/camillescott/dammit
+    :target: https://travis-ci.org/dib-lab/dammit
 
 .. image:: https://readthedocs.org/projects/dammit/badge/
     :target: http://dammit.readthedocs.io/en/latest
