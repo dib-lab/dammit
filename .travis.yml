@@ -14,9 +14,11 @@ install:
   - conda config --set always_yes yes --set changeps1 no
   - conda update -q conda
   - conda info -a
-  - conda config --add channels conda-forge
   - conda config --add channels defaults
   - conda config --add channels bioconda
+  - conda config --add channels conda-forge
+  - conda create -n test python=$TRAVIS_PYTHON_VERSION
+  - source activate test
   - conda install conda-build
   - conda build recipe/
   - conda install dammit --use-local
