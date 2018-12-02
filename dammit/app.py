@@ -129,7 +129,7 @@ class DammitApp(object):
                                 action='store_true',
                                 help='Ignore missing database tasks.')
 
-            parser.add_argument('--no-rename',
+            parser.add_argument('--no_rename',
                                 default=False,
                                 action='store_true',
                                 help='Keep original transcript names.'\

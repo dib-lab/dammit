@@ -26,7 +26,7 @@ def strip_seq_extension(fn):
 
 @doit_task
 def get_rename_transcriptome_task(transcriptome_fn, output_fn, names_fn,
-                                  transcript_basename, split_regex=None, no-rename=False):
+                                  transcript_basename, split_regex=None, no_rename=False):
     '''Create a doit task to copy a FASTA file and rename the headers.
 
     Args:
@@ -44,7 +44,7 @@ def get_rename_transcriptome_task(transcriptome_fn, output_fn, names_fn,
     import re
     name = os.path.basename(transcriptome_fn)
 
-    if not no-rename:
+    if not no_rename:
         if split_regex is None:
             counter = count()
             header_func = lambda name: '{0}_{1}'.format(transcript_basename, next(counter))
