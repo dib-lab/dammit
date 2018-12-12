@@ -4,7 +4,7 @@ summary: Installing dammit via conda and bioconda.
 ---
 
 As of version 1.\*, the recommended and supported installation platform for 
-dammit is via [bioconda](https://bioconda.github.io/index.html), as it greatly
+dammit is via [bioconda](https://anaconda.org/bioconda/dammit), as it greatly
 simplifies managing dammit's many dependencies.
 
 ## Installing (bio)conda

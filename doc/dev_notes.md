@@ -1,12 +1,11 @@
-Dammit notes:
-============
+# Dammit development
 
 [dammit!](https://github.com/dib-lab/dammit)
 
 
-# Setting up your local computer for dammit dev
+## Setting up your local computer for dammit dev
 
-Can basically follow [instructions for travis](https://github.com/dib-lab/dammit/blob/master/.travis.yml), because we're telling travis to do what we are doing on our local computers.
+We can basically follow the [instructions for travis](https://github.com/dib-lab/dammit/blob/master/.travis.yml), because we're telling [travis]() to do what we are doing on our local computers.
 
 Make sure conda is installed. If not, here are instructions:
 ```
@@ -78,7 +77,7 @@ Nothing to install!
 ```
 Now you are ready to edit and make changes!
 
-# To-do:
+## To-do:
 
 - [ ] update transdecoder version
 - [ ] orthodb version (other database versions?)
@@ -87,7 +86,7 @@ Now you are ready to edit and make changes!
 - [ ] update documentation
 - [ ] add pipeline for accepting .pep file as input (skips transdecoder, transcriptome stats and BUSCO tasks)
 
-# Notes on dammit
+## Notes on dammit
 
 Written by [Camille Scott](http://www.camillescott.org/). See [tutorial](https://angus.readthedocs.io/en/2018/dammit_annotation.html).
 
@@ -106,7 +105,7 @@ tests must pass before merging
 
 Architecture:
 
-### look at code and tests in the `dammit` directory
+#### look at code and tests in the `dammit` directory
 
 Tasks are steps being run, separated into different files. For example, the `hmmer.py` file contains all hmmer tasks. 
 
@@ -130,10 +129,7 @@ databases,  2 pipelines (quick, full)
 annotate:
 more pipelines, uniref full, nr
 
-
-
-
-# TESTS!
+## TESTS!
 
 `dammit/tests`
 * makes sure tasks and pipeline run and produce output, they don't all check expected output. some integration output.
@@ -159,11 +155,11 @@ travis-ci is building the recipe that lives in the repo
 make-ci-test (not long and not huge and not requires_datbases)
 
 
-### config.json
+#### config.json
 
 can use custom config.json file to include different parameters for the programs run by the tasks, e.g. transdecoder LongOrgs -m 50, etc.
 
-### parallel .py
+#### parallel .py
 
 hmmer, infernal, lastl, 
 
@@ -171,24 +167,24 @@ requires gnu parallel
 
 (isntructions for how to runon multi-node hpc, somewhere)
 
-### ui .py
+#### ui .py
 
 output for user to markdown formatting for copying/pasting into GitHub issue reporting
 
 `generate-test-data-.sh` re-genreates test data adn puts it in proper dirs
 
-## Documentation
+### Documentation
 
 * http://dib-lab.github.io/dammit/
 
 * [Tutorial from angus 2018](https://angus.readthedocs.io/en/2018/dammit_annotation.html)
 
-## Update bioconda
+### Update bioconda
 
 update https://github.com/bioconda/bioconda-recipes/blob/master/recipes/dammit/meta.yaml
 
 
-# reviewing PR
+## reviewing PR
 
 * radical changes? (Are you adding things to handler, maybe time to take a step back and make sure code uses reasonable variable names, tests, etc)
 * does travis build?
