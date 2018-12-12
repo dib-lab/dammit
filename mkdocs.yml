@@ -43,13 +43,12 @@ nav:
     - 'Bioconda': 'install.md'
 
   - 'Databases':
-    - 'databases': 'databases.md'
+    - 'Basic database usage': 'database-usage.md'
+    - 'About the databases': 'database-about.md'
+    - 'Advanced database usage': 'database-advanced.md'
 
   - 'Tutorial':
     - 'tutorial': 'tutorial.md'
 
-  - 'About':
-    - 'About': 'about.md'
-
-  - 'Dev notes':
+  - 'For developers':
     - 'Notes for developers': 'dev_notes.md'
