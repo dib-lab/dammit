@@ -1,0 +1,297 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>dammit.dependencies &#8212; dammit 1.0.dev0 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.0.dev0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="author" title="About these documents" href="../../about.html" />
+    <link rel="top" title="dammit 1.0.dev0 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for dammit.dependencies</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
+
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">subprocess</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="kn">from</span> <span class="nn">doit.dependency</span> <span class="k">import</span> <span class="n">Dependency</span><span class="p">,</span> <span class="n">SqliteDB</span>
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">ui</span>
+<span class="kn">from</span> <span class="nn">.utils</span> <span class="k">import</span> <span class="n">which</span>
+<span class="kn">from</span> <span class="nn">.tasks.shell</span> <span class="k">import</span> <span class="n">get_download_and_untar_task</span>
+
+
+<div class="viewcode-block" id="DependencyHandler"><a class="viewcode-back" href="../../dammit.html#dammit.dependencies.DependencyHandler">[docs]</a><span class="k">class</span> <span class="nc">DependencyHandler</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">checks</span> <span class="o">=</span> <span class="p">{}</span>
+
+<div class="viewcode-block" id="DependencyHandler.register_dependency_check"><a class="viewcode-back" href="../../dammit.html#dammit.dependencies.DependencyHandler.register_dependency_check">[docs]</a>    <span class="k">def</span> <span class="nf">register_dependency_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">function</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Add a new dependency to the handler.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            name (str): The name of the dependency.</span>
+<span class="sd">            function (callable): A function which returns a tuple</span>
+<span class="sd">                of (boolean, string) for the status and a message, and</span>
+<span class="sd">                takes a Logger object.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Add check function for </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">checks</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">function</span></div>
+
+<div class="viewcode-block" id="DependencyHandler.clear_dependency_checks"><a class="viewcode-back" href="../../dammit.html#dammit.dependencies.DependencyHandler.clear_dependency_checks">[docs]</a>    <span class="k">def</span> <span class="nf">clear_dependency_checks</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Clearing </span><span class="si">{0}</span><span class="s1"> dependency checks from&#39;</span>\
+                          <span class="s1">&#39; handler&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">checks</span><span class="p">)))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">checks</span> <span class="o">=</span> <span class="p">{}</span></div>
+
+<div class="viewcode-block" id="DependencyHandler.get_status"><a class="viewcode-back" href="../../dammit.html#dammit.dependencies.DependencyHandler.get_status">[docs]</a>    <span class="k">def</span> <span class="nf">get_status</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Run dependency function on </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">check_function</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">checks</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Check not found: </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+        <span class="n">status</span><span class="p">,</span> <span class="n">msg</span> <span class="o">=</span> <span class="n">check_function</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> has status </span><span class="si">{1}</span><span class="s1">, msg: </span><span class="si">{2}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">status</span><span class="p">,</span> <span class="n">msg</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">status</span><span class="p">,</span> <span class="n">msg</span></div>
+
+<div class="viewcode-block" id="DependencyHandler.get_all_statuses"><a class="viewcode-back" href="../../dammit.html#dammit.dependencies.DependencyHandler.get_all_statuses">[docs]</a>    <span class="k">def</span> <span class="nf">get_all_statuses</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">fulfilled</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">unfulfilled</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">checks</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">status</span><span class="p">,</span> <span class="n">msg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_status</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">status</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+                <span class="n">fulfilled</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="n">unfulfilled</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">msg</span>
+        <span class="k">return</span> <span class="n">fulfilled</span><span class="p">,</span> <span class="n">unfulfilled</span></div>
+
+<div class="viewcode-block" id="DependencyHandler.print_all_statuses"><a class="viewcode-back" href="../../dammit.html#dammit.dependencies.DependencyHandler.print_all_statuses">[docs]</a>    <span class="k">def</span> <span class="nf">print_all_statuses</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">):</span>
+        <span class="n">is_fulfilled</span><span class="p">,</span> <span class="n">unfulfilled</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_all_statuses</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">is_fulfilled</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">ui</span><span class="o">.</span><span class="n">paragraph</span><span class="p">(</span><span class="s1">&#39;*All dependencies fulfilled.*&#39;</span><span class="p">),</span> <span class="n">file</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Some dependencies unfulfilled:&#39;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">ui</span><span class="o">.</span><span class="n">listing</span><span class="p">(</span><span class="n">unfulfilled</span><span class="p">),</span> <span class="n">file</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">is_fulfilled</span><span class="p">,</span> <span class="n">unfulfilled</span></div>
+            
+<div class="viewcode-block" id="DependencyHandler.check_or_fail"><a class="viewcode-back" href="../../dammit.html#dammit.dependencies.DependencyHandler.check_or_fail">[docs]</a>    <span class="k">def</span> <span class="nf">check_or_fail</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">ui</span><span class="o">.</span><span class="n">header</span><span class="p">(</span><span class="s1">&#39;Dependency Check&#39;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="mi">3</span><span class="p">),</span> <span class="n">file</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
+        <span class="n">is_fulfilled</span><span class="p">,</span> <span class="n">unfulfilled</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">print_all_statuses</span><span class="p">(</span><span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">is_fulfilled</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">ui</span><span class="o">.</span><span class="n">paragraph</span><span class="p">(</span><span class="s1">&#39;Must install dependencies to continue.&#39;</span>\
+                              <span class="s1">&#39; to do so, follow the directions in the&#39;</span>\
+                              <span class="s1">&#39; documentation at &#39;</span>\
+                              <span class="s1">&#39;http://www.camillescott.org/dammit/installing.html&#39;</span><span class="p">),</span>
+                 <span class="n">file</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="get_handler"><a class="viewcode-back" href="../../dammit.html#dammit.dependencies.get_handler">[docs]</a><span class="k">def</span> <span class="nf">get_handler</span><span class="p">():</span>
+    <span class="k">return</span> <span class="n">register_builtin_checks</span><span class="p">(</span><span class="n">DependencyHandler</span><span class="p">())</span></div>
+
+
+<div class="viewcode-block" id="register_builtin_checks"><a class="viewcode-back" href="../../dammit.html#dammit.dependencies.register_builtin_checks">[docs]</a><span class="k">def</span> <span class="nf">register_builtin_checks</span><span class="p">(</span><span class="n">handler</span><span class="p">):</span>
+    <span class="n">checks</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;HMMER&#39;</span><span class="p">:</span> <span class="n">check_hmmer</span><span class="p">,</span>
+               <span class="s1">&#39;Infernal&#39;</span><span class="p">:</span> <span class="n">check_infernal</span><span class="p">,</span>
+               <span class="s1">&#39;BLAST+&#39;</span><span class="p">:</span> <span class="n">check_blast</span><span class="p">,</span>
+               <span class="s1">&#39;BUSCO&#39;</span><span class="p">:</span> <span class="n">check_busco</span><span class="p">,</span>
+               <span class="s1">&#39;TransDecoder&#39;</span><span class="p">:</span> <span class="n">check_transdecoder</span><span class="p">,</span>
+               <span class="s1">&#39;LAST&#39;</span><span class="p">:</span> <span class="n">check_last</span><span class="p">,</span>
+               <span class="s1">&#39;crb-blast&#39;</span><span class="p">:</span> <span class="n">check_crb_blast</span><span class="p">,</span>
+               <span class="s1">&#39;gnu-parallel&#39;</span><span class="p">:</span> <span class="n">check_parallel</span><span class="p">}</span>
+    <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">func</span> <span class="ow">in</span> <span class="n">checks</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">handler</span><span class="o">.</span><span class="n">register_dependency_check</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">func</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">handler</span></div>
+
+
+<div class="viewcode-block" id="check_hmmer"><a class="viewcode-back" href="../../dammit.html#dammit.dependencies.check_hmmer">[docs]</a><span class="k">def</span> <span class="nf">check_hmmer</span><span class="p">(</span><span class="n">logger</span><span class="p">):</span>
+    <span class="n">hmmscan</span> <span class="o">=</span> <span class="n">which</span><span class="p">(</span><span class="s1">&#39;hmmscan&#39;</span><span class="p">)</span>
+    <span class="n">hmmpress</span> <span class="o">=</span> <span class="n">which</span><span class="p">(</span><span class="s1">&#39;hmmpress&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">hmmscan</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">hmmpress</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;Not found on $PATH&#39;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;hmmscan:&#39;</span> <span class="o">+</span> <span class="n">hmmscan</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;hmmpress:&#39;</span> <span class="o">+</span> <span class="n">hmmpress</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">hmmscan</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="check_infernal"><a class="viewcode-back" href="../../dammit.html#dammit.dependencies.check_infernal">[docs]</a><span class="k">def</span> <span class="nf">check_infernal</span><span class="p">(</span><span class="n">logger</span><span class="p">):</span>
+    <span class="n">cmscan</span> <span class="o">=</span> <span class="n">which</span><span class="p">(</span><span class="s1">&#39;cmscan&#39;</span><span class="p">)</span>
+    <span class="n">cmpress</span> <span class="o">=</span> <span class="n">which</span><span class="p">(</span><span class="s1">&#39;cmpress&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">cmscan</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">cmpress</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;Not found on $PATH&#39;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;cmscan:&#39;</span> <span class="o">+</span> <span class="n">cmscan</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;cmpress:&#39;</span> <span class="o">+</span> <span class="n">cmpress</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">cmscan</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="check_blast"><a class="viewcode-back" href="../../dammit.html#dammit.dependencies.check_blast">[docs]</a><span class="k">def</span> <span class="nf">check_blast</span><span class="p">(</span><span class="n">logger</span><span class="p">):</span>
+    <span class="n">blastp</span> <span class="o">=</span> <span class="n">which</span><span class="p">(</span><span class="s1">&#39;blastp&#39;</span><span class="p">)</span>
+    <span class="n">blastx</span> <span class="o">=</span> <span class="n">which</span><span class="p">(</span><span class="s1">&#39;blastx&#39;</span><span class="p">)</span>
+    <span class="n">tblastn</span> <span class="o">=</span> <span class="n">which</span><span class="p">(</span><span class="s1">&#39;tblastn&#39;</span><span class="p">)</span>
+    <span class="n">makeblastdb</span> <span class="o">=</span> <span class="n">which</span><span class="p">(</span><span class="s1">&#39;makeblastdb&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">blastp</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">blastx</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> \
+        <span class="ow">or</span> <span class="p">(</span><span class="n">tblastn</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">makeblastdb</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
+        
+        <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;Not found on $PATH&#39;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;blastp:&#39;</span> <span class="o">+</span> <span class="n">blastp</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;blastx:&#39;</span> <span class="o">+</span> <span class="n">blastx</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;tblastn:&#39;</span> <span class="o">+</span> <span class="n">tblastn</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;makeblastdb:&#39;</span> <span class="o">+</span> <span class="n">makeblastdb</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">blastp</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="check_busco"><a class="viewcode-back" href="../../dammit.html#dammit.dependencies.check_busco">[docs]</a><span class="k">def</span> <span class="nf">check_busco</span><span class="p">(</span><span class="n">logger</span><span class="p">):</span>
+    <span class="n">busco</span> <span class="o">=</span> <span class="n">which</span><span class="p">(</span><span class="s1">&#39;BUSCO_v1.1b1.py&#39;</span><span class="p">)</span>
+    <span class="n">transeq</span> <span class="o">=</span> <span class="n">which</span><span class="p">(</span><span class="s1">&#39;transeq&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">busco</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;Not found on $PATH&#39;</span>
+    <span class="k">elif</span> <span class="n">transeq</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;EMBOSS transeq not found, which is a BUSCO dependency.&#39;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;BUSCO:&#39;</span> <span class="o">+</span> <span class="n">busco</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">busco</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="check_transdecoder"><a class="viewcode-back" href="../../dammit.html#dammit.dependencies.check_transdecoder">[docs]</a><span class="k">def</span> <span class="nf">check_transdecoder</span><span class="p">(</span><span class="n">logger</span><span class="p">):</span>
+    <span class="n">longorfs</span> <span class="o">=</span> <span class="n">which</span><span class="p">(</span><span class="s1">&#39;TransDecoder.LongOrfs&#39;</span><span class="p">)</span>
+    <span class="n">predict</span> <span class="o">=</span> <span class="n">which</span><span class="p">(</span><span class="s1">&#39;TransDecoder.Predict&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">longorfs</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">predict</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;Not found on $PATH&#39;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;TransDecoder.LongOrfs:&#39;</span> <span class="o">+</span> <span class="n">longorfs</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;TransDecoder.Predict:&#39;</span> <span class="o">+</span> <span class="n">predict</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">longorfs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="check_parallel"><a class="viewcode-back" href="../../dammit.html#dammit.dependencies.check_parallel">[docs]</a><span class="k">def</span> <span class="nf">check_parallel</span><span class="p">(</span><span class="n">logger</span><span class="p">):</span>
+    <span class="n">parallel</span> <span class="o">=</span> <span class="n">which</span><span class="p">(</span><span class="s1">&#39;parallel&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">parallel</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;parallel not found on $PATH.&#39;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">version_string</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">check_output</span><span class="p">([</span><span class="s1">&#39;parallel&#39;</span><span class="p">,</span> <span class="s1">&#39;--version&#39;</span><span class="p">])</span>
+        <span class="k">except</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">CalledProcessError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;Error checking parallel version: [</span><span class="si">{0}</span><span class="s1">] </span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">returncode</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">output</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">OSError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;Error checking parallel version: [</span><span class="si">{0}</span><span class="s1">] </span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">errno</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">version</span> <span class="o">=</span> <span class="n">version_string</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">2</span><span class="p">]</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;parallel version:</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">version</span><span class="p">))</span>
+            <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">version</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">20150000</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;parallel version </span><span class="si">{0}</span><span class="s1"> &lt; 20150000, please update&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">version</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;parallel:&#39;</span> <span class="o">+</span> <span class="n">parallel</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">parallel</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="check_last"><a class="viewcode-back" href="../../dammit.html#dammit.dependencies.check_last">[docs]</a><span class="k">def</span> <span class="nf">check_last</span><span class="p">(</span><span class="n">logger</span><span class="p">):</span>
+    <span class="n">lastdb</span> <span class="o">=</span> <span class="n">which</span><span class="p">(</span><span class="s1">&#39;lastdb&#39;</span><span class="p">)</span>
+    <span class="n">lastal</span> <span class="o">=</span> <span class="n">which</span><span class="p">(</span><span class="s1">&#39;lastal&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">lastdb</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">lastal</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;Not found on $PATH&#39;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">version_string</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">check_output</span><span class="p">([</span><span class="s1">&#39;lastal&#39;</span><span class="p">,</span> <span class="s1">&#39;--version&#39;</span><span class="p">])</span>
+        <span class="k">except</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">CalledProcessError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;Error checking lastal version: [</span><span class="si">{0}</span><span class="s1">] </span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">returncode</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">output</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">OSError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;Error checking lastal version: [</span><span class="si">{0}</span><span class="s1">] </span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">errno</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">_</span><span class="p">,</span> <span class="n">version</span> <span class="o">=</span> <span class="n">version_string</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+            <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">version</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">600</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;lastal version </span><span class="si">{0}</span><span class="s1"> &lt; 600, please update&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">version</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;lastal:&#39;</span> <span class="o">+</span> <span class="n">lastal</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;latsdb:&#39;</span> <span class="o">+</span> <span class="n">lastdb</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">lastal</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="check_crb_blast"><a class="viewcode-back" href="../../dammit.html#dammit.dependencies.check_crb_blast">[docs]</a><span class="k">def</span> <span class="nf">check_crb_blast</span><span class="p">(</span><span class="n">logger</span><span class="p">):</span>
+    <span class="n">crb_blast</span> <span class="o">=</span> <span class="n">which</span><span class="p">(</span><span class="s1">&#39;crb-blast&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">crb_blast</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;&#39;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;crb-blast:&#39;</span> <span class="o">+</span> <span class="n">crb_blast</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">crb_blast</span><span class="p">)</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2015, Camille Scott.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

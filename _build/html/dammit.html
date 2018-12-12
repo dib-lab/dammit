@@ -1,0 +1,1179 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>dammit package &#8212; dammit 1.0.dev0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0.dev0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="author" title="About these documents" href="about.html" />
+    <link rel="top" title="dammit 1.0.dev0 documentation" href="index.html" />
+    <link rel="next" title="dammit.fileio package" href="dammit.fileio.html" />
+    <link rel="prev" title="Databases" href="databases.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="dammit-package">
+<h1>dammit package<a class="headerlink" href="#dammit-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="dammit.fileio.html">dammit.fileio package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="dammit.fileio.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dammit.fileio.html#module-dammit.fileio.base">dammit.fileio.base module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dammit.fileio.html#module-dammit.fileio.gff3">dammit.fileio.gff3 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dammit.fileio.html#module-dammit.fileio.hmmer">dammit.fileio.hmmer module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dammit.fileio.html#module-dammit.fileio.infernal">dammit.fileio.infernal module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dammit.fileio.html#module-dammit.fileio.maf">dammit.fileio.maf module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dammit.fileio.html#module-dammit.fileio">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="dammit.tasks.html">dammit.tasks package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="dammit.tasks.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dammit.tasks.html#module-dammit.tasks.busco">dammit.tasks.busco module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dammit.tasks.html#module-dammit.tasks.fastx">dammit.tasks.fastx module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dammit.tasks.html#module-dammit.tasks.gff">dammit.tasks.gff module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dammit.tasks.html#module-dammit.tasks.hmmer">dammit.tasks.hmmer module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dammit.tasks.html#module-dammit.tasks.infernal">dammit.tasks.infernal module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dammit.tasks.html#module-dammit.tasks.report">dammit.tasks.report module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dammit.tasks.html#module-dammit.tasks.shell">dammit.tasks.shell module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dammit.tasks.html#module-dammit.tasks.transdecoder">dammit.tasks.transdecoder module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dammit.tasks.html#module-dammit.tasks.utils">dammit.tasks.utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dammit.tasks.html#module-dammit.tasks">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-dammit.annotate">
+<span id="dammit-annotate-module"></span><h2>dammit.annotate module<a class="headerlink" href="#module-dammit.annotate" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="dammit.annotate.build_default_pipeline">
+<code class="descclassname">dammit.annotate.</code><code class="descname">build_default_pipeline</code><span class="sig-paren">(</span><em>handler</em>, <em>config</em>, <em>databases</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/annotate.html#build_default_pipeline"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.annotate.build_default_pipeline" title="Permalink to this definition">¶</a></dt>
+<dd><p>Register tasks for the default dammit pipeline.</p>
+<p>This is all the main tasks, without lastal uniref90 task.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>handler</strong> (<a class="reference internal" href="#dammit.handler.TaskHandler" title="dammit.handler.TaskHandler"><em>handler.TaskHandler</em></a>) &#8211; The task handler to register on.</li>
+<li><strong>config</strong> (<em>dict</em>) &#8211; Config dictionary, which contains the command
+line arguments and the entries from the config file.</li>
+<li><strong>databases</strong> (<em>dict</em>) &#8211; The dictionary of files from a database
+TaskHandler.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The handler passed in.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#dammit.handler.TaskHandler" title="dammit.handler.TaskHandler">handler.TaskHandler</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="dammit.annotate.build_full_pipeline">
+<code class="descclassname">dammit.annotate.</code><code class="descname">build_full_pipeline</code><span class="sig-paren">(</span><em>handler</em>, <em>config</em>, <em>databases</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/annotate.html#build_full_pipeline"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.annotate.build_full_pipeline" title="Permalink to this definition">¶</a></dt>
+<dd><p>Register tasks for the full dammit pipeline (with uniref90).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>handler</strong> (<a class="reference internal" href="#dammit.handler.TaskHandler" title="dammit.handler.TaskHandler"><em>handler.TaskHandler</em></a>) &#8211; The task handler to register on.</li>
+<li><strong>config</strong> (<em>dict</em>) &#8211; Config dictionary, which contains the command
+line arguments and the entries from the config file.</li>
+<li><strong>databases</strong> (<em>dict</em>) &#8211; The dictionary of files from a database
+TaskHandler.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The handler passed in.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#dammit.handler.TaskHandler" title="dammit.handler.TaskHandler">handler.TaskHandler</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="dammit.annotate.build_quick_pipeline">
+<code class="descclassname">dammit.annotate.</code><code class="descname">build_quick_pipeline</code><span class="sig-paren">(</span><em>handler</em>, <em>config</em>, <em>databases</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/annotate.html#build_quick_pipeline"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.annotate.build_quick_pipeline" title="Permalink to this definition">¶</a></dt>
+<dd><p>Register tasks for the quick annotation pipeline.</p>
+<p>Leaves out the Pfam search (and so does not pass these hits to
+<cite>TransDecoder.Predict</cite>), the Rfam search, and the lastal searches
+against OrthoDB and uniref90. Best suited for users who have built their
+own protein databases and would just like to annotate off them.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>handler</strong> (<a class="reference internal" href="#dammit.handler.TaskHandler" title="dammit.handler.TaskHandler"><em>handler.TaskHandler</em></a>) &#8211; The task handler to register on.</li>
+<li><strong>config</strong> (<em>dict</em>) &#8211; Config dictionary, which contains the command
+line arguments and the entries from the config file.</li>
+<li><strong>databases</strong> (<em>dict</em>) &#8211; The dictionary of files from a database
+TaskHandler.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The handler passed in.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#dammit.handler.TaskHandler" title="dammit.handler.TaskHandler">handler.TaskHandler</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="dammit.annotate.get_handler">
+<code class="descclassname">dammit.annotate.</code><code class="descname">get_handler</code><span class="sig-paren">(</span><em>config</em>, <em>databases</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/annotate.html#get_handler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.annotate.get_handler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build the TaskHandler for the annotation pipelines. The
+handler will not have registered tasks when returned.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>config</strong> (<em>dict</em>) &#8211; Config dictionary, which contains the command
+line arguments and the entries from the config file.</li>
+<li><strong>databases</strong> (<em>dict</em>) &#8211; The dictionary of files from a database
+TaskHandler.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A constructed TaskHandler.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#dammit.handler.TaskHandler" title="dammit.handler.TaskHandler">handler.TaskHandler</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="dammit.annotate.register_annotate_tasks">
+<code class="descclassname">dammit.annotate.</code><code class="descname">register_annotate_tasks</code><span class="sig-paren">(</span><em>handler</em>, <em>config</em>, <em>databases</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/annotate.html#register_annotate_tasks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.annotate.register_annotate_tasks" title="Permalink to this definition">¶</a></dt>
+<dd><p>Register tasks for aggregating the annotations into one GFF3 file
+and writing out summary descriptions in a new FASTA file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>handler</strong> (<a class="reference internal" href="#dammit.handler.TaskHandler" title="dammit.handler.TaskHandler"><em>handler.TaskHandler</em></a>) &#8211; The task handler to register on.</li>
+<li><strong>config</strong> (<em>dict</em>) &#8211; Config dictionary, which contains the command
+line arguments and the entries from the config file.</li>
+<li><strong>databases</strong> (<em>dict</em>) &#8211; The dictionary of files from a database
+TaskHandler.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="dammit.annotate.register_busco_task">
+<code class="descclassname">dammit.annotate.</code><code class="descname">register_busco_task</code><span class="sig-paren">(</span><em>handler</em>, <em>config</em>, <em>databases</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/annotate.html#register_busco_task"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.annotate.register_busco_task" title="Permalink to this definition">¶</a></dt>
+<dd><p>Register tasks for BUSCO. Note that this expects
+a proper dammit config dictionary.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="dammit.annotate.register_lastal_tasks">
+<code class="descclassname">dammit.annotate.</code><code class="descname">register_lastal_tasks</code><span class="sig-paren">(</span><em>handler</em>, <em>config</em>, <em>databases</em>, <em>include_uniref=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/annotate.html#register_lastal_tasks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.annotate.register_lastal_tasks" title="Permalink to this definition">¶</a></dt>
+<dd><p>Register tasks for <cite>lastal</cite> searches. By default, this will just
+align the transcriptome against OrthoDB; if requested, it will align against
+uniref90 as well, which takes considerably longer.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>handler</strong> (<a class="reference internal" href="#dammit.handler.TaskHandler" title="dammit.handler.TaskHandler"><em>handler.TaskHandler</em></a>) &#8211; The task handler to register on.</li>
+<li><strong>config</strong> (<em>dict</em>) &#8211; Config dictionary, which contains the command
+line arguments and the entries from the config file.</li>
+<li><strong>databases</strong> (<em>dict</em>) &#8211; The dictionary of files from a database
+TaskHandler.</li>
+<li><strong>include_uniref</strong> (<em>bool</em>) &#8211; If True, add tasks for searching uniref90.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="dammit.annotate.register_rfam_tasks">
+<code class="descclassname">dammit.annotate.</code><code class="descname">register_rfam_tasks</code><span class="sig-paren">(</span><em>handler</em>, <em>config</em>, <em>databases</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/annotate.html#register_rfam_tasks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.annotate.register_rfam_tasks" title="Permalink to this definition">¶</a></dt>
+<dd><p>Registers tasks for Infernal&#8217;s <cite>cmscan</cite> against Rfam. Rfam is an RNA
+secondary structure database comprising covariance models for many known
+RNAs. This is a relatively slow step. A proper dammit config dictionary is
+required.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="dammit.annotate.register_stats_task">
+<code class="descclassname">dammit.annotate.</code><code class="descname">register_stats_task</code><span class="sig-paren">(</span><em>handler</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/annotate.html#register_stats_task"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.annotate.register_stats_task" title="Permalink to this definition">¶</a></dt>
+<dd><p>Register the tasks for basic transcriptome metrics.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="dammit.annotate.register_transdecoder_tasks">
+<code class="descclassname">dammit.annotate.</code><code class="descname">register_transdecoder_tasks</code><span class="sig-paren">(</span><em>handler</em>, <em>config</em>, <em>databases</em>, <em>include_hmmer=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/annotate.html#register_transdecoder_tasks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.annotate.register_transdecoder_tasks" title="Permalink to this definition">¶</a></dt>
+<dd><p>Register tasks for TransDecoder. TransDecoder first finds long ORFs with
+<cite>TransDecoder.LongOrfs</cite>, which are output as a FASTA file of protein
+sequences. These sequences can are then used to search against Pfam-A for
+conserved domains, and the coordinates from the resulting matches mapped
+back relative to the original transcripts. <cite>TransDecoder.Predict</cite> the builds
+the final gene models based on the training data provided by
+<cite>TransDecoder.LongOrfs</cite>, optionally using the Pfam-A results to keep
+ORFs which otherwise don&#8217;t fit the model closely enough. Once again,
+note that a proper dammit config dictionary is required.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="dammit.annotate.register_user_db_tasks">
+<code class="descclassname">dammit.annotate.</code><code class="descname">register_user_db_tasks</code><span class="sig-paren">(</span><em>handler</em>, <em>config</em>, <em>databases</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/annotate.html#register_user_db_tasks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.annotate.register_user_db_tasks" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run conditional recipricol best hits LAST (CRBL) against the
+user-supplied databases.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="dammit.annotate.run_annotation">
+<code class="descclassname">dammit.annotate.</code><code class="descname">run_annotation</code><span class="sig-paren">(</span><em>handler</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/annotate.html#run_annotation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.annotate.run_annotation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run the annotation pipeline from the given handler.</p>
+<p>Prints the appropriate output and exits of the pipeline is alredy completed.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>handler</strong> (<a class="reference internal" href="#dammit.handler.TaskHandler" title="dammit.handler.TaskHandler"><em>handler.TaskHandler</em></a>) &#8211; Handler with tasks for the pipeline.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-dammit.app">
+<span id="dammit-app-module"></span><h2>dammit.app module<a class="headerlink" href="#module-dammit.app" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="dammit.app.DammitApp">
+<em class="property">class </em><code class="descclassname">dammit.app.</code><code class="descname">DammitApp</code><span class="sig-paren">(</span><em>arg_src=['-b', 'html', '-d', '_build/doctrees', '.', '_build/html']</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/app.html#DammitApp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.app.DammitApp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="dammit.app.DammitApp.get_parser">
+<code class="descname">get_parser</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/app.html#DammitApp.get_parser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.app.DammitApp.get_parser" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build the main parser.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="dammit.app.DammitApp.handle_annotate">
+<code class="descname">handle_annotate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/app.html#DammitApp.handle_annotate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.app.DammitApp.handle_annotate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="dammit.app.DammitApp.handle_databases">
+<code class="descname">handle_databases</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/app.html#DammitApp.handle_databases"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.app.DammitApp.handle_databases" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="dammit.app.DammitApp.handle_dependencies">
+<code class="descname">handle_dependencies</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/app.html#DammitApp.handle_dependencies"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.app.DammitApp.handle_dependencies" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="dammit.app.DammitApp.run">
+<code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/app.html#DammitApp.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.app.DammitApp.run" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-dammit.databases">
+<span id="dammit-databases-module"></span><h2>dammit.databases module<a class="headerlink" href="#module-dammit.databases" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="dammit.databases.build_default_pipeline">
+<code class="descclassname">dammit.databases.</code><code class="descname">build_default_pipeline</code><span class="sig-paren">(</span><em>handler</em>, <em>config</em>, <em>databases</em>, <em>with_uniref=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/databases.html#build_default_pipeline"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.databases.build_default_pipeline" title="Permalink to this definition">¶</a></dt>
+<dd><p>Register tasks for dammit&#8217;s builtin database prep pipeline.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>handler</strong> (<a class="reference internal" href="#dammit.handler.TaskHandler" title="dammit.handler.TaskHandler"><em>handler.TaskHandler</em></a>) &#8211; The task handler to register on.</li>
+<li><strong>config</strong> (<em>dict</em>) &#8211; Config dictionary, which contains the command
+line arguments and the entries from the config file.</li>
+<li><strong>databases</strong> (<em>dict</em>) &#8211; The dictionary of files from <cite>databases.json</cite>.</li>
+<li><strong>with_uniref</strong> (<em>bool</em>) &#8211; If True, download and install the uniref90
+database. Note that this will take 16+Gb of RAM and a looong
+time to prepare with <cite>lastdb</cite>.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The handler passed in.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#dammit.handler.TaskHandler" title="dammit.handler.TaskHandler">handler.TaskHandler</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="dammit.databases.check_or_fail">
+<code class="descclassname">dammit.databases.</code><code class="descname">check_or_fail</code><span class="sig-paren">(</span><em>handler</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/databases.html#check_or_fail"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.databases.check_or_fail" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check that the handler&#8217;s tasks are complete, and if not, exit
+with status 2.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="dammit.databases.default_database_dir">
+<code class="descclassname">dammit.databases.</code><code class="descname">default_database_dir</code><span class="sig-paren">(</span><em>logger</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/databases.html#default_database_dir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.databases.default_database_dir" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the default database directory: checks the environment
+for a DAMMIT_DB_DIR variable, and if it is not found, returns
+the default location of <cite>$HOME/.dammit/databases</cite>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>logger</strong> (<em>logging.logger</em>) &#8211; Logger to write to.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Path to the database directory.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="dammit.databases.get_handler">
+<code class="descclassname">dammit.databases.</code><code class="descname">get_handler</code><span class="sig-paren">(</span><em>config</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/databases.html#get_handler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.databases.get_handler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build the TaskHandler for the database prep pipeline. The
+handler will not have registered tasks when returned.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>config</strong> (<em>dict</em>) &#8211; Config dictionary, which contains the command
+line arguments and the entries from the config file.</li>
+<li><strong>databases</strong> (<em>dict</em>) &#8211; The database dictionary from <cite>databases.json</cite>.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A constructed TaskHandler.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#dammit.handler.TaskHandler" title="dammit.handler.TaskHandler">handler.TaskHandler</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="dammit.databases.install">
+<code class="descclassname">dammit.databases.</code><code class="descname">install</code><span class="sig-paren">(</span><em>handler</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/databases.html#install"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.databases.install" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run the database prep pipeline from the given handler.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="dammit.databases.print_meta">
+<code class="descclassname">dammit.databases.</code><code class="descname">print_meta</code><span class="sig-paren">(</span><em>handler</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/databases.html#print_meta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.databases.print_meta" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print metadata about the database pipeline.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>handler</strong> (<a class="reference internal" href="#dammit.handler.TaskHandler" title="dammit.handler.TaskHandler"><em>handler.TaskHandler</em></a>) &#8211; The database task handler.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="dammit.databases.register_busco_tasks">
+<code class="descclassname">dammit.databases.</code><code class="descname">register_busco_tasks</code><span class="sig-paren">(</span><em>handler</em>, <em>config</em>, <em>databases</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/databases.html#register_busco_tasks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.databases.register_busco_tasks" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="dammit.databases.register_orthodb_tasks">
+<code class="descclassname">dammit.databases.</code><code class="descname">register_orthodb_tasks</code><span class="sig-paren">(</span><em>handler</em>, <em>params</em>, <em>databases</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/databases.html#register_orthodb_tasks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.databases.register_orthodb_tasks" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="dammit.databases.register_pfam_tasks">
+<code class="descclassname">dammit.databases.</code><code class="descname">register_pfam_tasks</code><span class="sig-paren">(</span><em>handler</em>, <em>params</em>, <em>databases</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/databases.html#register_pfam_tasks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.databases.register_pfam_tasks" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="dammit.databases.register_rfam_tasks">
+<code class="descclassname">dammit.databases.</code><code class="descname">register_rfam_tasks</code><span class="sig-paren">(</span><em>handler</em>, <em>params</em>, <em>databases</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/databases.html#register_rfam_tasks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.databases.register_rfam_tasks" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="dammit.databases.register_uniref90_tasks">
+<code class="descclassname">dammit.databases.</code><code class="descname">register_uniref90_tasks</code><span class="sig-paren">(</span><em>handler</em>, <em>params</em>, <em>databases</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/databases.html#register_uniref90_tasks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.databases.register_uniref90_tasks" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-dammit.dependencies">
+<span id="dammit-dependencies-module"></span><h2>dammit.dependencies module<a class="headerlink" href="#module-dammit.dependencies" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="dammit.dependencies.DependencyHandler">
+<em class="property">class </em><code class="descclassname">dammit.dependencies.</code><code class="descname">DependencyHandler</code><a class="reference internal" href="_modules/dammit/dependencies.html#DependencyHandler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.dependencies.DependencyHandler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="dammit.dependencies.DependencyHandler.check_or_fail">
+<code class="descname">check_or_fail</code><span class="sig-paren">(</span><em>out=&lt;_io.TextIOWrapper name='&lt;stdout&gt;' mode='w' encoding='UTF-8'&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/dependencies.html#DependencyHandler.check_or_fail"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.dependencies.DependencyHandler.check_or_fail" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="dammit.dependencies.DependencyHandler.clear_dependency_checks">
+<code class="descname">clear_dependency_checks</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/dependencies.html#DependencyHandler.clear_dependency_checks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.dependencies.DependencyHandler.clear_dependency_checks" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="dammit.dependencies.DependencyHandler.get_all_statuses">
+<code class="descname">get_all_statuses</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/dependencies.html#DependencyHandler.get_all_statuses"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.dependencies.DependencyHandler.get_all_statuses" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="dammit.dependencies.DependencyHandler.get_status">
+<code class="descname">get_status</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/dependencies.html#DependencyHandler.get_status"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.dependencies.DependencyHandler.get_status" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="dammit.dependencies.DependencyHandler.print_all_statuses">
+<code class="descname">print_all_statuses</code><span class="sig-paren">(</span><em>out=&lt;_io.TextIOWrapper name='&lt;stdout&gt;' mode='w' encoding='UTF-8'&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/dependencies.html#DependencyHandler.print_all_statuses"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.dependencies.DependencyHandler.print_all_statuses" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="dammit.dependencies.DependencyHandler.register_dependency_check">
+<code class="descname">register_dependency_check</code><span class="sig-paren">(</span><em>name</em>, <em>function</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/dependencies.html#DependencyHandler.register_dependency_check"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.dependencies.DependencyHandler.register_dependency_check" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a new dependency to the handler.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>name</strong> (<em>str</em>) &#8211; The name of the dependency.</li>
+<li><strong>function</strong> (<em>callable</em>) &#8211; A function which returns a tuple
+of (boolean, string) for the status and a message, and
+takes a Logger object.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="dammit.dependencies.check_blast">
+<code class="descclassname">dammit.dependencies.</code><code class="descname">check_blast</code><span class="sig-paren">(</span><em>logger</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/dependencies.html#check_blast"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.dependencies.check_blast" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="dammit.dependencies.check_busco">
+<code class="descclassname">dammit.dependencies.</code><code class="descname">check_busco</code><span class="sig-paren">(</span><em>logger</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/dependencies.html#check_busco"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.dependencies.check_busco" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="dammit.dependencies.check_crb_blast">
+<code class="descclassname">dammit.dependencies.</code><code class="descname">check_crb_blast</code><span class="sig-paren">(</span><em>logger</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/dependencies.html#check_crb_blast"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.dependencies.check_crb_blast" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="dammit.dependencies.check_hmmer">
+<code class="descclassname">dammit.dependencies.</code><code class="descname">check_hmmer</code><span class="sig-paren">(</span><em>logger</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/dependencies.html#check_hmmer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.dependencies.check_hmmer" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="dammit.dependencies.check_infernal">
+<code class="descclassname">dammit.dependencies.</code><code class="descname">check_infernal</code><span class="sig-paren">(</span><em>logger</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/dependencies.html#check_infernal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.dependencies.check_infernal" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="dammit.dependencies.check_last">
+<code class="descclassname">dammit.dependencies.</code><code class="descname">check_last</code><span class="sig-paren">(</span><em>logger</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/dependencies.html#check_last"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.dependencies.check_last" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="dammit.dependencies.check_parallel">
+<code class="descclassname">dammit.dependencies.</code><code class="descname">check_parallel</code><span class="sig-paren">(</span><em>logger</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/dependencies.html#check_parallel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.dependencies.check_parallel" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="dammit.dependencies.check_transdecoder">
+<code class="descclassname">dammit.dependencies.</code><code class="descname">check_transdecoder</code><span class="sig-paren">(</span><em>logger</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/dependencies.html#check_transdecoder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.dependencies.check_transdecoder" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="dammit.dependencies.get_handler">
+<code class="descclassname">dammit.dependencies.</code><code class="descname">get_handler</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/dependencies.html#get_handler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.dependencies.get_handler" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="dammit.dependencies.register_builtin_checks">
+<code class="descclassname">dammit.dependencies.</code><code class="descname">register_builtin_checks</code><span class="sig-paren">(</span><em>handler</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/dependencies.html#register_builtin_checks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.dependencies.register_builtin_checks" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-dammit.handler">
+<span id="dammit-handler-module"></span><h2>dammit.handler module<a class="headerlink" href="#module-dammit.handler" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="dammit.handler.TaskHandler">
+<em class="property">class </em><code class="descclassname">dammit.handler.</code><code class="descname">TaskHandler</code><span class="sig-paren">(</span><em>directory</em>, <em>logger</em>, <em>files=None</em>, <em>profile=False</em>, <em>db=None</em>, <em>**doit_config_kwds</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/handler.html#TaskHandler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.handler.TaskHandler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">doit.cmd_base.TaskLoader</span></code></p>
+<p>Stores tasks and the files they operate on, along with
+doit config and other metadata. This is the core of the pipelines:
+it passes its tasks along to doit for execution, and can check task
+and pipeline completion status.</p>
+<dl class="attribute">
+<dt id="dammit.handler.TaskHandler.files">
+<code class="descname">files</code><a class="headerlink" href="#dammit.handler.TaskHandler.files" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>dict</em> &#8211; Files used by the tasks.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="dammit.handler.TaskHandler.directory">
+<code class="descname">directory</code><a class="headerlink" href="#dammit.handler.TaskHandler.directory" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>str</em> &#8211; Working directory for execution.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="dammit.handler.TaskHandler.task">
+<code class="descname">task</code><a class="headerlink" href="#dammit.handler.TaskHandler.task" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>OrderedDict</em> &#8211; The tasks to execute.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="dammit.handler.TaskHandler.dep_file">
+<code class="descname">dep_file</code><a class="headerlink" href="#dammit.handler.TaskHandler.dep_file" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>str</em> &#8211; Path of the doit database.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="dammit.handler.TaskHandler.doit_config">
+<code class="descname">doit_config</code><a class="headerlink" href="#dammit.handler.TaskHandler.doit_config" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>dict</em> &#8211; The doit configuration given to the task runner.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="dammit.handler.TaskHandler.doit_dep_mgr">
+<code class="descname">doit_dep_mgr</code><a class="headerlink" href="#dammit.handler.TaskHandler.doit_dep_mgr" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>doit.dependency.Dependency</em> &#8211; Doit object to track task
+status.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="dammit.handler.TaskHandler.profile">
+<code class="descname">profile</code><a class="headerlink" href="#dammit.handler.TaskHandler.profile" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>bool</em> &#8211; Whether to run the profiler on tasks.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="dammit.handler.TaskHandler.logger">
+<code class="descname">logger</code><a class="headerlink" href="#dammit.handler.TaskHandler.logger" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>logging.Logger</em> &#8211; Logger to use.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="dammit.handler.TaskHandler.check_uptodate">
+<code class="descname">check_uptodate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/handler.html#TaskHandler.check_uptodate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.handler.TaskHandler.check_uptodate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if all tasks are up-to-date, ie if the pipeline is complete.
+Note that this moves to the handler&#8217;s directory to lessen issues with
+relative versus absolute paths.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">True if all are up to date.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">bool</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dammit.handler.TaskHandler.clear_tasks">
+<code class="descname">clear_tasks</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/handler.html#TaskHandler.clear_tasks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.handler.TaskHandler.clear_tasks" title="Permalink to this definition">¶</a></dt>
+<dd><p>Empty the task dictionary.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="dammit.handler.TaskHandler.get_status">
+<code class="descname">get_status</code><span class="sig-paren">(</span><em>task</em>, <em>move=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/handler.html#TaskHandler.get_status"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.handler.TaskHandler.get_status" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the up-to-date status of a single task.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>task</strong> (<em>str</em>) &#8211; The task name to look up.</li>
+<li><strong>move</strong> (<em>bool</em>) &#8211; If True, move to the handler&#8217;s directory before
+checking. Whether this is necessary depends mostly on whether
+the task uses relative or absolute paths.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The string represenation of the status. Either &#8220;run&#8221; or
+&#8220;uptodate&#8221;.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">str</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dammit.handler.TaskHandler.load_tasks">
+<code class="descname">load_tasks</code><span class="sig-paren">(</span><em>cmd</em>, <em>opt_values</em>, <em>pos_args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/handler.html#TaskHandler.load_tasks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.handler.TaskHandler.load_tasks" title="Permalink to this definition">¶</a></dt>
+<dd><p>Internal to doit &#8211; triggered by the TaskLoader.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="dammit.handler.TaskHandler.print_statuses">
+<code class="descname">print_statuses</code><span class="sig-paren">(</span><em>uptodate_msg='All tasks up-to-date!'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/handler.html#TaskHandler.print_statuses"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.handler.TaskHandler.print_statuses" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print the up-to-date status of all tasks.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>uptodate_msg</strong> (<em>str</em>) &#8211; The message to print if all tasks are up to</li>
+<li><strong>date.</strong> &#8211; </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A bool (True if all up to date) and a dictionary of statuses.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">tuple</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dammit.handler.TaskHandler.register_task">
+<code class="descname">register_task</code><span class="sig-paren">(</span><em>name</em>, <em>task</em>, <em>files=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/handler.html#TaskHandler.register_task"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.handler.TaskHandler.register_task" title="Permalink to this definition">¶</a></dt>
+<dd><p>Register a new task and its files with the handler.</p>
+<p>It may seem redundant or confusing to give the tasks a name different
+than their internal doit name. I do this because doit tasks need to have
+names as unique as possible, so that they can be reused in different
+projects. A particular TaskHandler instance is only used for one
+pipeline run, and allowing different names makes it easier to reference
+tasks from elsewhere.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>name</strong> (<em>str</em>) &#8211; Name of the task. Does not have to correspond to doit&#8217;s
+internal task name.</li>
+<li><strong>(</strong> (<a class="reference internal" href="#dammit.handler.TaskHandler.task" title="dammit.handler.TaskHandler.task"><em>task</em></a>) &#8211; obj:): Either a dictionary or Task object.</li>
+<li><strong>files</strong> (<em>dict</em>) &#8211; Dictionary of files used.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dammit.handler.TaskHandler.run">
+<code class="descname">run</code><span class="sig-paren">(</span><em>doit_args=None</em>, <em>verbose=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/handler.html#TaskHandler.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.handler.TaskHandler.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run the pipeline. Movees to the directory, loads the tasks into doit,
+and executes that tasks that are not up-to-date.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>doit_args</strong> (<em>list</em>) &#8211; Args that would be passed to the doit shell
+command. By default, just run.</li>
+<li><strong>verbose</strong> (<em>bool</em>) &#8211; If True, print UI stuff.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Exit status of the doit command.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">int</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-dammit.log">
+<span id="dammit-log-module"></span><h2>dammit.log module<a class="headerlink" href="#module-dammit.log" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="dammit.log.init_default_logger">
+<code class="descclassname">dammit.log.</code><code class="descname">init_default_logger</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/log.html#init_default_logger"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.log.init_default_logger" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="dammit.log.start_logging">
+<code class="descclassname">dammit.log.</code><code class="descname">start_logging</code><span class="sig-paren">(</span><em>filename=None</em>, <em>test=False</em><span class="sig-paren">)</span><a class="headerlink" href="#dammit.log.start_logging" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-dammit.meta">
+<span id="dammit-meta-module"></span><h2>dammit.meta module<a class="headerlink" href="#module-dammit.meta" title="Permalink to this headline">¶</a></h2>
+<p>Program metadata: the version, install path, description, and default config.</p>
+<dl class="function">
+<dt id="dammit.meta.get_config">
+<code class="descclassname">dammit.meta.</code><code class="descname">get_config</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/meta.html#get_config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.meta.get_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse the default JSON config files and return them as dictionaries.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The config and databases dictionaries.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">tuple</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-dammit.parallel">
+<span id="dammit-parallel-module"></span><h2>dammit.parallel module<a class="headerlink" href="#module-dammit.parallel" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="dammit.parallel.parallel_fasta">
+<code class="descclassname">dammit.parallel.</code><code class="descname">parallel_fasta</code><span class="sig-paren">(</span><em>input_filename</em>, <em>output_filename</em>, <em>command</em>, <em>n_jobs</em>, <em>pbs=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/parallel.html#parallel_fasta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.parallel.parallel_fasta" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given an input FASTA source, target, shell command, and number of jobs,
+construct a gnu-parallel command to act on the sequences.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>input_filename</strong> (<em>str</em>) &#8211; The source FASTA.</li>
+<li><strong>output_filename</strong> (<em>str</em>) &#8211; The target.</li>
+<li><strong>command</strong> (<em>list</em>) &#8211; The shell command (in subprocess format).</li>
+<li><strong>n_jobs</strong> (<em>int</em>) &#8211; Number of cores or nodes to split to.</li>
+<li><strong>pbs</strong> (<em>bool</em>) &#8211; If True, add the appropriate flags for running on a</li>
+<li><strong>system. Note that this means the user needs to export</strong> (<em>multinode</em>) &#8211; </li>
+<li><strong>before running dammit.</strong> (<em>$PBS_NODEFILE</em>) &#8211; </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The constructed shell command.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">str</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-dammit.profile">
+<span id="dammit-profile-module"></span><h2>dammit.profile module<a class="headerlink" href="#module-dammit.profile" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="dammit.profile.Profiler">
+<em class="property">class </em><code class="descclassname">dammit.profile.</code><code class="descname">Profiler</code><a class="reference internal" href="_modules/dammit/profile.html#Profiler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.profile.Profiler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Thread-safe performance profiler.</p>
+<dl class="method">
+<dt id="dammit.profile.Profiler.start_profiler">
+<code class="descname">start_profiler</code><span class="sig-paren">(</span><em>filename=None</em>, <em>blockname='__main__'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/profile.html#Profiler.start_profiler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.profile.Profiler.start_profiler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Start the profiler, with results stored in the given filename.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>filename</strong> (<em>str</em>) &#8211; Path to store profiling results. If not given,
+uses a representation of the current time</li>
+<li><strong>blockname</strong> (<em>str</em>) &#8211; Name assigned to the main block.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dammit.profile.Profiler.stop_profiler">
+<code class="descname">stop_profiler</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/profile.html#Profiler.stop_profiler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.profile.Profiler.stop_profiler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shut down the profiler and write the final elapsed time.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="dammit.profile.Profiler.write_result">
+<code class="descname">write_result</code><span class="sig-paren">(</span><em>task_name</em>, <em>start_time</em>, <em>end_time</em>, <em>elapsed_time</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/profile.html#Profiler.write_result"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.profile.Profiler.write_result" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write results to the file, using the given task name as the
+name for the results block.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>task_name</strong> (<em>str</em>) &#8211; ID for the result row (the block profiled).</li>
+<li><strong>start_time</strong> (<em>float</em>) &#8211; Time of block start.</li>
+<li><strong>end_time</strong> (<em>float</em>) &#8211; Time of block end.</li>
+<li><strong>elapsed_time</strong> (<em>float</em>) &#8211; Total time.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="dammit.profile.StartProfiler">
+<code class="descclassname">dammit.profile.</code><code class="descname">StartProfiler</code><span class="sig-paren">(</span><em>filename=None</em>, <em>blockname='__main__'</em><span class="sig-paren">)</span><a class="headerlink" href="#dammit.profile.StartProfiler" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="dammit.profile.Timer">
+<em class="property">class </em><code class="descclassname">dammit.profile.</code><code class="descname">Timer</code><a class="reference internal" href="_modules/dammit/profile.html#Timer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.profile.Timer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Simple timer class.</p>
+<dl class="method">
+<dt id="dammit.profile.Timer.start">
+<code class="descname">start</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/profile.html#Timer.start"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.profile.Timer.start" title="Permalink to this definition">¶</a></dt>
+<dd><p>Start the timer.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="dammit.profile.Timer.stop">
+<code class="descname">stop</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/profile.html#Timer.stop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.profile.Timer.stop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stop the timer and return the elapsed time.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="dammit.profile.add_profile_actions">
+<code class="descclassname">dammit.profile.</code><code class="descname">add_profile_actions</code><span class="sig-paren">(</span><em>task</em><span class="sig-paren">)</span><a class="headerlink" href="#dammit.profile.add_profile_actions" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="dammit.profile.profile_task">
+<code class="descclassname">dammit.profile.</code><code class="descname">profile_task</code><span class="sig-paren">(</span><em>task_func</em><span class="sig-paren">)</span><a class="headerlink" href="#dammit.profile.profile_task" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="dammit.profile.setup_profiler">
+<code class="descclassname">dammit.profile.</code><code class="descname">setup_profiler</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/profile.html#setup_profiler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.profile.setup_profiler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a context manager, a funnction to add profiling actions to doit
+tasks, and a decoratator to apply that function to task functions.</p>
+<p>The profiling function adds new actions to the beginning and end of
+the given task&#8217;s action list, which start and stop the profiler and
+record the results. The task decorator applies this function. The actions
+only record data if the profiler is running when they are called, and
+they are removed from doit&#8217;s execution output to reduce clutter.</p>
+<p>The context manager starts the profiler in its block, storing data
+in the given file.</p>
+<p>Yes, this is a function function function which creates six different
+functions at seven different function scopes. Written in honor
+of javascript programmers everywhere, and to baffle and irritate
+&#64;ryneches.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="dammit.profile.title_without_profile_actions">
+<code class="descclassname">dammit.profile.</code><code class="descname">title_without_profile_actions</code><span class="sig-paren">(</span><em>task</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/profile.html#title_without_profile_actions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.profile.title_without_profile_actions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate title without profiling actions</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-dammit.ui">
+<span id="dammit-ui-module"></span><h2>dammit.ui module<a class="headerlink" href="#module-dammit.ui" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="dammit.ui.GithubMarkdownReporter">
+<em class="property">class </em><code class="descclassname">dammit.ui.</code><code class="descname">GithubMarkdownReporter</code><span class="sig-paren">(</span><em>outstream</em>, <em>options</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/ui.html#GithubMarkdownReporter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.ui.GithubMarkdownReporter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">doit.reporter.ConsoleReporter</span></code></p>
+<p>Specialized doit reporter to make task output Github Markdown compliant.</p>
+<dl class="method">
+<dt id="dammit.ui.GithubMarkdownReporter.execute_task">
+<code class="descname">execute_task</code><span class="sig-paren">(</span><em>task</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/ui.html#GithubMarkdownReporter.execute_task"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.ui.GithubMarkdownReporter.execute_task" title="Permalink to this definition">¶</a></dt>
+<dd><p>called when excution starts</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="dammit.ui.GithubMarkdownReporter.skip_ignore">
+<code class="descname">skip_ignore</code><span class="sig-paren">(</span><em>task</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/ui.html#GithubMarkdownReporter.skip_ignore"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.ui.GithubMarkdownReporter.skip_ignore" title="Permalink to this definition">¶</a></dt>
+<dd><p>skipped ignored task</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="dammit.ui.GithubMarkdownReporter.skip_uptodate">
+<code class="descname">skip_uptodate</code><span class="sig-paren">(</span><em>task</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/ui.html#GithubMarkdownReporter.skip_uptodate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.ui.GithubMarkdownReporter.skip_uptodate" title="Permalink to this definition">¶</a></dt>
+<dd><p>skipped up-to-date task</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="dammit.ui.checkbox">
+<code class="descclassname">dammit.ui.</code><code class="descname">checkbox</code><span class="sig-paren">(</span><em>msg</em>, <em>checked=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/ui.html#checkbox"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.ui.checkbox" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a Github markdown checkbox for the message.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="dammit.ui.header">
+<code class="descclassname">dammit.ui.</code><code class="descname">header</code><span class="sig-paren">(</span><em>msg</em>, <em>level=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/ui.html#header"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.ui.header" title="Permalink to this definition">¶</a></dt>
+<dd><p>Standardize output headers for submodules.</p>
+<p>This doesn&#8217;t need to be logged, but it&#8217;s nice for
+the user.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="dammit.ui.listing">
+<code class="descclassname">dammit.ui.</code><code class="descname">listing</code><span class="sig-paren">(</span><em>d</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/ui.html#listing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.ui.listing" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a markdown list.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="dammit.ui.paragraph">
+<code class="descclassname">dammit.ui.</code><code class="descname">paragraph</code><span class="sig-paren">(</span><em>msg</em>, <em>wrap=80</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/ui.html#paragraph"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.ui.paragraph" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a wrapped paragraph.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-dammit.utils">
+<span id="dammit-utils-module"></span><h2>dammit.utils module<a class="headerlink" href="#module-dammit.utils" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="dammit.utils.DammitTask">
+<em class="property">class </em><code class="descclassname">dammit.utils.</code><code class="descname">DammitTask</code><span class="sig-paren">(</span><em>name</em>, <em>actions</em>, <em>file_dep=()</em>, <em>targets=()</em>, <em>task_dep=()</em>, <em>uptodate=()</em>, <em>calc_dep=()</em>, <em>setup=()</em>, <em>clean=()</em>, <em>teardown=()</em>, <em>is_subtask=False</em>, <em>has_subtask=False</em>, <em>doc=None</em>, <em>params=()</em>, <em>pos_arg=None</em>, <em>verbosity=None</em>, <em>title=None</em>, <em>getargs=None</em>, <em>watch=()</em>, <em>loader=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/utils.html#DammitTask"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.utils.DammitTask" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">doit.task.Task</span></code></p>
+<p>Subclass doit.task.Task for dammit. Updates the string __repr__
+and adds a uniform updated title function.</p>
+<dl class="method">
+<dt id="dammit.utils.DammitTask.title">
+<code class="descname">title</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/utils.html#DammitTask.title"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.utils.DammitTask.title" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="dammit.utils.Move">
+<em class="property">class </em><code class="descclassname">dammit.utils.</code><code class="descname">Move</code><span class="sig-paren">(</span><em>target</em>, <em>create=False</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/utils.html#Move"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.utils.Move" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Context manager to change current working directory.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="dammit.utils.cleaned_actions">
+<code class="descclassname">dammit.utils.</code><code class="descname">cleaned_actions</code><span class="sig-paren">(</span><em>actions</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/utils.html#cleaned_actions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.utils.cleaned_actions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a cleanup list of actions: Python actions have their &lt;locals&gt; portion
+stripped, which clutters up PythonActions that are closures.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="dammit.utils.dict_to_task">
+<code class="descclassname">dammit.utils.</code><code class="descname">dict_to_task</code><span class="sig-paren">(</span><em>task_dict</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/utils.html#dict_to_task"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.utils.dict_to_task" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a doit task dict, return a DammitTask.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>task_dict</strong> (<em>dict</em>) &#8211; A doit task dict.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Subclassed doit task.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#dammit.utils.DammitTask" title="dammit.utils.DammitTask">DammitTask</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="dammit.utils.doit_task">
+<code class="descclassname">dammit.utils.</code><code class="descname">doit_task</code><span class="sig-paren">(</span><em>task_dict_func</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/utils.html#doit_task"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.utils.doit_task" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper to decorate functions returning pydoit
+Task dictionaries and have them return pydoit Task
+objects</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="dammit.utils.touch">
+<code class="descclassname">dammit.utils.</code><code class="descname">touch</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/utils.html#touch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.utils.touch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform the equivalent of bash&#8217;s touch on the file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filename</strong> (<em>str</em>) &#8211; File path to touch.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="dammit.utils.which">
+<code class="descclassname">dammit.utils.</code><code class="descname">which</code><span class="sig-paren">(</span><em>program</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dammit/utils.html#which"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dammit.utils.which" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks whether the given program (or program path) is valid and
+executable.</p>
+<p>NOTE: Sometimes copypasta is okay! This function came from stackoverflow:</p>
+<blockquote>
+<div><a class="reference external" href="http://stackoverflow.com/a/377028/5109965">http://stackoverflow.com/a/377028/5109965</a></div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>program</strong> (<em>str</em>) &#8211; Either a program name or full path to a program.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Return the path to the executable or None if not found</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-dammit">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-dammit" title="Permalink to this headline">¶</a></h2>
+<p>from . import log</p>
+<p>from . import parsers
+from . import gff
+from . import blast
+from . import tasks</p>
+<p>from . import annotate
+from . import databases
+from . import dependencies
+from . import parallel
+from . import hmmer
+from . import report</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">dammit package</a><ul>
+<li><a class="reference internal" href="#subpackages">Subpackages</a></li>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-dammit.annotate">dammit.annotate module</a></li>
+<li><a class="reference internal" href="#module-dammit.app">dammit.app module</a></li>
+<li><a class="reference internal" href="#module-dammit.databases">dammit.databases module</a></li>
+<li><a class="reference internal" href="#module-dammit.dependencies">dammit.dependencies module</a></li>
+<li><a class="reference internal" href="#module-dammit.handler">dammit.handler module</a></li>
+<li><a class="reference internal" href="#module-dammit.log">dammit.log module</a></li>
+<li><a class="reference internal" href="#module-dammit.meta">dammit.meta module</a></li>
+<li><a class="reference internal" href="#module-dammit.parallel">dammit.parallel module</a></li>
+<li><a class="reference internal" href="#module-dammit.profile">dammit.profile module</a></li>
+<li><a class="reference internal" href="#module-dammit.ui">dammit.ui module</a></li>
+<li><a class="reference internal" href="#module-dammit.utils">dammit.utils module</a></li>
+<li><a class="reference internal" href="#module-dammit">Module contents</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="databases.html" title="previous chapter">Databases</a></li>
+      <li>Next: <a href="dammit.fileio.html" title="next chapter">dammit.fileio package</a></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/dammit.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2015, Camille Scott.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="_sources/dammit.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

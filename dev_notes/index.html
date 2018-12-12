@@ -1,0 +1,934 @@
+
+
+
+
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      <meta http-equiv="x-ua-compatible" content="ie=edge">
+      
+      
+        <link rel="canonical" href="http://dib-lab.github.io/dammit/dev_notes/">
+      
+      
+      
+        <meta name="lang:clipboard.copy" content="Copy to clipboard">
+      
+        <meta name="lang:clipboard.copied" content="Copied to clipboard">
+      
+        <meta name="lang:search.language" content="en">
+      
+        <meta name="lang:search.pipeline.stopwords" content="True">
+      
+        <meta name="lang:search.pipeline.trimmer" content="True">
+      
+        <meta name="lang:search.result.none" content="No matching pages">
+      
+        <meta name="lang:search.result.one" content="1 matching page">
+      
+        <meta name="lang:search.result.other" content="# matching page">
+      
+        <meta name="lang:search.tokenizer" content="[\s\-]+">
+      
+      <link rel="shortcut icon" href="..">
+      <meta name="generator" content="mkdocs-1.0.4, mkdocs-material-3.0.3">
+    
+    
+      
+        <title>Notes for developers - dammit</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/application.451f80e5.css">
+      
+        <link rel="stylesheet" href="../assets/stylesheets/application-palette.22915126.css">
+      
+      
+        
+        
+        <meta name="theme-color" content="#4caf50">
+      
+    
+    
+      <script src="../assets/javascripts/modernizr.1aa3b519.js"></script>
+    
+    
+      <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+      
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700|Roboto+Mono">
+        <style>body,input{font-family:"Roboto","Helvetica Neue",Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono","Courier New",Courier,monospace}</style>
+      
+    
+    <link rel="stylesheet" href="../assets/fonts/material-icons.css">
+    
+      <link rel="stylesheet" href="../css/custom.css">
+    
+    
+  </head>
+  
+    
+    
+    <body dir="ltr" data-md-color-primary="green" data-md-color-accent="purple">
+  
+    <svg class="md-svg">
+      <defs>
+        
+        
+          <svg xmlns="http://www.w3.org/2000/svg" width="416" height="448"
+    viewBox="0 0 416 448" id="__github">
+  <path fill="currentColor" d="M160 304q0 10-3.125 20.5t-10.75 19-18.125
+        8.5-18.125-8.5-10.75-19-3.125-20.5 3.125-20.5 10.75-19 18.125-8.5
+        18.125 8.5 10.75 19 3.125 20.5zM320 304q0 10-3.125 20.5t-10.75
+        19-18.125 8.5-18.125-8.5-10.75-19-3.125-20.5 3.125-20.5 10.75-19
+        18.125-8.5 18.125 8.5 10.75 19 3.125 20.5zM360
+        304q0-30-17.25-51t-46.75-21q-10.25 0-48.75 5.25-17.75 2.75-39.25
+        2.75t-39.25-2.75q-38-5.25-48.75-5.25-29.5 0-46.75 21t-17.25 51q0 22 8
+        38.375t20.25 25.75 30.5 15 35 7.375 37.25 1.75h42q20.5 0
+        37.25-1.75t35-7.375 30.5-15 20.25-25.75 8-38.375zM416 260q0 51.75-15.25
+        82.75-9.5 19.25-26.375 33.25t-35.25 21.5-42.5 11.875-42.875 5.5-41.75
+        1.125q-19.5 0-35.5-0.75t-36.875-3.125-38.125-7.5-34.25-12.875-30.25-20.25-21.5-28.75q-15.5-30.75-15.5-82.75
+        0-59.25 34-99-6.75-20.5-6.75-42.5 0-29 12.75-54.5 27 0 47.5 9.875t47.25
+        30.875q36.75-8.75 77.25-8.75 37 0 70 8 26.25-20.5
+        46.75-30.25t47.25-9.75q12.75 25.5 12.75 54.5 0 21.75-6.75 42 34 40 34
+        99.5z" />
+</svg>
+        
+      </defs>
+    </svg>
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
+    
+      <a href="../#for-dammit-developers" tabindex="1" class="md-skip">
+        Skip to content
+      </a>
+    
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid">
+    <div class="md-flex">
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <a href="http://dib-lab.github.io/dammit" title="dammit" class="md-header-nav__button md-logo">
+          
+            <i class="md-icon">dns</i>
+          
+        </a>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--menu md-header-nav__button" for="__drawer"></label>
+      </div>
+      <div class="md-flex__cell md-flex__cell--stretch">
+        <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
+          
+            
+              <span class="md-header-nav__topic">
+                dammit
+              </span>
+              <span class="md-header-nav__topic">
+                Notes for developers
+              </span>
+            
+          
+        </div>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        
+          
+            <label class="md-icon md-icon--search md-header-nav__button" for="__search"></label>
+            
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" placeholder="Search this site" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="query" data-md-state="active">
+      <label class="md-icon md-search__icon" for="__search"></label>
+      <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">
+        &#xE5CD;
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="result">
+          <div class="md-search-result__meta">
+            Type to start searching this site
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+          
+        
+      </div>
+      
+        <div class="md-flex__cell md-flex__cell--shrink">
+          <div class="md-header-nav__source">
+            
+
+
+  
+
+
+  <a href="https://github.com/dib-lab/dammit" title="Go to repository" class="md-source" data-md-source="github">
+    
+    <div class="md-source__repository">
+      dammit
+    </div>
+  </a>
+
+          </div>
+        </div>
+      
+    </div>
+  </nav>
+</header>
+    
+    <div class="md-container">
+      
+        
+      
+      <main class="md-main">
+        <div class="md-main__inner md-grid" data-md-component="container">
+          
+            
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    <nav class="md-nav md-nav--primary" data-md-level="0">
+  <label class="md-nav__title md-nav__title--site" for="__drawer">
+    <a href="http://dib-lab.github.io/dammit" title="dammit" class="md-nav__button md-logo">
+      
+        <i class="md-icon">dns</i>
+      
+    </a>
+    dammit
+  </label>
+  
+    <div class="md-nav__source">
+      
+
+
+  
+
+
+  <a href="https://github.com/dib-lab/dammit" title="Go to repository" class="md-source" data-md-source="github">
+    
+    <div class="md-source__repository">
+      dammit
+    </div>
+  </a>
+
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../about/" title="About" class="md-nav__link">
+      About
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-2" type="checkbox" id="nav-2">
+    
+    <label class="md-nav__link" for="nav-2">
+      Installation
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-2">
+        Installation
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../system_requirements/" title="Requirements" class="md-nav__link">
+      Requirements
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../install/" title="Bioconda" class="md-nav__link">
+      Bioconda
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-3" type="checkbox" id="nav-3">
+    
+    <label class="md-nav__link" for="nav-3">
+      Databases
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-3">
+        Databases
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../database-usage/" title="Basic Usage" class="md-nav__link">
+      Basic Usage
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../database-about/" title="About the Databases" class="md-nav__link">
+      About the Databases
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../database-advanced/" title="Advanced Database Handling" class="md-nav__link">
+      Advanced Database Handling
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../tutorial/" title="Tutorial" class="md-nav__link">
+      Tutorial
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-5" type="checkbox" id="nav-5" checked>
+    
+    <label class="md-nav__link" for="nav-5">
+      For developers
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-5">
+        For developers
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+      
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        Notes for developers
+      </label>
+    
+    <a href="./" title="Notes for developers" class="md-nav__link md-nav__link--active">
+      Notes for developers
+    </a>
+    
+      
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#setting-up-your-local-computer-for-dammit-devevelopment" title="Setting up your local computer for dammit devevelopment" class="md-nav__link">
+    Setting up your local computer for dammit devevelopment
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#to-do-for-dammit" title="To-do for dammit" class="md-nav__link">
+    To-do for dammit
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#versioning" title="Versioning" class="md-nav__link">
+    Versioning
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#notes-on-dammit" title="Notes on dammit" class="md-nav__link">
+    Notes on dammit
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#architecture" title="Architecture:" class="md-nav__link">
+    Architecture:
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#take-a-look-at-code-and-tests-in-the-dammit-directory" title="Take a look at code and tests in the dammit directory:" class="md-nav__link">
+    Take a look at code and tests in the dammit directory:
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configjson" title="config.json" class="md-nav__link">
+    config.json
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#parallelpy" title="parallel.py" class="md-nav__link">
+    parallel.py
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#uipy" title="ui.py" class="md-nav__link">
+    ui.py
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tests" title="TESTS!" class="md-nav__link">
+    TESTS!
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#reviewing-a-pr" title="Reviewing a PR" class="md-nav__link">
+    Reviewing a PR
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fix-travis" title="Fix travis:" class="md-nav__link">
+    Fix travis:
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bioconda" title="Bioconda" class="md-nav__link">
+    Bioconda
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#documentation" title="Documentation" class="md-nav__link">
+    Documentation
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+    
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#setting-up-your-local-computer-for-dammit-devevelopment" title="Setting up your local computer for dammit devevelopment" class="md-nav__link">
+    Setting up your local computer for dammit devevelopment
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#to-do-for-dammit" title="To-do for dammit" class="md-nav__link">
+    To-do for dammit
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#versioning" title="Versioning" class="md-nav__link">
+    Versioning
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#notes-on-dammit" title="Notes on dammit" class="md-nav__link">
+    Notes on dammit
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#architecture" title="Architecture:" class="md-nav__link">
+    Architecture:
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#take-a-look-at-code-and-tests-in-the-dammit-directory" title="Take a look at code and tests in the dammit directory:" class="md-nav__link">
+    Take a look at code and tests in the dammit directory:
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configjson" title="config.json" class="md-nav__link">
+    config.json
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#parallelpy" title="parallel.py" class="md-nav__link">
+    parallel.py
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#uipy" title="ui.py" class="md-nav__link">
+    ui.py
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tests" title="TESTS!" class="md-nav__link">
+    TESTS!
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#reviewing-a-pr" title="Reviewing a PR" class="md-nav__link">
+    Reviewing a PR
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fix-travis" title="Fix travis:" class="md-nav__link">
+    Fix travis:
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bioconda" title="Bioconda" class="md-nav__link">
+    Bioconda
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#documentation" title="Documentation" class="md-nav__link">
+    Documentation
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                
+                <h1 id="for-dammit-developers">For <code>dammit</code> developers</h1>
+<p><a href="https://github.com/dib-lab/dammit">dammit!</a></p>
+<h2 id="setting-up-your-local-computer-for-dammit-devevelopment">Setting up your local computer for <code>dammit</code> devevelopment</h2>
+<p>We can basically follow the <a href="https://github.com/dib-lab/dammit/blob/master/.travis.yml">instructions for travis</a>, because we're telling <a href="https://travis-ci.org/dib-lab/dammit/">travis</a> to do the same things we want to do on our local computers.</p>
+<p>Make sure conda is installed. If not, here are instructions:</p>
+<pre><code>wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
+bash Miniconda3-latest-Linux-x86_64.sh -b
+export PATH=&quot;$HOME/miniconda3/bin:$PATH&quot;
+</code></pre>
+
+<p>Fork <code>dammit</code> repository to your account. Clone this fork to your local computer, then create a dev branch called <code>testing</code>:</p>
+<pre><code>git clone https://github.com/username/dammit.git
+git remote add upstream https://github.com/dib-lab/dammit.git 
+git checkout -b testing
+git branch
+</code></pre>
+
+<p>Now you are on the <code>testing</code> branch.</p>
+<p>Keep original repository in the <code>master</code> branch. Make sure it is up-to-date periodically by running:</p>
+<pre><code>git pull upstream master
+</code></pre>
+
+<p>Set up a Python 3 environment to work in:</p>
+<pre><code>conda create -n dammit_dev python=3
+source activate dammit_dev
+</code></pre>
+
+<p>Install dependencies:</p>
+<pre><code>conda config --set always_yes yes --set changeps1 no
+conda config --add channels defaults
+conda config --add channels bioconda
+conda config --add channels conda-forge
+
+conda install python numpy pandas numexpr&gt;=2.3.1 khmer&gt;=2.1 sphinx&gt;1.3.1 sphinx_rtd_theme&gt;=0.1.9 pytest pytest-runner doit&gt;=0.29.0 matplotlib shmlast infernal hmmer transdecoder=3.0.1 last busco=3.0.2 parallel bioconductor-seqlogo
+python setup.py install
+</code></pre>
+
+<p>Last line of the output should be:</p>
+<pre><code>Finished processing dependencies for dammit==1.0rc2
+</code></pre>
+
+<p>Lastly, install databases  (will install in <code>~/.dammit/databases/</code>)</p>
+<pre><code>dammit databases --install
+</code></pre>
+
+<p>Output should be:</p>
+<pre><code>(dammit_dev) campus-019-072:dammit johnsolk$ dammit databases --install
+Unable to revert mtime: /Library/Fonts
+# dammit
+## a tool for easy de novo transcriptome annotation
+
+by Camille Scott
+
+**v1.0rc2**, 2018
+
+## submodule: databases
+### Database Install
+#### Info
+* Database Directory: /Users/johnsolk/.dammit/databases
+* Doit Database: /Users/johnsolk/.dammit/databases/databases.doit.db
+
+
+*All database tasks up-to-date.*
+
+Nothing to install!
+</code></pre>
+
+<p>Now you are ready to edit and make changes!</p>
+<h2 id="to-do-for-dammit">To-do for <code>dammit</code></h2>
+<ul>
+<li>[ ] update transdecoder version</li>
+<li>[ ] orthodb version (other database versions?)</li>
+<li>[ ] add swissprot</li>
+<li>[x] change order of conda channels to include conda-forge last</li>
+<li>[ ] update documentation</li>
+<li>[ ] add pipeline for accepting .pep file as input (skips transdecoder, transcriptome stats and BUSCO tasks)</li>
+</ul>
+<h4 id="versioning">Versioning</h4>
+<p>A new version is required when a new version of a database is added or a major change happens that changes the commandline interface. Change the VERSION file when this hapens. </p>
+<p>(Note 11/30/2018: We should make all changes above in the T-do, then move to v1.1)</p>
+<h2 id="notes-on-dammit">Notes on dammit</h2>
+<p>Written by <a href="http://www.camillescott.org/">Camille Scott</a>. See <a href="https://angus.readthedocs.io/en/2018/dammit_annotation.html">tutorial</a>.</p>
+<ol>
+<li>Look at <a href="http://pydoit.org/index.html">pydoit</a> documentation, and <a href="https://dib-training.readthedocs.io/en/pub/2016-01-20-pydoit-lr.html">Camille's workshop</a></li>
+<li><a href="https://pypi.org/project/dammit/#history">pypi</a> and <a href="https://anaconda.org/bioconda/dammit">bioconda</a> (supported method of installation)</li>
+</ol>
+<pre><code>conda config --add channels defaults
+conda config --add channels bioconda
+conda config --add channels conda-forge
+</code></pre>
+
+<h3 id="architecture">Architecture:</h3>
+<h4 id="take-a-look-at-code-and-tests-in-the-dammit-directory">Take a look at code and tests in the <code>dammit</code> directory:</h4>
+<ul>
+<li>The core driver of <code>dammit</code> is the <code>dammit/app.py</code> file, which sets up the commandline arguments. Everything happens here. If you want to add an argument, this is where it hapens.  </li>
+<li>There are two subcommand task-handler files: <code>annotate.py</code> and <code>databases.py</code></li>
+<li>Tasks are steps being run, separated into different files. For example, the <code>hmmer.py</code> file contains all hmmer tasks.</li>
+<li>The task handler has on logger, pulls from config to figure out where databases are located (all happens in background), some doit stuff happening</li>
+<li><a href="https://realpython.com/primer-on-python-decorators/">Decorators</a> transfer the function's <code>return</code> into a doit function (e.g. line 59 of shell.py) <code>import doit_task</code> then <code>@doit_task</code></li>
+</ul>
+<p><code>databases</code>, 2 pipelines:</p>
+<ul>
+<li><code>quick</code></li>
+<li><code>full</code></li>
+</ul>
+<p><code>annotate</code>, more pipelines: </p>
+<ul>
+<li><code>uniref1</code></li>
+<li><code>full</code></li>
+<li><code>nr</code></li>
+</ul>
+<h4 id="configjson"><code>config.json</code></h4>
+<p>Can use custom <code>config.json</code> file to include different parameters for the programs run by the tasks, e.g. <code>transdecoder LongOrgs -m 50</code>, etc.</p>
+<h4 id="parallelpy"><code>parallel.py</code></h4>
+<p>hmmer, infernal, lastl, </p>
+<p>requires gnu parallel</p>
+<p>(There are instructions for how to runon multi-node hpc, somewhere.)</p>
+<h4 id="uipy"><code>ui.py</code></h4>
+<p>output for user to markdown formatting for copying/pasting into GitHub issue reporting</p>
+<p><code>generate-test-data-.sh</code> re-genreates test data adn puts it in proper dirs</p>
+<h3 id="tests">TESTS!</h3>
+<p><code>dammit/tests</code></p>
+<p>Run <code>test_databases.py</code> yourself, locally (because databases cannot be cached on travis-ci)</p>
+<ul>
+<li>makes sure tasks and pipeline run and produce output, they don't all check expected output. some integration output.</li>
+<li>uses pytest</li>
+<li>set of tests files</li>
+<li>testing pydoit tasks is a pain</li>
+<li>under utils, file to run tasks. give it a list of tasks, it will execute in own directory.</li>
+<li>functions start with 'test', check assertions</li>
+<li>fixtures are a means of setting upa consistent environment before running an individual test, e.g. be in a clean directory. tmpdir will create a randomly name temporary directory.</li>
+<li>make tests for new tasks (Sometimes they will take a long time to run...)</li>
+<li><code>test_annotate.py</code> must be run locally by yourself.</li>
+<li>before pushing release, do both of these</li>
+<li><code>make long tests</code> (assumes environment is already setup)</li>
+<li><a href="https://travis-ci.org/dib-lab/dammit/">travis-ci</a> is building the recipe that lives in the repo</li>
+<li><code>make-ci-test</code>, not long and not huge and not requires_datbases</li>
+</ul>
+<h2 id="reviewing-a-pr">Reviewing a PR</h2>
+<p><strong>Tests must pass before merging!</strong></p>
+<ul>
+<li>Have there been radical changes? (Are you adding things to handler, maybe time to take a step back and make sure code uses reasonable variable names, tests, etc)</li>
+<li>Does travis build?</li>
+<li>Try to make commit messages somewhat informative</li>
+</ul>
+<p>If these all seem reasonable to you, approve!</p>
+<h2 id="fix-travis">Fix travis:</h2>
+<p><code>.travis.yml</code></p>
+<ul>
+<li>make sure conda env uses right Python</li>
+<li>fix conda channel order</li>
+</ul>
+<h2 id="bioconda">Bioconda</h2>
+<ul>
+<li>https://anaconda.org/bioconda/dammit</li>
+<li>Recipe: https://github.com/bioconda/bioconda-recipes/blob/master/recipes/dammit/meta.yaml</li>
+</ul>
+<h2 id="documentation">Documentation</h2>
+<ul>
+<li>http://dib-lab.github.io/dammit/</li>
+<li><a href="https://angus.readthedocs.io/en/2018/dammit_annotation.html">Tutorial from angus 2018</a></li>
+</ul>
+                
+                  
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid">
+        
+          <a href="../tutorial/" title="Tutorial" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
+            </div>
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                Tutorial
+              </span>
+            </div>
+          </a>
+        
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+          <div class="md-footer-copyright__highlight">
+            Copyright &copy; 2018 <a href="http://ivory.idyll.org/lab/">Lab for Data Intensive Biology</a> at UC Davis
+          </div>
+        
+        powered by
+        <a href="https://www.mkdocs.org">MkDocs</a>
+        and
+        <a href="https://squidfunk.github.io/mkdocs-material/">
+          Material for MkDocs</a>
+      </div>
+      
+        
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="../assets/javascripts/application.e72fd936.js"></script>
+      
+      <script>app.initialize({version:"1.0.4",url:{base:".."}})</script>
+      
+        <script src="../search/main.js"></script>
+      
+    
+    
+      
+    
+  </body>
+</html>

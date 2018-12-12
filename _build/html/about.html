@@ -1,0 +1,218 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>About &#8212; dammit 1.0.dev0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0.dev0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="author" title="About these documents" href="#" />
+    <link rel="top" title="dammit 1.0.dev0 documentation" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="about">
+<h1>About<a class="headerlink" href="#about" title="Permalink to this headline">¶</a></h1>
+<p>This page goes a little more in depth on the software and its goals.</p>
+<div class="section" id="motivations">
+<h2>Motivations<a class="headerlink" href="#motivations" title="Permalink to this headline">¶</a></h2>
+<p>Several different factors motivated dammit&#8217;s development. The first of these was the
+sea lamprey transcriptome project, which had annotation as a primary goal. Many of dammit&#8217;s
+core features were already implemented there, and it seemed a shame not share that work with
+others in a usable format. Related to this was a lack of workable and easy-to-use existing
+solutions; in particular, most are meant to be used as protocols and haven&#8217;t been packaged in an
+automated format. Licensing was also a big concern &#8211; software used for science should be open
+source, easily accessible, remixable, and free.</p>
+<p>Implicit to these motivations is some idea of what a good annotator <em>should</em> look like, in the
+author&#8217;s opinion:</p>
+<ol class="arabic simple">
+<li>It should be easy to install and upgrade</li>
+<li>It should only use Free software</li>
+<li>It should make use of standard databases</li>
+<li>It should output in reasonable formats</li>
+<li>It should be relatively fast</li>
+<li>It should try to be correct, insofar as any computational approach can be &#8220;correct&#8221;</li>
+<li>It should give the user some measure of confidence for its results.</li>
+</ol>
+<div class="section" id="the-obligatory-flowchart">
+<h3>The Obligatory Flowchart<a class="headerlink" href="#the-obligatory-flowchart" title="Permalink to this headline">¶</a></h3>
+<div class="figure" id="id1">
+<img alt="The Workflow" src="_images/workflow.svg" /><p class="caption"><span class="caption-text">The Workflow</span></p>
+</div>
+</div>
+</div>
+<div class="section" id="software-used">
+<h2>Software Used<a class="headerlink" href="#software-used" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>TransDecoder</li>
+<li>BUSCO</li>
+<li>HMMER</li>
+<li>Infernal</li>
+<li>LAST</li>
+<li>crb-blast (for now)</li>
+<li>pydoit (under the hood)</li>
+</ul>
+<p>All of these are Free Software, as in freedom and beer</p>
+</div>
+<div class="section" id="databases">
+<h2>Databases<a class="headerlink" href="#databases" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Pfam-A</li>
+<li>Rfam</li>
+<li>OrthoDB</li>
+<li>BUSCO databases</li>
+<li>Uniref90</li>
+<li>User-supplied protein databases</li>
+</ul>
+<p>The last one is important, and sometimes ignored.</p>
+</div>
+<div class="section" id="conditional-reciprocal-best-last">
+<h2>Conditional Reciprocal Best LAST<a class="headerlink" href="#conditional-reciprocal-best-last" title="Permalink to this headline">¶</a></h2>
+<p>Building off Richard and co&#8217;s work on Conditional Reciprocal Best BLAST,
+I&#8217;ve implemented a new version with Python and LAST &#8211; CRBL. The
+original lives here: <a class="reference external" href="https://github.com/cboursnell/crb-blast">https://github.com/cboursnell/crb-blast</a></p>
+<p>Why??</p>
+<ul class="simple">
+<li>BLAST is too slooooooow</li>
+<li>Ruby is yet another dependency to have users install</li>
+<li>With Python and scikit learn, I have freedom to toy with models (and
+learn stuff)</li>
+</ul>
+<p>And, of course, some of these databases are BIG. Doing <code class="docutils literal"><span class="pre">blastx</span></code> and
+<code class="docutils literal"><span class="pre">tblastn</span></code> between a reasonably sized transcriptome and Uniref90 is not
+an experience you want to have.</p>
+<p>ie, practical concerns.</p>
+<div class="section" id="a-brief-intro-to-crbb">
+<h3>A brief intro to CRBB<a class="headerlink" href="#a-brief-intro-to-crbb" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Reciprocal Best Hits (RBH) is a standard method for ortholog
+detection</li>
+<li>Transcriptomes have multiple multiple transcript isoforms, which
+confounds RBH</li>
+<li>CRBB uses machine learning to get at this problem</li>
+</ul>
+<div class="figure">
+<img alt="_images/RBH.svg" src="_images/RBH.svg" /></div>
+<p>CRBB attempts to associate those isoforms with appropriate annotations
+by learning an appropriate e-value cutoff for different transcript
+lengths.</p>
+<div class="figure" id="id2">
+<img alt="CRBB" src="_images/CRBB_decision.png" />
+<p class="caption"><span class="caption-text">CRBB</span></p>
+</div>
+<p><em>from
+http://journals.plos.org/plosgenetics/article?id=10.1371/journal.pgen.1004365#s5</em></p>
+</div>
+<div class="section" id="crbl">
+<h3>CRBL<a class="headerlink" href="#crbl" title="Permalink to this headline">¶</a></h3>
+<p>For CRBL, instead of fitting a linear model, we train a model.</p>
+<ul class="simple">
+<li>SVM</li>
+<li>Naive bayes</li>
+</ul>
+<p>One limitation is that LAST has no equivalent to <code class="docutils literal"><span class="pre">tblastn</span></code>. So, we
+find the RBHs using the TransDecoder ORFs, and then use the model on the
+translated transcriptome versus database hits.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">About</a><ul>
+<li><a class="reference internal" href="#motivations">Motivations</a><ul>
+<li><a class="reference internal" href="#the-obligatory-flowchart">The Obligatory Flowchart</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#software-used">Software Used</a></li>
+<li><a class="reference internal" href="#databases">Databases</a></li>
+<li><a class="reference internal" href="#conditional-reciprocal-best-last">Conditional Reciprocal Best LAST</a><ul>
+<li><a class="reference internal" href="#a-brief-intro-to-crbb">A brief intro to CRBB</a></li>
+<li><a class="reference internal" href="#crbl">CRBL</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/about.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2015, Camille Scott.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="_sources/about.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

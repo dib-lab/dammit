@@ -1,0 +1,150 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Usage &#8212; dammit 1.0.dev0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0.dev0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="author" title="About these documents" href="about.html" />
+    <link rel="top" title="dammit 1.0.dev0 documentation" href="index.html" />
+    <link rel="next" title="Databases" href="databases.html" />
+    <link rel="prev" title="Tutorial" href="tutorial.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="usage">
+<h1>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h1>
+<p>If you&#8217;re looking for a quick start, head over to the <a class="reference external" href="tutorial.html">tutorial</a>.
+This page has more complete usage information and a better breakdown of the functionality.</p>
+<div class="section" id="dependencies">
+<h2>Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h2>
+<p>dammit has three components. The first, <cite>dependencies</cite>, checks whether you have the dependencies installed
+correctly and warns you if not. It is run with:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">dammit</span> <span class="n">dependencies</span>
+</pre></div>
+</div>
+<p>There isn&#8217;t much to this command; either you have the dependencies or you don&#8217;t. If you don&#8217;t,
+there are instructions for getting them on the <a class="reference external" href="installation.html">installation</a> page.</p>
+</div>
+<div class="section" id="databases">
+<h2>Databases<a class="headerlink" href="#databases" title="Permalink to this headline">¶</a></h2>
+<p>The next component is the <cite>databases</cite> subcommand. This handles all of dammit&#8217;s
+external data; the documentation can be found <a class="reference external" href="databases.html">here</a>.</p>
+</div>
+<div class="section" id="annotation">
+<h2>Annotation<a class="headerlink" href="#annotation" title="Permalink to this headline">¶</a></h2>
+<p>The <cite>annotate</cite> command runs the BUSCO assessment, assembly stats, and homology searches,
+aggregates the results, and outputs a GFF3 file and annotation report. It takes the <code class="docutils literal"><span class="pre">--full</span></code>,
+<code class="docutils literal"><span class="pre">--database-dir</span></code>, and <code class="docutils literal"><span class="pre">--busco-group</span></code> options in the same manner as the <cite>databases</cite> command.
+Additionally, it can specify an optional output directory, the number of threads to use with
+threaded subprograms like HMMER, and a list of user-supplied protein databases in FASTA format. A
+simple invocation with the default databases would look like:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">dammit</span> <span class="n">annotate</span> <span class="o">&lt;</span><span class="n">transcriptome</span><span class="o">.</span><span class="n">fasta</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>While a more complex invocation might look like:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">dammit</span> <span class="n">annotate</span> <span class="o">&lt;</span><span class="n">transcriptome</span><span class="o">.</span><span class="n">fasta</span><span class="o">&gt;</span> <span class="o">--</span><span class="n">database</span><span class="o">-</span><span class="nb">dir</span> <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">dbs</span> <span class="o">--</span><span class="n">busco</span><span class="o">-</span><span class="n">group</span> <span class="n">vertebrata</span> <span class="o">--</span><span class="n">n_threads</span> <span class="mi">4</span> <span class="o">--</span><span class="n">user</span><span class="o">-</span><span class="n">databases</span> <span class="n">whale</span><span class="o">.</span><span class="n">pep</span><span class="o">.</span><span class="n">fasta</span> <span class="n">dolphin</span><span class="o">.</span><span class="n">pep</span><span class="o">.</span><span class="n">fasta</span>
+</pre></div>
+</div>
+<p>User databases will be searched with CRBB; this runs <cite>blastx</cite>, so if you supply ridiculously huge
+databases, it <em>will</em> take a long time. Future versions will use LAST for all searches to
+improve performance, but for now, we&#8217;re stuck with the NCBI&#8217;s dinosaur. Also note that the
+information from the deflines in your databases will be used to construct the GFF3 file, so if your
+databases lack useful IDs, your annotations will too.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Usage</a><ul>
+<li><a class="reference internal" href="#dependencies">Dependencies</a></li>
+<li><a class="reference internal" href="#databases">Databases</a></li>
+<li><a class="reference internal" href="#annotation">Annotation</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="tutorial.html" title="previous chapter">Tutorial</a></li>
+      <li>Next: <a href="databases.html" title="next chapter">Databases</a></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/usage.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2015, Camille Scott.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="_sources/usage.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

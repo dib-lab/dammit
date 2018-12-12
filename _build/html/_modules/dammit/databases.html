@@ -1,0 +1,299 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>dammit.databases &#8212; dammit 1.0.dev0 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.0.dev0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="author" title="About these documents" href="../../about.html" />
+    <link rel="top" title="dammit 1.0.dev0 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for dammit.databases</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/enb python</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
+
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">os</span> <span class="k">import</span> <span class="n">path</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="kn">from</span> <span class="nn">doit.dependency</span> <span class="k">import</span> <span class="n">Dependency</span><span class="p">,</span> <span class="n">SqliteDB</span>
+<span class="kn">from</span> <span class="nn">shmlast.last</span> <span class="k">import</span> <span class="n">lastdb_task</span> <span class="k">as</span> <span class="n">get_lastdb_task</span>
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">ui</span>
+<span class="kn">from</span> <span class="nn">.handler</span> <span class="k">import</span> <span class="n">TaskHandler</span>
+<span class="kn">from</span> <span class="nn">.tasks.hmmer</span> <span class="k">import</span> <span class="n">get_hmmpress_task</span>
+<span class="kn">from</span> <span class="nn">.tasks.infernal</span> <span class="k">import</span> <span class="n">get_cmpress_task</span>
+<span class="kn">from</span> <span class="nn">.tasks.shell</span> <span class="k">import</span> <span class="p">(</span><span class="n">get_download_and_gunzip_task</span><span class="p">,</span>
+                          <span class="n">get_download_and_untar_task</span><span class="p">)</span>
+
+<div class="viewcode-block" id="get_handler"><a class="viewcode-back" href="../../dammit.html#dammit.databases.get_handler">[docs]</a><span class="k">def</span> <span class="nf">get_handler</span><span class="p">(</span><span class="n">config</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Build the TaskHandler for the database prep pipeline. The</span>
+<span class="sd">    handler will not have registered tasks when returned.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        config (dict): Config dictionary, which contains the command</span>
+<span class="sd">            line arguments and the entries from the config file.</span>
+<span class="sd">        databases (dict): The database dictionary from `databases.json`.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        handler.TaskHandler: A constructed TaskHandler.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;DatabaseHandler&#39;</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;get_handler&#39;</span><span class="p">)</span>
+
+    <span class="n">handler</span> <span class="o">=</span> <span class="n">TaskHandler</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;database_dir&#39;</span><span class="p">],</span>
+                          <span class="n">logger</span><span class="p">,</span> 
+                          <span class="n">db</span><span class="o">=</span><span class="s1">&#39;databases&#39;</span><span class="p">,</span>
+                          <span class="n">backend</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;doit_backend&#39;</span><span class="p">],</span>
+                          <span class="n">verbosity</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;verbosity&#39;</span><span class="p">])</span>
+
+    <span class="k">return</span> <span class="n">handler</span></div>
+
+
+<div class="viewcode-block" id="default_database_dir"><a class="viewcode-back" href="../../dammit.html#dammit.databases.default_database_dir">[docs]</a><span class="k">def</span> <span class="nf">default_database_dir</span><span class="p">(</span><span class="n">logger</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Get the default database directory: checks the environment</span>
+<span class="sd">    for a DAMMIT_DB_DIR variable, and if it is not found, returns</span>
+<span class="sd">    the default location of `$HOME/.dammit/databases`.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        logger (logging.logger): Logger to write to.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        str: Path to the database directory.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">directory</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;DAMMIT_DB_DIR&#39;</span><span class="p">]</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;found DAMMIT_DB_DIR env variable&#39;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;no DAMMIT_DB_DIR or --database-dir, using&#39;</span>\
+                     <span class="s1">&#39;default&#39;</span><span class="p">)</span>
+        <span class="n">directory</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;HOME&#39;</span><span class="p">],</span> <span class="s1">&#39;.dammit&#39;</span><span class="p">,</span> <span class="s1">&#39;databases&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">directory</span></div>
+
+
+<div class="viewcode-block" id="print_meta"><a class="viewcode-back" href="../../dammit.html#dammit.databases.print_meta">[docs]</a><span class="k">def</span> <span class="nf">print_meta</span><span class="p">(</span><span class="n">handler</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Print metadata about the database pipeline.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        handler (handler.TaskHandler): The database task handler.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="n">ui</span><span class="o">.</span><span class="n">header</span><span class="p">(</span><span class="s1">&#39;Info&#39;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="mi">4</span><span class="p">))</span>
+    <span class="n">info</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Doit Database&#39;</span><span class="p">:</span> <span class="n">handler</span><span class="o">.</span><span class="n">dep_file</span><span class="p">,</span>
+            <span class="s1">&#39;Database Directory&#39;</span><span class="p">:</span> <span class="n">handler</span><span class="o">.</span><span class="n">directory</span><span class="p">}</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">ui</span><span class="o">.</span><span class="n">listing</span><span class="p">(</span><span class="n">info</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="install"><a class="viewcode-back" href="../../dammit.html#dammit.databases.install">[docs]</a><span class="k">def</span> <span class="nf">install</span><span class="p">(</span><span class="n">handler</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Run the database prep pipeline from the given handler.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="n">ui</span><span class="o">.</span><span class="n">header</span><span class="p">(</span><span class="s1">&#39;Database Install&#39;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="mi">3</span><span class="p">))</span>
+    <span class="n">print_meta</span><span class="p">(</span><span class="n">handler</span><span class="p">)</span>
+    <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;*All database tasks up-to-date.*&#39;</span>
+    <span class="n">uptodate</span><span class="p">,</span> <span class="n">statuses</span> <span class="o">=</span> <span class="n">handler</span><span class="o">.</span><span class="n">print_statuses</span><span class="p">(</span><span class="n">uptodate_msg</span><span class="o">=</span><span class="n">msg</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">uptodate</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Installing...&#39;</span><span class="p">)</span>
+        <span class="n">handler</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Nothing to install!&#39;</span><span class="p">)</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="check_or_fail"><a class="viewcode-back" href="../../dammit.html#dammit.databases.check_or_fail">[docs]</a><span class="k">def</span> <span class="nf">check_or_fail</span><span class="p">(</span><span class="n">handler</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Check that the handler&#39;s tasks are complete, and if not, exit</span>
+<span class="sd">    with status 2.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="n">ui</span><span class="o">.</span><span class="n">header</span><span class="p">(</span><span class="s1">&#39;Database Check&#39;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="mi">3</span><span class="p">))</span>
+    <span class="n">print_meta</span><span class="p">(</span><span class="n">handler</span><span class="p">)</span>
+    <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;*All database tasks up-to-date.*&#39;</span>
+    <span class="n">uptodate</span><span class="p">,</span> <span class="n">statuses</span> <span class="o">=</span> <span class="n">handler</span><span class="o">.</span><span class="n">print_statuses</span><span class="p">(</span><span class="n">uptodate_msg</span><span class="o">=</span><span class="n">msg</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">uptodate</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">ui</span><span class="o">.</span><span class="n">paragraph</span><span class="p">(</span><span class="s1">&#39;Must install databases to continue. To do so,&#39;</span>
+                           <span class="s1">&#39; run `dammit databases --install`. If you have&#39;</span>
+                           <span class="s1">&#39; already installed them, make sure you</span><span class="se">\&#39;</span><span class="s1">ve given&#39;</span>
+                           <span class="s1">&#39; the correct location to `--database-dir` or have&#39;</span>
+                           <span class="s1">&#39; exported the $DAMMIT_DB_DIR environment&#39;</span>
+                           <span class="s1">&#39; variable.&#39;</span><span class="p">))</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="build_default_pipeline"><a class="viewcode-back" href="../../dammit.html#dammit.databases.build_default_pipeline">[docs]</a><span class="k">def</span> <span class="nf">build_default_pipeline</span><span class="p">(</span><span class="n">handler</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">databases</span><span class="p">,</span> <span class="n">with_uniref</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Register tasks for dammit&#39;s builtin database prep pipeline.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        handler (handler.TaskHandler): The task handler to register on.</span>
+<span class="sd">        config (dict): Config dictionary, which contains the command</span>
+<span class="sd">            line arguments and the entries from the config file.</span>
+<span class="sd">        databases (dict): The dictionary of files from `databases.json`.</span>
+<span class="sd">        with_uniref (bool): If True, download and install the uniref90</span>
+<span class="sd">            database. Note that this will take 16+Gb of RAM and a looong</span>
+<span class="sd">            time to prepare with `lastdb`.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        handler.TaskHandler: The handler passed in.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="n">register_pfam_tasks</span><span class="p">(</span><span class="n">handler</span><span class="p">,</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;hmmer&#39;</span><span class="p">][</span><span class="s1">&#39;hmmpress&#39;</span><span class="p">],</span> <span class="n">databases</span><span class="p">)</span>
+    <span class="n">register_rfam_tasks</span><span class="p">(</span><span class="n">handler</span><span class="p">,</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;infernal&#39;</span><span class="p">][</span><span class="s1">&#39;cmpress&#39;</span><span class="p">],</span> <span class="n">databases</span><span class="p">)</span>
+    <span class="n">register_orthodb_tasks</span><span class="p">(</span><span class="n">handler</span><span class="p">,</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;last&#39;</span><span class="p">][</span><span class="s1">&#39;lastdb&#39;</span><span class="p">],</span> <span class="n">databases</span><span class="p">)</span>
+    <span class="n">register_busco_tasks</span><span class="p">(</span><span class="n">handler</span><span class="p">,</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;busco&#39;</span><span class="p">],</span> <span class="n">databases</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">with_uniref</span><span class="p">:</span>
+        <span class="n">register_uniref90_tasks</span><span class="p">(</span><span class="n">handler</span><span class="p">,</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;last&#39;</span><span class="p">][</span><span class="s1">&#39;lastdb&#39;</span><span class="p">],</span> <span class="n">databases</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">handler</span></div>
+                          
+
+<div class="viewcode-block" id="register_pfam_tasks"><a class="viewcode-back" href="../../dammit.html#dammit.databases.register_pfam_tasks">[docs]</a><span class="k">def</span> <span class="nf">register_pfam_tasks</span><span class="p">(</span><span class="n">handler</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">databases</span><span class="p">):</span>
+    <span class="n">pfam_A</span> <span class="o">=</span> <span class="n">databases</span><span class="p">[</span><span class="s1">&#39;Pfam-A&#39;</span><span class="p">]</span>
+    <span class="n">filename</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">handler</span><span class="o">.</span><span class="n">directory</span><span class="p">,</span> <span class="n">pfam_A</span><span class="p">[</span><span class="s1">&#39;filename&#39;</span><span class="p">])</span>
+    <span class="n">task</span> <span class="o">=</span> <span class="n">get_download_and_gunzip_task</span><span class="p">(</span><span class="n">pfam_A</span><span class="p">[</span><span class="s1">&#39;url&#39;</span><span class="p">],</span>
+                                        <span class="n">filename</span><span class="p">)</span>
+    <span class="n">handler</span><span class="o">.</span><span class="n">register_task</span><span class="p">(</span><span class="s1">&#39;download:Pfam-A&#39;</span><span class="p">,</span> <span class="n">task</span><span class="p">,</span>
+                          <span class="n">files</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;Pfam-A&#39;</span><span class="p">:</span> <span class="n">filename</span><span class="p">})</span>
+    <span class="n">handler</span><span class="o">.</span><span class="n">register_task</span><span class="p">(</span><span class="s1">&#39;hmmpress:Pfam-A&#39;</span><span class="p">,</span>
+                          <span class="n">get_hmmpress_task</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> 
+                                            <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span>
+                                            <span class="n">task_dep</span><span class="o">=</span><span class="p">[</span><span class="n">task</span><span class="o">.</span><span class="n">name</span><span class="p">]))</span>
+    <span class="k">return</span> <span class="n">handler</span></div>
+
+
+<div class="viewcode-block" id="register_rfam_tasks"><a class="viewcode-back" href="../../dammit.html#dammit.databases.register_rfam_tasks">[docs]</a><span class="k">def</span> <span class="nf">register_rfam_tasks</span><span class="p">(</span><span class="n">handler</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">databases</span><span class="p">):</span>
+    <span class="n">rfam</span> <span class="o">=</span> <span class="n">databases</span><span class="p">[</span><span class="s1">&#39;Rfam&#39;</span><span class="p">]</span>
+    <span class="n">filename</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">handler</span><span class="o">.</span><span class="n">directory</span><span class="p">,</span> <span class="n">rfam</span><span class="p">[</span><span class="s1">&#39;filename&#39;</span><span class="p">])</span>
+    <span class="n">task</span> <span class="o">=</span> <span class="n">get_download_and_gunzip_task</span><span class="p">(</span><span class="n">rfam</span><span class="p">[</span><span class="s1">&#39;url&#39;</span><span class="p">],</span> 
+                                        <span class="n">filename</span><span class="p">)</span>
+    <span class="n">handler</span><span class="o">.</span><span class="n">register_task</span><span class="p">(</span><span class="s1">&#39;download:Rfam&#39;</span><span class="p">,</span> <span class="n">task</span><span class="p">,</span>
+                           <span class="n">files</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;Rfam&#39;</span><span class="p">:</span> <span class="n">filename</span><span class="p">})</span>
+    <span class="n">handler</span><span class="o">.</span><span class="n">register_task</span><span class="p">(</span><span class="s1">&#39;cmpress:Rfam&#39;</span><span class="p">,</span>
+                          <span class="n">get_cmpress_task</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span>
+                                           <span class="n">task_dep</span><span class="o">=</span><span class="p">[</span><span class="n">task</span><span class="o">.</span><span class="n">name</span><span class="p">],</span>
+                                           <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">handler</span></div>
+
+
+<div class="viewcode-block" id="register_orthodb_tasks"><a class="viewcode-back" href="../../dammit.html#dammit.databases.register_orthodb_tasks">[docs]</a><span class="k">def</span> <span class="nf">register_orthodb_tasks</span><span class="p">(</span><span class="n">handler</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">databases</span><span class="p">):</span>
+    <span class="n">orthodb</span> <span class="o">=</span> <span class="n">databases</span><span class="p">[</span><span class="s1">&#39;OrthoDB&#39;</span><span class="p">]</span>
+    <span class="n">filename</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">handler</span><span class="o">.</span><span class="n">directory</span><span class="p">,</span> <span class="n">orthodb</span><span class="p">[</span><span class="s1">&#39;filename&#39;</span><span class="p">])</span>
+    <span class="n">task</span> <span class="o">=</span> <span class="n">get_download_and_gunzip_task</span><span class="p">(</span><span class="n">orthodb</span><span class="p">[</span><span class="s1">&#39;url&#39;</span><span class="p">],</span> 
+                                        <span class="n">filename</span><span class="p">)</span>
+    <span class="n">handler</span><span class="o">.</span><span class="n">register_task</span><span class="p">(</span><span class="s1">&#39;download:OrthoDB&#39;</span><span class="p">,</span> <span class="n">task</span><span class="p">,</span>
+                          <span class="n">files</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;OrthoDB&#39;</span><span class="p">:</span> <span class="n">filename</span><span class="p">})</span>
+    <span class="n">handler</span><span class="o">.</span><span class="n">register_task</span><span class="p">(</span><span class="s1">&#39;lastdb:OrthoDB&#39;</span><span class="p">,</span>
+                          <span class="n">get_lastdb_task</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> 
+                                          <span class="n">filename</span><span class="p">,</span> 
+                                          <span class="n">prot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                          <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span>
+                                          <span class="n">task_dep</span><span class="o">=</span><span class="p">[</span><span class="n">task</span><span class="o">.</span><span class="n">name</span><span class="p">]))</span>
+    <span class="k">return</span> <span class="n">handler</span></div>
+
+
+<div class="viewcode-block" id="register_busco_tasks"><a class="viewcode-back" href="../../dammit.html#dammit.databases.register_busco_tasks">[docs]</a><span class="k">def</span> <span class="nf">register_busco_tasks</span><span class="p">(</span><span class="n">handler</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">databases</span><span class="p">):</span>
+    <span class="n">busco</span> <span class="o">=</span> <span class="n">databases</span><span class="p">[</span><span class="s1">&#39;BUSCO&#39;</span><span class="p">]</span>
+    <span class="n">busco_dir</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">handler</span><span class="o">.</span><span class="n">directory</span><span class="p">,</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;db_dir&#39;</span><span class="p">])</span>
+    <span class="k">for</span> <span class="n">group_name</span> <span class="ow">in</span> <span class="n">busco</span><span class="p">:</span>
+        <span class="n">group</span> <span class="o">=</span> <span class="n">busco</span><span class="p">[</span><span class="n">group_name</span><span class="p">]</span>
+        <span class="n">files</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;BUSCO-</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">group_name</span><span class="p">):</span> <span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">busco_dir</span><span class="p">,</span> <span class="n">group_name</span><span class="p">)}</span>
+        <span class="n">handler</span><span class="o">.</span><span class="n">register_task</span><span class="p">(</span><span class="s1">&#39;download:BUSCO-</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">group_name</span><span class="p">),</span>
+                              <span class="n">get_download_and_untar_task</span><span class="p">(</span><span class="n">group</span><span class="p">[</span><span class="s1">&#39;url&#39;</span><span class="p">],</span>
+                                                         <span class="n">busco_dir</span><span class="p">,</span>
+                                                         <span class="n">label</span><span class="o">=</span><span class="n">group_name</span><span class="p">),</span>
+                              <span class="n">files</span><span class="o">=</span><span class="n">files</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">handler</span></div>
+
+
+<div class="viewcode-block" id="register_uniref90_tasks"><a class="viewcode-back" href="../../dammit.html#dammit.databases.register_uniref90_tasks">[docs]</a><span class="k">def</span> <span class="nf">register_uniref90_tasks</span><span class="p">(</span><span class="n">handler</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">databases</span><span class="p">):</span>
+    <span class="n">uniref90</span> <span class="o">=</span> <span class="n">databases</span><span class="p">[</span><span class="s1">&#39;uniref90&#39;</span><span class="p">]</span>
+    <span class="n">task</span> <span class="o">=</span> <span class="n">get_download_and_gunzip_task</span><span class="p">(</span><span class="n">uniref90</span><span class="p">[</span><span class="s1">&#39;url&#39;</span><span class="p">],</span>
+                                        <span class="n">uniref90</span><span class="p">[</span><span class="s1">&#39;filename&#39;</span><span class="p">])</span>
+    <span class="n">filename</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">handler</span><span class="o">.</span><span class="n">directory</span><span class="p">,</span> <span class="n">uniref90</span><span class="p">[</span><span class="s1">&#39;filename&#39;</span><span class="p">])</span>
+    <span class="n">handler</span><span class="o">.</span><span class="n">register_task</span><span class="p">(</span><span class="s1">&#39;download:uniref90&#39;</span><span class="p">,</span>
+                          <span class="n">task</span><span class="p">,</span>
+                          <span class="n">files</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;uniref90&#39;</span><span class="p">:</span> <span class="n">filename</span><span class="p">})</span>
+    <span class="n">handler</span><span class="o">.</span><span class="n">register_task</span><span class="p">(</span><span class="s1">&#39;lastdb:uniref90&#39;</span><span class="p">,</span>
+                          <span class="n">get_lastdb_task</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span>
+                                          <span class="n">filename</span><span class="p">,</span>
+                                          <span class="n">prot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                          <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span>
+                                          <span class="n">task_dep</span><span class="o">=</span><span class="p">[</span><span class="n">task</span><span class="o">.</span><span class="n">name</span><span class="p">]))</span>
+    <span class="k">return</span> <span class="n">handler</span></div>
+
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2015, Camille Scott.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

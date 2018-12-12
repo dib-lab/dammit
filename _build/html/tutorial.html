@@ -1,0 +1,160 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Tutorial &#8212; dammit 1.0.dev0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0.dev0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="author" title="About these documents" href="about.html" />
+    <link rel="top" title="dammit 1.0.dev0 documentation" href="index.html" />
+    <link rel="next" title="Usage" href="usage.html" />
+    <link rel="prev" title="Installation" href="installing.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="tutorial">
+<h1>Tutorial<a class="headerlink" href="#tutorial" title="Permalink to this headline">¶</a></h1>
+<p>Once you have the dependencies installed, it&#8217;s time to actually annotate something!
+This guide will take you through a short example on some test data.</p>
+<div class="section" id="data">
+<h2>Data<a class="headerlink" href="#data" title="Permalink to this headline">¶</a></h2>
+<p>First let&#8217;s download some test data. We&#8217;ll start small and use a
+<em>Schizosaccharomyces pombe</em> transcriptome. Make a working directory and move there,
+and then download the file:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">mkdir</span> <span class="n">dammit_test</span>
+<span class="n">cd</span> <span class="n">dammit_test</span>
+<span class="n">wget</span> <span class="n">ftp</span><span class="p">:</span><span class="o">//</span><span class="n">ftp</span><span class="o">.</span><span class="n">ebi</span><span class="o">.</span><span class="n">ac</span><span class="o">.</span><span class="n">uk</span><span class="o">/</span><span class="n">pub</span><span class="o">/</span><span class="n">databases</span><span class="o">/</span><span class="n">pombase</span><span class="o">/</span><span class="n">FASTA</span><span class="o">/</span><span class="n">cdna_nointrons_utrs</span><span class="o">.</span><span class="n">fa</span><span class="o">.</span><span class="n">gz</span>
+<span class="n">wget</span> <span class="n">ftp</span><span class="p">:</span><span class="o">//</span><span class="n">ftp</span><span class="o">.</span><span class="n">ebi</span><span class="o">.</span><span class="n">ac</span><span class="o">.</span><span class="n">uk</span><span class="o">/</span><span class="n">pub</span><span class="o">/</span><span class="n">databases</span><span class="o">/</span><span class="n">pombase</span><span class="o">/</span><span class="n">FASTA</span><span class="o">/</span><span class="n">pep</span><span class="o">.</span><span class="n">fa</span><span class="o">.</span><span class="n">gz</span>
+</pre></div>
+</div>
+<p>Decompress the file with gunzip:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">gunzip</span> <span class="n">cdna_nointrons_utrs</span><span class="o">.</span><span class="n">fa</span><span class="o">.</span><span class="n">gz</span> <span class="n">pep</span><span class="o">.</span><span class="n">fa</span><span class="o">.</span><span class="n">gz</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="databases">
+<h2>Databases<a class="headerlink" href="#databases" title="Permalink to this headline">¶</a></h2>
+<p>If you&#8217;re just starting, you probably haven&#8217;t downloaded the databases yet. Here
+we&#8217;ll install the main databases, as well as the <cite>eukaryota</cite> BUSCO database for
+our yeast dataset.
+This could take a while, so consider walking away and getting yourself a cup of
+coffee. If you installed dammit into a virtual environment, be sure to activate
+it first:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">dammit</span> <span class="n">databases</span> <span class="o">--</span><span class="n">install</span> <span class="o">--</span><span class="n">busco</span><span class="o">-</span><span class="n">group</span> <span class="n">eukaryota</span>
+</pre></div>
+</div>
+<p>Alternatively, if you happen to have downloaded many of these databases before,
+you can follow the directions in the <a class="reference external" href="databases.html">databases guide</a>.</p>
+<p>While the initial download takes a while, once its done, you won&#8217;t need to do it again &#8211;
+dammit keeps track of the database state and won&#8217;t repeat work its already completed,
+even if you accidentally rerun with the <code class="docutils literal"><span class="pre">--install</span></code> flag.</p>
+</div>
+<div class="section" id="annotation">
+<h2>Annotation<a class="headerlink" href="#annotation" title="Permalink to this headline">¶</a></h2>
+<p>Now we&#8217;ll do a simple run of the annotator. We&#8217;ll use <cite>pep.fa</cite> as a user database;
+this is a toy example, seeing as these proteins came from the same set of
+transcripts as we&#8217;re annotating, but they illustrate the usage nicely enough.
+We&#8217;ll also specify a non-default BUSCO group. You can replace the argument to
+<code class="docutils literal"><span class="pre">--n_threads</span></code> with however many cores are available on your system in order to
+speed it up.:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">dammit</span> <span class="n">annotate</span> <span class="n">cdna_nointrons_utrs</span><span class="o">.</span><span class="n">fa</span> <span class="o">--</span><span class="n">user</span><span class="o">-</span><span class="n">databases</span> <span class="n">pep</span><span class="o">.</span><span class="n">fa</span> <span class="o">--</span><span class="n">busco</span><span class="o">-</span><span class="n">group</span> <span class="n">eukaryota</span> <span class="o">--</span><span class="n">n_threads</span> <span class="mi">1</span>
+</pre></div>
+</div>
+<p>This will take a bit, so go get another cup of coffee...</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Tutorial</a><ul>
+<li><a class="reference internal" href="#data">Data</a></li>
+<li><a class="reference internal" href="#databases">Databases</a></li>
+<li><a class="reference internal" href="#annotation">Annotation</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="installing.html" title="previous chapter">Installation</a></li>
+      <li>Next: <a href="usage.html" title="next chapter">Usage</a></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/tutorial.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2015, Camille Scott.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="_sources/tutorial.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

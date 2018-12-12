@@ -1,0 +1,495 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>dammit.annotate &#8212; dammit 1.0.dev0 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.0.dev0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="author" title="About these documents" href="../../about.html" />
+    <link rel="top" title="dammit 1.0.dev0 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for dammit.annotate</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
+
+<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">OrderedDict</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">os</span> <span class="k">import</span> <span class="n">path</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="kn">from</span> <span class="nn">shmlast.app</span> <span class="k">import</span> <span class="n">CRBL</span>
+<span class="kn">from</span> <span class="nn">shmlast.last</span> <span class="k">import</span> <span class="n">lastal_task</span> <span class="k">as</span> <span class="n">get_lastal_task</span>
+
+<span class="kn">from</span> <span class="nn">.handler</span> <span class="k">import</span> <span class="n">TaskHandler</span>
+<span class="kn">from</span> <span class="nn">.profile</span> <span class="k">import</span> <span class="n">add_profile_actions</span>
+
+<span class="kn">from</span> <span class="nn">.tasks.fastx</span> <span class="k">import</span> <span class="p">(</span><span class="n">get_transcriptome_stats_task</span><span class="p">,</span>
+                          <span class="n">get_rename_transcriptome_task</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">.tasks.report</span> <span class="k">import</span> <span class="n">get_annotate_fasta_task</span>
+<span class="kn">from</span> <span class="nn">.tasks.busco</span> <span class="k">import</span> <span class="n">get_busco_task</span>
+<span class="kn">from</span> <span class="nn">.tasks.utils</span> <span class="k">import</span> <span class="n">get_group_task</span>
+<span class="kn">from</span> <span class="nn">.tasks.gff</span> <span class="k">import</span> <span class="p">(</span><span class="n">get_maf_gff3_task</span><span class="p">,</span>
+                        <span class="n">get_shmlast_gff3_task</span><span class="p">,</span>
+                        <span class="n">get_hmmscan_gff3_task</span><span class="p">,</span>
+                        <span class="n">get_cmscan_gff3_task</span><span class="p">,</span>
+                        <span class="n">get_gff3_merge_task</span><span class="p">,</span>
+                        <span class="n">get_maf_best_hits_task</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">.tasks.hmmer</span> <span class="k">import</span> <span class="n">get_hmmscan_task</span><span class="p">,</span> <span class="n">get_remap_hmmer_task</span>
+<span class="kn">from</span> <span class="nn">.tasks.infernal</span> <span class="k">import</span> <span class="n">get_cmscan_task</span>
+<span class="kn">from</span> <span class="nn">.tasks.transdecoder</span> <span class="k">import</span> <span class="p">(</span><span class="n">get_transdecoder_predict_task</span><span class="p">,</span>
+                                       <span class="n">get_transdecoder_orf_task</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">ui</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">log</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
+
+<div class="viewcode-block" id="get_handler"><a class="viewcode-back" href="../../dammit.html#dammit.annotate.get_handler">[docs]</a><span class="k">def</span> <span class="nf">get_handler</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">databases</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Build the TaskHandler for the annotation pipelines. The</span>
+<span class="sd">    handler will not have registered tasks when returned.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        config (dict): Config dictionary, which contains the command</span>
+<span class="sd">            line arguments and the entries from the config file.</span>
+<span class="sd">        databases (dict): The dictionary of files from a database</span>
+<span class="sd">            TaskHandler.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        handler.TaskHandler: A constructed TaskHandler.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;AnnotateHandler&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;output_dir&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">out_dir</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;transcriptome&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;.dammit&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">out_dir</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;output_dir&#39;</span><span class="p">]</span>
+    <span class="n">directory</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">out_dir</span><span class="p">)</span>
+
+    <span class="n">handler</span> <span class="o">=</span> <span class="n">TaskHandler</span><span class="p">(</span><span class="n">directory</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> 
+                          <span class="n">db</span><span class="o">=</span><span class="s1">&#39;annotate&#39;</span><span class="p">,</span>
+                          <span class="n">backend</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;doit_backend&#39;</span><span class="p">],</span>
+                          <span class="n">verbosity</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;verbosity&#39;</span><span class="p">],</span>
+                          <span class="n">profile</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;profile&#39;</span><span class="p">])</span>
+    <span class="n">log</span><span class="o">.</span><span class="n">start_logging</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">directory</span><span class="p">,</span> <span class="s1">&#39;dammit.log&#39;</span><span class="p">))</span>
+
+    <span class="n">input_fn</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">directory</span><span class="p">,</span> <span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;transcriptome&#39;</span><span class="p">]))</span>
+    <span class="n">name_map_fn</span> <span class="o">=</span> <span class="n">input_fn</span> <span class="o">+</span> <span class="s1">&#39;.dammit.namemap.csv&#39;</span>
+    <span class="n">handler</span><span class="o">.</span><span class="n">register_task</span><span class="p">(</span><span class="s1">&#39;rename-transcriptome&#39;</span><span class="p">,</span>
+                          <span class="n">get_rename_transcriptome_task</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;transcriptome&#39;</span><span class="p">]),</span>
+                                                        <span class="n">input_fn</span><span class="p">,</span>
+                                                        <span class="n">name_map_fn</span><span class="p">,</span>
+                                                        <span class="n">config</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]),</span>
+                          <span class="n">files</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;transcriptome&#39;</span><span class="p">:</span> <span class="n">input_fn</span><span class="p">,</span>
+                                 <span class="s1">&#39;name_map&#39;</span><span class="p">:</span> <span class="n">name_map_fn</span><span class="p">})</span>
+    
+    <span class="k">return</span> <span class="n">handler</span></div>
+
+
+<div class="viewcode-block" id="run_annotation"><a class="viewcode-back" href="../../dammit.html#dammit.annotate.run_annotation">[docs]</a><span class="k">def</span> <span class="nf">run_annotation</span><span class="p">(</span><span class="n">handler</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Run the annotation pipeline from the given handler.</span>
+
+<span class="sd">    Prints the appropriate output and exits of the pipeline is alredy completed.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        handler (handler.TaskHandler): Handler with tasks for the pipeline.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">ui</span><span class="o">.</span><span class="n">header</span><span class="p">(</span><span class="s1">&#39;Annotation&#39;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="mi">3</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">ui</span><span class="o">.</span><span class="n">header</span><span class="p">(</span><span class="s1">&#39;Info&#39;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="mi">4</span><span class="p">))</span>
+    <span class="n">info</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Doit Database&#39;</span><span class="p">:</span> <span class="n">handler</span><span class="o">.</span><span class="n">dep_file</span><span class="p">,</span>
+            <span class="s1">&#39;Input Transcriptome&#39;</span><span class="p">:</span> <span class="n">handler</span><span class="o">.</span><span class="n">files</span><span class="p">[</span><span class="s1">&#39;transcriptome&#39;</span><span class="p">]}</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">ui</span><span class="o">.</span><span class="n">listing</span><span class="p">(</span><span class="n">info</span><span class="p">))</span>
+    <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;*All annotation tasks up-to-date.*&#39;</span>
+    <span class="n">uptodate</span><span class="p">,</span> <span class="n">statuses</span> <span class="o">=</span> <span class="n">handler</span><span class="o">.</span><span class="n">print_statuses</span><span class="p">(</span><span class="n">uptodate_msg</span><span class="o">=</span><span class="n">msg</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">uptodate</span><span class="p">:</span>
+        <span class="n">handler</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;**Pipeline is already completed!**&#39;</span><span class="p">)</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="build_default_pipeline"><a class="viewcode-back" href="../../dammit.html#dammit.annotate.build_default_pipeline">[docs]</a><span class="k">def</span> <span class="nf">build_default_pipeline</span><span class="p">(</span><span class="n">handler</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">databases</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Register tasks for the default dammit pipeline.</span>
+
+<span class="sd">    This is all the main tasks, without lastal uniref90 task.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        handler (handler.TaskHandler): The task handler to register on.</span>
+<span class="sd">        config (dict): Config dictionary, which contains the command</span>
+<span class="sd">            line arguments and the entries from the config file.</span>
+<span class="sd">        databases (dict): The dictionary of files from a database</span>
+<span class="sd">            TaskHandler.</span>
+<span class="sd">    </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        handler.TaskHandler: The handler passed in.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="n">register_stats_task</span><span class="p">(</span><span class="n">handler</span><span class="p">)</span>
+    <span class="n">register_busco_task</span><span class="p">(</span><span class="n">handler</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">databases</span><span class="p">)</span>
+    <span class="n">register_transdecoder_tasks</span><span class="p">(</span><span class="n">handler</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">databases</span><span class="p">)</span>
+    <span class="n">register_rfam_tasks</span><span class="p">(</span><span class="n">handler</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">databases</span><span class="p">)</span>
+    <span class="n">register_lastal_tasks</span><span class="p">(</span><span class="n">handler</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">databases</span><span class="p">,</span>
+                        <span class="n">include_uniref</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">register_user_db_tasks</span><span class="p">(</span><span class="n">handler</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">databases</span><span class="p">)</span>
+    <span class="n">register_annotate_tasks</span><span class="p">(</span><span class="n">handler</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">databases</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">handler</span></div>
+
+
+<div class="viewcode-block" id="build_full_pipeline"><a class="viewcode-back" href="../../dammit.html#dammit.annotate.build_full_pipeline">[docs]</a><span class="k">def</span> <span class="nf">build_full_pipeline</span><span class="p">(</span><span class="n">handler</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">databases</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Register tasks for the full dammit pipeline (with uniref90).</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        handler (handler.TaskHandler): The task handler to register on.</span>
+<span class="sd">        config (dict): Config dictionary, which contains the command</span>
+<span class="sd">            line arguments and the entries from the config file.</span>
+<span class="sd">        databases (dict): The dictionary of files from a database</span>
+<span class="sd">            TaskHandler.</span>
+<span class="sd">    </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        handler.TaskHandler: The handler passed in.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">register_stats_task</span><span class="p">(</span><span class="n">handler</span><span class="p">)</span>
+    <span class="n">register_busco_task</span><span class="p">(</span><span class="n">handler</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">databases</span><span class="p">)</span>
+    <span class="n">register_transdecoder_tasks</span><span class="p">(</span><span class="n">handler</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">databases</span><span class="p">)</span>
+    <span class="n">register_rfam_tasks</span><span class="p">(</span><span class="n">handler</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">databases</span><span class="p">)</span>
+    <span class="n">register_lastal_tasks</span><span class="p">(</span><span class="n">handler</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">databases</span><span class="p">,</span>
+                        <span class="n">include_uniref</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">register_user_db_tasks</span><span class="p">(</span><span class="n">handler</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">databases</span><span class="p">)</span>
+    <span class="n">register_annotate_tasks</span><span class="p">(</span><span class="n">handler</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">databases</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">handler</span></div>
+
+
+<div class="viewcode-block" id="build_quick_pipeline"><a class="viewcode-back" href="../../dammit.html#dammit.annotate.build_quick_pipeline">[docs]</a><span class="k">def</span> <span class="nf">build_quick_pipeline</span><span class="p">(</span><span class="n">handler</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">databases</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Register tasks for the quick annotation pipeline.</span>
+
+<span class="sd">    Leaves out the Pfam search (and so does not pass these hits to </span>
+<span class="sd">    `TransDecoder.Predict`), the Rfam search, and the lastal searches</span>
+<span class="sd">    against OrthoDB and uniref90. Best suited for users who have built their</span>
+<span class="sd">    own protein databases and would just like to annotate off them.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        handler (handler.TaskHandler): The task handler to register on.</span>
+<span class="sd">        config (dict): Config dictionary, which contains the command</span>
+<span class="sd">            line arguments and the entries from the config file.</span>
+<span class="sd">        databases (dict): The dictionary of files from a database</span>
+<span class="sd">            TaskHandler.</span>
+<span class="sd">    </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        handler.TaskHandler: The handler passed in.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="n">register_stats_task</span><span class="p">(</span><span class="n">handler</span><span class="p">)</span>
+    <span class="n">register_busco_task</span><span class="p">(</span><span class="n">handler</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">databases</span><span class="p">)</span>
+    <span class="n">register_transdecoder_tasks</span><span class="p">(</span><span class="n">handler</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">databases</span><span class="p">,</span>
+                                <span class="n">include_hmmer</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">register_user_db_tasks</span><span class="p">(</span><span class="n">handler</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">databases</span><span class="p">)</span>
+    <span class="n">register_annotate_tasks</span><span class="p">(</span><span class="n">handler</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">databases</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">handler</span></div>
+
+
+<div class="viewcode-block" id="register_stats_task"><a class="viewcode-back" href="../../dammit.html#dammit.annotate.register_stats_task">[docs]</a><span class="k">def</span> <span class="nf">register_stats_task</span><span class="p">(</span><span class="n">handler</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Register the tasks for basic transcriptome metrics.&#39;&#39;&#39;</span>
+
+    <span class="n">input_fn</span> <span class="o">=</span> <span class="n">handler</span><span class="o">.</span><span class="n">files</span><span class="p">[</span><span class="s1">&#39;transcriptome&#39;</span><span class="p">]</span>
+    <span class="n">stats_fn</span> <span class="o">=</span> <span class="n">input_fn</span> <span class="o">+</span> <span class="s1">&#39;.dammit.stats.json&#39;</span>
+    <span class="n">handler</span><span class="o">.</span><span class="n">register_task</span><span class="p">(</span><span class="s1">&#39;transcriptome-stats&#39;</span><span class="p">,</span>
+                          <span class="n">get_transcriptome_stats_task</span><span class="p">(</span><span class="n">input_fn</span><span class="p">,</span>
+                                                       <span class="n">stats_fn</span><span class="p">),</span>
+                          <span class="n">files</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;stats&#39;</span><span class="p">:</span> <span class="n">stats_fn</span><span class="p">})</span></div>
+
+
+<div class="viewcode-block" id="register_busco_task"><a class="viewcode-back" href="../../dammit.html#dammit.annotate.register_busco_task">[docs]</a><span class="k">def</span> <span class="nf">register_busco_task</span><span class="p">(</span><span class="n">handler</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">databases</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Register tasks for BUSCO. Note that this expects</span>
+<span class="sd">    a proper dammit config dictionary.&#39;&#39;&#39;</span>
+
+    <span class="n">input_fn</span> <span class="o">=</span> <span class="n">handler</span><span class="o">.</span><span class="n">files</span><span class="p">[</span><span class="s1">&#39;transcriptome&#39;</span><span class="p">]</span>
+    <span class="n">busco_group</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;busco_group&#39;</span><span class="p">]</span>
+    <span class="n">busco_database</span> <span class="o">=</span> <span class="n">databases</span><span class="p">[</span><span class="s1">&#39;BUSCO-</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">busco_group</span><span class="p">)]</span>
+    <span class="n">busco_basename</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">.</span><span class="si">{1}</span><span class="s1">.busco.results&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">input_fn</span><span class="p">,</span> <span class="n">busco_group</span><span class="p">)</span>
+    <span class="n">busco_out_dir</span> <span class="o">=</span> <span class="s1">&#39;run_</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">busco_basename</span><span class="p">)</span>
+
+    <span class="n">handler</span><span class="o">.</span><span class="n">register_task</span><span class="p">(</span><span class="s1">&#39;BUSCO-</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">busco_group</span><span class="p">),</span>
+                          <span class="n">get_busco_task</span><span class="p">(</span><span class="n">input_fn</span><span class="p">,</span>
+                                         <span class="n">busco_basename</span><span class="p">,</span>
+                                         <span class="n">busco_database</span><span class="p">,</span>
+                                         <span class="n">input_type</span><span class="o">=</span><span class="s1">&#39;trans&#39;</span><span class="p">,</span>
+                                         <span class="n">n_threads</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;n_threads&#39;</span><span class="p">],</span>
+                                         <span class="n">params</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;busco&#39;</span><span class="p">][</span><span class="s1">&#39;params&#39;</span><span class="p">]),</span>
+                          <span class="n">files</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;BUSCO&#39;</span><span class="p">:</span> <span class="n">busco_out_dir</span><span class="p">})</span></div>
+
+
+<div class="viewcode-block" id="register_transdecoder_tasks"><a class="viewcode-back" href="../../dammit.html#dammit.annotate.register_transdecoder_tasks">[docs]</a><span class="k">def</span> <span class="nf">register_transdecoder_tasks</span><span class="p">(</span><span class="n">handler</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">databases</span><span class="p">,</span>
+                                <span class="n">include_hmmer</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Register tasks for TransDecoder. TransDecoder first finds long ORFs with</span>
+<span class="sd">    `TransDecoder.LongOrfs`, which are output as a FASTA file of protein</span>
+<span class="sd">    sequences. These sequences can are then used to search against Pfam-A for</span>
+<span class="sd">    conserved domains, and the coordinates from the resulting matches mapped</span>
+<span class="sd">    back relative to the original transcripts. `TransDecoder.Predict` the builds</span>
+<span class="sd">    the final gene models based on the training data provided by</span>
+<span class="sd">    `TransDecoder.LongOrfs`, optionally using the Pfam-A results to keep</span>
+<span class="sd">    ORFs which otherwise don&#39;t fit the model closely enough. Once again,</span>
+<span class="sd">    note that a proper dammit config dictionary is required.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="n">input_fn</span> <span class="o">=</span> <span class="n">handler</span><span class="o">.</span><span class="n">files</span><span class="p">[</span><span class="s1">&#39;transcriptome&#39;</span><span class="p">]</span>
+    <span class="n">transdecoder_dir</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">.transdecoder_dir&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">input_fn</span><span class="p">)</span>
+    
+    <span class="n">handler</span><span class="o">.</span><span class="n">register_task</span><span class="p">(</span><span class="s1">&#39;TransDecoder.LongOrfs&#39;</span><span class="p">,</span>
+                          <span class="n">get_transdecoder_orf_task</span><span class="p">(</span><span class="n">input_fn</span><span class="p">,</span> 
+                                                    <span class="n">params</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;transdecoder&#39;</span><span class="p">][</span><span class="s1">&#39;longorfs&#39;</span><span class="p">]),</span>
+                          <span class="n">files</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;longest_orfs&#39;</span><span class="p">:</span> <span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">transdecoder_dir</span><span class="p">,</span> <span class="s1">&#39;longest_orfs.pep&#39;</span><span class="p">)})</span>
+    
+    <span class="n">pfam_fn</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="n">include_hmmer</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">pfam_fn</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">transdecoder_dir</span><span class="p">,</span> <span class="s1">&#39;longest_orfs.pep.x.pfam.tbl&#39;</span><span class="p">)</span>
+        <span class="n">handler</span><span class="o">.</span><span class="n">register_task</span><span class="p">(</span><span class="s1">&#39;hmmscan:Pfam-A&#39;</span><span class="p">,</span>
+                              <span class="n">get_hmmscan_task</span><span class="p">(</span><span class="n">handler</span><span class="o">.</span><span class="n">files</span><span class="p">[</span><span class="s1">&#39;longest_orfs&#39;</span><span class="p">],</span>
+                                               <span class="n">pfam_fn</span><span class="p">,</span>
+                                               <span class="n">databases</span><span class="p">[</span><span class="s1">&#39;Pfam-A&#39;</span><span class="p">],</span>
+                                               <span class="n">cutoff</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;evalue&#39;</span><span class="p">],</span>
+                                               <span class="n">n_threads</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;n_threads&#39;</span><span class="p">],</span>
+                                               <span class="n">pbs</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;pbs&#39;</span><span class="p">],</span>
+                                               <span class="n">params</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;hmmer&#39;</span><span class="p">][</span><span class="s1">&#39;hmmscan&#39;</span><span class="p">]),</span>
+                              <span class="n">files</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;longest_orfs_pfam&#39;</span><span class="p">:</span> <span class="n">pfam_fn</span><span class="p">})</span>
+
+        <span class="n">pfam_csv_fn</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">.x.pfam-A.csv&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">input_fn</span><span class="p">)</span>
+        <span class="n">handler</span><span class="o">.</span><span class="n">register_task</span><span class="p">(</span><span class="s1">&#39;hmmscan:Pfam-A:remap&#39;</span><span class="p">,</span>
+                              <span class="n">get_remap_hmmer_task</span><span class="p">(</span><span class="n">handler</span><span class="o">.</span><span class="n">files</span><span class="p">[</span><span class="s1">&#39;longest_orfs_pfam&#39;</span><span class="p">],</span>
+                                                   <span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">transdecoder_dir</span><span class="p">,</span> <span class="s1">&#39;longest_orfs.gff3&#39;</span><span class="p">),</span>
+                                                   <span class="n">pfam_csv_fn</span><span class="p">),</span>
+                              <span class="n">files</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;Pfam-A-csv&#39;</span><span class="p">:</span> <span class="n">pfam_csv_fn</span><span class="p">})</span>
+        
+        <span class="n">pfam_gff3</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">.x.pfam-A.gff3&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">input_fn</span><span class="p">)</span>
+        <span class="n">handler</span><span class="o">.</span><span class="n">register_task</span><span class="p">(</span><span class="s1">&#39;gff3:Pfam-A&#39;</span><span class="p">,</span>
+                               <span class="n">get_hmmscan_gff3_task</span><span class="p">(</span><span class="n">pfam_csv_fn</span><span class="p">,</span>
+                                                     <span class="n">pfam_gff3</span><span class="p">,</span> 
+                                                     <span class="s1">&#39;Pfam&#39;</span><span class="p">),</span>
+                               <span class="n">files</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;Pfam-A-gff3&#39;</span><span class="p">:</span> <span class="n">pfam_gff3</span><span class="p">})</span>
+
+    <span class="n">predict_params</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;transdecoder&#39;</span><span class="p">][</span><span class="s1">&#39;predict&#39;</span><span class="p">]</span>
+    <span class="n">transdecoder_pep</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">.transdecoder.pep&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">input_fn</span><span class="p">)</span>
+    <span class="n">transdecoder_gff3</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">.transdecoder.gff3&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">input_fn</span><span class="p">)</span>
+    <span class="n">handler</span><span class="o">.</span><span class="n">register_task</span><span class="p">(</span><span class="s1">&#39;TransDecoder.Predict&#39;</span><span class="p">,</span>
+                          <span class="n">get_transdecoder_predict_task</span><span class="p">(</span><span class="n">input_fn</span><span class="p">,</span> 
+                                                        <span class="n">pfam_filename</span><span class="o">=</span><span class="n">pfam_fn</span><span class="p">,</span>
+                                                        <span class="n">params</span><span class="o">=</span><span class="n">predict_params</span><span class="p">),</span>
+                          <span class="n">files</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;transdecoder-pep&#39;</span><span class="p">:</span> <span class="n">transdecoder_pep</span><span class="p">,</span>
+                                 <span class="s1">&#39;transdecoder-gff3&#39;</span><span class="p">:</span> <span class="n">transdecoder_gff3</span><span class="p">})</span></div>
+
+
+<div class="viewcode-block" id="register_rfam_tasks"><a class="viewcode-back" href="../../dammit.html#dammit.annotate.register_rfam_tasks">[docs]</a><span class="k">def</span> <span class="nf">register_rfam_tasks</span><span class="p">(</span><span class="n">handler</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">databases</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Registers tasks for Infernal&#39;s `cmscan` against Rfam. Rfam is an RNA</span>
+<span class="sd">    secondary structure database comprising covariance models for many known</span>
+<span class="sd">    RNAs. This is a relatively slow step. A proper dammit config dictionary is</span>
+<span class="sd">    required.&#39;&#39;&#39;</span>
+
+    <span class="n">input_fn</span> <span class="o">=</span> <span class="n">handler</span><span class="o">.</span><span class="n">files</span><span class="p">[</span><span class="s1">&#39;transcriptome&#39;</span><span class="p">]</span>
+    <span class="n">output_fn</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">.x.rfam.tbl&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">input_fn</span><span class="p">)</span>
+    <span class="n">handler</span><span class="o">.</span><span class="n">register_task</span><span class="p">(</span><span class="s1">&#39;cmscan:Rfam&#39;</span><span class="p">,</span>
+                          <span class="n">get_cmscan_task</span><span class="p">(</span><span class="n">input_fn</span><span class="p">,</span>
+                                          <span class="n">output_fn</span><span class="p">,</span>
+                                          <span class="n">databases</span><span class="p">[</span><span class="s1">&#39;Rfam&#39;</span><span class="p">],</span>
+                                          <span class="n">cutoff</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;evalue&#39;</span><span class="p">],</span>
+                                          <span class="n">n_threads</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;n_threads&#39;</span><span class="p">],</span>
+                                          <span class="n">pbs</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;pbs&#39;</span><span class="p">],</span>
+                                          <span class="n">params</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;infernal&#39;</span><span class="p">][</span><span class="s1">&#39;cmscan&#39;</span><span class="p">]),</span>
+                          <span class="n">files</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;Rfam&#39;</span><span class="p">:</span> <span class="n">output_fn</span><span class="p">})</span>
+
+    <span class="n">rfam_gff3</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">.x.rfam.gff3&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">input_fn</span><span class="p">)</span>
+    <span class="n">handler</span><span class="o">.</span><span class="n">register_task</span><span class="p">(</span><span class="s1">&#39;gff3:Rfam&#39;</span><span class="p">,</span>
+                          <span class="n">get_cmscan_gff3_task</span><span class="p">(</span><span class="n">output_fn</span><span class="p">,</span>
+                                               <span class="n">rfam_gff3</span><span class="p">,</span> 
+                                               <span class="s1">&#39;Rfam&#39;</span><span class="p">),</span>
+                          <span class="n">files</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;Rfam-gff3&#39;</span><span class="p">:</span> <span class="n">rfam_gff3</span><span class="p">})</span></div>
+
+
+<div class="viewcode-block" id="register_lastal_tasks"><a class="viewcode-back" href="../../dammit.html#dammit.annotate.register_lastal_tasks">[docs]</a><span class="k">def</span> <span class="nf">register_lastal_tasks</span><span class="p">(</span><span class="n">handler</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">databases</span><span class="p">,</span>
+                          <span class="n">include_uniref</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Register tasks for `lastal` searches. By default, this will just</span>
+<span class="sd">    align the transcriptome against OrthoDB; if requested, it will align against</span>
+<span class="sd">    uniref90 as well, which takes considerably longer.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        handler (handler.TaskHandler): The task handler to register on.</span>
+<span class="sd">        config (dict): Config dictionary, which contains the command</span>
+<span class="sd">            line arguments and the entries from the config file.</span>
+<span class="sd">        databases (dict): The dictionary of files from a database</span>
+<span class="sd">            TaskHandler.</span>
+<span class="sd">        include_uniref (bool): If True, add tasks for searching uniref90.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="n">input_fn</span> <span class="o">=</span> <span class="n">handler</span><span class="o">.</span><span class="n">files</span><span class="p">[</span><span class="s1">&#39;transcriptome&#39;</span><span class="p">]</span>
+    <span class="n">lastal_cfg</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;last&#39;</span><span class="p">][</span><span class="s1">&#39;lastal&#39;</span><span class="p">]</span>
+    
+    <span class="n">dbs</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
+    <span class="n">dbs</span><span class="p">[</span><span class="s1">&#39;OrthoDB&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">databases</span><span class="p">[</span><span class="s1">&#39;OrthoDB&#39;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">include_uniref</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">dbs</span><span class="p">[</span><span class="s1">&#39;uniref90&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">databases</span><span class="p">[</span><span class="s1">&#39;uniref90&#39;</span><span class="p">]</span>
+
+    <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">db</span> <span class="ow">in</span> <span class="n">dbs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">output_fn</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">.x.</span><span class="si">{1}</span><span class="s1">.maf&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">input_fn</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+        <span class="n">handler</span><span class="o">.</span><span class="n">register_task</span><span class="p">(</span><span class="s1">&#39;lastal:</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">),</span>
+                          <span class="n">add_profile_actions</span><span class="p">(</span><span class="n">get_lastal_task</span><span class="p">(</span><span class="n">input_fn</span><span class="p">,</span>
+                                              <span class="n">db</span><span class="p">,</span>
+                                              <span class="n">output_fn</span><span class="p">,</span>
+                                              <span class="n">translate</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                              <span class="n">cutoff</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;evalue&#39;</span><span class="p">],</span>
+                                              <span class="n">n_threads</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;n_threads&#39;</span><span class="p">],</span>
+                                              <span class="n">frameshift</span><span class="o">=</span><span class="n">lastal_cfg</span><span class="p">[</span><span class="s1">&#39;frameshift&#39;</span><span class="p">],</span>
+                                              <span class="n">pbs</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;pbs&#39;</span><span class="p">],</span>
+                                              <span class="n">params</span><span class="o">=</span><span class="n">lastal_cfg</span><span class="p">[</span><span class="s1">&#39;params&#39;</span><span class="p">])),</span>
+                              <span class="n">files</span><span class="o">=</span><span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="n">output_fn</span><span class="p">})</span>
+
+        <span class="n">best_fn</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">.x.</span><span class="si">{1}</span><span class="s1">.best.csv&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">input_fn</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+        <span class="n">gff3_fn</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">.x.</span><span class="si">{1}</span><span class="s1">.best.gff3&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">input_fn</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+
+        <span class="n">handler</span><span class="o">.</span><span class="n">register_task</span><span class="p">(</span><span class="s1">&#39;lastal:best-hits:</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">),</span>
+                              <span class="n">get_maf_best_hits_task</span><span class="p">(</span><span class="n">output_fn</span><span class="p">,</span>
+                                                     <span class="n">best_fn</span><span class="p">),</span>
+                              <span class="n">files</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">-best-hits&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">):</span> <span class="n">best_fn</span><span class="p">})</span>
+        <span class="n">handler</span><span class="o">.</span><span class="n">register_task</span><span class="p">(</span><span class="s1">&#39;gff3:</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">),</span>
+                              <span class="n">get_maf_gff3_task</span><span class="p">(</span><span class="n">best_fn</span><span class="p">,</span>
+                                                <span class="n">gff3_fn</span><span class="p">,</span>
+                                                <span class="n">name</span><span class="p">),</span>
+                              <span class="n">files</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">-gff3&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">):</span> <span class="n">gff3_fn</span><span class="p">})</span></div>
+
+
+<div class="viewcode-block" id="register_annotate_tasks"><a class="viewcode-back" href="../../dammit.html#dammit.annotate.register_annotate_tasks">[docs]</a><span class="k">def</span> <span class="nf">register_annotate_tasks</span><span class="p">(</span><span class="n">handler</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">databases</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Register tasks for aggregating the annotations into one GFF3 file</span>
+<span class="sd">    and writing out summary descriptions in a new FASTA file.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        handler (handler.TaskHandler): The task handler to register on.</span>
+<span class="sd">        config (dict): Config dictionary, which contains the command</span>
+<span class="sd">            line arguments and the entries from the config file.</span>
+<span class="sd">        databases (dict): The dictionary of files from a database</span>
+<span class="sd">            TaskHandler.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">input_fn</span> <span class="o">=</span> <span class="n">handler</span><span class="o">.</span><span class="n">files</span><span class="p">[</span><span class="s1">&#39;transcriptome&#39;</span><span class="p">]</span>
+    <span class="n">gff3_files</span> <span class="o">=</span> <span class="p">[</span><span class="n">fn</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">fn</span> <span class="ow">in</span> <span class="n">handler</span><span class="o">.</span><span class="n">files</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">name</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;-gff3&#39;</span><span class="p">)]</span>
+    <span class="n">merged_gff3</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">.dammit.gff3&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">input_fn</span><span class="p">)</span>
+    <span class="n">handler</span><span class="o">.</span><span class="n">register_task</span><span class="p">(</span><span class="s1">&#39;gff3:merge-all&#39;</span><span class="p">,</span>
+                          <span class="n">get_gff3_merge_task</span><span class="p">(</span><span class="n">gff3_files</span><span class="p">,</span> <span class="n">merged_gff3</span><span class="p">),</span>
+                          <span class="n">files</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;merged-gff3&#39;</span><span class="p">:</span> <span class="n">merged_gff3</span><span class="p">})</span>
+
+    <span class="n">annotated_fn</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">.dammit.fasta&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">input_fn</span><span class="p">)</span>
+    <span class="n">handler</span><span class="o">.</span><span class="n">register_task</span><span class="p">(</span><span class="s1">&#39;annotate:fasta&#39;</span><span class="p">,</span>
+                          <span class="n">get_annotate_fasta_task</span><span class="p">(</span><span class="n">input_fn</span><span class="p">,</span>
+                                                  <span class="n">merged_gff3</span><span class="p">,</span>
+                                                  <span class="n">annotated_fn</span><span class="p">),</span>
+                          <span class="n">files</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;annotated-fasta&#39;</span><span class="p">:</span> <span class="n">annotated_fn</span><span class="p">})</span></div>
+
+
+<div class="viewcode-block" id="register_user_db_tasks"><a class="viewcode-back" href="../../dammit.html#dammit.annotate.register_user_db_tasks">[docs]</a><span class="k">def</span> <span class="nf">register_user_db_tasks</span><span class="p">(</span><span class="n">handler</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">databases</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Run conditional recipricol best hits LAST (CRBL) against the</span>
+<span class="sd">    user-supplied databases.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    
+    <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;user_databases&#39;</span> <span class="ow">in</span> <span class="n">config</span><span class="p">:</span>
+        <span class="k">return</span>
+
+    <span class="n">input_fn</span> <span class="o">=</span> <span class="n">handler</span><span class="o">.</span><span class="n">files</span><span class="p">[</span><span class="s1">&#39;transcriptome&#39;</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">db_path</span> <span class="ow">in</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;user_databases&#39;</span><span class="p">]:</span>
+        <span class="n">db_path</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">db_path</span><span class="p">)</span>
+        <span class="n">db_basename</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">db_path</span><span class="p">)</span>
+
+        <span class="n">results_fn</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">.x.</span><span class="si">{1}</span><span class="s1">.crbl.csv&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">input_fn</span><span class="p">,</span> <span class="n">db_basename</span><span class="p">)</span>
+        <span class="n">gff3_fn</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">.x.</span><span class="si">{1}</span><span class="s1">.crbl.gff3&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">input_fn</span><span class="p">,</span> <span class="n">db_basename</span><span class="p">)</span>
+
+        <span class="n">crbl</span> <span class="o">=</span> <span class="n">CRBL</span><span class="p">(</span><span class="n">input_fn</span><span class="p">,</span>
+                    <span class="n">db_path</span><span class="p">,</span> 
+                    <span class="n">results_fn</span><span class="p">,</span> 
+                    <span class="n">n_threads</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;n_threads&#39;</span><span class="p">],</span>
+                    <span class="n">cutoff</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;evalue&#39;</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">task</span> <span class="ow">in</span> <span class="n">crbl</span><span class="o">.</span><span class="n">tasks</span><span class="p">():</span>
+            <span class="n">task</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;user-database:</span><span class="si">{0}</span><span class="s1">-shmlast-</span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">db_basename</span><span class="p">,</span>
+                                                               <span class="n">task</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="n">handler</span><span class="o">.</span><span class="n">register_task</span><span class="p">(</span><span class="n">task</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">add_profile_actions</span><span class="p">(</span><span class="n">task</span><span class="p">))</span>
+        <span class="n">handler</span><span class="o">.</span><span class="n">register_task</span><span class="p">(</span><span class="s1">&#39;gff3:</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">results_fn</span><span class="p">),</span>
+                              <span class="n">get_shmlast_gff3_task</span><span class="p">(</span><span class="n">results_fn</span><span class="p">,</span>
+                                                    <span class="n">gff3_fn</span><span class="p">,</span>
+                                                    <span class="n">db_basename</span><span class="p">),</span>
+                              <span class="n">files</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">-crbl-gff3&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">db_basename</span><span class="p">):</span> <span class="n">gff3_fn</span><span class="p">})</span>
+        <span class="n">handler</span><span class="o">.</span><span class="n">files</span><span class="p">[</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">-crbl&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">db_basename</span><span class="p">)]</span> <span class="o">=</span> <span class="n">results_fn</span></div>
+
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2015, Camille Scott.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,260 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Databases &#8212; dammit 1.0.dev0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0.dev0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="author" title="About these documents" href="about.html" />
+    <link rel="top" title="dammit 1.0.dev0 documentation" href="index.html" />
+    <link rel="next" title="dammit package" href="dammit.html" />
+    <link rel="prev" title="Usage" href="usage.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="databases">
+<h1>Databases<a class="headerlink" href="#databases" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="basic-usage">
+<h2>Basic Usage<a class="headerlink" href="#basic-usage" title="Permalink to this headline">¶</a></h2>
+<p>dammit handles databases under the <code class="docutils literal"><span class="pre">dammit</span> <span class="pre">databases</span></code> subcommand. By default,
+dammit looks for databases in <cite>$HOME/.dammit/databases</cite> and will install them
+there if missing. If you have some of the databases already, you can inform dammit
+with the <code class="docutils literal"><span class="pre">--database-dir</span></code> flag.</p>
+<p>To check for databases in the default location:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">dammit</span> <span class="n">databases</span>
+</pre></div>
+</div>
+<p>To check for them in a custom location, you can either use the <cite>&#8211;database-dir</cite>
+flag:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">dammit</span> <span class="n">databases</span> <span class="o">--</span><span class="n">database</span><span class="o">-</span><span class="nb">dir</span> <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">databases</span>
+</pre></div>
+</div>
+<p>or, you can set the <cite>DAMMIT_DB_DIR</cite> environment variable. The flag will supersede
+this variable, falling back to the default if neither is set. For example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">DAMMIT_DB_DIR</span><span class="o">=/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">databases</span>
+</pre></div>
+</div>
+<p>This can also be added to your <cite>$HOME/.bashrc</cite> file to make it persistent.</p>
+<p>To download and install them into the default directory:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">dammit</span> <span class="n">databases</span> <span class="o">--</span><span class="n">install</span>
+</pre></div>
+</div>
+<p>For more details, check out the <span class="xref std std-ref">Advanced-Database-Handling</span> section.</p>
+</div>
+<div class="section" id="about">
+<h2>About<a class="headerlink" href="#about" title="Permalink to this headline">¶</a></h2>
+<p>dammit uses the following databases:</p>
+<ol class="arabic">
+<li><p class="first"><a class="reference external" href="http://pfam.xfam.org/">Pfam-A</a></p>
+<blockquote>
+<div><p>Pfam-A is a collection of protein domain profiles for use with profile hidden markov
+model programs like <a class="reference external" href="http://hmmer.janelia.org/">hmmer</a>. These searches are moderately fast and very sensitive,
+and the Pfam database is very well curated. Pfam is used during TransDecoder&#8217;s ORF
+finding and for annotation assignment.</p>
+</div></blockquote>
+</li>
+<li><p class="first"><a class="reference external" href="http://rfam.xfam.org/">Rfam</a></p>
+<blockquote>
+<div><p>Rfam is a collection of RNA covariance models for use with programs like
+<a class="reference external" href="http://infernal.janelia.org/">Infernal</a>.
+Covariance models describe RNA secondary structure, and Rfam is a curated database
+of non-coding RNAs.</p>
+</div></blockquote>
+</li>
+<li><p class="first"><a class="reference external" href="http://orthodb.org/">OrthoDB</a></p>
+<blockquote>
+<div><p>OrthoDB is a curated database of orthologous genes. It attempts to classify
+proteins from all major groups of eukaryotes and trace them back to their ancestral
+ortholog.</p>
+</div></blockquote>
+</li>
+<li><p class="first"><a class="reference external" href="http://busco.ezlab.org/">BUSCO</a></p>
+<blockquote>
+<div><p>BUSCO databases are collections of &#8220;core&#8221; genes for major domains of life. They
+are used with an accompanying BUSCO program which assesses the completeness of a genome,
+transcriptome, or list of genes. There are multiple BUSCO databases, and which one you
+use depends on your particular organism. Currently available databases are:</p>
+<ol class="arabic simple">
+<li>Metazoa</li>
+<li>Vertebrata</li>
+<li>Arthropoda</li>
+<li>Eukaryota</li>
+</ol>
+<p>dammit uses the metazoa database by default, but different databases can be used with
+the <code class="docutils literal"><span class="pre">--busco-group</span></code> parameter. You should try to use the database which most closely
+bounds your organism.</p>
+</div></blockquote>
+</li>
+<li><p class="first"><a class="reference external" href="http://www.uniprot.org/help/uniref">uniref90</a></p>
+<blockquote>
+<div><p>uniref is a curated collection of most known proteins, clustered at a 90% similarity
+threshold. This database is comprehensive, and thus quite enormous. dammit does not
+include it by default due to its size, but it can be installed and used with the
+<code class="docutils literal"><span class="pre">--full</span></code> flag.</p>
+</div></blockquote>
+</li>
+</ol>
+<p>A command using all of these potential options and databases might look like:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">dammit</span> <span class="n">databases</span> <span class="o">--</span><span class="n">install</span> <span class="o">--</span><span class="n">database</span><span class="o">-</span><span class="nb">dir</span> <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">dbs</span> <span class="o">--</span><span class="n">full</span> <span class="o">--</span><span class="n">busco</span><span class="o">-</span><span class="n">group</span> <span class="n">arthropoda</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="advanced-database-handling">
+<h2>Advanced Database Handling<a class="headerlink" href="#advanced-database-handling" title="Permalink to this headline">¶</a></h2>
+<p>Several of these databases are quite large. Understandably, you probably don&#8217;t
+want to download or prepare them again if you already have. There are a few
+scenarios you might run in to.</p>
+<ol class="arabic">
+<li><p class="first">You already have the databases, and they&#8217;re all in one place and properly named.</p>
+<blockquote>
+<div><p>Excellent! This is the easiest. You can make use of dammit&#8217;s <code class="docutils literal"><span class="pre">--database-dir</span></code>
+flag to tell it where to look. When running with <code class="docutils literal"><span class="pre">--install</span></code>, it will find
+the existing files and prep them if necessary.:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">dammit</span> <span class="n">databases</span> <span class="o">--</span><span class="n">database</span><span class="o">-</span><span class="nb">dir</span> <span class="o">&lt;</span><span class="n">my_database_dir</span><span class="o">&gt;</span> <span class="o">--</span><span class="n">install</span>
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p class="first">Same as above, but they have different names.</p>
+<blockquote>
+<div><p>dammit expects the databases to be &#8220;properly&#8221; named &#8211; that is, named the
+same as their original forms. If your databases aren&#8217;t named the same,
+you&#8217;ll need to fix them. But that&#8217;s okay! We can just soft link them.
+Let&#8217;s say you have Pfam-A already, but for some reason its named
+<cite>all-the-models.hmm</cite>. You can link them to the proper name like so:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">&lt;</span><span class="n">my_database_dir</span><span class="o">&gt;</span>
+<span class="n">ln</span> <span class="o">-</span><span class="n">s</span> <span class="nb">all</span><span class="o">-</span><span class="n">the</span><span class="o">-</span><span class="n">models</span><span class="o">.</span><span class="n">hmm</span> <span class="n">Pfam</span><span class="o">-</span><span class="n">A</span><span class="o">.</span><span class="n">hmm</span>
+</pre></div>
+</div>
+<p>If you already formatted it with <cite>hmmpress</cite>, you can avoid repeating that
+step as well:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">ln</span> <span class="o">-</span><span class="n">s</span> <span class="nb">all</span><span class="o">-</span><span class="n">the</span><span class="o">-</span><span class="n">models</span><span class="o">.</span><span class="n">hmm</span><span class="o">.</span><span class="n">h3f</span> <span class="n">Pfam</span><span class="o">-</span><span class="n">A</span><span class="o">.</span><span class="n">hmm</span><span class="o">.</span><span class="n">h3f</span>
+<span class="n">ln</span> <span class="o">-</span><span class="n">s</span> <span class="nb">all</span><span class="o">-</span><span class="n">the</span><span class="o">-</span><span class="n">models</span><span class="o">.</span><span class="n">hmm</span><span class="o">.</span><span class="n">h3i</span> <span class="n">Pfam</span><span class="o">-</span><span class="n">A</span><span class="o">.</span><span class="n">hmm</span><span class="o">.</span><span class="n">h3i</span>
+<span class="n">ln</span> <span class="o">-</span><span class="n">s</span> <span class="nb">all</span><span class="o">-</span><span class="n">the</span><span class="o">-</span><span class="n">models</span><span class="o">.</span><span class="n">hmm</span><span class="o">.</span><span class="n">h3m</span> <span class="n">Pfam</span><span class="o">-</span><span class="n">A</span><span class="o">.</span><span class="n">hmm</span><span class="o">.</span><span class="n">h3m</span>
+<span class="n">ln</span> <span class="o">-</span><span class="n">s</span> <span class="nb">all</span><span class="o">-</span><span class="n">the</span><span class="o">-</span><span class="n">models</span><span class="o">.</span><span class="n">hmm</span><span class="o">.</span><span class="n">h3p</span> <span class="n">Pfam</span><span class="o">-</span><span class="n">A</span><span class="o">.</span><span class="n">hmm</span><span class="o">.</span><span class="n">h3p</span>
+</pre></div>
+</div>
+<p>For a complete listing of the expected names, just run the <code class="docutils literal"><span class="pre">databases</span></code> command:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">dammit</span> <span class="n">databases</span>
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p class="first">You have the databases, but they&#8217;re scattered to the virtual winds.</p>
+<blockquote>
+<div><p>The fix here is similar to the above. This time, however, we&#8217;ll soft link
+all the databases to one location. If you&#8217;ve run <code class="docutils literal"><span class="pre">dammit</span> <span class="pre">databases</span></code>, a
+new directory will have been created at <cite>$HOME/.dammit/databases</cite>. This is
+where they are stored by default, so we might as well use it! For example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>cd $HOME/.dammit/databases
+ln -s /path/to/all-the-models.hmm Pfam-A.hmm
+</pre></div>
+</div>
+<p>And repeat for all the databases. Now, in the future, you will be
+able to run dammit without the <cite>&#8211;database-dir</cite> flag.</p>
+</div></blockquote>
+</li>
+</ol>
+<p>Alternatively, if this all seems like too much of a hassle and you have lots
+of hard drive space, you can just say &#8220;to hell with it!&#8221; and reinstall
+everything with:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">dammit</span> <span class="n">databases</span> <span class="o">--</span><span class="n">install</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Databases</a><ul>
+<li><a class="reference internal" href="#basic-usage">Basic Usage</a></li>
+<li><a class="reference internal" href="#about">About</a></li>
+<li><a class="reference internal" href="#advanced-database-handling">Advanced Database Handling</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="usage.html" title="previous chapter">Usage</a></li>
+      <li>Next: <a href="dammit.html" title="next chapter">dammit package</a></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/databases.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2015, Camille Scott.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="_sources/databases.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
