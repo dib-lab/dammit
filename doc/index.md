@@ -7,7 +7,7 @@ the observations that annotation is mundane and annoying, all the
 individual pieces of the process exist already, and the existing
 solutions are overly complicated or rely on crappy non-free software.
 
-![*Your PI, wistfully thinking back on Perl4*](_static/Character_Building.png)
+<IMG SRC=_static/Character_Building.png ALIGN=”right” /> Your PI, wistfully thinking back on Perl4.
 
 Science shouldn\'t suck for the sake of sucking, so dammit attempts to
 make this sucky part of the process suck a little less.
