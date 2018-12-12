@@ -1,5 +1,4 @@
 # Dammit development
-============
 
 [dammit!](https://github.com/dib-lab/dammit)
 
