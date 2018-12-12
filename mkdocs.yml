@@ -39,7 +39,9 @@ extra_css:
 nav:
   - 'About': 'about.md'
   - 'Installation':
+    - 'Requirements': 'system_requirements.md'
     - 'Bioconda': 'install_basic.md'
+    - 'Manual':   'install_manual.md'
 
   - 'Databases':
     - 'databases': 'databases.md'
