@@ -1,5 +1,4 @@
 [![image](https://travis-ci.org/dib-lab/dammit.svg)](https://travis-ci.org/dib-lab/dammit)
-
 [![Documentation Status](https://readthedocs.org/projects/dammit/badge/)](http://dammit.readthedocs.io/en/latest)
 
 *"I love writing BLAST parsers!" -- no one, ever*
