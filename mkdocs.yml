@@ -37,7 +37,7 @@ extra_css:
 
 # give a title for each page
 nav:
-  - 'Index': 'index.md'
+  - 'Home': 'index.md'
   - 'About': 'about.md'
   - 'Installation':
     - 'Requirements': 'system_requirements.md'
