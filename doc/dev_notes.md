@@ -166,11 +166,13 @@ Run `test_databases.py` yourself, locally (because databases cannot be cached on
 * [travis-ci](https://travis-ci.org/dib-lab/dammit/) is building the recipe that lives in the repo
 * `make-ci-test`, not long and not huge and not requires_datbases
 
-## reviewing PR
+## Reviewing a PR
 
-* radical changes? (Are you adding things to handler, maybe time to take a step back and make sure code uses reasonable variable names, tests, etc)
-* does travis build?
-* try to make commit messages somewhat informative
+* Have there been radical changes? (Are you adding things to handler, maybe time to take a step back and make sure code uses reasonable variable names, tests, etc)
+* Does travis build?
+* Try to make commit messages somewhat informative
+
+If these all seem reasonable to you, approve!
 
 ## Fix travis:
 `.travis.yml`
