@@ -20,8 +20,8 @@ theme:
 
   # pretty colors! see https://squidfunk.github.io/mkdocs-material/getting-started/#primary-colors
   palette:
-    primary: 'blue'
-    accent: 'blue'
+    primary: 'green'
+    accent: 'purple'
   
   # fun logos! see https://material.io/icons/
   logo:
