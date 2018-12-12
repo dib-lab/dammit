@@ -17,4 +17,4 @@ space and considerable RAM to prepare the databases. You'll also want
 either a fat internet connection or a big cup of patience to download
 uniref.
 
-For some species, we have found that the amount of RAM required can be proportional to the size of the transcriptome being annotated.  For example: a species of killifish, *Fundulus zebrinus* with 266,978 contigs took 90 GB of RAM, 16 cores for 24 hrs.
+For some species, we have found that the amount of RAM required can be proportional to the size of the transcriptome being annotated.
