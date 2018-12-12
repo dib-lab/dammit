@@ -40,8 +40,7 @@ nav:
   - 'About': 'about.md'
   - 'Installation':
     - 'Requirements': 'system_requirements.md'
-    - 'Bioconda': 'install_basic.md'
-    - 'Manual':   'install_manual.md'
+    - 'Bioconda': 'install.md'
 
   - 'Databases':
     - 'databases': 'databases.md'
