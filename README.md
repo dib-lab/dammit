@@ -1,9 +1,4 @@
----
-title: README
----
-
 [![image](https://travis-ci.org/dib-lab/dammit.svg)](https://travis-ci.org/dib-lab/dammit)
-
 [![Documentation Status](https://readthedocs.org/projects/dammit/badge/)](http://dammit.readthedocs.io/en/latest)
 
 *"I love writing BLAST parsers!" -- no one, ever*
@@ -16,9 +11,13 @@ solutions are overly complicated or rely on crappy non-free software.
 Science shouldn't suck for the sake of sucking, so dammit attempts to
 make this sucky part of the process suck a little less.
 
-### Basic Usage
+## Basic Usage
 
-The most basic usage is to download and install a subset of the databases:
+Install dammit with (bio)conda:
+
+    conda install dammit
+
+Download and install a subset of the databases:
 
     dammit databases --install --quick
 
@@ -29,8 +28,7 @@ And the annotate with:
 Head over to the [docs](http://dib-lab.github.io/dammit/) for much more detailed
 information!
 
-Acknowledgements
-================
+## Acknowledgements
 
 I've received input and advice from a many sources, including but
 probably not limited to: C Titus Brown, Matt MacManes, Chris Hamm,
