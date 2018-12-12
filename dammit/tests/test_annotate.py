@@ -191,3 +191,24 @@ class TestDammitAnnotate:
             assert 'Test_0' in contents
 
             assert status == 0
+    
+    
+    def test_annotate_no_rename(self, tmpdir, datadir):
+        '''Test the --no_rename argument.
+        '''
+
+        with tmpdir.as_cwd():
+            transcripts = datadir('pom.single.fa')
+
+            args = ['annotate', transcripts, '--no_rename']
+            status, out, err = run(args)
+
+            outdir = '{0}.dammit'.format(transcripts)
+            fn = os.path.join(outdir, os.path.basename(transcripts))
+            assert os.path.isfile(fn)
+
+            contents = open(fn).read()
+            assert 'SPAC212' in contents
+
+            assert status == 0
+
