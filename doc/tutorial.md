@@ -15,8 +15,8 @@ move there, and then download the file:
 ```
 mkdir dammit_test
 cd dammit_test
-wget ftp://ftp.ebi.ac.uk/pub/databases/pombase/FASTA/cdna_nointrons_utrs.fa.gz
-wget ftp://ftp.ebi.ac.uk/pub/databases/pombase/FASTA/pep.fa.gz
+wget ftp://ftp.ebi.ac.uk/pub/databases/pombase/OLD/20170322/FASTA/cdna_nointrons_utrs.fa.gz
+wget ftp://ftp.ebi.ac.uk/pub/databases/pombase/OLD/20170322/FASTA/pep.fa.gz
 ```
 
 Decompress the file with gunzip:
