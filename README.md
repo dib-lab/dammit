@@ -11,7 +11,7 @@ solutions are overly complicated or rely on crappy non-free software.
 Science shouldn't suck for the sake of sucking, so dammit attempts to
 make this sucky part of the process suck a little less.
 
-### Basic Usage
+## Basic Usage
 
 Install dammit with (bio)conda:
 
@@ -28,8 +28,7 @@ And the annotate with:
 Head over to the [docs](http://dib-lab.github.io/dammit/) for much more detailed
 information!
 
-Acknowledgements
-================
+## Acknowledgements
 
 I've received input and advice from a many sources, including but
 probably not limited to: C Titus Brown, Matt MacManes, Chris Hamm,
