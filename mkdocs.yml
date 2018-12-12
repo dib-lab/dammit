@@ -42,7 +42,10 @@ nav:
     - 'Requirements': 'system_requirements.md'
     - 'Bioconda': 'install.md'
 
-  - 'Database Usage': 'databases.md'
+  - 'Databases':
+    - 'Basic Usage': 'database-usage.md'
+    - 'About the Databases': 'database-about.md'
+    - 'Advanced Database Handling': 'database-advanced.md'
 
   - 'Tutorial': 'tutorial.md'
 
