@@ -3,7 +3,7 @@
 [dammit!](https://github.com/dib-lab/dammit)
 
 
-## Setting up your local computer for dammit dev
+## Setting up your local computer for `dammit` devevelopment
 
 We can basically follow the [instructions for travis](https://github.com/dib-lab/dammit/blob/master/.travis.yml), because we're telling [travis](https://travis-ci.org/dib-lab/dammit/) to do the same things we want to do on our local computers.
 
@@ -14,7 +14,7 @@ bash Miniconda3-latest-Linux-x86_64.sh -b
 export PATH="$HOME/miniconda3/bin:$PATH"
 ```
 
-Fork dammit repository to your account. Clone this fork to your local computer, then create a dev branch called `testing`:
+Fork `dammit` repository to your account. Clone this fork to your local computer, then create a dev branch called `testing`:
 
 ```
 git clone https://github.com/username/dammit.git
@@ -113,7 +113,7 @@ tests must pass before merging
 
 #### Take a look at code and tests in the `dammit` directory:
 
-* The core driver of `dammit` is the `damit/app.py`, which sets up the commandline arguments. Everything happens here. If you want to add an argument, this is where it hapens.  
+* The core driver of `dammit` is the `dammit/app.py` file, which sets up the commandline arguments. Everything happens here. If you want to add an argument, this is where it hapens.  
 * There are two subcommand task-handler files: `annotate.py` and `databases.py`
 * Tasks are steps being run, separated into different files. For example, the `hmmer.py` file contains all hmmer tasks.
 * The task handler has on logger, pulls from config to figure out where databases are located (all happens in background), some doit stuff happening
