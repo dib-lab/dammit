@@ -208,7 +208,7 @@ class TestDammitAnnotate:
             assert os.path.isfile(fn)
 
             contents = open(fn).read()
-            assert 'Test_0' in contents
+            assert 'SPAC212' in contents
 
             assert status == 0
 
