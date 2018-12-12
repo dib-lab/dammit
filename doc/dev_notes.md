@@ -105,10 +105,6 @@ conda config --add channels bioconda
 conda config --add channels conda-forge
 ```
 
-Accepting code from other people, process for Pull Requests (for advice, see [khmer getting started dev notes](https://khmer.readthedocs.io/en/latest/dev/getting-started.html))
-
-tests must pass before merging
-
 ### Architecture:
 
 #### Take a look at code and tests in the `dammit` directory:
@@ -120,17 +116,19 @@ tests must pass before merging
 * [Decorators](https://realpython.com/primer-on-python-decorators/) transfer the function's `return` into a doit function (e.g. line 59 of shell.py) `import doit_task` then `@doit_task`
 
 `databases`, 2 pipelines:
+
   * `quick`
   * `full`
 
 `annotate`, more pipelines: 
+
   * `uniref1`
   * `full`
   * `nr`
 
 #### `config.json`
 
-can use custom config.json file to include different parameters for the programs run by the tasks, e.g. transdecoder LongOrgs -m 50, etc.
+Can use custom `config.json` file to include different parameters for the programs run by the tasks, e.g. `transdecoder LongOrgs -m 50`, etc.
 
 #### `parallel.py`
 
@@ -138,7 +136,7 @@ hmmer, infernal, lastl,
 
 requires gnu parallel
 
-(isntructions for how to runon multi-node hpc, somewhere)
+(There are instructions for how to runon multi-node hpc, somewhere.)
 
 #### `ui.py`
 
@@ -168,6 +166,8 @@ Run `test_databases.py` yourself, locally (because databases cannot be cached on
 
 ## Reviewing a PR
 
+**Tests must pass before merging!**
+
 * Have there been radical changes? (Are you adding things to handler, maybe time to take a step back and make sure code uses reasonable variable names, tests, etc)
 * Does travis build?
 * Try to make commit messages somewhat informative
@@ -175,6 +175,7 @@ Run `test_databases.py` yourself, locally (because databases cannot be cached on
 If these all seem reasonable to you, approve!
 
 ## Fix travis:
+
 `.travis.yml`
 
 * make sure conda env uses right Python
