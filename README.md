@@ -6,7 +6,7 @@ title: README
 
 [![Documentation Status](https://readthedocs.org/projects/dammit/badge/)](http://dammit.readthedocs.io/en/latest)
 
-*\"I love writing BLAST parsers!\" \-- no one, ever*
+*"I love writing BLAST parsers!" -- no one, ever*
 
 dammit is a simple de novo transcriptome annotator. It was born out of
 the observation that: annotation is mundane and annoying; all the
@@ -29,22 +29,10 @@ And the annotate with:
 Head over to the [docs](http://dib-lab.github.io/dammit/) for much more detailed
 information!
 
-Known Issues
-============
-
--   On some systems, installation of the ConfigParser package can get
-    borked, which will cause and exception to be thrown. This can be
-    fixed by following the directions at issue \#33:
-    <https://github.com/camillescott/dammit/issues/33>.
--   There can be errors resuming runs which were interrupted on the
-    BUSCO stage. If the task fails on resume, delete the BUSCO results
-    folder within your dammit results folder, which will have a name of
-    the form [run\_\<name\>.busco\_results]{.title-ref}.
-
 Acknowledgements
 ================
 
-I\'ve received input and advice from a many sources, including but
+I've received input and advice from a many sources, including but
 probably not limited to: C Titus Brown, Matt MacManes, Chris Hamm,
 Michael Crusoe, Russell Neches, Luiz Irber, Lisa Cohen, Tessa Pierce,
 Sherine Awad, and Tamer Mansour.
