@@ -19,8 +19,7 @@ install:
   - conda config --add channels conda-forge
   - conda create -n test python=$TRAVIS_PYTHON_VERSION
   - source activate test
-  - conda install conda-build
-  - conda build recipe/
-  - conda install dammit --use-local
+  - conda install python numpy pandas numexpr khmer sphinx sphinx_rtd_theme pytest pytest-runner doit matplotlib shmlast infernal hmmer transdecoder=3.0.1 last busco=3.0.2 parallel bioconductor-seqlogo
+  - python setup.py install
 
 script: make ci-test

@@ -140,6 +140,7 @@ def build_default_pipeline(handler, config, databases, with_uniref=False, with_n
     if with_uniref:
         register_uniref90_tasks(handler, config['last']['lastdb'], databases)
     if with_nr:
+        register_uniref90_tasks(handler, config['last']['lastdb'], databases)
         register_nr_tasks(handler, config['last']['lastdb'], databases)
 
     return handler
