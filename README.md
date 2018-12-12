@@ -1,7 +1,3 @@
----
-title: README
----
-
 [![image](https://travis-ci.org/dib-lab/dammit.svg)](https://travis-ci.org/dib-lab/dammit)
 
 [![Documentation Status](https://readthedocs.org/projects/dammit/badge/)](http://dammit.readthedocs.io/en/latest)
@@ -18,7 +14,11 @@ make this sucky part of the process suck a little less.
 
 ### Basic Usage
 
-The most basic usage is to download and install a subset of the databases:
+Install dammit with (bio)conda:
+
+    conda install dammit
+
+Download and install a subset of the databases:
 
     dammit databases --install --quick
 
