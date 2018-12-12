@@ -39,7 +39,7 @@ extra_css:
 nav:
   - 'About': 'about.md'
   - 'Installation':
-    - 'Installing dammit': 'installing.md'
+    - 'Bioconda': 'install_basic.md'
 
   - 'Databases':
     - 'databases': 'databases.md'
