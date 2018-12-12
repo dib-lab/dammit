@@ -6,7 +6,7 @@ some test data.
 
 See this workshop [tutorial](https://angus.readthedocs.io/en/2018/dammit_annotation.html) for further practice with using `dammit` for annotating a *de novo* transcriptome assembly.
 
-# Data
+## Data
 
 First let's download some test data. We'll start small and use a
 *Schizosaccharomyces pombe* transcriptome. Make a working directory and
@@ -25,7 +25,7 @@ Decompress the file with gunzip:
 gunzip cdna_nointrons_utrs.fa.gz pep.fa.gz
 ```
 
-# Databases
+## Databases
 
 If you're just starting, you probably haven\'t downloaded the databases
 yet. Here we'll install the main databases, as well as the
@@ -47,7 +47,7 @@ to do it again. `dammit` keeps track of the database state and won't
 repeat work its already completed, even if you accidentally rerun with
 the `--install` flag.
 
-# Annotation
+## Annotation
 
 Now we'll do a simple run of the annotator. We'll use
 `pep.fa` as a user database; this is a toy example, seeing

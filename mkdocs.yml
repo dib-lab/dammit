@@ -44,8 +44,7 @@ nav:
 
   - 'Database Usage': 'databases.md'
 
-  - 'Tutorial':
-    - 'tutorial': 'tutorial.md'
+  - 'Tutorial': 'tutorial.md'
 
   - 'For developers':
     - 'Notes for developers': 'dev_notes.md'
