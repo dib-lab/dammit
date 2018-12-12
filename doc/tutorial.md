@@ -4,7 +4,7 @@ Once you have the dependencies installed, it's time to actually
 annotate something! This guide will take you through a short example on
 some test data. 
 
-See [tutorial](https://angus.readthedocs.io/en/2018/dammit_annotation.html) for further practice with using `dammit` for annotating a *de novo* transcriptome assembly.
+See this workshop [tutorial](https://angus.readthedocs.io/en/2018/dammit_annotation.html) for further practice with using `dammit` for annotating a *de novo* transcriptome assembly.
 
 # Data
 
