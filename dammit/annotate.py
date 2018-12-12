@@ -59,7 +59,7 @@ def get_handler(config, databases):
         out_dir = config['output_dir']
     directory = path.abspath(out_dir)
 
-    handler = TaskHandler(directory, logger, 
+    handler = TaskHandler(directory, logger,
                           db='annotate',
                           backend=config['doit_backend'],
                           verbosity=config['verbosity'],
@@ -78,7 +78,7 @@ def get_handler(config, databases):
                           ),
                           files={'transcriptome': input_fn,
                                  'name_map': name_map_fn})
-    
+
     return handler
 
 
@@ -115,7 +115,7 @@ def build_default_pipeline(handler, config, databases):
             line arguments and the entries from the config file.
         databases (dict): The dictionary of files from a database
             TaskHandler.
-    
+
     Returns:
         handler.TaskHandler: The handler passed in.
     '''
@@ -141,7 +141,7 @@ def build_full_pipeline(handler, config, databases):
             line arguments and the entries from the config file.
         databases (dict): The dictionary of files from a database
             TaskHandler.
-    
+
     Returns:
         handler.TaskHandler: The handler passed in.
     '''
@@ -186,7 +186,7 @@ def build_nr_pipeline(handler, config, databases):
 def build_quick_pipeline(handler, config, databases):
     '''Register tasks for the quick annotation pipeline.
 
-    Leaves out the Pfam search (and so does not pass these hits to 
+    Leaves out the Pfam search (and so does not pass these hits to
     `TransDecoder.Predict`), the Rfam search, and the lastal searches
     against OrthoDB and uniref90. Best suited for users who have built their
     own protein databases and would just like to annotate off them.
@@ -197,7 +197,7 @@ def build_quick_pipeline(handler, config, databases):
             line arguments and the entries from the config file.
         databases (dict): The dictionary of files from a database
             TaskHandler.
-    
+
     Returns:
         handler.TaskHandler: The handler passed in.
     '''
@@ -259,12 +259,12 @@ def register_transdecoder_tasks(handler, config, databases,
 
     input_fn = handler.files['transcriptome']
     transdecoder_dir = '{0}.transdecoder_dir'.format(input_fn)
-    
+
     handler.register_task('TransDecoder.LongOrfs',
-                          TransDecoderLongOrfsTask().task(input_fn, 
+                          TransDecoderLongOrfsTask().task(input_fn,
                                                           params=config['transdecoder']['longorfs']),
                           files={'longest_orfs': path.join(transdecoder_dir, 'longest_orfs.pep')})
-    
+
     pfam_fn = None
     if include_hmmer is True:
         pfam_fn = path.join(transdecoder_dir, 'longest_orfs.pep.x.pfam.tbl')
@@ -285,11 +285,11 @@ def register_transdecoder_tasks(handler, config, databases,
                                                    pfam_csv_fn,
                                                    transcript_basename=config['name']),
                               files={'Pfam-A-csv': pfam_csv_fn})
-        
+
         pfam_gff3 = '{0}.x.pfam-A.gff3'.format(input_fn)
         handler.register_task('gff3:Pfam-A',
                                get_hmmscan_gff3_task(pfam_csv_fn,
-                                                     pfam_gff3, 
+                                                     pfam_gff3,
                                                      'Pfam'),
                                files={'Pfam-A-gff3': pfam_gff3})
 
@@ -297,7 +297,7 @@ def register_transdecoder_tasks(handler, config, databases,
     transdecoder_pep = '{0}.transdecoder.pep'.format(input_fn)
     transdecoder_gff3 = '{0}.transdecoder.gff3'.format(input_fn)
     handler.register_task('TransDecoder.Predict',
-                          TransDecoderPredictTask().task(input_fn, 
+                          TransDecoderPredictTask().task(input_fn,
                                                          pfam_filename=pfam_fn,
                                                          params=predict_params),
                           files={'transdecoder-pep': transdecoder_pep,
@@ -325,7 +325,7 @@ def register_rfam_tasks(handler, config, databases):
     rfam_gff3 = '{0}.x.rfam.gff3'.format(input_fn)
     handler.register_task('gff3:Rfam',
                           get_cmscan_gff3_task(output_fn,
-                                               rfam_gff3, 
+                                               rfam_gff3,
                                                'Rfam'),
                           files={'Rfam-gff3': rfam_gff3})
 
@@ -347,9 +347,10 @@ def register_lastal_tasks(handler, config, databases,
 
     input_fn = handler.files['transcriptome']
     lastal_cfg = config['last']['lastal']
-    
+
     dbs = OrderedDict()
     dbs['OrthoDB'] = databases['OrthoDB']
+    dbs['sprot'] = databases['sprot']
     if include_uniref is True:
         dbs['uniref90'] = databases['uniref90']
     if include_nr is True:
@@ -414,7 +415,7 @@ def register_user_db_tasks(handler, config, databases):
     '''Run conditional recipricol best hits LAST (CRBL) against the
     user-supplied databases.
     '''
-    
+
     if not 'user_databases' in config:
         return
 
@@ -427,8 +428,8 @@ def register_user_db_tasks(handler, config, databases):
         gff3_fn = '{0}.x.{1}.crbl.gff3'.format(input_fn, db_basename)
 
         crbl = CRBL(input_fn,
-                    db_path, 
-                    results_fn, 
+                    db_path,
+                    results_fn,
                     n_threads=config['n_threads'],
                     cutoff=config['evalue'])
         for task in crbl.tasks():
