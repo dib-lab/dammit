@@ -51,3 +51,6 @@ nav:
 
   - 'About':
     - 'About': 'about.md'
+
+  - 'Dev notes':
+    - 'Notes for developers': 'dev_notes.md'

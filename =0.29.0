@@ -1,0 +1,113 @@
+Solving environment: ...working... done
+
+## Package Plan ##
+
+  environment location: /Users/johnsolk/anaconda3/envs/dammit_dev
+
+  added / updated specs: 
+    - bioconductor-seqlogo
+    - busco=3.0.2
+    - doit
+    - hmmer
+    - infernal
+    - khmer
+    - last
+    - matplotlib
+    - numexpr
+    - numpy
+    - pandas
+    - parallel
+    - pytest
+    - pytest-runner
+    - python
+    - shmlast
+    - sphinx
+    - sphinx_rtd_theme
+    - transdecoder=3.0.1
+
+
+The following packages will be downloaded:
+
+    package                    |            build
+    ---------------------------|-----------------
+    cd-hit-4.6.8               |       hfc679d8_2         155 KB  bioconda
+    parallel-20181022          |                0         1.4 MB  conda-forge
+    pysocks-1.6.8              |        py36_1002          22 KB  conda-forge
+    libopenblas-0.3.3          |       hdc02c5d_3         8.4 MB
+    markupsafe-1.1.0           |   py36h470a237_0          24 KB  conda-forge
+    gsl-2.2.1                  |blas_openblashddceaf2_6         2.1 MB  conda-forge
+    pyopenssl-18.0.0           |        py36_1000          80 KB  conda-forge
+    alabaster-0.7.12           |             py_0          15 KB  conda-forge
+    scipy-1.1.0                |py36_blas_openblashb06ca3d_202        15.5 MB  conda-forge
+    suitesparse-4.5.6          |blas_openblash697e320_201         2.3 MB  conda-forge
+    pytest-runner-4.2          |             py_1           8 KB  conda-forge
+    requests-2.21.0            |        py36_1000          84 KB  conda-forge
+    sphinx-1.8.2               |        py36_1000         1.8 MB  conda-forge
+    asn1crypto-0.24.0          |        py36_1003         154 KB  conda-forge
+    packaging-18.0             |             py_0          19 KB  conda-forge
+    pycparser-2.19             |             py_0          87 KB  conda-forge
+    sphinx_rtd_theme-0.4.2     |             py_0         5.1 MB  conda-forge
+    bioconductor-seqlogo-1.46.0|           r351_0         371 KB  bioconda
+    numpy-base-1.15.4          |   py36ha711998_0         4.0 MB
+    idna-2.8                   |        py36_1000         132 KB  conda-forge
+    chardet-3.0.4              |        py36_1003         190 KB  conda-forge
+    docutils-0.14              |        py36_1001         694 KB  conda-forge
+    numpy-1.15.4               |py36_blas_openblashb06ca3d_0         4.1 MB  conda-forge
+    cryptography-vectors-2.3.1 |        py36_1000        30.5 MB  conda-forge
+    urllib3-1.24.1             |        py36_1000         149 KB  conda-forge
+    pygments-2.3.0             |             py_0         636 KB  conda-forge
+    tbb-2019.3                 |       h2d50403_0         153 KB  conda-forge
+    transdecoder-3.0.1         |                1        11.3 MB  bioconda
+    ------------------------------------------------------------
+                                           Total:        89.4 MB
+
+The following NEW packages will be INSTALLED:
+
+    alabaster:                0.7.12-py_0           conda-forge
+    asn1crypto:               0.24.0-py36_1003      conda-forge
+    babel:                    2.6.0-py_1            conda-forge
+    bioconductor-seqlogo:     1.46.0-r351_0         bioconda   
+    cd-hit:                   4.6.8-hfc679d8_2      bioconda   
+    cffi:                     1.11.5-py36h5e8e0c9_1 conda-forge
+    chardet:                  3.0.4-py36_1003       conda-forge
+    cryptography:             2.3.1-py36hdffb7b8_0  conda-forge
+    cryptography-vectors:     2.3.1-py36_1000       conda-forge
+    docutils:                 0.14-py36_1001        conda-forge
+    idna:                     2.8-py36_1000         conda-forge
+    imagesize:                1.1.0-py_0            conda-forge
+    jinja2:                   2.10-py_1             conda-forge
+    libopenblas:              0.3.3-hdc02c5d_3                 
+    markupsafe:               1.1.0-py36h470a237_0  conda-forge
+    packaging:                18.0-py_0             conda-forge
+    pycparser:                2.19-py_0             conda-forge
+    pygments:                 2.3.0-py_0            conda-forge
+    pyopenssl:                18.0.0-py36_1000      conda-forge
+    pysocks:                  1.6.8-py36_1002       conda-forge
+    pytest-runner:            4.2-py_1              conda-forge
+    requests:                 2.21.0-py36_1000      conda-forge
+    snowballstemmer:          1.2.1-py_1            conda-forge
+    sphinx:                   1.8.2-py36_1000       conda-forge
+    sphinx_rtd_theme:         0.4.2-py_0            conda-forge
+    sphinxcontrib-websupport: 1.1.0-py_1            conda-forge
+    urllib3:                  1.24.1-py36_1000      conda-forge
+
+The following packages will be UPDATED:
+
+    blas:                     1.0-mkl                           --> 1.1-openblas                         conda-forge
+    gsl:                      2.2.1-h002c638_3                  --> 2.2.1-blas_openblashddceaf2_6        conda-forge [blas_openblas]
+    numpy:                    1.15.4-py36h6a91979_0             --> 1.15.4-py36_blas_openblashb06ca3d_0  conda-forge [blas_openblas]
+    numpy-base:               1.15.4-py36h8a80b8c_0             --> 1.15.4-py36ha711998_0                           
+    parallel:                 20160622-1            bioconda    --> 20181022-0                           conda-forge
+    scipy:                    1.1.0-py36h28f7352_1              --> 1.1.0-py36_blas_openblashb06ca3d_202 conda-forge [blas_openblas]
+    tbb:                      2018_20171205-0       conda-forge --> 2019.3-h2d50403_0                    conda-forge
+
+The following packages will be DOWNGRADED:
+
+    suitesparse:              5.2.0-he235d88_0                  --> 4.5.6-blas_openblash697e320_201      conda-forge [blas_openblas]
+    transdecoder:             5.5.0-0               bioconda    --> 3.0.1-1                              bioconda   
+
+
+Downloading and Extracting Packages
+Preparing transaction: ...working... done
+Verifying transaction: ...working... done
+Executing transaction: ...working... done
