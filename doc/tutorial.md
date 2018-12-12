@@ -27,7 +27,7 @@ gunzip cdna_nointrons_utrs.fa.gz pep.fa.gz
 
 ## Databases
 
-If you're just starting, you probably haven\'t downloaded the databases
+If you're just starting, you probably haven't downloaded the databases
 yet. Here we'll install the main databases, as well as the
 `eukaryota` BUSCO database for our yeast dataset. This could
 take a while, so consider walking away and getting yourself a cup of
@@ -40,7 +40,7 @@ dammit databases --install --busco-group eukaryota
 
 Alternatively, if you happen to have downloaded many of these databases
 before, you can follow the directions in the [databases
-guide](databases.html).
+guide](databases-usage.md).
 
 While the initial download takes a while, once its done, you won't need
 to do it again. `dammit` keeps track of the database state and won't
