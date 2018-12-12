@@ -1,0 +1,53 @@
+site_name: dammit
+site_url: http://dib-lab.github.io/dammit
+repo_name: dammit
+repo_url: https://github.com/dib-lab/dammit
+edit_uri: ""
+
+extra_css: css/custom.css
+
+copyright: 'Copyright &copy; 2018 <a href="http://ivory.idyll.org/lab/">Lab for Data Intensive Biology</a> at UC Davis'
+
+# change directory names here
+docs_dir: doc
+site_dir: site
+
+theme:
+
+  # the next 2 lines are required to use the DIB version
+  name: null
+  custom_dir: 'mkdocs-material-dib/material'
+
+  # pretty colors! see https://squidfunk.github.io/mkdocs-material/getting-started/#primary-colors
+  palette:
+    primary: 'blue'
+    accent: 'blue'
+  
+  # fun logos! see https://material.io/icons/
+  logo:
+    icon: 'dns'
+
+  font:
+    text: 'Roboto'
+    code: 'Roboto Mono'
+
+# this will add docs/css/custom.css to all your docs
+extra_css:
+  - css/custom.css
+
+# give a title for each page
+nav:
+  - 'Overview':
+    - 'Just install it, dammit!': 'dammit.md'
+
+  - 'Installation':
+    - 'Installing dammit': 'installing.md'
+
+  - 'Databases':
+    - 'databases': 'databases.md'
+
+  - 'Tutorial':
+    - 'tutorial': 'tutorial.md'
+
+  - 'About':
+    - 'About': 'about.md'
