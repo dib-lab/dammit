@@ -156,6 +156,8 @@ class TestDammitAnnotate:
             args = ['annotate', '--quick', transcripts, '--database-dir', db_dir]
             status, out, err = run(args)
 
+    @pytest.mark.long
+    @pytest.mark.requires_databases
     def test_annotate_user_databases(self, tmpdir, datadir):
         '''Test that a user database works.
         '''

@@ -67,8 +67,8 @@ def parallel_fasta(input_filename,
            '--pipe',
            '--recstart \'>\'',
            '--gnu']
-    if pbs is not None:
-        cmd.extend(['--sshloginfile', pbs, '--workdir $PWD'])
+    if sshloginfile is not None:
+        cmd.extend(['--sshloginfile', sshloginfile, '--workdir $PWD'])
     else:
         cmd.extend(['-j', n_jobs])
 
