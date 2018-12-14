@@ -13,7 +13,7 @@ build:
 requirements:
   build:
     # Python dependencies
-    - python 
+    - python
     - numpy
     - pandas
     - numexpr >=2.3.1

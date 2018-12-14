@@ -39,7 +39,7 @@ def get_handler(config):
     logger.debug('get_handler')
 
     handler = TaskHandler(config['database_dir'],
-                          logger, 
+                          logger,
                           db='databases',
                           backend=config['doit_backend'],
                           verbosity=config['verbosity'],
@@ -136,6 +136,7 @@ def build_default_pipeline(handler, config, databases, with_uniref=False, with_n
     register_rfam_tasks(handler, config['infernal']['cmpress'], databases)
     register_orthodb_tasks(handler, config['last']['lastdb'], databases)
     register_busco_tasks(handler, config, databases)
+    register_sprot_tasks(handler, config['last']['lastdb'], databases)
     if with_uniref:
         register_uniref90_tasks(handler, config['last']['lastdb'], databases)
     if with_nr:
@@ -149,13 +150,13 @@ def build_quick_pipeline(handler, config, databases):
     register_busco_tasks(handler, config, databases)
 
     return handler
-                          
+
 
 def register_pfam_tasks(handler, params, databases):
     pfam_A = databases['Pfam-A']
     archive_fn = '{0}.{1}'.format(pfam_A['filename'], pfam_A['fileformat'])
     target_fn = path.join(handler.directory, pfam_A['filename'])
-    
+
     dl_task = get_download_task(pfam_A['url'],
                                 archive_fn,
                                 md5=pfam_A['md5'])
@@ -167,7 +168,7 @@ def register_pfam_tasks(handler, params, databases):
     handler.register_task('gunzip:Pfam-A', gz_task,
                           files={'Pfam-A': target_fn})
     handler.register_task('hmmpress:Pfam-A',
-                          HMMPressTask().task(target_fn, 
+                          HMMPressTask().task(target_fn,
                                               params=params))
     return handler
 
@@ -176,7 +177,7 @@ def register_rfam_tasks(handler, params, databases):
     rfam = databases['Rfam']
     archive_fn = '{0}.{1}'.format(rfam['filename'], rfam['fileformat'])
     target_fn = path.join(handler.directory, rfam['filename'])
-    
+
     dl_task = get_download_task(rfam['url'],
                                 archive_fn,
                                 md5=rfam['md5'])
@@ -194,10 +195,10 @@ def register_rfam_tasks(handler, params, databases):
 
 def register_orthodb_tasks(handler, params, databases):
     orthodb = databases['OrthoDB']
-    archive_fn = '{0}.{1}'.format(orthodb['filename'], 
+    archive_fn = '{0}.{1}'.format(orthodb['filename'],
                                   orthodb['fileformat'])
     target_fn = path.join(handler.directory, orthodb['filename'])
-    
+
     dl_task = get_download_task(orthodb['url'],
                                 archive_fn,
                                 md5=orthodb['md5'])
@@ -208,8 +209,8 @@ def register_orthodb_tasks(handler, params, databases):
     handler.register_task('gunzip:OrthoDB', gz_task,
                           files={'OrthoDB': target_fn})
     handler.register_task('lastdb:OrthoDB',
-                          LastDBTask().task(target_fn, 
-                                          target_fn, 
+                          LastDBTask().task(target_fn,
+                                          target_fn,
                                           prot=True,
                                           params=params))
     return handler
@@ -218,7 +219,7 @@ def register_orthodb_tasks(handler, params, databases):
 def register_busco_tasks(handler, config, databases):
     busco = databases['BUSCO']
     busco_dir = path.join(handler.directory, config['busco']['db_dir'])
-    
+
     group_name = config['busco_group']
     group = busco[group_name]
     files = {'BUSCO-{0}'.format(group_name): path.join(busco_dir, group['folder'])}
@@ -239,6 +240,22 @@ def register_uniref90_tasks(handler, params, databases):
                           task,
                           files={'uniref90': filename})
     handler.register_task('lastdb:uniref90',
+                          LastDBTask().task(filename,
+                                          filename,
+                                          prot=True,
+                                          params=params,
+                                          task_dep=[task.name]))
+    return handler
+
+def register_sprot_tasks(handler, params, databases):
+    sprot = databases['sprot']
+    task = get_download_and_gunzip_task(sprot['url'],
+                                        sprot['filename'])
+    filename = path.join(handler.directory, sprot['filename'])
+    handler.register_task('download:sprot',
+                          task,
+                          files={'sprot': filename})
+    handler.register_task('lastdb:sprot',
                           LastDBTask().task(filename,
                                           filename,
                                           prot=True,

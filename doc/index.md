@@ -7,8 +7,7 @@ the observations that annotation is mundane and annoying, all the
 individual pieces of the process exist already, and the existing
 solutions are overly complicated or rely on crappy non-free software.
 
-![*Your PI, wistfully thinking back on Perl
-4*](_static/Character_Building.png){.align-right}
+<IMG SRC=_static/Character_Building.png ALIGN=”right” /> Your PI, wistfully thinking back on Perl4.
 
 Science shouldn\'t suck for the sake of sucking, so dammit attempts to
 make this sucky part of the process suck a little less.
@@ -23,31 +22,12 @@ of openness.
 Details
 =======
 
-Authors
+Authors:  Camille Scott
 
-:   Camille Scott
+Contact: <camille.scott.w@gmail.com>
 
-Contact
+GitHub: <https://github.com/camillescott/dammit>
 
-:   <camille.scott.w@gmail.com>
+License: BSD
 
-GitHub
-
-:   <https://github.com/camillescott/dammit>
-
-License
-
-:   BSD
-
-Citation
-
-:   `bibtex <_static/CITATION>`{.interpreted-text role="download"}
-
-Topics
-======
-
-::: {.toctree maxdepth="1"}
-readme
-
-installing tutorial usage databases dammit
-:::
+Citation: `bibtex <_static/CITATION>`{.interpreted-text role="download"}

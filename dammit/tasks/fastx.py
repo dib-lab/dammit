@@ -23,10 +23,10 @@ seq_ext = re.compile(r'(.fasta)|(.fa)|(.fastq)|(.fq)')
 def strip_seq_extension(fn):
     return seq_ext.split(fn)[0]
 
-    
+
 @doit_task
 def get_rename_transcriptome_task(transcriptome_fn, output_fn, names_fn,
-                                  transcript_basename, split_regex=None):
+                                  transcript_basename, split_regex=None, no_rename=False):
     '''Create a doit task to copy a FASTA file and rename the headers.
 
     Args:
@@ -36,7 +36,7 @@ def get_rename_transcriptome_task(transcriptome_fn, output_fn, names_fn,
         transcript_basename (str): String to contruct new names from.
         split_regex (regex): Regex to split the input names with; must contain
             a `name` field.
-    
+
     Returns:
         dict: A doit task.
     '''
@@ -44,34 +44,36 @@ def get_rename_transcriptome_task(transcriptome_fn, output_fn, names_fn,
     import re
     name = os.path.basename(transcriptome_fn)
 
-    if split_regex is None:
-        counter = count()
-        header_func = lambda name: '{0}_{1}'.format(transcript_basename, next(counter))
-    else:
-        def header_func(header):
-            results = re.search(split_regex, header).groupdict()
-            try:
-                header = results['name']
-            except KeyError as err:
-                err.message = 'Header regex should have a name field!'
-                raise
-            return header
+    if not no_rename:
+        if split_regex is None:
+            counter = count()
+            header_func = lambda name: '{0}_{1}'.format(transcript_basename, next(counter))
+        else:
+            def header_func(header):
+                results = re.search(split_regex, header).groupdict()
+                try:
+                    header = results['name']
+                except KeyError as err:
+                    err.message = 'Header regex should have a name field!'
+                    raise
+                return header
 
-    def fix():
-        names = []
-        with open(output_fn, 'w') as fp:
-            for record in ReadParser(transcriptome_fn):
-                header = header_func(record.name)
-                fp.write('>{0}\n{1}\n'.format(header, record.sequence))
-                names.append((record.name, header))
-        pd.DataFrame(names, columns=['original', 'renamed']).to_csv(names_fn,
+        def fix():
+            names = []
+            with open(output_fn, 'w') as fp:
+                for record in ReadParser(transcriptome_fn):
+                    header = record.name
+                    fp.write('>{0}\n{1}\n'.format(header, record.sequence))
+                    names.append((record.name, header))
+
+            pd.DataFrame(names, columns=['original', 'renamed']).to_csv(names_fn,
                                                                     index=False)
 
-    return {'name': name,
-            'actions': [fix],
-            'targets': [output_fn, names_fn],
-            'file_dep': [transcriptome_fn],
-            'clean': [clean_targets]}
+        return {'name': name,
+                'actions': [fix],
+                'targets': [output_fn, names_fn],
+                'file_dep': [transcriptome_fn],
+                'clean': [clean_targets]}
 
 
 @doit_task
@@ -160,7 +162,7 @@ def get_transcriptome_stats_task(transcriptome, output_fn):
                  'n_ambiguous': n_amb,
                  'redundancy': redundancy,
                  'GCperc': float(gc_perc)}
-        
+
         with open(output_fn, 'w') as fp:
             json.dump(stats, fp, indent=4)
 
