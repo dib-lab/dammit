@@ -417,6 +417,7 @@ def register_user_db_tasks(handler, config, databases):
     if not 'user_databases' in config:
         return
 
+    shmlast_tasks = set()
     input_fn = handler.files['transcriptome']
     for db_path in config['user_databases']:
         db_path = path.abspath(db_path)
@@ -430,7 +431,11 @@ def register_user_db_tasks(handler, config, databases):
                     results_fn, 
                     n_threads=config['n_threads'],
                     cutoff=config['evalue'])
+
         for task in crbl.tasks():
+            if tuple(sorted(task.targets)) in shmlast_tasks:
+                continue
+            shmlast_tasks.add(tuple(sorted(task.targets)))
             task.name = 'user-database:{0}-shmlast-{1}'.format(db_basename,
                                                                task.name)
             handler.register_task(task.name, add_profile_actions(task))

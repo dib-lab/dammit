@@ -36,8 +36,14 @@ def check_parallel(logger=None):
             return parallel
 
 
-def parallel_fasta(input_filename, output_filename, command, n_jobs, 
-                   sshloginfile=None, check_dep=True, logger=None):
+def parallel_fasta(input_filename,
+                   output_filename,
+                   command,
+                   n_jobs, 
+                   sshloginfile=None,
+                   check_dep=True,
+                   logger=None):
+
     '''Given an input FASTA source, target, shell command, and number of jobs,
     construct a gnu-parallel command to act on the sequences.
 
@@ -52,15 +58,19 @@ def parallel_fasta(input_filename, output_filename, command, n_jobs,
     Returns:
         str: The constructed shell command.
     '''
-
+    
     exc = which('parallel') if not check_dep else check_parallel(logger=logger)
-    cmd = ['cat', input_filename, '|', exc, '--round-robin', '--pipe', '-L', 2,
-           '-N', 10000, '--gnu']
-    if sshloginfile is not None:
-        cmd.extend(['--sshloginfile', sshloginfile, '--workdir $PWD'])
+    cmd = ['cat', input_filename, '|', exc,
+           '--block',
+           '`expr $(wc -c', input_filename, '| awk \'{{print $1}}\') / {0}`'.format(n_jobs),
+           '--round-robin',
+           '--pipe',
+           '--recstart \'>\'',
+           '--gnu']
+    if pbs is not None:
+        cmd.extend(['--sshloginfile', pbs, '--workdir $PWD'])
     else:
         cmd.extend(['-j', n_jobs])
-    cmd.extend(['-a', input_filename])
 
     if isinstance(command, list):
         command = ' '.join(command)

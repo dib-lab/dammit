@@ -33,8 +33,6 @@ def compare_gff(fn_a, fn_b):
     return df_a.equals(df_b)
 
 
-@pytest.mark.long
-@pytest.mark.requires_databases
 class TestDammitAnnotate:
 
     def setup_method(self):
@@ -46,6 +44,8 @@ class TestDammitAnnotate:
         gff3.next_ID = gff3.id_gen_wrapper()
         self.maxDiff = None
 
+    @pytest.mark.long
+    @pytest.mark.requires_databases
     def test_annotate_basic(self, tmpdir, datadir):
         '''Run a basic annotation and verify the results.
         '''
@@ -67,6 +67,8 @@ class TestDammitAnnotate:
             assert compare_gff(gff3_fn, exp_gff3)
             assert open(fasta_fn).read() == open(exp_fasta).read()
 
+    @pytest.mark.long
+    @pytest.mark.requires_databases
     def test_annotate_full(self, tmpdir, datadir):
         '''Run a full annotation and verify the results.
         '''
@@ -86,6 +88,8 @@ class TestDammitAnnotate:
             assert compare_gff(gff3_fn, exp_gff3)
             assert open(fasta_fn).read() == open(exp_fasta).read()
 
+    @pytest.mark.long
+    @pytest.mark.requires_databases
     def test_annotate_threaded(self, tmpdir, datadir):
         '''Test the --n_threads argument.
         '''
@@ -95,7 +99,8 @@ class TestDammitAnnotate:
             args = ['annotate', transcripts, '--n_threads', '2']
             status, out, err = run(args)
 
-
+    @pytest.mark.long
+    @pytest.mark.requires_databases
     def test_annotate_evalue(self, tmpdir, datadir):
         '''Test the --evalue argument and verify the results.
         '''
@@ -123,7 +128,7 @@ class TestDammitAnnotate:
         with tmpdir.as_cwd():
             transcripts = datadir('pom.single.fa')
             outdir = 'test_out'
-            args = ['annotate', transcripts, '-o', outdir]
+            args = ['annotate', '--quick', transcripts, '-o', outdir]
             status, out, err = run(args)
             fn = os.path.join(outdir, os.path.basename(transcripts))
             assert os.path.isfile(fn)
@@ -148,7 +153,7 @@ class TestDammitAnnotate:
             transcripts = datadir('pom.single.fa')
 
             db_dir = os.environ['DAMMIT_DB_DIR']
-            args = ['annotate', transcripts, '--database-dir', db_dir]
+            args = ['annotate', '--quick', transcripts, '--database-dir', db_dir]
             status, out, err = run(args)
 
     def test_annotate_user_databases(self, tmpdir, datadir):
@@ -161,7 +166,8 @@ class TestDammitAnnotate:
             exp_gff3 = datadir('pom.single.fa.dammit.gff3.udb')
             exp_fasta = datadir('pom.single.fa.dammit.fasta.udb')
 
-            args = ['annotate', transcripts, '--user-databases', pep,
+            args = ['annotate', '--quick',
+                    transcripts, '--user-databases', pep,
                     '--verbosity', '2']
             status, out, err = run(args)
 
@@ -173,6 +179,26 @@ class TestDammitAnnotate:
             assert compare_gff(gff3_fn, exp_gff3)
             assert open(fasta_fn).read() == open(exp_fasta).read()
 
+    def test_annotate_multiple_user_databases(self, tmpdir, datadir):
+        '''Test that multiple user databases work.
+        '''
+
+        with tmpdir.as_cwd():
+            transcripts = datadir('pom.single.fa')
+            pep = datadir('pep.fa')
+            pep2 = datadir('odb_subset.fa')
+            exp_gff3 = datadir('pom.single.fa.dammit.gff3.udb')
+            exp_fasta = datadir('pom.single.fa.dammit.fasta.udb')
+
+            args = ['annotate', '--quick',
+                    transcripts, '--user-databases', pep, pep2,
+                    '--verbosity', '2']
+            status, out, err = run(args)
+
+            outdir = '{0}.dammit'.format(transcripts)
+
+            assert status == 0
+
     def test_annotate_name(self, tmpdir, datadir):
         '''Test the --name argument.
         '''
@@ -180,7 +206,8 @@ class TestDammitAnnotate:
         with tmpdir.as_cwd():
             transcripts = datadir('pom.single.fa')
 
-            args = ['annotate', transcripts, '--name', 'Test']
+            args = ['annotate', '--quick',
+                    transcripts, '--name', 'Test']
             status, out, err = run(args)
 
             outdir = '{0}.dammit'.format(transcripts)
