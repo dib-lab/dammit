@@ -210,6 +210,20 @@ def get_cat_task(file_list, target_fn):
 
 
 @doit_task
+def get_copy_file_task(src, dst):
+    '''Copy a file from src to dst.
+    '''
+
+    cmd = 'cp {src} {dst}'.format(src=src, dst=dst)
+    return {'name': 'cp:' + os.path.basename(src) + ('-' + dst if dst else ''),
+            'actions': [cmd],
+            'file_dep': [src],
+            'targets': [os.path.basename(src) if not dst else dst],
+            'uptodate': [run_once],
+            'clean': [clean_targets]}
+
+
+@doit_task
 def get_link_file_task(src, dst=''):
     ''' Soft-link file to the current directory, or to the destination
     target if given.

@@ -13,6 +13,7 @@ Transcript_0	Infernal	RNA_sequence_secondary_structure	4925	4992	9.600000e+00	-	
 Transcript_0	Infernal	RNA_sequence_secondary_structure	5160	5255	1.200000e+00	+	.	ID=homology:8;Name=mir-598;Target=mir-598 1 97 +;Note=-;Dbxref="Rfam:RF01059";trunc=no;bitscore=22.3
 Transcript_0	Infernal	RNA_sequence_secondary_structure	5472	5504	3.300000e+00	-	.	ID=homology:9;Name=CRISPR-DR63;Target=CRISPR-DR63 1 37 +;Note=-;Dbxref="Rfam:RF01376";trunc=no;bitscore=22.2
 Transcript_0	LAST	translated_nucleotide_match	1	5661	0.000000e+00	+	.	ID=homology:13;Name=TLH2_SCHPO;Target=TLH2_SCHPO 0 1887 +;database=OrthoDB
+Transcript_0	LAST	translated_nucleotide_match	1	5661	0.000000e+00	+	.	ID=homology:14;Name=sp|P0CT33|TLH1_SCHPO;Target=sp|P0CT33|TLH1_SCHPO 0 1887 +;database=sprot
 Transcript_0	transdecoder	CDS	1	5661	.	+	0	ID=cds.Gene.1::Transcript_0::g.1::m.1;Parent=Gene.1::Transcript_0::g.1::m.1
 Transcript_0	transdecoder	exon	1	5662	.	+	.	ID=Gene.1::Transcript_0::g.1::m.1.exon1;Parent=Gene.1::Transcript_0::g.1::m.1
 Transcript_0	transdecoder	gene	1	5662	.	+	.	ID=Gene.1::Transcript_0::g.1;Name=ORF%20type%3A3prime_partial%20len%3A1888%20%28%2B%29

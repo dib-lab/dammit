@@ -95,7 +95,7 @@ class TestHMMERTasks():
                 alns_single = pd.concat(HMMerParser(out_single))
                 alns_multi = pd.concat(HMMerParser(out_multi))
 
-                assert all(alns_single['domain_i_evalue'].sort_values() == \
-                           alns_multi['domain_i_evalue'].sort_values())
+                assert all(alns_single['domain_i_evalue'].sort_values().reset_index(drop=True) == \
+                           alns_multi['domain_i_evalue'].sort_values().reset_index(drop=True))
 
 

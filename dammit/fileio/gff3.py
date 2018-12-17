@@ -66,12 +66,15 @@ class GFF3Parser(ChunkParser):
         '''
         # Read everything into a DataFrame
         n_chunks = 0
-        for group in  pd.read_table(self.filename, delimiter='\t', comment='#',
-                                    names=[k for k,_ in self.columns], na_values='.',
+        for group in  pd.read_table(self.filename,
+                                    delimiter='\t',
+                                    comment='#',
+                                    names=[k for k,_ in self.columns],
+                                    na_values='.',
                                     converters={'attributes': self.decompose_attr_column},
-                                    chunksize=self.chunksize, header=None,
-                                    dtype=dict(self.columns)):
-
+                                    chunksize=self.chunksize,
+                                    header=None):
+            
             # Generate a new DataFrame from the attributes dicts, and merge it in
             group.reset_index(drop=True, inplace=True)
             df = pd.merge(group, pd.DataFrame(list(group.attributes)),

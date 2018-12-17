@@ -35,12 +35,7 @@ class HMMerParser(ChunkParser):
                 ('accuracy', float),
                 ('description', str)]
 
-    def __init__(self, filename, query_regex=None, query_basename='Transcript', **kwargs):
-        if query_regex is None:
-            self.query_regex = re.compile(r'(?P<name>{basename}_[0-9]*)'.format(basename=query_basename))
-        else:
-            self.query_regex = query_regex
-
+    def __init__(self, filename, **kwargs):
         super(HMMerParser, self).__init__(filename, **kwargs)
 
     def __iter__(self):
@@ -82,22 +77,8 @@ class HMMerParser(ChunkParser):
         if not data:
             self.raise_empty()
 
-        def split_query(item):
-            try:
-                results = self.query_regex.search(item).groupdict()
-                q = results['name']
-            except KeyError as e:
-                e.message = 'Header regex should have a "name" field.'
-                raise
-            except AttributeError as e:
-                e.message = 'No results from regex split; did something go '\
-                            'wrong with a custom --name?'
-            return q
-
         df = pd.DataFrame(data, columns=[k for k, _ in self.columns])
         convert_dtypes(df, dict(self.columns))
-        df['full_query_name'] = df.query_name
-        df['query_name'] = df.query_name.apply(split_query)
         # fix the evil coordinate system
         df.hmm_coord_from = df.hmm_coord_from - 1
         df.ali_coord_from = df.ali_coord_from - 1

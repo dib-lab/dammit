@@ -129,7 +129,7 @@ class DammitApp(object):
                                 action='store_true',
                                 help='Ignore missing database tasks.')
 
-            parser.add_argument('--no_rename',
+            parser.add_argument('--no-rename',
                                 default=False,
                                 action='store_true',
                                 help='Keep original transcript names.'\
@@ -155,7 +155,6 @@ class DammitApp(object):
                                      ' pipelines because it is huge and'\
                                      ' homology searches take a long time.'
                                 )
-
 
             pgroup.add_argument('--quick',
                                 default=False,

@@ -12,25 +12,26 @@ import sys
 
 from shmlast.app import CRBL
 
-from dammit.handler import TaskHandler
-from dammit.profile import add_profile_actions
+from dammit.handler import             TaskHandler
+from dammit.profile import             add_profile_actions
 
-from dammit.tasks.fastx import (get_transcriptome_stats_task,
-                          get_rename_transcriptome_task)
-from dammit.tasks.report import get_annotate_fasta_task
-from dammit.tasks.busco import BuscoTask
-from dammit.tasks.utils import get_group_task
-from dammit.tasks.gff import (get_maf_gff3_task,
-                        get_shmlast_gff3_task,
-                        get_hmmscan_gff3_task,
-                        get_cmscan_gff3_task,
-                        get_gff3_merge_task,
-                        get_maf_best_hits_task)
-from dammit.tasks.last import LastalTask
-from dammit.tasks.hmmer import HMMScanTask, get_remap_hmmer_task
-from dammit.tasks.infernal import CMScanTask
+from dammit.tasks.fastx import        (get_transcriptome_stats_task,
+                                       get_rename_transcriptome_task)
+from dammit.tasks.shell import         get_copy_file_task
+from dammit.tasks.report import        get_annotate_fasta_task
+from dammit.tasks.busco import         BuscoTask
+from dammit.tasks.utils import         get_group_task
+from dammit.tasks.gff import          (get_maf_gff3_task,
+                                       get_shmlast_gff3_task,
+                                       get_hmmscan_gff3_task,
+                                       get_cmscan_gff3_task,
+                                       get_gff3_merge_task,
+                                       get_maf_best_hits_task)
+from dammit.tasks.last import          LastalTask
+from dammit.tasks.hmmer import         HMMScanTask, get_remap_hmmer_task
+from dammit.tasks.infernal import      CMScanTask
 from dammit.tasks.transdecoder import (TransDecoderPredictTask,
-                                 TransDecoderLongOrfsTask)
+                                       TransDecoderLongOrfsTask)
 from dammit import ui
 from dammit import log
 
@@ -66,18 +67,26 @@ def get_handler(config, databases):
                           profile=config['profile'])
     log.start_logging(path.join(directory, 'dammit.log'))
 
-    input_fn = path.join(directory, path.basename(config['transcriptome']))
-    name_map_fn = input_fn + '.dammit.namemap.csv'
-    handler.register_task('rename-transcriptome',
-                          get_rename_transcriptome_task(
-                              path.abspath(config['transcriptome']),
-                              input_fn,
-                              name_map_fn,
-                              config['name'],
-                              config['no_rename']
-                          ),
-                          files={'transcriptome': input_fn,
-                                 'name_map': name_map_fn})
+    txome_fn = path.join(directory, path.basename(config['transcriptome']))
+    
+    if not config['no_rename']:
+        name_map_fn = txome_fn + '.dammit.namemap.csv'
+        handler.register_task('rename-transcriptome',
+                              get_rename_transcriptome_task(
+                                  path.abspath(config['transcriptome']),
+                                  txome_fn,
+                                  name_map_fn,
+                                  config['name']
+                              ),
+                              files={'transcriptome': txome_fn,
+                                     'name_map': name_map_fn})
+    else:
+        handler.register_task('copy-transcriptome',
+                              get_copy_file_task(
+                                  path.abspath(config['transcriptome']),
+                                  txome_fn
+                              ),
+                              files={'transcriptome': txome_fn})
 
     return handler
 
@@ -282,8 +291,7 @@ def register_transdecoder_tasks(handler, config, databases,
         handler.register_task('hmmscan:Pfam-A:remap',
                               get_remap_hmmer_task(handler.files['longest_orfs_pfam'],
                                                    path.join(transdecoder_dir, 'longest_orfs.gff3'),
-                                                   pfam_csv_fn,
-                                                   transcript_basename=config['name']),
+                                                   pfam_csv_fn),
                               files={'Pfam-A-csv': pfam_csv_fn})
 
         pfam_gff3 = '{0}.x.pfam-A.gff3'.format(input_fn)
