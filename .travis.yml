@@ -3,6 +3,8 @@ sudo: required
 dist: trusty
 group: edge
 python: 3.6
+env:
+  - DAMMIT_DB_DIR=$HOME/dammitdb
 before_install:
   - sudo apt-get -qq update
 install:
