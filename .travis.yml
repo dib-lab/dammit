@@ -21,5 +21,7 @@ install:
   - source activate test
   - conda install python numpy pandas numexpr khmer sphinx sphinx_rtd_theme pytest pytest-runner doit matplotlib shmlast infernal hmmer transdecoder=3.0.1 last busco=3.0.2 parallel bioconductor-seqlogo
   - python setup.py install
+before_script:
+  - dammit databases --install --quick
 
 script: make ci-test
