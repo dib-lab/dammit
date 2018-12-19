@@ -219,23 +219,26 @@ class TestDammitAnnotate:
 
             assert status == 0
     
-    
+    @pytest.mark.requires_databases
     def test_annotate_no_rename(self, tmpdir, datadir):
         '''Test the --no-rename argument.
         '''
 
         with tmpdir.as_cwd():
             transcripts = datadir('pom.single.fa')
+            exp_gff3 = datadir('pom.single.fa.dammit.gff3.norename')
+            exp_fasta = datadir('pom.single.fa.dammit.fasta.norename')
 
             args = ['annotate', transcripts, '--no-rename']
             status, out, err = run(args)
+            assert status == 0
 
             outdir = '{0}.dammit'.format(transcripts)
             fn = os.path.join(outdir, os.path.basename(transcripts))
             assert os.path.isfile(fn)
-
             contents = open(fn).read()
             assert 'SPAC212' in contents
 
-            assert status == 0
+            gff3_fn = os.path.join(outdir, 'pom.single.fa.dammit.gff3')
+            assert compare_gff(gff3_fn, exp_gff3)
 

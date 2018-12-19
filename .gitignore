@@ -9,6 +9,8 @@
 *.dammit.evalue10
 *.dammit.udb
 *.dammit.full
+*.dammit.norename/
+
 .cache
 .eggs/
 deps/
