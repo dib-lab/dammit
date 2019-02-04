@@ -32,7 +32,7 @@ Implicit to these motivations is some idea of what a good annotator
 The Obligatory Flowchart
 ------------------------
 
-![The Workflow](_static/workflow.svg)
+![The Workflow](static/workflow.svg)
 
 Software Used
 =============
@@ -88,13 +88,13 @@ A brief intro to CRBB
     confounds RBH
 -   CRBB uses machine learning to get at this problem
 
-![](_static/RBH.svg)
+![](static/RBH.svg)
 
 CRBB attempts to associate those isoforms with appropriate annotations
 by learning an appropriate e-value cutoff for different transcript
 lengths.
 
-![CRBB](_static/CRBB_decision.png)
+![CRBB](static/CRBB_decision.png)
 
 *from
 http://journals.plos.org/plosgenetics/article?id=10.1371/journal.pgen.1004365\#s5*
