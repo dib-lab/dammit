@@ -55,7 +55,7 @@ The last one is important, and sometimes ignored.
 
 ## Conditional Reciprocal Best LAST
 
-Building off Richard and co\'s work on Conditional Reciprocal Best
+Building off Richard and co's work on Conditional Reciprocal Best
 BLAST, I've implemented a new version with Python and LAST -- CRBL.
 The original lives [here](https://github.com/cboursnell/crb-blast).
 
