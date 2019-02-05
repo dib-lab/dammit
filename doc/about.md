@@ -1,24 +1,21 @@
----
-title: About
----
+# About
 
 This page goes a little more in depth on the software and its goals.
 
-Motivations
-===========
+## Motivations
 
-Several different factors motivated dammit\'s development. The first of
+Several different factors motivated dammit's development. The first of
 these was the sea lamprey transcriptome project, which had annotation as
-a primary goal. Many of dammit\'s core features were already implemented
+a primary goal. Many of dammit's core features were already implemented
 there, and it seemed a shame not share that work with others in a usable
 format. Related to this was a lack of workable and easy-to-use existing
 solutions; in particular, most are meant to be used as protocols and
-haven\'t been packaged in an automated format. Licensing was also a big
-concern \-- software used for science should be open source, easily
+haven't been packaged in an automated format. Licensing was also a big
+concern -- software used for science should be open source, easily
 accessible, remixable, and free.
 
 Implicit to these motivations is some idea of what a good annotator
-*should* look like, in the author\'s opinion:
+*should* look like, in the author's opinion:
 
 1.  It should be easy to install and upgrade
 2.  It should only use Free software
@@ -26,16 +23,14 @@ Implicit to these motivations is some idea of what a good annotator
 4.  It should output in reasonable formats
 5.  It should be relatively fast
 6.  It should try to be correct, insofar as any computational approach
-    can be \"correct\"
+    can be "correct"
 7.  It should give the user some measure of confidence for its results.
 
-The Obligatory Flowchart
-------------------------
+## The Obligatory Flowchart
 
 ![The Workflow](static/workflow.svg)
 
-Software Used
-=============
+## Software Used
 
 -   TransDecoder
 -   BUSCO
@@ -47,8 +42,7 @@ Software Used
 
 All of these are Free Software, as in freedom and beer
 
-Databases
-=========
+## Databases
 
 -   Pfam-A
 -   Rfam
@@ -59,12 +53,11 @@ Databases
 
 The last one is important, and sometimes ignored.
 
-Conditional Reciprocal Best LAST
-================================
+## Conditional Reciprocal Best LAST
 
 Building off Richard and co\'s work on Conditional Reciprocal Best
-BLAST, I\'ve implemented a new version with Python and LAST \-- CRBL.
-The original lives here: <https://github.com/cboursnell/crb-blast>
+BLAST, I've implemented a new version with Python and LAST -- CRBL.
+The original lives [here](https://github.com/cboursnell/crb-blast).
 
 Why??
 
@@ -79,8 +72,7 @@ an experience you want to have.
 
 ie, practical concerns.
 
-A brief intro to CRBB
----------------------
+## A brief intro to CRBB
 
 -   Reciprocal Best Hits (RBH) is a standard method for ortholog
     detection
@@ -99,8 +91,7 @@ lengths.
 *from
 http://journals.plos.org/plosgenetics/article?id=10.1371/journal.pgen.1004365\#s5*
 
-CRBL
-----
+## CRBL
 
 For CRBL, instead of fitting a linear model, we train a model.
 
