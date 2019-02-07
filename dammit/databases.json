@@ -50,21 +50,21 @@
 	"OrthoDB": {
 		"access": "download",
 		"db_type": "prot",
-		"filename": "aa_seq_euk.fasta",
-        "md5": "f40da35b9135c5f326380089f0ddb7a2",
+		"filename": "odb10_arthropoda.fasta",
+        "md5": "65414490cfe2073f78d7757e3a34607e",
 		"fileformat": "gz",
-        "version": 8,
-		"url": "ftp://cegg.unige.ch/OrthoDB8/Eukaryotes/FASTA/aa_seq_euk.fasta.gz"
+        "version": 10,
+		"url": "https://v100.orthodb.org/download/odb10_arthropoda_fasta.tar.gz"
 	},
 
     "orthodb_genes": {
         "access": "download",
         "db_type": "txt",
-        "filename": "ODB8_EukOGs_genes_ALL_levels.txt",
-        "md5": null,
+        "filename": "odb10v0_genes.tab",
+        "md5": 	"34b023f5334b124ed846ae526fbac8fc",
         "fileformat": "gz",
-        "version": 8,
-        "url": "ftp://cegg.unige.ch/OrthoDB8/Eukaryotes/Genes_to_OGs/ODB8_EukOGs_genes_ALL_levels.txt.gz"
+        "version": 10,
+        "url": "https://v100.orthodb.org/download/odb10v0_genes.tab.gz"
     },
 
     "BUSCO": {
