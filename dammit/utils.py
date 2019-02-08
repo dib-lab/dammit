@@ -122,7 +122,7 @@ class Move(object):
         if self.verbose:
             print('Move to `{0}` from cwd: `{1}`'.format(self.target, 
                                                      self.cwd, 
-                                                     file=sys.stderr))
+                                                     file=sys.stderr),flush=True)
         if self.create:
             try:
                 os.mkdir(self.target)

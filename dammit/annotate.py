@@ -99,17 +99,17 @@ def run_annotation(handler):
     Args:
         handler (handler.TaskHandler): Handler with tasks for the pipeline.
     '''
-    print(ui.header('Annotation', level=3))
-    print(ui.header('Info', level=4))
+    print(ui.header('Annotation', level=3),flush=True)
+    print(ui.header('Info', level=4),flush=True)
     info = {'Doit Database': handler.dep_file,
             'Input Transcriptome': handler.files['transcriptome']}
-    print(ui.listing(info))
+    print(ui.listing(info),flush=True)
     msg = '*All annotation tasks up-to-date.*'
     uptodate, statuses = handler.print_statuses(uptodate_msg=msg)
     if not uptodate:
         return handler.run()
     else:
-        print('**Pipeline is already completed!**')
+        print('**Pipeline is already completed!**',flush=True)
         sys.exit(0)
 
 

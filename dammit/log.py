@@ -35,7 +35,7 @@ def init_default_logger():
             filename = log_file
         if test is True:
             filename = os.path.join(log_dir, 'dammit-tests.log')
-            print('Logger in testing mode:', filename)
+            print('Logger in testing mode:', filename,flush=True)
         logging.basicConfig(level=logging.DEBUG, **config)
 
         run_handler = logging.FileHandler(filename)

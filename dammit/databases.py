@@ -76,25 +76,25 @@ def print_meta(handler):
         handler (handler.TaskHandler): The database task handler.
     '''
 
-    print(ui.header('Info', level=4))
+    print(ui.header('Info', level=4),flush=True)
     info = {'Doit Database': handler.dep_file,
             'Database Directory': handler.directory}
-    print(ui.listing(info))
+    print(ui.listing(info),flush=True)
 
 
 def install(handler):
     '''Run the database prep pipeline from the given handler.
     '''
 
-    print(ui.header('Database Install', level=3))
+    print(ui.header('Database Install', level=3),flush=True)
     print_meta(handler)
     msg = '*All database tasks up-to-date.*'
     uptodate, statuses = handler.print_statuses(uptodate_msg=msg)
     if not uptodate:
-        print('Installing...')
+        print('Installing...',flush=True)
         return handler.run()
     else:
-        print('Nothing to install!')
+        print('Nothing to install!',flush=True)
         return 0
 
 
@@ -103,7 +103,7 @@ def check_or_fail(handler):
     with status 2.
     '''
 
-    print(ui.header('Database Check', level=3))
+    print(ui.header('Database Check', level=3),flush=True)
     print_meta(handler)
     msg = '*All database tasks up-to-date.*'
     uptodate, statuses = handler.print_statuses(uptodate_msg=msg)
@@ -113,7 +113,7 @@ def check_or_fail(handler):
                            ' already installed them, make sure you\'ve given'
                            ' the correct location to `--database-dir` or have'
                            ' exported the $DAMMIT_DB_DIR environment'
-                           ' variable.'))
+                           ' variable.'),flush=True)
         sys.exit(2)
 
 
