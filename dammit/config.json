@@ -21,6 +21,11 @@
         "output_suffix": ".busco.results",
         "params": []
     },
+    "orthodb": {
+        "db_dir": "orthoDBv10",
+        "output_suffix": ".ortho.results",
+        "params": []
+    },
 
     "hmmer": {
         "hmmscan": [],

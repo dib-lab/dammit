@@ -18,6 +18,7 @@ from dammit.tasks.hmmer import HMMPressTask
 from dammit.tasks.infernal import CMPressTask
 from dammit.tasks.shell import (get_download_and_gunzip_task,
                                 get_download_and_untar_task,
+                                get_unexisting_folder_cat_task,
                                 get_download_task,
                                 get_gunzip_task)
 
@@ -134,7 +135,7 @@ def build_default_pipeline(handler, config, databases, with_uniref=False, with_n
 
     register_pfam_tasks(handler, config['hmmer']['hmmpress'], databases)
     register_rfam_tasks(handler, config['infernal']['cmpress'], databases)
-    register_orthodb_tasks(handler, config['last']['lastdb'], databases)
+    register_orthodb_tasks(handler, config, databases)
     register_busco_tasks(handler, config, databases)
     register_sprot_tasks(handler, config['last']['lastdb'], databases)
     if with_uniref:
@@ -193,26 +194,32 @@ def register_rfam_tasks(handler, params, databases):
     return handler
 
 
-def register_orthodb_tasks(handler, params, databases):
+def register_orthodb_tasks(handler, config, databases):
+    #Prepare variables
+    last_db_params = config['last']['lastdb']
     orthodb = databases['OrthoDB']
-    archive_fn = '{0}.{1}'.format(orthodb['filename'],
-                                  orthodb['fileformat'])
-    target_fn = path.join(handler.directory, orthodb['filename'])
+    orthodb_dir = path.join(handler.directory, config['orthodb']['db_dir'])
+    group_name = config['orthodb-group'] #Hardcoded in config.json as app.py argument seems not to work
+    group = orthodb[group_name]
+    files = {'orthoDB-{0}'.format(group_name): path.join(orthodb_dir, group['folder'])}
 
-    dl_task = get_download_task(orthodb['url'],
-                                archive_fn,
-                                md5=orthodb['md5'])
-    gz_task = get_gunzip_task(archive_fn, target_fn)
+    target_dir = orthodb_dir+"/"+group_name+"/Rawdata"
+    target_fn = orthodb_dir + "/"+ group_name+ "/"+ group_name+ ".fasta"
+    
+    dl_task = get_download_and_untar_task(group['url'], orthodb_dir, label=group_name)
+    
+       
+    cat_task = get_unexisting_folder_cat_task(target_dir,target_fn)
 
-    handler.register_task('download:OrthoDB', dl_task,
-                          files={'OrthoDB-gz': archive_fn})
-    handler.register_task('gunzip:OrthoDB', gz_task,
-                          files={'OrthoDB': target_fn})
+
+    #Register tasks
+    handler.register_task('download_and_untar:OrthoDB', dl_task, files=files)
+    handler.register_task('join_files:OrthDB',cat_task, files={'OrthoDB': target_dir})
     handler.register_task('lastdb:OrthoDB',
                           LastDBTask().task(target_fn,
                                           target_fn,
                                           prot=True,
-                                          params=params))
+                                          params=last_db_params))
     return handler
 
 

@@ -91,6 +91,15 @@ class DammitApp(object):
                                      ' Full list of options is below.'
                                 )
 
+            parser.add_argument('--orthodb-group',
+                                default='metazoa',
+                                metavar='[metazoa, arthropoda, vertebrata, ...]',
+                                choices=list(self.databases_d['OrthoDB'].keys()),
+                                help='Which orthoDB group to use. Should be chosen'\
+                                     ' based on the organism being annotated.'\
+                                     ' Full list of options is below.'
+                                )
+
             parser.add_argument('--n_threads',
                                 type=int,
                                 default=1,

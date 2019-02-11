@@ -48,13 +48,43 @@
     },
 	
 	"OrthoDB": {
-		"access": "download",
-		"db_type": "prot",
-		"filename": "odb10_arthropoda.fasta",
-        "md5": "65414490cfe2073f78d7757e3a34607e",
-		"fileformat": "gz",
-        "version": 10,
-		"url": "https://v100.orthodb.org/download/odb10_arthropoda_fasta.tar.gz"
+        "arthropoda":{
+            "access": "download",
+            "db_type": "prot",
+            "folder": "odb10_arthropoda",
+            "md5": null,
+            "fileformat": "tar.gz",
+            "version": 10,
+            "url": "https://v100.orthodb.org/download/odb10_arthropoda_fasta.tar.gz"
+        },
+        "metazoa":{
+            "access": "download",
+            "db_type": "prot",
+            "folder": "odb10_metazoa",
+            "md5": null,
+            "fileformat": "tar.gz",
+            "version": 10,
+            "url": "https://v100.orthodb.org/download/odb10_metazoa_fasta.tar.gz"
+        },
+        "vertebrata":{
+            "access": "download",
+            "db_type": "prot",
+            "folder": "odb10_vertebrata",
+            "md5": null,
+            "fileformat": "tar.gz",
+            "version": 10,
+            "url": "https://v100.orthodb.org/download/odb10_vertebrata_fasta.tar.gz"
+        }, 
+        "protozoa":{
+            "access": "download",
+            "db_type": "prot",
+            "folder": "odb10_protozoa",
+            "md5": null,
+            "fileformat": "tar.gz",
+            "version": 10,
+            "url": "https://v100.orthodb.org/download/odb10_protozoa_fasta.tar.gz"
+        } 
+
 	},
 
     "orthodb_genes": {
