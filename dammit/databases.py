@@ -199,7 +199,7 @@ def register_orthodb_tasks(handler, config, databases):
     last_db_params = config['last']['lastdb']
     orthodb = databases['OrthoDB']
     orthodb_dir = path.join(handler.directory, config['orthodb']['db_dir'])
-    group_name = config['orthodb-group'] #Hardcoded in config.json as app.py argument seems not to work
+    group_name = config['orthodb_group']
     group = orthodb[group_name]
     files = {'orthoDB-{0}'.format(group_name): path.join(orthodb_dir, group['folder'])}
 
@@ -215,6 +215,7 @@ def register_orthodb_tasks(handler, config, databases):
     #Register tasks
     handler.register_task('download_and_untar:OrthoDB', dl_task, files=files)
     handler.register_task('join_files:OrthDB',cat_task, files={'OrthoDB': target_dir})
+    #TODO remove target_dir 
     handler.register_task('lastdb:OrthoDB',
                           LastDBTask().task(target_fn,
                                           target_fn,
