@@ -48,6 +48,7 @@
     },
 	
 	"OrthoDB": {
+        
         "arthropoda":{
             "access": "download",
             "db_type": "prot",
@@ -83,19 +84,50 @@
             "fileformat": "tar.gz",
             "version": 10,
             "url": "https://v100.orthodb.org/download/odb10_protozoa_fasta.tar.gz"
-        } 
+        },
+        
+        "genes": {
+            "access": "download",
+            "db_type": "txt",
+            "filename": "odb10v0_genes.tab",
+            "md5": 	"34b023f5334b124ed846ae526fbac8fc",
+            "fileformat": "gz",
+            "version": 10,
+            "url": "https://v100.orthodb.org/download/odb10v0_genes.tab.gz"
+        },
+    
+        "og2genes": {
+            "access": "download",
+            "db_type": "txt",
+            "filename": "odb10v0_OG2genes.tab",
+            "md5": 	"d16c8a2272d8e35684279c4d6e0ed1a0",
+            "fileformat": "gz",
+            "version": 10,
+            "url": "https://v100.orthodb.org/download/odb10v0_OG2genes.tab.gz"
+        },
+        "og2xrefs": {
+            "access": "download",
+            "db_type": "txt",
+            "filename": "odb10v0_OG_xrefs.tab",
+            "md5": 	"6d1279b4e4819b5d95c2e0ec81a53417",
+            "fileformat": "gz",
+            "version": 10,
+            "url": "https://v100.orthodb.org/download/odb10v0_OG_xrefs.tab.gz"
+        },
+
+        "ogs": {
+            "access": "download",
+            "db_type": "txt",
+            "filename": "odb10v0_OGs.tab",
+            "md5": 	"b9d6cf78cfa401f2ee8c99627b95a8af",
+            "fileformat": "gz",
+            "version": 10,
+            "url": "https://v100.orthodb.org/download/odb10v0_OGs.tab.gz"
+        }
 
 	},
 
-    "orthodb_genes": {
-        "access": "download",
-        "db_type": "txt",
-        "filename": "odb10v0_genes.tab",
-        "md5": 	"34b023f5334b124ed846ae526fbac8fc",
-        "fileformat": "gz",
-        "version": 10,
-        "url": "https://v100.orthodb.org/download/odb10v0_genes.tab.gz"
-    },
+    
 
     "BUSCO": {
         "deltaepsilonsub": {
