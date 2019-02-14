@@ -195,6 +195,7 @@ def register_rfam_tasks(handler, params, databases):
 
 
 def register_orthodb_tasks(handler, config, databases):
+    #TODO get OrthoDBversion spesific
     #Prepare variables
     last_db_params = config['last']['lastdb']
     orthodb = databases['OrthoDB']
@@ -203,19 +204,19 @@ def register_orthodb_tasks(handler, config, databases):
     group = orthodb[group_name]
     files = {'orthoDB-{0}'.format(group_name): path.join(orthodb_dir, group['folder'])}
 
-    target_dir = orthodb_dir+"/"+group_name+"/Rawdata"
-    target_fn = orthodb_dir + "/"+ group_name+ "/"+ group_name+ ".fasta"
+    target_dir = orthodb_dir + "/"+ group_name + "/"+ group_name
+    target_fn = orthodb_dir + "/"+ group_name+ "/"+ group_name
     
     dl_task = get_download_and_untar_task(group['url'], orthodb_dir, label=group_name)
     
-       
-    cat_task = get_unexisting_folder_cat_task(target_dir,target_fn)
+     
+    cat_task = get_unexisting_folder_cat_task(orthodb_dir + "/"+ group_name + '/Rawdata',target_fn)
 
 
     #Register tasks
     handler.register_task('download_and_untar:OrthoDB', dl_task, files=files)
     handler.register_task('join_files:OrthDB',cat_task, files={'OrthoDB': target_dir})
-    #TODO remove target_dir 
+    #TODO remove target_dir/Rawdata
     handler.register_task('lastdb:OrthoDB',
                           LastDBTask().task(target_fn,
                                           target_fn,
