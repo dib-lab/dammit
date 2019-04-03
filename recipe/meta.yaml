@@ -65,7 +65,7 @@ test:
     - dammit -h > /dev/null
 
 about:
-  home: http://www.camillescott.org/dammit/
+  home: http://dib-lab.github.io/dammit/
   license: BSD
   license_file: LICENSE
   summary: simple de novo transcriptome annotator
