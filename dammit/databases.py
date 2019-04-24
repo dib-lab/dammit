@@ -209,7 +209,7 @@ def register_orthodb_tasks(handler, config, databases):
     
     dl_task = get_download_and_untar_task(group['url'], orthodb_dir, label=group_name)
     
-     
+    #TODO take the folder name from json not from the untar task as the folder that isa untar'ed might have a diffrent name (problem with vertebrata/e eg)
     cat_task = get_unexisting_folder_cat_task(orthodb_dir + "/"+ group_name + '/Rawdata',target_fn)
 
 
