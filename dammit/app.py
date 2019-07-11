@@ -202,7 +202,7 @@ class DammitApp(object):
         '''
         desc = '''The main annotation pipeline. Calculates assembly stats;
                runs BUSCO; runs LAST against OrthoDB (and optionally uniref90),
-               HMMER against Pfam, Inferal against Rfam, and Conditional Reciprocal
+               HMMER against Pfam, Infernal against Rfam, and Conditional Reciprocal
                Best-hit Blast against user databases; and aggregates all results in
                a properly formatted GFF3 file.'''
         annotate_parser = subparsers.add_parser(
