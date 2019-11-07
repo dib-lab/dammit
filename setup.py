@@ -37,6 +37,11 @@ def main():
                              'codecov'],
             packages = find_packages(),
             scripts = glob('bin/*'),
+            entry_points = {
+                'console_scripts': [
+                    'dammit=dammit.cli:component'
+                ]
+            },
             install_requires = ['setuptools>=0.6.35',
                                 'pandas>=0.18.1',
                                 'khmer>=2.0',
