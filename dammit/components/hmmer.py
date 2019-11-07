@@ -47,23 +47,20 @@ def remap_hmmer_coords(hmmer_filename, gff_filename, output_filename):
         output_filename (str): Path to store remapped results.
     '''
 
-    name = 'remap_hmmer:{0}'.format(os.path.basename(hmmer_filename))
+    gff_df = GFF3Parser(gff_filename).read()
+    hmmer_df = HMMerParser(hmmer_filename).read()
+    hmmer_df = split_transdecoder_names(hmmer_df)
 
-    def cmd():
-        gff_df = GFF3Parser(gff_filename).read()
-        hmmer_df = HMMerParser(hmmer_filename).read()
-        hmmer_df = split_transdecoder_names(hmmer_df)
+    if len(gff_df) > 0 and len(hmmer_df) > 0:
+        merged_df = pd.merge(hmmer_df, gff_df, left_on='full_query_name', right_on='ID')
 
-        if len(gff_df) > 0 and len(hmmer_df) > 0:
-            merged_df = pd.merge(hmmer_df, gff_df, left_on='full_query_name', right_on='ID')
-
-            hmmer_df['env_coord_from'] = (merged_df.start + \
-                                          (3 * merged_df.env_coord_from)).astype(int)
-            hmmer_df['env_coord_to'] = (merged_df.start + \
-                                        (3 * merged_df.env_coord_to)).astype(int)
-            hmmer_df['ali_coord_from'] = (merged_df.start + \
-                                          (3 * merged_df.ali_coord_from)).astype(int)
-            hmmer_df['ali_coord_to'] = (merged_df.start + \
-                                        (3 * merged_df.ali_coord_to)).astype(int)
-        
-        hmmer_df.to_csv(output_filename, header=True, index=False)
+        hmmer_df['env_coord_from'] = (merged_df.start + \
+                                      (3 * merged_df.env_coord_from)).astype(int)
+        hmmer_df['env_coord_to'] = (merged_df.start + \
+                                    (3 * merged_df.env_coord_to)).astype(int)
+        hmmer_df['ali_coord_from'] = (merged_df.start + \
+                                      (3 * merged_df.ali_coord_from)).astype(int)
+        hmmer_df['ali_coord_to'] = (merged_df.start + \
+                                    (3 * merged_df.ali_coord_to)).astype(int)
+    
+    hmmer_df.to_csv(output_filename, header=True, index=False)
