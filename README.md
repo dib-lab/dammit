@@ -13,9 +13,11 @@ make this sucky part of the process suck a little less.
 
 ## Basic Usage
 
-Install dammit with (bio)conda:
+Install dammit with conda. bioconda install is failing - use the following code instead to install dammit in a conda environment:
 
-    conda install dammit
+    wget https://raw.githubusercontent.com/dib-lab/elvers/master/elvers/rules/dammit/environment.yml
+    conda env create -f environment.yml -n dammit-env 
+    conda activate dammit-env
 
 Download and install a subset of the databases:
 
