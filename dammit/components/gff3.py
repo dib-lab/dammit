@@ -7,7 +7,11 @@
 import shlex
 import subprocess
 
-from dammit.cli import component
+import click
+
+from ..cli import component
+from ..fileio.gff3 import GFF3Writer
+
 
 @component.command()
 @click.argument('gff3_filenames', nargs=-1)
@@ -23,10 +27,12 @@ def merge_gff3(gff3_filenames, output_filename):
 
     if not gff3_filenames:
         return
-
-    merge_cmd = 'echo "{v}" > {out}; cat {f} | sed \'/^#/ d\''\
-                ' | sort | sed \'/^$/d\' >> {out}'.format(v=GFF3Writer.version_line,
-                                                          f=' '.join(gff3_filenames),
-                                                          out=output_filename)
-    subprocess.run(shlex.split(merge_cmd))
+    
+    version_cmd = 'echo "{v}" > {out}'.format(v=GFF3Writer.version_line,
+                                              out=output_filename)
+    merge_cmd = 'cat {f} | sed "/^#/ d"'\
+                ' | sort | sed "/^$/d" >> {out}'.format(f=' '.join(gff3_filenames),
+                                                        out=output_filename)
+    subprocess.run(version_cmd, shell=True)
+    subprocess.run(merge_cmd, shell=True)
 
