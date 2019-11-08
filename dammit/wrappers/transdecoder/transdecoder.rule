@@ -1,0 +1,39 @@
+
+import os
+
+DATA_DIR="../../tests/test-data/"
+
+# until we get tests set up, check rule works with:
+#    snakemake -s transdecoder.rule --use-conda 
+rule test_transdecoder:
+    input: "test.fa.transdecoder.bed"
+    
+
+rule transdecoder_longorfs:
+    input:
+        fasta = os.path.join(DATA_DIR, "test.fa.gz")
+    output:
+        "test.fa.transdecoder_dir/longest_orfs.pep"
+    log:
+        'logs/transdecoder/test-longorfs.log'
+    params:
+        extra=""
+    threads: 4
+    conda: "environment.yml"
+    script: "transdecoder-longorfs.wrapper.py"
+
+rule transdecoder_predict:
+    input:
+        fasta = os.path.join(DATA_DIR, "test.fa.gz")
+    output:
+        "test.fa.transdecoder.bed",
+        "test.fa.transdecoder.cds",
+        "test.fa.transdecoder.pep",
+        "test.fa.transdecoder.gff3"
+    log:
+        'logs/transdecoder/test-predict.log'
+    params:
+        extra=""
+    threads: 4
+    conda: "environment.yml"
+    script: "transdecoder-predict.wrapper.py"
