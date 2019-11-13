@@ -1,0 +1,19 @@
+import os
+
+DATA_DIR = "../../tests/test-data/"
+
+# for now, test with: snakemake -s rename-transcriptome.rule 
+
+rule run_dammit_rename_transcriptome:
+    input:
+        os.path.join(DATA_DIR, "target.fa")
+    output:
+        fasta = "target.renamed.fa",
+        names = "target.namemap.csv"
+    log:
+        "logs/rename-transcriptome.log"
+    params:
+        basename = "Txome"
+    script: "rename-transcriptome.wrapper.py"
+
+
