@@ -3,12 +3,8 @@ from dammit.meta import __path__
 configfile: '../../databases.json'
 
 
-rule checksummed_downloads:
-    input: 'Pfam-A.hmm', 'Rfam.cm', 'OrthoDB.fasta'
-
-
-rule metalinked_downloads:
-    input: 'uniprot_sprot.fasta'
+rule download_databases:
+    input: 'Pfam-A.hmm', 'Rfam.cm', 'OrthoDB.fasta', 'uniprot_sprot.fasta'
 
 
 rule download_and_gunzip:
