@@ -24,7 +24,8 @@ rule transdecoder_longorfs:
 
 rule transdecoder_predict:
     input:
-        fasta = os.path.join(DATA_DIR, "test.fa.gz")
+        fasta = os.path.join(DATA_DIR, "test.fa.gz"),
+        longorfs = "test.fa.transdecoder_dir/longest_orfs.pep"
     output:
         "test.fa.transdecoder.bed",
         "test.fa.transdecoder.cds",

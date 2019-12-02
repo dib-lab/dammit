@@ -1,7 +1,7 @@
 """Snakemake wrapper for Transdecoder Predict"""
 
-__author__ = "N Tessa Pierce"
-__copyright__ = "Copyright 2019, Tessa Pierce"
+__author__ = "N. Tessa Pierce"
+__copyright__ = "Copyright 2019, N. Tessa Pierce"
 __email__ = "ntpierce@gmail.com"
 __license__ = "MIT"
 
@@ -21,9 +21,9 @@ blast = snakemake.input.get("blastp_hits", "")
 if blast:
     addl_outputs += " --retain_blastp_hits " + blast
 
-input_fasta = str(snakemake.input)
-if input_fasta.endswith('gz'):
-    input_fa = input_fasta.rsplit('.gz')[0]
+input_fasta = str(snakemake.input.fasta)
+if input_fasta.endswith("gz"):
+    input_fa = input_fasta.rsplit(".gz")[0]
     shell("gunzip -c {input_fasta} > {input_fa}")
 else:
     input_fa = input_fasta

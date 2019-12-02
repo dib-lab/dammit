@@ -18,7 +18,6 @@ rule infernal_cmpress:
         "logs/cmpress.log"
     params:
         extra = "",
-    threads: 4
     conda: "environment.yml"
     script: "cmpress.wrapper.py"
 
