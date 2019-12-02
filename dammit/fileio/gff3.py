@@ -89,7 +89,7 @@ class GFF3Parser(ChunkParser):
 
 
 def maf_to_gff3(maf_df, tag='', database='',
-                   ftype='translated_nucleotide_match'):
+                ftype='translated_nucleotide_match'):
     '''Convert a MAF DataFrame to a GFF3 DataFrame ready to be written to disk.
 
     Args:

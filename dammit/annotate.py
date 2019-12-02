@@ -15,11 +15,8 @@ from shmlast.app import CRBL
 from dammit.handler import             TaskHandler
 from dammit.profile import             add_profile_actions
 
-from dammit.tasks.fastx import        (get_transcriptome_stats_task,
-                                       get_rename_transcriptome_task)
 from dammit.tasks.shell import         get_copy_file_task
 from dammit.tasks.report import        get_annotate_fasta_task
-from dammit.tasks.busco import         BuscoTask
 from dammit.tasks.utils import         get_group_task
 from dammit.tasks.gff import          (get_maf_gff3_task,
                                        get_shmlast_gff3_task,
@@ -38,79 +35,7 @@ from dammit import log
 logger = logging.getLogger(__name__)
 
 
-def get_handler(config, databases):
-    '''Build the TaskHandler for the annotation pipelines. The
-    handler will not have registered tasks when returned.
 
-    Args:
-        config (dict): Config dictionary, which contains the command
-            line arguments and the entries from the config file.
-        databases (dict): The dictionary of files from a database
-            TaskHandler.
-
-    Returns:
-        handler.TaskHandler: A constructed TaskHandler.
-    '''
-
-    logger = logging.getLogger('AnnotateHandler')
-
-    if config['output_dir'] is None:
-        out_dir = path.basename(config['transcriptome'] + '.dammit')
-    else:
-        out_dir = config['output_dir']
-    directory = path.abspath(out_dir)
-
-    handler = TaskHandler(directory, logger,
-                          db='annotate',
-                          backend=config['doit_backend'],
-                          verbosity=config['verbosity'],
-                          profile=config['profile'])
-    log.start_logging(path.join(directory, 'dammit.log'))
-
-    txome_fn = path.join(directory, path.basename(config['transcriptome']))
-    
-    if not config['no_rename']:
-        name_map_fn = txome_fn + '.dammit.namemap.csv'
-        handler.register_task('rename-transcriptome',
-                              get_rename_transcriptome_task(
-                                  path.abspath(config['transcriptome']),
-                                  txome_fn,
-                                  name_map_fn,
-                                  config['name']
-                              ),
-                              files={'transcriptome': txome_fn,
-                                     'name_map': name_map_fn})
-    else:
-        handler.register_task('copy-transcriptome',
-                              get_copy_file_task(
-                                  path.abspath(config['transcriptome']),
-                                  txome_fn
-                              ),
-                              files={'transcriptome': txome_fn})
-
-    return handler
-
-
-def run_annotation(handler):
-    '''Run the annotation pipeline from the given handler.
-
-    Prints the appropriate output and exits of the pipeline is alredy completed.
-
-    Args:
-        handler (handler.TaskHandler): Handler with tasks for the pipeline.
-    '''
-    print(ui.header('Annotation', level=3))
-    print(ui.header('Info', level=4))
-    info = {'Doit Database': handler.dep_file,
-            'Input Transcriptome': handler.files['transcriptome']}
-    print(ui.listing(info))
-    msg = '*All annotation tasks up-to-date.*'
-    uptodate, statuses = handler.print_statuses(uptodate_msg=msg)
-    if not uptodate:
-        return handler.run()
-    else:
-        print('**Pipeline is already completed!**')
-        sys.exit(0)
 
 
 def build_default_pipeline(handler, config, databases):
@@ -189,68 +114,6 @@ def build_nr_pipeline(handler, config, databases):
     register_annotate_tasks(handler, config, databases)
 
     return handler
-
-
-
-def build_quick_pipeline(handler, config, databases):
-    '''Register tasks for the quick annotation pipeline.
-
-    Leaves out the Pfam search (and so does not pass these hits to
-    `TransDecoder.Predict`), the Rfam search, and the lastal searches
-    against OrthoDB and uniref90. Best suited for users who have built their
-    own protein databases and would just like to annotate off them.
-
-    Args:
-        handler (handler.TaskHandler): The task handler to register on.
-        config (dict): Config dictionary, which contains the command
-            line arguments and the entries from the config file.
-        databases (dict): The dictionary of files from a database
-            TaskHandler.
-
-    Returns:
-        handler.TaskHandler: The handler passed in.
-    '''
-
-    register_stats_task(handler)
-    register_busco_task(handler, config, databases)
-    register_transdecoder_tasks(handler, config, databases,
-                                include_hmmer=False)
-    register_user_db_tasks(handler, config, databases)
-    register_annotate_tasks(handler, config, databases)
-
-    return handler
-
-
-def register_stats_task(handler):
-    '''Register the tasks for basic transcriptome metrics.'''
-
-    input_fn = handler.files['transcriptome']
-    stats_fn = input_fn + '.dammit.stats.json'
-    handler.register_task('transcriptome-stats',
-                          get_transcriptome_stats_task(input_fn,
-                                                       stats_fn),
-                          files={'stats': stats_fn})
-
-
-def register_busco_task(handler, config, databases):
-    '''Register tasks for BUSCO. Note that this expects
-    a proper dammit config dictionary.'''
-
-    input_fn = handler.files['transcriptome']
-    busco_group = config['busco_group']
-    busco_database = databases['BUSCO-{0}'.format(busco_group)]
-    busco_basename = '{0}.{1}.busco.results'.format(input_fn, busco_group)
-    busco_out_dir = 'run_{0}'.format(busco_basename)
-
-    task = BuscoTask().task(input_fn,
-                             busco_basename,
-                             busco_database,
-                             n_threads=config['n_threads'],
-                             config_file=config.get('busco_config_file', None),
-                             params=config['busco']['params'])
-
-    handler.register_task('BUSCO-{0}'.format(busco_group), task,
-                          files={'BUSCO': busco_out_dir})
 
 
 def register_transdecoder_tasks(handler, config, databases,
