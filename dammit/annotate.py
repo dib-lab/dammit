@@ -290,7 +290,7 @@ def register_transdecoder_tasks(handler, config, databases,
         pfam_csv_fn = '{0}.x.pfam-A.csv'.format(input_fn)
         handler.register_task('hmmscan:Pfam-A:remap',
                               get_remap_hmmer_task(handler.files['longest_orfs_pfam'],
-                                                   path.join(transdecoder_dir, 'longest_orfs.gff3'),
+                                                   handler.files['longest_orfs'],
                                                    pfam_csv_fn),
                               files={'Pfam-A-csv': pfam_csv_fn})
 

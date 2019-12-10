@@ -51,16 +51,16 @@ class TestDammitAnnotate:
         '''
 
         with tmpdir.as_cwd():
-            transcripts = datadir('pom.single.fa')
-            exp_gff3 = datadir('pom.single.fa.dammit.gff3')
-            exp_fasta = datadir('pom.single.fa.dammit.fasta')
+            transcripts = datadir('pom.50.fa')
+            exp_gff3 = datadir('pom.50.fa.dammit.gff3')
+            exp_fasta = datadir('pom.50.fa.dammit.fasta')
 
             args = ['annotate', transcripts]
             status, out, err = run(args)
 
             outdir = '{0}.dammit'.format(transcripts)
-            gff3_fn = os.path.join(outdir, 'pom.single.fa.dammit.gff3')
-            fasta_fn = os.path.join(outdir, 'pom.single.fa.dammit.fasta')
+            gff3_fn = os.path.join(outdir, 'pom.50.fa.dammit.gff3')
+            fasta_fn = os.path.join(outdir, 'pom.50.fa.dammit.fasta')
 
             print(os.listdir(outdir))
             print(gff3_fn, fasta_fn)
@@ -74,16 +74,16 @@ class TestDammitAnnotate:
         '''
 
         with tmpdir.as_cwd():
-            transcripts = datadir('pom.single.fa')
-            exp_gff3 = datadir('pom.single.fa.dammit.gff3.full')
-            exp_fasta = datadir('pom.single.fa.dammit.fasta.full')
+            transcripts = datadir('pom.50.fa')
+            exp_gff3 = datadir('pom.50.fa.dammit.gff3.full')
+            exp_fasta = datadir('pom.50.fa.dammit.fasta.full')
 
             args = ['annotate', transcripts, '--full']
             status, out, err = run(args)
 
             outdir = '{0}.dammit'.format(transcripts)
-            gff3_fn = os.path.join(outdir, 'pom.single.fa.dammit.gff3')
-            fasta_fn = os.path.join(outdir, 'pom.single.fa.dammit.fasta')
+            gff3_fn = os.path.join(outdir, 'pom.50.fa.dammit.gff3')
+            fasta_fn = os.path.join(outdir, 'pom.50.fa.dammit.fasta')
 
             assert compare_gff(gff3_fn, exp_gff3)
             assert open(fasta_fn).read() == open(exp_fasta).read()
@@ -95,7 +95,7 @@ class TestDammitAnnotate:
         '''
 
         with tmpdir.as_cwd():
-            transcripts = datadir('pom.single.fa')
+            transcripts = datadir('pom.50.fa')
             args = ['annotate', transcripts, '--n_threads', '2']
             status, out, err = run(args)
 
@@ -106,16 +106,16 @@ class TestDammitAnnotate:
         '''
 
         with tmpdir.as_cwd():
-            transcripts = datadir('pom.single.fa')
-            exp_gff3 = datadir('pom.single.fa.dammit.gff3.evalue10')
-            exp_fasta = datadir('pom.single.fa.dammit.fasta.evalue10')
+            transcripts = datadir('pom.50.fa')
+            exp_gff3 = datadir('pom.50.fa.dammit.gff3.evalue10')
+            exp_fasta = datadir('pom.50.fa.dammit.fasta.evalue10')
 
             args = ['annotate', transcripts, '--evalue', '10.0']
             status, out, err = run(args)
 
             outdir = '{0}.dammit'.format(transcripts)
-            gff3_fn = os.path.join(outdir, 'pom.single.fa.dammit.gff3')
-            fasta_fn = os.path.join(outdir, 'pom.single.fa.dammit.fasta')
+            gff3_fn = os.path.join(outdir, 'pom.50.fa.dammit.gff3')
+            fasta_fn = os.path.join(outdir, 'pom.50.fa.dammit.fasta')
 
             assert compare_gff(gff3_fn, exp_gff3)
             assert open(fasta_fn).read() == open(exp_fasta).read()
@@ -126,7 +126,7 @@ class TestDammitAnnotate:
         '''
 
         with tmpdir.as_cwd():
-            transcripts = datadir('pom.single.fa')
+            transcripts = datadir('pom.50.fa')
             outdir = 'test_out'
             args = ['annotate', '--quick', transcripts, '-o', outdir]
             status, out, err = run(args)
@@ -138,7 +138,7 @@ class TestDammitAnnotate:
         '''
 
         with tmpdir.as_cwd():
-            transcripts = datadir('pom.single.fa')
+            transcripts = datadir('pom.50.fa')
 
             args = ['annotate', transcripts, '--database-dir', '.']
             status, out, err = run(args, fail_ok=True)
@@ -150,7 +150,7 @@ class TestDammitAnnotate:
         '''
 
         with tmpdir.as_cwd():
-            transcripts = datadir('pom.single.fa')
+            transcripts = datadir('pom.50.fa')
 
             db_dir = os.environ['DAMMIT_DB_DIR']
             args = ['annotate', '--quick', transcripts, '--database-dir', db_dir]
@@ -161,10 +161,10 @@ class TestDammitAnnotate:
         '''
 
         with tmpdir.as_cwd():
-            transcripts = datadir('pom.single.fa')
+            transcripts = datadir('pom.50.fa')
             pep = datadir('pep.fa')
-            exp_gff3 = datadir('pom.single.fa.dammit.gff3.udb')
-            exp_fasta = datadir('pom.single.fa.dammit.fasta.udb')
+            exp_gff3 = datadir('pom.50.fa.dammit.gff3.udb')
+            exp_fasta = datadir('pom.50.fa.dammit.fasta.udb')
 
             args = ['annotate', '--quick',
                     transcripts, '--user-databases', pep,
@@ -172,8 +172,8 @@ class TestDammitAnnotate:
             status, out, err = run(args)
 
             outdir = '{0}.dammit'.format(transcripts)
-            gff3_fn = os.path.join(outdir, 'pom.single.fa.dammit.gff3')
-            fasta_fn = os.path.join(outdir, 'pom.single.fa.dammit.fasta')
+            gff3_fn = os.path.join(outdir, 'pom.50.fa.dammit.gff3')
+            fasta_fn = os.path.join(outdir, 'pom.50.fa.dammit.fasta')
 
             assert status == 0
             assert compare_gff(gff3_fn, exp_gff3)
@@ -184,11 +184,11 @@ class TestDammitAnnotate:
         '''
 
         with tmpdir.as_cwd():
-            transcripts = datadir('pom.single.fa')
+            transcripts = datadir('pom.50.fa')
             pep = datadir('pep.fa')
             pep2 = datadir('odb_subset.fa')
-            exp_gff3 = datadir('pom.single.fa.dammit.gff3.udb')
-            exp_fasta = datadir('pom.single.fa.dammit.fasta.udb')
+            exp_gff3 = datadir('pom.50.fa.dammit.gff3.udb')
+            exp_fasta = datadir('pom.50.fa.dammit.fasta.udb')
 
             args = ['annotate', '--quick',
                     transcripts, '--user-databases', pep, pep2,
@@ -204,7 +204,7 @@ class TestDammitAnnotate:
         '''
 
         with tmpdir.as_cwd():
-            transcripts = datadir('pom.single.fa')
+            transcripts = datadir('pom.50.fa')
 
             args = ['annotate', '--quick',
                     transcripts, '--name', 'Test']
@@ -225,9 +225,9 @@ class TestDammitAnnotate:
         '''
 
         with tmpdir.as_cwd():
-            transcripts = datadir('pom.single.fa')
-            exp_gff3 = datadir('pom.single.fa.dammit.gff3.norename')
-            exp_fasta = datadir('pom.single.fa.dammit.fasta.norename')
+            transcripts = datadir('pom.50.fa')
+            exp_gff3 = datadir('pom.50.fa.dammit.gff3.norename')
+            exp_fasta = datadir('pom.50.fa.dammit.fasta.norename')
 
             args = ['annotate', transcripts, '--no-rename']
             status, out, err = run(args)
@@ -239,6 +239,6 @@ class TestDammitAnnotate:
             contents = open(fn).read()
             assert 'SPAC212' in contents
 
-            gff3_fn = os.path.join(outdir, 'pom.single.fa.dammit.gff3')
+            gff3_fn = os.path.join(outdir, 'pom.50.fa.dammit.gff3')
             assert compare_gff(gff3_fn, exp_gff3)
 

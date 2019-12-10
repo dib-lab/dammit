@@ -4,7 +4,10 @@ deps: FORCE
 		pip install --requirement requirements.txt
 	
 install: deps
-		python setup.py install
+		python -m pip install . --ignore-installed --no-deps
+
+dev-install: FORCE
+		python -m pip install . --ignore-installed --no-deps -vv
 
 test: FORCE
 		py.test -m "not long and not huge"

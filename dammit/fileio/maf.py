@@ -73,9 +73,14 @@ class MafParser(ChunkParser):
                         key, _, val = token.strip().partition('=')
                         cur_aln[key] = float(val)
 
-                    # First sequence info
+                    # First (subject) sequence info
                     line = guarded_next()
                     tokens = line.split()
+                    if len(tokens) < 7:
+                        # sometimes lastal adds an extra line break after
+                        # the sequence identifier...
+                        tokens.extend(guarded_next().split())
+
                     cur_aln['s_name'] = tokens[1]
                     cur_aln['s_start'] = int(tokens[2])
                     cur_aln['s_aln_len'] = int(tokens[3])
@@ -84,9 +89,12 @@ class MafParser(ChunkParser):
                     if self.aln_strings:
                         cur_aln['s_aln'] = tokens[6]
 
-                    # First sequence info
+                    # Second (query) sequence info
                     line = guarded_next() 
                     tokens = line.split()
+                    if len(tokens) < 7:
+                        tokens.extend(guarded_next().split())
+
                     cur_aln['q_name'] = tokens[1]
                     cur_aln['q_start'] = int(tokens[2])
                     cur_aln['q_aln_len'] = int(tokens[3])
