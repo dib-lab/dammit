@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 
 DATA_DIR=dammit/tests/test-data
-TEST_FILE=pom.single.fa
+TEST_FILE=pom.50.fa
 TEST_PEP=pep.fa
 
 
