@@ -22,6 +22,7 @@ def id_gen_wrapper():
     return get_next
 
 next_ID = id_gen_wrapper()
+_ = next_ID()
 
 class GFF3Parser(ChunkParser):
 
@@ -156,6 +157,7 @@ def hmmscan_to_gff3(hmmscan_df, tag='', database=''):
     def build_attr(row):
         data = []
         data.append('ID=homology:{0}'.format(next_ID()))
+        data.append('Parent={0}'.format(row.full_feature_name))
         data.append('Name={0}'.format(row.target_name))
         data.append('Target={0} {1} {2} +'.format(row.target_name,
                                                     row.hmm_coord_from+1,

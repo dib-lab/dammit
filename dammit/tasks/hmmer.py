@@ -156,6 +156,8 @@ def get_remap_hmmer_task(hmmer_filename, pep_fa_filename, output_filename):
             hmmer_df['ali_coord_to'] = (merged_df.src_start + \
                                         (3 * merged_df.ali_coord_to)).astype(int)
             hmmer_df['strand'] = merged_df['strand']
+            hmmer_df['full_feature_name'] = merged_df['full_transcript_name']
+            hmmer_df['query_name'] = merged_df['transcript_name']
         
         hmmer_df.to_csv(output_filename, header=True, index=False)
 

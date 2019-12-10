@@ -35,8 +35,8 @@ class TransDecoderLongOrfsTask(DependentTask):
             cmd = sh.Command('TransDecoder.LongOrfs')
             cmd('--version')
         except sh.ErrorReturnCode:
-            return 5
-        return 3
+            return 3
+        return 5
 
     @doit_task
     @profile_task
