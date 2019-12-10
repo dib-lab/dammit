@@ -8,23 +8,30 @@
 Program metadata: the version, install path, description, and default config.
 '''
 import json
+import yaml
 import os
 
 __path__ = os.path.dirname(__file__)
 __version__ = open(os.path.join(__path__, 'VERSION')).read().strip()
-__authors__ = ['Camille Scott']
+__authors__ = ['Camille Scott', "N. Tessa Pierce"]
 __description__ = 'a tool for easy de novo transcriptome annotation'
-__date__ = 2018
+__date__ = 2019
 
 
 def get_config():
-    '''Parse the default JSON config files and return them as dictionaries.
+    '''Parse the default YAML or JSON config files and return them as dictionaries.
 
     Returns:
         tuple: The config and databases dictionaries.
     '''
     with open(os.path.join(__path__, 'config.json')) as fp:
-        config_d = json.load(fp)
+        try:
+            config_d = yaml.safe_load(fp) #json.load(fp)
+        except yaml.YAMLError as exc:
+            print(exc)
     with open(os.path.join(__path__, 'databases.json'), 'r') as fp:
-        databases_d = json.load(fp)
+        try:
+            databases_d = yaml.safe_load(fp) #json.load(fp)
+        except yaml.YAMLError as exc:
+            print(exc)
     return config_d, databases_d
