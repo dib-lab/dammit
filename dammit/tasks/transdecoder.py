@@ -10,6 +10,8 @@ from doit.action import CmdAction
 from doit.tools import LongRunning
 from doit.task import clean_targets
 
+import sh
+
 from dammit.tasks.utils import clean_folder, DependentTask, InstallationError
 from dammit.profile import profile_task
 from dammit.utils import which, doit_task
@@ -21,9 +23,20 @@ class TransDecoderLongOrfsTask(DependentTask):
         longorfs = which('TransDecoder.LongOrfs')
         if longorfs is None:
             raise InstallationError('TransDecoder.LongOrfs not found.')
+        if self.version() < 5:
+            raise InstallationError('TransDecoder >= 5 required.')
         if self.logger:
             self.logger.debug('TransDecoder.LongOrfs:' + longorfs)
         return longorfs
+
+    @staticmethod
+    def version():
+        try:
+            cmd = sh.Command('TransDecoder.LongOrfs')
+            cmd('--version')
+        except sh.ErrorReturnCode:
+            return 5
+        return 3
 
     @doit_task
     @profile_task

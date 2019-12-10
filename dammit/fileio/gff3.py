@@ -150,7 +150,7 @@ def hmmscan_to_gff3(hmmscan_df, tag='', database=''):
 
     # Confirm whether this is the appropriate value to use
     gff3_df['score'] = hmmscan_df['domain_i_evalue']
-    gff3_df['strand'] = ['.'] * len(hmmscan_df)
+    gff3_df['strand'] = hmmscan_df['strand']
     gff3_df['phase'] = ['.'] * len(hmmscan_df)
 
     def build_attr(row):
