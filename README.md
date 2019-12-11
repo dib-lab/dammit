@@ -1,5 +1,6 @@
 [![image](https://travis-ci.org/dib-lab/dammit.svg)](https://travis-ci.org/dib-lab/dammit)
 [![Documentation Status](https://readthedocs.org/projects/dammit/badge/)](http://dammit.readthedocs.io/en/latest)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3569831.svg)](https://doi.org/10.5281/zenodo.3569831)
 
 *"I love writing BLAST parsers!" -- no one, ever*
 
@@ -15,7 +16,7 @@ make this sucky part of the process suck a little less.
 
 Install dammit with bioconda.
 
-    conda create -n dammit-env dammit
+    conda create -n dammit-env python=3 dammit
     conda activate dammit-env
 
 Download and install a subset of the databases:
