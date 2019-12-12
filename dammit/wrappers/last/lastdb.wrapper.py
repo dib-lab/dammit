@@ -13,6 +13,11 @@ log = snakemake.log_fmt_shell(stdout=False, stderr=True)
 protein_cmd = ""
 protein = snakemake.params.get("protein_input", False)
 
+if protein == "prot":
+    protein = True
+elif protein == "nucl":
+    protein = False
+
 if protein:
     protein_cmd = " -p "
 

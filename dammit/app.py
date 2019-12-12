@@ -35,7 +35,7 @@ class DammitApp(object):
             with open(self.args.config_file) as fp:
                 self.config_d.update(json.load(fp))
         self.config_d.update(vars(self.args))
- 
+
     def run(self):
         print(ui.header('dammit'))
         print(ui.header(__description__, level=2))
@@ -101,7 +101,7 @@ class DammitApp(object):
                                 )
 
             parser.add_argument('--config-file',
-                                help='A JSON file providing values to override'\
+                                help='A YAML or JSON file providing values to override'\
                                      ' built-in config. Advanced use only!'
                                 )
 
@@ -123,7 +123,7 @@ class DammitApp(object):
                                 default=False,
                                 action='store_true',
                                 help='Profile task execution.')
-            
+
             parser.add_argument('--force',
                                 default=False,
                                 action='store_true',
@@ -253,7 +253,7 @@ class DammitApp(object):
         annotate_parser.add_argument('--sshloginfile',
                                      default=None,
                                      help='Distribute execution across the specified nodes.')
-                                    
+
 
         add_common_args(annotate_parser)
         annotate_parser.set_defaults(func=self.handle_annotate)
@@ -281,7 +281,7 @@ class DammitApp(object):
                                            self.config_d,
                                            self.databases_d)
         else:
-            databases.build_default_pipeline(handler, 
+            databases.build_default_pipeline(handler,
                                              self.config_d,
                                              self.databases_d,
                                              with_uniref=self.args.full,
@@ -302,7 +302,7 @@ class DammitApp(object):
                                            self.config_d,
                                            self.databases_d)
         else:
-            databases.build_default_pipeline(db_handler, 
+            databases.build_default_pipeline(db_handler,
                                              self.config_d,
                                              self.databases_d,
                                              with_uniref=self.args.full,
@@ -318,19 +318,19 @@ class DammitApp(object):
 
         annotate_handler = annotate.get_handler(self.config_d, db_handler.files)
         if self.args.quick:
-            build_quick_pipeline(annotate_handler, 
-                                 self.config_d, 
+            build_quick_pipeline(annotate_handler,
+                                 self.config_d,
                                  db_handler.files)
         elif self.args.full:
-            build_full_pipeline(annotate_handler, 
-                                self.config_d, 
+            build_full_pipeline(annotate_handler,
+                                self.config_d,
                                 db_handler.files)
         elif self.args.nr:
-            build_nr_pipeline(annotate_handler, 
-                                self.config_d, 
+            build_nr_pipeline(annotate_handler,
+                                self.config_d,
                                 db_handler.files)
         else:
-            build_default_pipeline(annotate_handler, 
-                                   self.config_d, 
+            build_default_pipeline(annotate_handler,
+                                   self.config_d,
                                    db_handler.files)
         return annotate.run_annotation(annotate_handler)

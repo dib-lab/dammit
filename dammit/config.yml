@@ -1,0 +1,72 @@
+dammit_dir: .dammit
+db_dir: databases
+logs_dir: logs
+
+## last ##
+lastal:
+  output_suffix: 
+    - ".maf" 
+  params:
+    frameshift_cost: 15
+    extra: ""
+  
+lastdb: 
+  output_suffix: 
+    - ".fa.prj" 
+  params:
+   extra: " -w3 "
+
+## crb-blast ##
+crb-blast:
+  output_suffix:
+   - OUTSUFFIX
+  params:
+    evalue: 1e-5
+    extra: ""
+
+## busco ##
+busco:
+  output_suffix: 
+    - ".busco.results"
+  db_dir: busco2db
+  params:
+    extra: ""
+
+## hmmer ##
+hmmscan:
+  output_suffix:
+    - ".hmm.h3f"
+  params:
+    extra: ""
+
+hmmpress:
+  output_suffix:
+    - ".hmm.h3f"
+  params:
+    extra: ""
+
+## infernal ##
+cmscan:
+  output_suffix:
+    - "-infernal-tblout.txt"
+  params:
+    extra: ""
+
+cmpress:
+  output_suffix:
+    - ".cm.i1i"
+  params:
+    extra: ""
+  
+## transdecoder ##
+transdecoder_longorfs: 
+  output_suffix:
+    - .transdecoder_dir/longest_orfs.pep
+  params:
+    extra: "-m 80 "
+
+transdecoder_predict:
+  output_suffix:
+    - .transdecoder.gff3
+  params:
+    extra: ""
