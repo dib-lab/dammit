@@ -277,8 +277,8 @@ class DammitApp(object):
                 databases.remove("BUSCO")
             for db in databases:
                 fn = self.databases_d[db]["filename"]
-                out_suffixes = [""]
-                #out_suffixes = self.databases_d[db]["output_suffix"]
+                #out_suffixes = [""] # testing: ONLY DOWNLOAD
+                out_suffixes = self.databases_d[db]["output_suffix"]
                 targs += [fn + suffix for suffix in out_suffixes]
             #targs = [os.path.join(self.config_d["db_dir"], targ) for targ in targs]
             targs = [os.path.join(self.args.database_dir, targ) for targ in targs]

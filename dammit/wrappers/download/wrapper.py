@@ -13,8 +13,8 @@ cmd = ['curl', '-L']
 
 cmd.append('{snakemake.params.url}')
 
-if snakemake.params.get('metalink'):
-    cmd.extend(['--metalink', '{snakemake.params.metalink}'])
+#if snakemake.params.get('metalink'):
+#    cmd.extend(['--metalink', '{snakemake.params.metalink}'])
 
 donefile = None
 output =  str(snakemake.output)
