@@ -298,7 +298,7 @@ class DammitApp(object):
         # note if `--config` is last arg, it will try to add targs to config (and fail)
         config = ["--config", f"db_dir={self.args.database_dir}"]
         cmd.extend(config)
-        helpful_args = ["-p", "--nolock", "--use-conda"]
+        helpful_args = ["-p", "--nolock", "--use-conda", "--rerun-incomplete", "-k"]
         cmd.extend(helpful_args)
         # better way to do this?
         if not self.args.install:
@@ -317,7 +317,7 @@ class DammitApp(object):
         # note if `--config` is last arg, it will try to add targs to config (and fail)
         config = ["--config", f"db_dir={self.args.database_dir}"]
         cmd.extend(config)
-        helpful_args = ["-p", "--nolock", "--use-conda"]
+        helpful_args = ["-p", "--nolock", "--use-conda", "--rerun-incomplete", "-k"]
         cmd.extend(helpful_args)
 
         if self.config_d['force'] is True:

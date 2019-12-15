@@ -29,7 +29,7 @@ rule lastdb:
     wildcard_constraints:
         file_type = "fasta|txt"
     log:
-        "logs/{database}.{file_type}_lastdb.log"
+        os.path.join(config["db_dir"], "{database}.{file_type}_lastdb.log")
     conda: f"file://{__path__}/wrappers/last/environment.yml"
     script: f"file://{__path__}/wrappers/last/lastdb.wrapper.py"
 
@@ -42,7 +42,7 @@ rule hmmpress:
         os.path.join(config["db_dir"], "{database}.hmm.h3m"),
         os.path.join(config["db_dir"], "{database}.hmm.h3p")
     log:
-        "logs/{database}_hmmpress.log"
+        os.path.join(config["db_dir"], "{database}_hmmpress.log")
     params:
         extra=config["hmmpress"]["params"].get("extra", ""),
     threads: 4
@@ -55,7 +55,7 @@ rule hmmpress:
 #    output:
 #        os.path.join(config["db_dir"], "{database}.hmm")
 #    log:
-#        "logs/{database}-hmmbuild.log"
+#        os.path.join(config["db_dir"], "{database}-hmmbuild.log")
 #    params:
 #        extra=config["hmmbuild"]["params"].get("extra", ""),
 #    threads: 4
@@ -71,7 +71,7 @@ rule infernal_cmpress:
         os.path.join(config["db_dir"],"{database}.cm.i1m"),
         os.path.join(config["db_dir"],"{database}.cm.i1p")
     log:
-        "logs/cmpress_{database}.log"
+        os.path.join(config["db_dir"], "cmpress_{database}.log")
     params:
         extra=config["cmpress"]["params"].get("extra", ""),
     conda: f"file://{__path__}/wrappers/infernal/environment.yml"
