@@ -1,0 +1,55 @@
+pipelines:
+  quick:
+    programs:
+      - busco
+      - transdecoder_longorfs
+      - transdecoder_predict
+    databases: 
+      - BUSCO
+  default:
+    programs:
+      - busco
+      - transdecoder_longorfs
+      - transdecoder_predict
+      - cmscan
+      - lastal
+      - userdb
+    databases:
+      - Pfam-A
+      - Rfam
+      - uniprot_sprot
+      - OrthoDB
+      - orthodb_genes
+      - BUSCO
+  full:
+    programs:
+      - busco
+      - transdecoder_longorfs
+      - transdecoder_predict
+      - cmscan
+      - lastal
+      - userdb
+    databases:
+      - Pfam-A
+      - Rfam
+      - uniprot_sprot
+      - OrthoDB
+      - orthodb_genes
+      - BUSCO
+      - uniref90
+  nr:
+    programs:
+      - busco
+      - transdecoder_longorfs
+      - transdecoder_predict
+      - cmscan
+      - lastal
+      - userdb
+    databases:
+      - Pfam-A
+      - Rfam
+      - uniprot_sprot
+      - OrthoDB
+      - orthodb_genes
+      - BUSCO
+      - nr

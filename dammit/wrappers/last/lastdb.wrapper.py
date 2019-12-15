@@ -21,4 +21,4 @@ elif protein == "nucl":
 if protein:
     protein_cmd = " -p "
 
-shell("lastdb {extra} {protein_cmd} -P {snakemake.threads} {snakemake.input} {log}")
+shell("lastdb {extra} {protein_cmd} -v -P {snakemake.threads} {snakemake.input} {log}")

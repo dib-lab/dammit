@@ -1,25 +1,48 @@
-__author__ = "Camille Scott"
+__author__ = "Camille Scott and N. Tessa Pierce"
 __copyright__ = "Copyright 2019, Camille Scott"
 __email__ = "cswel@ucdavis.edu"
 __license__ = "MIT"
 
 from snakemake.shell import shell
+log = snakemake.log_fmt_shell(stdout=True, stderr=True)
 
 if snakemake.params.get('metalink') and snakemake.params.get('md5'):
     raise ValueError('Do not use metalink and md5 simultaneously.')
 
 cmd = ['curl', '-L']
 
+cmd.append('{snakemake.params.url}')
+
 if snakemake.params.get('metalink'):
     cmd.extend(['--metalink', '{snakemake.params.metalink}'])
 
-cmd.append('{snakemake.params.url}')
-cmd.extend(['|', 'gunzip', '-c', '>', '{snakemake.output}'])
+donefile = None
+output =  str(snakemake.output)
+if output.endswith(".done"):
+    donefile = output
+    output = output.rsplit(".done")[0]
+
+fileformat = snakemake.params.get("fileformat")
+if fileformat == "gz":
+    binary_out =  output + ".gz"
+    cmd.extend(['--output', '{binary_out}'])
+    decompress_cmd = ['gunzip', '-c', '{binary_out}', '>', '{output}']
+elif fileformat == "tar.gz":
+    binary_out = output + ".tar.gz"
+    cmd.extend(['--output', '{binary_out}']) #, '|', 'tar', '-xzf', '>', '{output}'])
+    decompress_cmd = ['tar', '-xzf', '{binary_out}']
+else:
+    raise ValueError('Valid filetypes are "gz" and "tar.gz"')
 
 if snakemake.params.get('md5'):
-    cmd.append('&& python -c "assert \'`md5sum {snakemake.output} | '
+    cmd.append('&& python -c "assert \'`md5sum {binary_out} | '
                 'awk \'{{print $1}}\'`\' == \'{snakemake.params.md5}\', '
                 '\'MD5sum does not match\'"')
 
-print(' '.join(cmd))
+cmd.append("{log}")
+
 shell(' '.join(cmd))
+shell(' '.join(decompress_cmd))
+
+if donefile:
+    shell("touch {donefile}")

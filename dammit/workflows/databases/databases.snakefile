@@ -1,77 +1,81 @@
 import os
 from dammit.meta import __path__
+from dammit.meta import get_databases
 
-configfile: '../../databases.json'
-DATABASES_DIR= f"{__path__}/tests/databases/"
+databases_d = get_databases()
 
-rule download_databases:
-    input: 'Pfam-A.hmm', 'Rfam.cm', 'OrthoDB.fasta', 'uniprot_sprot.fasta'
-
+#rule download_databases:
+#    input: 'Pfam-A.hmm', 'Rfam.cm', 'OrthoDB.fasta', 'uniprot_sprot.fasta'
 
 rule download_and_gunzip:
-    output: '{database}.{file_type}'
+    output: os.path.join(config["db_dir"], '{database}.{file_type}')
     params:
-        url = lambda wildcards: config[wildcards.database]['url'],
-        md5 = lambda wildcards: config[wildcards.database].get('md5', False),
-        metalink = lambda wildcards: config[wildcards.database].get('metalink', False)
-    wrapper:
+        url = lambda wildcards: databases_d[wildcards.database]['url'],
+        md5 = lambda wildcards: databases_d[wildcards.database].get('md5', False),
+        metalink = lambda wildcards: databases_d[wildcards.database].get('metalink', False),
+        fileformat = lambda wildcards: databases_d[wildcards.database]['fileformat'],
+        folder = lambda wildcards: databases_d[wildcards.database].get('folder')
+    log: os.path.join(config["db_dir"], '{database}.{file_type}.log')
+    wildcard_constraints:
+        file_type = "hmm|cm|fasta|txt|done"
+    script:
         f'file://{__path__}/wrappers/download'
 
 rule lastdb:
     input:
-        os.path.join(DATABASES_DIR, "{database}.fa")
+        os.path.join(config["db_dir"], "{database}.{file_type}")
     output:
-        os.path.join(DATABASES_DIR, "{database}.fa.prj"),
+        os.path.join(config["db_dir"], "{database}.{file_type}.prj"),
     params:
-        protein_input =  lambda w: config[w.database].get('db_type', False),
+        protein_input =  lambda w: databases_d[w.database].get('db_type', False),
         extra = config["lastdb"]["params"].get('extra', " -w3 ")
+    wildcard_constraints:
+        file_type = "fasta|txt"
     log:
-        "logs/{database}_lastdb.log"
+        "logs/{database}.{file_type}_lastdb.log"
     conda: f"file://{__path__}/wrappers/last/environment.yml"
-    wrapper: f"file://{__path__}/wrappers/last/lastdb.wrapper.py"
+    script: f"file://{__path__}/wrappers/last/lastdb.wrapper.py"
 
 rule hmmpress:
     input:
-        os.path.join(DATABASES_DIR, "{database}.hmm")
+        os.path.join(config["db_dir"], "{database}.hmm")
     output:
-        os.path.join(DATABASES_DIR, "{database}.hmm.h3f"),
-        os.path.join(DATABASES_DIR, "{database}.hmm.h3i"),
-        os.path.join(DATABASES_DIR, "{database}.hmm.h3m"),
-        os.path.join(DATABASES_DIR, "{database}.hmm.h3p")
+        os.path.join(config["db_dir"], "{database}.hmm.h3f"),
+        os.path.join(config["db_dir"], "{database}.hmm.h3i"),
+        os.path.join(config["db_dir"], "{database}.hmm.h3m"),
+        os.path.join(config["db_dir"], "{database}.hmm.h3p")
     log:
         "logs/{database}_hmmpress.log"
     params:
         extra=config["hmmpress"]["params"].get("extra", ""),
     threads: 4
     conda: f"file://{__path__}/wrappers/hmmer/environment.yml"
-    wrapper: f"file://{__path__}/wrappers/hmmer/hmmpress.wrapper.py"
+    script: f"file://{__path__}/wrappers/hmmer/hmmpress.wrapper.py"
 
-rule hmmbuild:
-    input:
-        os.path.join(DATABASES_DIR, "{database}.sto")
-    output:
-        os.path.join(DATABASES_DIR, "{database}.hmm")
-    log:
-        "logs/{database}-hmmbuild.log"
-    params:
-        extra=config["hmmbuild"]["params"].get("extra", ""),
-    threads: 4
-    conda:
-        f"file://{__path__}/wrappers/hmmer/environment.yml"
-    wrapper:
-        f"file://{__path__}/wrappers/hmmer/hmmbuild.wrapper.py"
+#rule hmmbuild:
+#    input:
+#        os.path.join(config["db_dir"], "{database}.sto")
+#    output:
+#        os.path.join(config["db_dir"], "{database}.hmm")
+#    log:
+#        "logs/{database}-hmmbuild.log"
+#    params:
+#        extra=config["hmmbuild"]["params"].get("extra", ""),
+#    threads: 4
+#    conda: f"file://{__path__}/wrappers/hmmer/environment.yml"
+#    script: f"file://{__path__}/wrappers/hmmer/hmmbuild.wrapper.py"
 
 rule infernal_cmpress:
     input:
-        os.path.join(DATA_DIR, "transcriptome.cm")
+        os.path.join(config["db_dir"], "{database}.cm")
     output:
-        os.path.join(DATA_DIR,"{transcriptome}.cm.i1i"),
-        os.path.join(DATA_DIR,"{transcriptome}.cm.i1f"),
-        os.path.join(DATA_DIR,"{transcriptome}.cm.i1m"),
-        os.path.join(DATA_DIR,"{transcriptome}.cm.i1p")
+        os.path.join(config["db_dir"],"{database}.cm.i1i"),
+        os.path.join(config["db_dir"],"{database}.cm.i1f"),
+        os.path.join(config["db_dir"],"{database}.cm.i1m"),
+        os.path.join(config["db_dir"],"{database}.cm.i1p")
     log:
-        "logs/cmpress.log"
+        "logs/cmpress_{database}.log"
     params:
         extra=config["cmpress"]["params"].get("extra", ""),
     conda: f"file://{__path__}/wrappers/infernal/environment.yml"
-    wrapper: f"file://{__path__}/wrappers/infernal/cmpress.wrapper.py"
+    script: f"file://{__path__}/wrappers/infernal/cmpress.wrapper.py"

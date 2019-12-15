@@ -55,28 +55,28 @@ rule lastal:
     script: f"file://{__path__}/wrappers/last/lastal.wrapper.py"
 
 # probably want to switch to hmmsearch instead of hmmscan
-rule hmmscan:
-    input:
-        fasta=os.path.join(DATA_DIR, "{transcriptome}.fa"),
-        profile=os.path.join(DATABASES_DIR, "{database}.hmm.h3f"),
-    output:
-        # only one of these is required
-        tblout=os.path.join(OUTDIR, "hmmscan/{transcriptome}-tbl.txt"), # save parseable table of per-sequence hits to file <f>
-        domtblout=os.path.join(OUTDIR,"hmmscan/{transcriptome}-domtbl.txt"), # save parseable table of per-domain hits to file <f>
-        pfamtblout=os.path.join(OUTDIR,"hmmscan/{transcriptome}-pfamtbl.txt"), # save table of hits and domains to file, in Pfam format <f>
-        outfile=os.path.join(OUTDIR,"hmmscan/{transcriptome}-out.txt"), # Direct the main human-readable output to a file <f> instead of the default stdout.
-    log:
-        "logs/{transcriptome}_hmmscan.log"
-    params:
-        evalue_threshold=0.00001,
-        # if bitscore threshold provided, hmmscan will use that instead
-        #score_threshold=50,
-        extra=config["hmmscan"]["params"].get("extra", ""),
-    threads: 4
-    conda:
-        f"file://{__path__}/wrappers/hmmer/environment.yml"
-    wrapper:
-        f"file://{__path__}/wrappers/hmmer/hmmscan.wrapper.py"
+#rule hmmscan:
+#    input:
+#        fasta=os.path.join(DATA_DIR, "{transcriptome}.fa"),
+#        profile=os.path.join(DATABASES_DIR, "{database}.hmm.h3f"),
+#    output:
+#        # only one of these is required
+#       tblout=os.path.join(OUTDIR, "hmmscan/{transcriptome}-tbl.txt"), # save parseable table of per-sequence hits to file <f>
+#        domtblout=os.path.join(OUTDIR,"hmmscan/{transcriptome}-domtbl.txt"), # save parseable table of per-domain hits to file <f>
+#        pfamtblout=os.path.join(OUTDIR,"hmmscan/{transcriptome}-pfamtbl.txt"), # save table of hits and domains to file, in Pfam format <f>
+#        outfile=os.path.join(OUTDIR,"hmmscan/{transcriptome}-out.txt"), # Direct the main human-readable output to a file <f> instead of the default stdout.
+#    log:
+#        "logs/{transcriptome}_hmmscan.log"
+#    params:
+#        evalue_threshold=0.00001,
+#        # if bitscore threshold provided, hmmscan will use that instead
+#        #score_threshold=50,
+#        extra=config["hmmscan"]["params"].get("extra", ""),
+#    threads: 4
+#    conda:
+#        f"file://{__path__}/wrappers/hmmer/environment.yml"
+#    wrapper:
+#        f"file://{__path__}/wrappers/hmmer/hmmscan.wrapper.py"
 
 rule hmmsearch:
     input:
