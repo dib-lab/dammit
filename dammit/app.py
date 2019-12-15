@@ -271,13 +271,14 @@ class DammitApp(object):
         if db:
             databases = pipeline_info["databases"]
             if "BUSCO" in databases:
-                out_suffix = self.databases_d["BUSCO"]["output_suffix"][0] #donefile
-                busco_dbinfo = self.databases_d["BUSCO"] #get busco database info
-                targs = [busco_dbinfo[db]["folder"] + out_suffix for db in list(self.args.busco_groups)]
+                #out_suffix = self.databases_d["BUSCO"]["output_suffix"][0] #donefile
+                #busco_dbinfo = self.databases_d["BUSCO"] #get busco database info
+                #targs = [busco_dbinfo[db]["folder"] + out_suffix for db in list(self.args.busco_groups)]
                 databases.remove("BUSCO")
             for db in databases:
                 fn = self.databases_d[db]["filename"]
-                out_suffixes = self.databases_d[db]["output_suffix"]
+                out_suffixes = [""]
+                #out_suffixes = self.databases_d[db]["output_suffix"]
                 targs += [fn + suffix for suffix in out_suffixes]
             #targs = [os.path.join(self.config_d["db_dir"], targ) for targ in targs]
             targs = [os.path.join(self.args.database_dir, targ) for targ in targs]

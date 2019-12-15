@@ -4,7 +4,7 @@ __email__ = "cswel@ucdavis.edu"
 __license__ = "MIT"
 
 from snakemake.shell import shell
-log = snakemake.log_fmt_shell(stdout=True, stderr=True)
+log = snakemake.log_fmt_shell(stdout=False, stderr=True)
 
 if snakemake.params.get('metalink') and snakemake.params.get('md5'):
     raise ValueError('Do not use metalink and md5 simultaneously.')
@@ -24,25 +24,19 @@ if output.endswith(".done"):
 
 fileformat = snakemake.params.get("fileformat")
 if fileformat == "gz":
-    binary_out =  output + ".gz"
-    cmd.extend(['--output', '{binary_out}'])
-    decompress_cmd = ['gunzip', '-c', '{binary_out}', '>', '{output}']
+    cmd.extend(['|', 'gunzip', '-c', '>', '{output}'])
 elif fileformat == "tar.gz":
-    binary_out = output + ".tar.gz"
-    cmd.extend(['--output', '{binary_out}']) #, '|', 'tar', '-xzf', '>', '{output}'])
-    decompress_cmd = ['tar', '-xzf', '{binary_out}']
+    cmd.extend(['|', 'tar', '-xzf', '>', '{output}'])
 else:
     raise ValueError('Valid filetypes are "gz" and "tar.gz"')
 
 if snakemake.params.get('md5'):
-    cmd.append('&& python -c "assert \'`md5sum {binary_out} | '
+    cmd.append('&& python -c "assert \'`md5sum {output} | '
                 'awk \'{{print $1}}\'`\' == \'{snakemake.params.md5}\', '
                 '\'MD5sum does not match\'"')
 
 cmd.append("{log}")
-
 shell(' '.join(cmd))
-shell(' '.join(decompress_cmd))
 
 if donefile:
     shell("touch {donefile}")

@@ -4,9 +4,6 @@ from dammit.meta import get_databases
 
 databases_d = get_databases()
 
-#rule download_databases:
-#    input: 'Pfam-A.hmm', 'Rfam.cm', 'OrthoDB.fasta', 'uniprot_sprot.fasta'
-
 rule download_and_gunzip:
     output: os.path.join(config["db_dir"], '{database}.{file_type}')
     params:
@@ -14,12 +11,12 @@ rule download_and_gunzip:
         md5 = lambda wildcards: databases_d[wildcards.database].get('md5', False),
         metalink = lambda wildcards: databases_d[wildcards.database].get('metalink', False),
         fileformat = lambda wildcards: databases_d[wildcards.database]['fileformat'],
-        folder = lambda wildcards: databases_d[wildcards.database].get('folder')
+        folder = lambda wildcards: databases_d[wildcards.database].get('folder', False)
     log: os.path.join(config["db_dir"], '{database}.{file_type}.log')
     wildcard_constraints:
         file_type = "hmm|cm|fasta|txt|done"
     script:
-        f'file://{__path__}/wrappers/download'
+        f'file://{__path__}/wrappers/download/wrapper.py'
 
 rule lastdb:
     input:
