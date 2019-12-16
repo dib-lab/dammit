@@ -67,14 +67,14 @@ OrthoDB:
 orthodb_genes:
   access: download
   db_type: txt
-  filename: ODB8_EukOGs_genes_ALL_levels.txt
+  #filename: ODB8_EukOGs_genes_ALL_levels.txt
   filename: orthodb_genes.txt
   md5: 
   fileformat: gz
   version: 8
   url: ftp://cegg.unige.ch/OrthoDB8/Eukaryotes/Genes_to_OGs/ODB8_EukOGs_genes_ALL_levels.txt.gz
   output_suffix:
-    - .prj
+    - ""
 BUSCO:
   output_suffix:
     - .done

@@ -2,7 +2,7 @@ import os
 from dammit.meta import __path__
 
 
-# this gets replaced with dammit's rename_transcriptome
+# replace this with dammit's rename_transcriptome
 rule cp_transcriptome:
     input: config["input_transcriptome"]
     output: os.path.join(config["dammit_dir"], "{transcriptome}.fasta")
@@ -49,14 +49,14 @@ rule transdecoder_predict:
 rule lastal:
     input:
         data=os.path.join(config["dammit_dir"], "{transcriptome}.fasta"),
-        lastdb =os.path.join(config["db_dir"], "{database}.fa.prj")
+        lastdb =os.path.join(config["db_dir"], "{database}.fasta.prj")
     output:
-        maf = os.path.join(config["dammit_dir"], "{transcriptome}_{database}.lastal.maf")
+        maf = os.path.join(config["dammit_dir"], "{transcriptome}.{database}.lastal.maf")
     params:
         frameshift_cost = config["lastal"]["params"].get("frameshift_cost", 15),
         extra=config["lastal"]["params"].get("extra", ""),
     log:
-        os.path.join(config["dammit_dir"], "logs/{transcriptome}_{database}.lastal.log")
+        os.path.join(config["dammit_dir"], "logs/{transcriptome}.{database}.lastal.log")
     threads: 8
     conda: f"file://{__path__}/wrappers/last/environment.yml"
     script: f"file://{__path__}/wrappers/last/lastal.wrapper.py"
@@ -111,9 +111,9 @@ rule cmscan:
         fasta=os.path.join(config["dammit_dir"],"{transcriptome}.fasta"),
         profile=os.path.join(config["db_dir"],"{database}.cm.i1i")
     output:
-        tblout=os.path.join(config["dammit_dir"],"{transcriptome}_{database}.cmscan-tblout.txt"),
+        tblout=os.path.join(config["dammit_dir"],"{transcriptome}.{database}.cmscan-tblout.txt"),
     log:
-        os.path.join(config["dammit_dir"], "logs/{transcriptome}_{database}.cmscan.log")
+        os.path.join(config["dammit_dir"], "logs/{transcriptome}.{database}.cmscan.log")
     params:
         extra=config["hmmsearch"]["params"].get("extra", ""),
     threads: 4

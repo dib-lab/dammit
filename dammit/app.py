@@ -289,11 +289,11 @@ class DammitApp(object):
                 targs += [fn + suffix for suffix in out_suffixes]
             targs = [os.path.join(db_dir, targ) for targ in targs]
         # generate annotation targets
-        if any([self.args.transcriptome.endswith(".fa"), self.args.transcriptome.endswith(".fasta")]):
-            transcriptome_name = os.path.basename(self.args.transcriptome).rsplit(".fa")[0]
-        else:
-            raise ValueError('input transcriptome file must end with ".fa" or ".fasta"')
         if annot:
+            if any([self.args.transcriptome.endswith(".fa"), self.args.transcriptome.endswith(".fasta")]):
+                transcriptome_name = os.path.basename(self.args.transcriptome).rsplit(".fa")[0]
+            else:
+                raise ValueError('input transcriptome file must end with ".fa" or ".fasta"')
             if self.args.output_dir:
                 out_dir = self.args.output_dir
             else:
@@ -332,7 +332,7 @@ class DammitApp(object):
         # note if `--config` is last arg, it will try to add the workflow targets (targs) to config (and fail)
         config = ["--config", f"db_dir={db_dir}"]
         cmd.extend(config)
-        helpful_args = ["-p", "--nolock", "--use-conda", "--rerun-incomplete", "-k"]
+        helpful_args = ["-p", "--nolock", "--use-conda", "--rerun-incomplete", "-k", "--cores", f"{self.args.n_threads}"]
         cmd.extend(helpful_args)
         # better way to do this?
         if not self.args.install:
@@ -363,7 +363,7 @@ class DammitApp(object):
         # note if `--config` is last arg, it will try to add the workflow targets (targs) to config (and fail)
         config = ["--config", f"db_dir={db_dir}", f"dammit_dir={out_dir}", f"input_transcriptome={self.args.transcriptome}"]
         cmd.extend(config)
-        helpful_args = ["-p", "--nolock", "--use-conda", "--rerun-incomplete", "-k"]
+        helpful_args = ["-p", "--nolock", "--use-conda", "--rerun-incomplete", "-k", "--cores", f"{self.args.n_threads}"]
         cmd.extend(helpful_args)
 
         cmd.extend(annot_targs)

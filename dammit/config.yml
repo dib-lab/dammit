@@ -1,15 +1,15 @@
 dammit_dir: .dammit
 db_dir: databases
 logs_dir: logs
+input_transcriptome: "test.fa"
 
 ## last ##
 lastal:
   output_suffix: 
-    - __database__.lastal.maf
+    - .__database__.lastal.maf
   databases:
     - uniprot_sprot
     - OrthoDB
-    - orthodb_genes
     - uniref90
     - nr
   params:
@@ -25,7 +25,7 @@ lastdb:
 ## crb-blast ##
 crb-blast:
   output_suffix:
-    - __database__.crb-blast
+    - .__database__.crb-blast
   databases:
     - userdb
   params:
@@ -35,7 +35,7 @@ crb-blast:
 ## busco ##
 busco:
   output_suffix: 
-    - __database__.busco.results
+    - .__database__.busco.results
   databases:
     - BUSCO
   db_dir: busco2db
@@ -45,7 +45,7 @@ busco:
 ## hmmer ##
 hmmscan:
   output_suffix:
-    - __database__.hmmscan-domtbl.txt
+    - .__database__.hmmscan-domtbl.txt
   databases:
     - Pfam-A
   params:
@@ -53,7 +53,7 @@ hmmscan:
 
 hmmsearch:
   output_suffix:
-    - __database__.hmmsearch-domtbl.txt
+    - .__database__.hmmsearch-domtbl.txt
   databases:
     - Pfam-A
   params:
@@ -68,7 +68,7 @@ hmmpress:
 ## infernal ##
 cmscan:
   output_suffix:
-    - __database__.cmscan-tblout.txt
+    - .__database__.cmscan-tblout.txt
   databases:
     - Rfam
   params:
