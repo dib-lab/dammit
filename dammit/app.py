@@ -268,6 +268,13 @@ class DammitApp(object):
     def generate_targs(self, db=False, annot=False):
         pipeline_info = self.pipeline_d["pipelines"][self.args.pipeline]
         targs=[]
+        db_dir,out_dir="",""
+        # set database_dir
+        if self.args.database_dir:
+            db_dir = self.args.database_dir
+        else:
+            db_dir = self.config_d["db_dir"]
+        # generate database targs
         if db:
             databases = pipeline_info["databases"]
             if "BUSCO" in databases:
@@ -280,57 +287,85 @@ class DammitApp(object):
                 #out_suffixes = [""] # testing: ONLY DOWNLOAD
                 out_suffixes = self.databases_d[db]["output_suffix"]
                 targs += [fn + suffix for suffix in out_suffixes]
-            #targs = [os.path.join(self.config_d["db_dir"], targ) for targ in targs]
-            targs = [os.path.join(self.args.database_dir, targ) for targ in targs]
+            targs = [os.path.join(db_dir, targ) for targ in targs]
         # generate annotation targets
+        if any([self.args.transcriptome.endswith(".fa"), self.args.transcriptome.endswith(".fasta")]):
+            transcriptome_name = os.path.basename(self.args.transcriptome).rsplit(".fa")[0]
+        else:
+            raise ValueError('input transcriptome file must end with ".fa" or ".fasta"')
         if annot:
-            annotation_programs = pipeline_info[programs]
-            output_suffixes = [config[prog]["output_suffix"] for prog in annotation_programs]
-            annotate_targs = [os.path.join(OUT_DIR, config[transcriptome] + suffix) for suffix in output_suffixes]
+            if self.args.output_dir:
+                out_dir = self.args.output_dir
+            else:
+                out_dir = transcriptome_name + self.config_d["dammit_dir"]
+            annotation_programs = pipeline_info["programs"]
+            annotation_databases = pipeline_info["databases"]
+            output_suffixes = []
+            # not complete yet. need to include database name in annotation targ, where relevant
+            # not sure how to represent this in the config.yml. databases arg for prog?
+            for prog in annotation_programs:
+                prog_suffixes = self.config_d[prog]["output_suffix"]
+                prog_databases = self.config_d[prog].get("databases")
+                if prog_databases:
+                    # only consider databases we're running in this pipeline
+                    dbs_to_add = [db for db in prog_databases if db in annotation_databases]
+                    # expand __database__ with appropriate databases
+                    db_suffixes = []
+                    for suffix in prog_suffixes:
+                        if "__database__" in suffix:
+                            for db in dbs_to_add:
+                                db_suffixes.append(suffix.replace("__database__", db))
+                        else:
+                            db_suffixes.append(suffix)
+                    prog_suffixes = db_suffixes
+                output_suffixes.extend(prog_suffixes)
+            annotate_targs = [os.path.join(out_dir, transcriptome_name + suffix) for suffix in output_suffixes]
             targs+=annotate_targs
-        return targs
+        return targs, db_dir, out_dir
 
     def handle_databases(self):
         log.start_logging()
         print(ui.header('submodule: databases', level=2))
-        cmd = ["snakemake", "-s", "workflows/dammit.snakefile"]
+        cmd = ["snakemake", "-s", "workflows/dammit.snakefile", "--configfile", "config.yml"]
+        db_targs, db_dir, out_dir= self.generate_targs(db=True)
         #handle user-specified database dir properly
-        # note if `--config` is last arg, it will try to add targs to config (and fail)
-        config = ["--config", f"db_dir={self.args.database_dir}"]
+        # note if `--config` is last arg, it will try to add the workflow targets (targs) to config (and fail)
+        config = ["--config", f"db_dir={db_dir}"]
         cmd.extend(config)
         helpful_args = ["-p", "--nolock", "--use-conda", "--rerun-incomplete", "-k"]
         cmd.extend(helpful_args)
         # better way to do this?
         if not self.args.install:
             cmd.append("--dry_run")
-        db_targs = self.generate_targs(db=True)
+        # finally, add targets
         cmd.extend(db_targs)
-        print(" ".join(cmd))
+        print("Command: " + " ".join(cmd))
         subprocess.check_call(cmd)
 
 
     def handle_annotate(self):
         log.start_logging()
         print(ui.header('submodule: annotate', level=2))
-        cmd = ["snakemake", "-s", "workflows/dammit.snakefile"]
-        #handle user-specified database dir properly
-        # note if `--config` is last arg, it will try to add targs to config (and fail)
-        config = ["--config", f"db_dir={self.args.database_dir}"]
-        cmd.extend(config)
-        helpful_args = ["-p", "--nolock", "--use-conda", "--rerun-incomplete", "-k"]
-        cmd.extend(helpful_args)
+        cmd = ["snakemake", "-s", "workflows/dammit.snakefile", "--configfile", "config.yml"]
 
         if self.config_d['force'] is True:
-            annot_targs = generate_targs(db=True, annot=True)
+            annot_targs, db_dir, out_dir = generate_targs(db=True, annot=True)
             utd_msg = '*All database tasks up-to-date.*'
             ood_msg = '*Some database tasks out-of-date; '\
                       'FORCE is True, ignoring!'
         #    uptodate, statuses = db_handler.print_statuses(uptodate_msg=utd_msg,
         #                                                   outofdate_msg=ood_msg)
         else:
-            annot_targs = self.generate_targs(annot=True)
+            annot_targs, db_dir, out_dir = self.generate_targs(annot=True)
             #databases.check_or_fail(db_handler)
 
+        #handle user-specified database dir and output dir properly
+        # note if `--config` is last arg, it will try to add the workflow targets (targs) to config (and fail)
+        config = ["--config", f"db_dir={db_dir}", f"dammit_dir={out_dir}", f"input_transcriptome={self.args.transcriptome}"]
+        cmd.extend(config)
+        helpful_args = ["-p", "--nolock", "--use-conda", "--rerun-incomplete", "-k"]
+        cmd.extend(helpful_args)
 
         cmd.extend(annot_targs)
+        print("Command: " + " ".join(cmd))
         subprocess.check_call(cmd)

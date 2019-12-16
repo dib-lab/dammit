@@ -5,12 +5,14 @@ __copyright__ = "Copyright 2019, N. Tessa Pierce"
 __email__ = "ntpierce@gmail.com"
 __license__ = "MIT"
 
-from os import path
+import os
 from snakemake.shell import shell
 
 extra = snakemake.params.get("extra", "")
 
 log = snakemake.log_fmt_shell(stdout=True, stderr=True)
+
+output_dir = os.path.dirname(str(snakemake.input.longorfs))
 
 addl_outputs = ""
 pfam = snakemake.input.get("pfam_hits", "")
@@ -28,4 +30,11 @@ if input_fasta.endswith("gz"):
 else:
     input_fa = input_fasta
 
-shell("TransDecoder.Predict -t {input_fa} {addl_outputs} {extra} {log}")
+shell("TransDecoder.Predict --output_dir {output_dir} -t {input_fa} {addl_outputs} {extra} {log}")
+
+outputs = snakemake.output
+for outp in outputs:
+    old_output = os.path.basename(outp)
+    shell("mv {old_output} {outp}")
+
+shell("mv pipeliner* {output_dir}")

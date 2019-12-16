@@ -5,21 +5,29 @@ logs_dir: logs
 ## last ##
 lastal:
   output_suffix: 
-    - ".maf" 
+    - __database__.lastal.maf
+  databases:
+    - uniprot_sprot
+    - OrthoDB
+    - orthodb_genes
+    - uniref90
+    - nr
   params:
     frameshift_cost: 15
     extra: ""
   
 lastdb: 
   output_suffix: 
-    - ".fa.prj" 
+    - ".fasta.prj" 
   params:
    extra: " -w3 "
 
 ## crb-blast ##
 crb-blast:
   output_suffix:
-   - OUTSUFFIX
+    - __database__.crb-blast
+  databases:
+    - userdb
   params:
     evalue: 1e-5
     extra: ""
@@ -27,7 +35,9 @@ crb-blast:
 ## busco ##
 busco:
   output_suffix: 
-    - ".busco.results"
+    - __database__.busco.results
+  databases:
+    - BUSCO
   db_dir: busco2db
   params:
     extra: ""
@@ -35,26 +45,38 @@ busco:
 ## hmmer ##
 hmmscan:
   output_suffix:
-    - ".hmm.h3f"
+    - __database__.hmmscan-domtbl.txt
+  databases:
+    - Pfam-A
+  params:
+    extra: ""
+
+hmmsearch:
+  output_suffix:
+    - __database__.hmmsearch-domtbl.txt
+  databases:
+    - Pfam-A
   params:
     extra: ""
 
 hmmpress:
   output_suffix:
-    - ".hmm.h3f"
+    - .hmm.h3f
   params:
     extra: ""
 
 ## infernal ##
 cmscan:
   output_suffix:
-    - "-infernal-tblout.txt"
+    - __database__.cmscan-tblout.txt
+  databases:
+    - Rfam
   params:
     extra: ""
 
 cmpress:
   output_suffix:
-    - ".cm.i1i"
+    - .cm.i1i
   params:
     extra: ""
   
@@ -67,6 +89,13 @@ transdecoder_longorfs:
 
 transdecoder_predict:
   output_suffix:
-    - .transdecoder.gff3
+    - .fasta.transdecoder.gff3
+  params:
+    extra: ""
+
+# dammit utilities
+cp_transcriptome:
+  output_suffix:
+    - .fasta
   params:
     extra: ""

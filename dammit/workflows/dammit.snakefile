@@ -7,9 +7,6 @@ import glob
 from dammit.meta import __path__
 
 
-configfile: "config.yml"
-
-
 onstart:
     print("------------------------------")
     print("Just annotate it, dammit!") 
@@ -25,6 +22,7 @@ onerror:
 
 
 include: "databases/databases.snakefile"
+include: "annotate/annotate.snakefile"
 #subworkflow databases:
 #    workdir:
 #        "."
