@@ -45,7 +45,8 @@ def main():
                                 'matplotlib>=1.0',
                                 'numexpr>=2.3.1',
                                 'shmlast>=1.2',
-                                'filelock'],
+                                'filelock',
+                                'sh'],
             include_package_data = True,
             zip_safe = False,  )
 
