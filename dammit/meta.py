@@ -24,14 +24,32 @@ def get_config():
     Returns:
         tuple: The config and databases dictionaries.
     '''
-    with open(os.path.join(__path__, 'config.json')) as fp:
+    with open(os.path.join(__path__, 'config.yml')) as fp:
         try:
             config_d = yaml.safe_load(fp) #json.load(fp)
         except yaml.YAMLError as exc:
             print(exc)
-    with open(os.path.join(__path__, 'databases.json'), 'r') as fp:
+    with open(os.path.join(__path__, 'databases.yml'), 'r') as fp:
         try:
             databases_d = yaml.safe_load(fp) #json.load(fp)
         except yaml.YAMLError as exc:
             print(exc)
-    return config_d, databases_d
+    with open(os.path.join(__path__, 'pipelines.yml'), 'r') as fp:
+        try:
+            pipelines_d = yaml.safe_load(fp) #json.load(fp)
+        except yaml.YAMLError as exc:
+            print(exc)
+    return config_d, databases_d, pipelines_d
+
+def get_databases():
+    '''Parse the default YAML or JSON config files and return them as dictionaries.
+
+    Returns:
+        tuple: The config and databases dictionaries.
+    '''
+    with open(os.path.join(__path__, 'databases.yml'), 'r') as fp:
+        try:
+            databases_d = yaml.safe_load(fp) #json.load(fp)
+        except yaml.YAMLError as exc:
+            print(exc)
+    return databases_d

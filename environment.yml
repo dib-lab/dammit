@@ -1,0 +1,17 @@
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - python >=3.6
+  - snakemake >=5.8.1
+  - pyyaml
+  - yaml
+  - pandas
+  - pytest
+  # these are for dag printing
+  #- graphviz
+  #- networkx
+  #- pygments
+  #- pygraphviz
+  #- psutil

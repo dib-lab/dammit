@@ -9,17 +9,15 @@ import glob
 import logging
 import os
 import sys
+import subprocess
+import yaml
 
 from dammit import annotate
 from dammit import databases
 from dammit import log
 from dammit import utils
 from dammit import ui
-from dammit.meta import __version__, __authors__, __description__, __date__, get_config
-from dammit.annotate import (build_quick_pipeline,
-                             build_default_pipeline,
-                             build_full_pipeline,
-                             build_nr_pipeline)
+from dammit.meta import __version__, __authors__, __description__, __date__, __path__, get_config
 
 
 class DammitApp(object):
@@ -27,13 +25,13 @@ class DammitApp(object):
     def __init__(self, arg_src=sys.argv[1:]):
         self.logger = logging.getLogger(self.__class__.__name__)
 
-        self.config_d, self.databases_d = get_config()
+        self.config_d, self.databases_d, self.pipeline_d  = get_config()
         self.parser = self.get_parser()
 
         self.args = self.parser.parse_args(arg_src)
         if hasattr(self.args, 'config_file') and self.args.config_file is not None:
             with open(self.args.config_file) as fp:
-                self.config_d.update(json.load(fp))
+                self.config_d.update(yaml.safe_load(fp))
         self.config_d.update(vars(self.args))
 
     def run(self):
@@ -82,11 +80,13 @@ class DammitApp(object):
                                      ' $HOME/.dammit/databases.'
                                 )
 
-            parser.add_argument('--busco-group',
-                                default='metazoa',
+            parser.add_argument('--busco-groups',
+                                default=['metazoa'],
+                                nargs="*",
                                 metavar='[metazoa, eukaryota, vertebrata, ...]',
                                 choices=list(self.databases_d['BUSCO'].keys()),
-                                help='Which BUSCO group to use. Should be chosen'\
+                                help='Space separated list of BUSCO group(s)'\
+                                     ' to use. Should be chosen'\
                                      ' based on the organism being annotated.'\
                                      ' Full list of options is below.'
                                 )
@@ -136,36 +136,30 @@ class DammitApp(object):
                                      ' Note: make sure your transcript names'\
                                      ' do not contain unusual characters.')
 
-            pgroup = parser.add_mutually_exclusive_group()
-            pgroup.add_argument('--full',
-                                action='store_true',
-                                default=False,
-                                help='Run a "complete" annotation; includes'\
-                                     ' uniref90, which is left out of the'\
-                                     ' default pipeline because it is huge'\
-                                     ' and homology searches take a long'\
-                                     ' time.'
-                                )
-
-            pgroup.add_argument('--nr',
-                                action='store_true',
-                                default=False,
-                                help='Also include annotation to NR database, which'\
-                                     ' is left out of the default and "full"'\
-                                     ' pipelines because it is huge and'\
-                                     ' homology searches take a long time.'
-                                )
-
-            pgroup.add_argument('--quick',
-                                default=False,
-                                action='store_true',
-                                help='Run a "quick" annotation; excludes'\
+            parser.add_argument('--pipeline',
+                                default='default',
+                                choices=["default", "quick", "full", "nr"],
+                                help='Which pipeline to use. Pipeline options:'\
+                                     ' quick: excludes: '
                                      ' the Infernal Rfam tasks, the HMMER'\
                                      ' Pfam tasks, and the LAST OrthoDB'\
                                      ' and uniref90 tasks. Best for users'\
                                      ' just looking to get basic stats'\
                                      ' and conditional reciprocal best'\
-                                     ' LAST from a protein database.')
+                                     ' LAST from a protein database.'\
+                                     ' \nfull: '\
+                                     'Run a "complete" annotation; includes'\
+                                     ' uniref90, which is left out of the'\
+                                     ' default pipeline because it is huge'\
+                                     ' and homology searches take a long'\
+                                     ' time.'
+                                     ' nr: '\
+                                     ' Also include annotation to NR database, which'\
+                                     ' is left out of the default and "full"'\
+                                     ' pipelines because it is huge and'\
+                                     ' homology searches take a long time.'\
+                                     ' More info  at https://dib-lab.github.io/dammit.'
+                                )
 
         migrate_parser= subparsers.add_parser('migrate')
         migrate_parser.add_argument('--destructive', default=False,
@@ -271,66 +265,107 @@ class DammitApp(object):
                 else:
                     os.symlink(fn, newfn)
 
+    def generate_targs(self, db=False, annot=False):
+        pipeline_info = self.pipeline_d["pipelines"][self.args.pipeline]
+        targs=[]
+        db_dir,out_dir="",""
+        # set database_dir
+        if self.args.database_dir:
+            db_dir = self.args.database_dir
+        else:
+            db_dir = self.config_d["db_dir"]
+        # generate database targs
+        if db:
+            databases = pipeline_info["databases"]
+            if "BUSCO" in databases:
+                #out_suffix = self.databases_d["BUSCO"]["output_suffix"][0] #donefile
+                #busco_dbinfo = self.databases_d["BUSCO"] #get busco database info
+                #targs = [busco_dbinfo[db]["folder"] + out_suffix for db in list(self.args.busco_groups)]
+                databases.remove("BUSCO")
+            for db in databases:
+                fn = self.databases_d[db]["filename"]
+                #out_suffixes = [""] # testing: ONLY DOWNLOAD
+                out_suffixes = self.databases_d[db]["output_suffix"]
+                targs += [fn + suffix for suffix in out_suffixes]
+            targs = [os.path.join(db_dir, targ) for targ in targs]
+        # generate annotation targets
+        if annot:
+            if any([self.args.transcriptome.endswith(".fa"), self.args.transcriptome.endswith(".fasta")]):
+                transcriptome_name = os.path.basename(self.args.transcriptome).rsplit(".fa")[0]
+            else:
+                raise ValueError('input transcriptome file must end with ".fa" or ".fasta"')
+            if self.args.output_dir:
+                out_dir = self.args.output_dir
+            else:
+                out_dir = transcriptome_name + self.config_d["dammit_dir"]
+            annotation_programs = pipeline_info["programs"]
+            annotation_databases = pipeline_info["databases"]
+            output_suffixes = []
+            # not complete yet. need to include database name in annotation targ, where relevant
+            # not sure how to represent this in the config.yml. databases arg for prog?
+            for prog in annotation_programs:
+                prog_suffixes = self.config_d[prog]["output_suffix"]
+                prog_databases = self.config_d[prog].get("databases")
+                if prog_databases:
+                    # only consider databases we're running in this pipeline
+                    dbs_to_add = [db for db in prog_databases if db in annotation_databases]
+                    # expand __database__ with appropriate databases
+                    db_suffixes = []
+                    for suffix in prog_suffixes:
+                        if "__database__" in suffix:
+                            for db in dbs_to_add:
+                                db_suffixes.append(suffix.replace("__database__", db))
+                        else:
+                            db_suffixes.append(suffix)
+                    prog_suffixes = db_suffixes
+                output_suffixes.extend(prog_suffixes)
+            annotate_targs = [os.path.join(out_dir, transcriptome_name + suffix) for suffix in output_suffixes]
+            targs+=annotate_targs
+        return targs, db_dir, out_dir
+
     def handle_databases(self):
         log.start_logging()
         print(ui.header('submodule: databases', level=2))
+        cmd = ["snakemake", "-s", "workflows/dammit.snakefile", "--configfile", "config.yml"]
+        db_targs, db_dir, out_dir= self.generate_targs(db=True)
+        #handle user-specified database dir properly
+        # note if `--config` is last arg, it will try to add the workflow targets (targs) to config (and fail)
+        config = ["--config", f"db_dir={db_dir}"]
+        cmd.extend(config)
+        helpful_args = ["-p", "--nolock", "--use-conda", "--rerun-incomplete", "-k", "--cores", f"{self.args.n_threads}"]
+        cmd.extend(helpful_args)
+        # better way to do this?
+        if not self.args.install:
+            cmd.append("--dry_run")
+        # finally, add targets
+        cmd.extend(db_targs)
+        print("Command: " + " ".join(cmd))
+        subprocess.check_call(cmd)
 
-        handler = databases.get_handler(self.config_d)
-        if self.args.quick:
-            databases.build_quick_pipeline(handler,
-                                           self.config_d,
-                                           self.databases_d)
-        else:
-            databases.build_default_pipeline(handler,
-                                             self.config_d,
-                                             self.databases_d,
-                                             with_uniref=self.args.full,
-                                             with_nr=self.args.nr)
-        if self.args.install:
-            return databases.install(handler)
-        else:
-            databases.check_or_fail(handler)
 
     def handle_annotate(self):
         log.start_logging()
         print(ui.header('submodule: annotate', level=2))
+        cmd = ["snakemake", "-s", "workflows/dammit.snakefile", "--configfile", "config.yml"]
 
-        db_handler = databases.get_handler(self.config_d)
-
-        if self.args.quick:
-            databases.build_quick_pipeline(db_handler,
-                                           self.config_d,
-                                           self.databases_d)
-        else:
-            databases.build_default_pipeline(db_handler,
-                                             self.config_d,
-                                             self.databases_d,
-                                             with_uniref=self.args.full,
-                                             with_nr=self.args.nr)
         if self.config_d['force'] is True:
+            annot_targs, db_dir, out_dir = generate_targs(db=True, annot=True)
             utd_msg = '*All database tasks up-to-date.*'
             ood_msg = '*Some database tasks out-of-date; '\
                       'FORCE is True, ignoring!'
-            uptodate, statuses = db_handler.print_statuses(uptodate_msg=utd_msg,
-                                                           outofdate_msg=ood_msg)
+        #    uptodate, statuses = db_handler.print_statuses(uptodate_msg=utd_msg,
+        #                                                   outofdate_msg=ood_msg)
         else:
-            databases.check_or_fail(db_handler)
+            annot_targs, db_dir, out_dir = self.generate_targs(annot=True)
+            #databases.check_or_fail(db_handler)
 
-        annotate_handler = annotate.get_handler(self.config_d, db_handler.files)
-        if self.args.quick:
-            build_quick_pipeline(annotate_handler,
-                                 self.config_d,
-                                 db_handler.files)
-        elif self.args.full:
-            build_full_pipeline(annotate_handler,
-                                self.config_d,
-                                db_handler.files)
-        elif self.args.nr:
-            build_nr_pipeline(annotate_handler,
-                                self.config_d,
-                                db_handler.files)
-        else:
-            build_default_pipeline(annotate_handler,
-                                   self.config_d,
-                                   db_handler.files)
-        return annotate.run_annotation(annotate_handler)
+        #handle user-specified database dir and output dir properly
+        # note if `--config` is last arg, it will try to add the workflow targets (targs) to config (and fail)
+        config = ["--config", f"db_dir={db_dir}", f"dammit_dir={out_dir}", f"input_transcriptome={self.args.transcriptome}"]
+        cmd.extend(config)
+        helpful_args = ["-p", "--nolock", "--use-conda", "--rerun-incomplete", "-k", "--cores", f"{self.args.n_threads}"]
+        cmd.extend(helpful_args)
+
+        cmd.extend(annot_targs)
+        print("Command: " + " ".join(cmd))
+        subprocess.check_call(cmd)
