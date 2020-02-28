@@ -271,14 +271,17 @@ class DammitApp(object):
             targets = [os.path.join(db_dir, targ) for targ in targets]
         # generate annotation targets
         if annot:
-            if any([self.args.transcriptome.endswith(".fa"), self.args.transcriptome.endswith(".fasta")]):
+            if any([self.args.transcriptome.endswith(".fa"),
+                    self.args.transcriptome.endswith(".fasta")]):
                 transcriptome_name = os.path.basename(self.args.transcriptome).rsplit(".fa")[0]
             else:
                 raise ValueError('input transcriptome file must end with ".fa" or ".fasta"')
+
             if self.args.output_dir:
                 out_dir = self.args.output_dir
             else:
                 out_dir = transcriptome_name + self.config_d["dammit_dir"]
+
             annotation_programs = pipeline_info["programs"]
             annotation_databases = pipeline_info["databases"]
             output_suffixes = []
@@ -332,13 +335,16 @@ class DammitApp(object):
         try:
             subprocess.check_call(cmd)
         except subprocess.CalledProcessError as e:
-            print('Error in snakemake invocation: {e}', file=sys.stderr)
+            print(f'Error in snakemake invocation: {e}', file=sys.stderr)
             return e.returncode
 
     def handle_annotate(self):
         log.start_logging()
         print(ui.header('submodule: annotate', level=2))
-        cmd = ["snakemake", "-s", "workflows/dammit.snakefile", "--configfile", "config.yml"]
+
+        workflow_file = os.path.join(__path__, 'workflows', 'dammit.snakefile')
+        config_file = os.path.join(__path__, 'config.yml')
+        cmd = ["snakemake", "-s", workflow_file, "--configfile", config_file]
 
         if self.config_d['force'] is True:
             annot_targets, db_dir, out_dir = generate_targets(db=True, annot=True)
@@ -355,9 +361,15 @@ class DammitApp(object):
         # note if `--config` is last arg, it will try to add the workflow targets (targets) to config (and fail)
         config = ["--config", f"db_dir={db_dir}", f"dammit_dir={out_dir}", f"input_transcriptome={self.args.transcriptome}"]
         cmd.extend(config)
+
         helpful_args = ["-p", "--nolock", "--use-conda", "--rerun-incomplete", "-k", "--cores", f"{self.args.n_threads}"]
         cmd.extend(helpful_args)
 
         cmd.extend(annot_targets)
+
         print("Command: " + " ".join(cmd))
-        subprocess.check_call(cmd)
+        try:
+            subprocess.check_call(cmd)
+        except subprocess.CalledProcessError as e:
+            print(f'Error in snakemake invocation: {e}', file=sys.stderr)
+            return e.returncode
