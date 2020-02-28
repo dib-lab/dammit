@@ -15,7 +15,7 @@ __path__ = os.path.dirname(__file__)
 __version__ = open(os.path.join(__path__, 'VERSION')).read().strip()
 __authors__ = ['Camille Scott', "N. Tessa Pierce"]
 __description__ = 'a tool for easy de novo transcriptome annotation'
-__date__ = 2019
+__date__ = 2020
 
 
 def get_config():
@@ -40,6 +40,7 @@ def get_config():
         except yaml.YAMLError as exc:
             print(exc)
     return config_d, databases_d, pipelines_d
+
 
 def get_databases():
     '''Parse the default YAML or JSON config files and return them as dictionaries.

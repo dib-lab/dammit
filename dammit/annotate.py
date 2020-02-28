@@ -12,23 +12,6 @@ import sys
 
 from shmlast.app import CRBL
 
-from dammit.handler import             TaskHandler
-from dammit.profile import             add_profile_actions
-
-from dammit.tasks.shell import         get_copy_file_task
-from dammit.tasks.report import        get_annotate_fasta_task
-from dammit.tasks.utils import         get_group_task
-from dammit.tasks.gff import          (get_maf_gff3_task,
-                                       get_shmlast_gff3_task,
-                                       get_hmmscan_gff3_task,
-                                       get_cmscan_gff3_task,
-                                       get_gff3_merge_task,
-                                       get_maf_best_hits_task)
-from dammit.tasks.last import          LastalTask
-from dammit.tasks.hmmer import         HMMScanTask, get_remap_hmmer_task
-from dammit.tasks.infernal import      CMScanTask
-from dammit.tasks.transdecoder import (TransDecoderPredictTask,
-                                       TransDecoderLongOrfsTask)
 from dammit import ui
 from dammit import log
 

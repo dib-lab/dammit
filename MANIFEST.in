@@ -4,6 +4,10 @@ include LICENSE
 include distribute_setup.py
 include dammit/VERSION
 include bin/dammit
+include dammit/config.yml
+include dammit/pipelines.yml
+include dammit/databases.yml
 recursive-include dammit *.json
 recursive-include dammit/wrappers wrapper.py *.wrapper.py *.yml *.rule
+recursive-include dammit/workflows *.snakefile
 include dammit/busco_config.ini

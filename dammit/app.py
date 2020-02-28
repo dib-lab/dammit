@@ -12,7 +12,6 @@ import sys
 import subprocess
 import yaml
 
-from dammit import annotate
 from dammit import databases
 from dammit import log
 from dammit import utils
@@ -161,13 +160,6 @@ class DammitApp(object):
                                      ' More info  at https://dib-lab.github.io/dammit.'
                                 )
 
-        migrate_parser= subparsers.add_parser('migrate')
-        migrate_parser.add_argument('--destructive', default=False,
-                                    action='store_true')
-        add_common_args(migrate_parser)
-        migrate_parser.set_defaults(func=self.handle_migrate)
-
-
         '''
         Add the databases subcommand.
         '''
@@ -254,40 +246,29 @@ class DammitApp(object):
 
         return parser
 
-    def handle_migrate(self):
-        with utils.Move(self.args.database_dir):
-            odb_files = glob.glob('aa_seq_euk.fasta.db.*')
-            for fn in odb_files:
-                pre, _, suf = fn.partition('.db')
-                newfn = pre + suf
-                if self.args.destructive:
-                    os.rename(fn, newfn)
-                else:
-                    os.symlink(fn, newfn)
-
-    def generate_targs(self, db=False, annot=False):
+    def generate_targets(self, db=False, annot=False):
         pipeline_info = self.pipeline_d["pipelines"][self.args.pipeline]
-        targs=[]
+        targets=[]
         db_dir,out_dir="",""
         # set database_dir
         if self.args.database_dir:
             db_dir = self.args.database_dir
         else:
             db_dir = self.config_d["db_dir"]
-        # generate database targs
+        # generate database targets
         if db:
             databases = pipeline_info["databases"]
             if "BUSCO" in databases:
                 #out_suffix = self.databases_d["BUSCO"]["output_suffix"][0] #donefile
                 #busco_dbinfo = self.databases_d["BUSCO"] #get busco database info
-                #targs = [busco_dbinfo[db]["folder"] + out_suffix for db in list(self.args.busco_groups)]
+                #targets = [busco_dbinfo[db]["folder"] + out_suffix for db in list(self.args.busco_groups)]
                 databases.remove("BUSCO")
             for db in databases:
                 fn = self.databases_d[db]["filename"]
                 #out_suffixes = [""] # testing: ONLY DOWNLOAD
                 out_suffixes = self.databases_d[db]["output_suffix"]
-                targs += [fn + suffix for suffix in out_suffixes]
-            targs = [os.path.join(db_dir, targ) for targ in targs]
+                targets += [fn + suffix for suffix in out_suffixes]
+            targets = [os.path.join(db_dir, targ) for targ in targets]
         # generate annotation targets
         if annot:
             if any([self.args.transcriptome.endswith(".fa"), self.args.transcriptome.endswith(".fasta")]):
@@ -319,29 +300,40 @@ class DammitApp(object):
                             db_suffixes.append(suffix)
                     prog_suffixes = db_suffixes
                 output_suffixes.extend(prog_suffixes)
-            annotate_targs = [os.path.join(out_dir, transcriptome_name + suffix) for suffix in output_suffixes]
-            targs+=annotate_targs
-        return targs, db_dir, out_dir
+            annotate_targets = [os.path.join(out_dir, transcriptome_name + suffix) for suffix in output_suffixes]
+            targets+=annotate_targets
+        return targets, db_dir, out_dir
 
     def handle_databases(self):
         log.start_logging()
         print(ui.header('submodule: databases', level=2))
-        cmd = ["snakemake", "-s", "workflows/dammit.snakefile", "--configfile", "config.yml"]
-        db_targs, db_dir, out_dir= self.generate_targs(db=True)
+
+        workflow_file = os.path.join(__path__, 'workflows', 'dammit.snakefile')
+        config_file = os.path.join(__path__, 'config.yml')
+        cmd = ["snakemake", "-s", workflow_file, "--configfile", config_file]
+    
+        db_targets, db_dir, out_dir= self.generate_targets(db=True)
         #handle user-specified database dir properly
-        # note if `--config` is last arg, it will try to add the workflow targets (targs) to config (and fail)
+        # note if `--config` is last arg, it will try to add the workflow targets (targets) to config (and fail)
         config = ["--config", f"db_dir={db_dir}"]
         cmd.extend(config)
+
         helpful_args = ["-p", "--nolock", "--use-conda", "--rerun-incomplete", "-k", "--cores", f"{self.args.n_threads}"]
         cmd.extend(helpful_args)
+
         # better way to do this?
         if not self.args.install:
             cmd.append("--dry_run")
-        # finally, add targets
-        cmd.extend(db_targs)
-        print("Command: " + " ".join(cmd))
-        subprocess.check_call(cmd)
 
+        # finally, add targets
+        cmd.extend(db_targets)
+        print("Command: " + " ".join(cmd))
+
+        try:
+            subprocess.check_call(cmd)
+        except subprocess.CalledProcessError as e:
+            print('Error in snakemake invocation: {e}', file=sys.stderr)
+            return e.returncode
 
     def handle_annotate(self):
         log.start_logging()
@@ -349,23 +341,23 @@ class DammitApp(object):
         cmd = ["snakemake", "-s", "workflows/dammit.snakefile", "--configfile", "config.yml"]
 
         if self.config_d['force'] is True:
-            annot_targs, db_dir, out_dir = generate_targs(db=True, annot=True)
+            annot_targets, db_dir, out_dir = generate_targets(db=True, annot=True)
             utd_msg = '*All database tasks up-to-date.*'
             ood_msg = '*Some database tasks out-of-date; '\
                       'FORCE is True, ignoring!'
         #    uptodate, statuses = db_handler.print_statuses(uptodate_msg=utd_msg,
         #                                                   outofdate_msg=ood_msg)
         else:
-            annot_targs, db_dir, out_dir = self.generate_targs(annot=True)
+            annot_targets, db_dir, out_dir = self.generate_targets(annot=True)
             #databases.check_or_fail(db_handler)
 
         #handle user-specified database dir and output dir properly
-        # note if `--config` is last arg, it will try to add the workflow targets (targs) to config (and fail)
+        # note if `--config` is last arg, it will try to add the workflow targets (targets) to config (and fail)
         config = ["--config", f"db_dir={db_dir}", f"dammit_dir={out_dir}", f"input_transcriptome={self.args.transcriptome}"]
         cmd.extend(config)
         helpful_args = ["-p", "--nolock", "--use-conda", "--rerun-incomplete", "-k", "--cores", f"{self.args.n_threads}"]
         cmd.extend(helpful_args)
 
-        cmd.extend(annot_targs)
+        cmd.extend(annot_targets)
         print("Command: " + " ".join(cmd))
         subprocess.check_call(cmd)
