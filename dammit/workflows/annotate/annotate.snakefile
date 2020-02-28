@@ -120,21 +120,16 @@ rule cmscan:
     conda: f"file://{__path__}/wrappers/infernal/environment.yml"
     wrapper: f"file://{__path__}/wrappers/infernal/cmscan.wrapper.py"
 
-rule run_busco:
-    input: 
-        trans = os.path.join(config["dammit_dir"], "{transcriptome}.fa"),
-        donefile = os.path.join(config["db_dir"], "{busco_db}.done")
-    output:
-        os.path.join(config["dammit_dir"], "txome_busco/{transcriptome}_{busco_db}_full_table.tsv"),
-    log:
-        "logs/{transcriptome}_{busco_db}.log"
+rule busco_transcripts:
+    input: os.path.join(config["dammit_dir"], "{transcriptome}.fa"),
+    output: directory(os.path.join(config["dammit_dir"], "busco", "{transcriptome}_{busco_db}")),
+    log: os.path.join(config["dammit_dir"], "logs/{transcriptome}.{busco_db}.log")
+    benchmark: os.path.join(logs_dir, "busco","{sample}_trinity_busco.benchmark")
     threads: 8
     params:
         mode="transcriptome",
-        lineage_path=os.path.join(config["db_dir"], "{busco_db}"),
-        # optional parameters
+        #lineage=os.path.join(config["db_dir"], "{busco_db}"),
+        #auto_lineage="euk",
         extra=config["busco"]["params"].get("extra", ""),
     conda: f"file://{__path__}/wrappers/busco/environment.yml"
     wrapper: f"file://{__path__}/wrappers/busco/busco.wrapper.py"
-
-#def parse_busco_summary:
