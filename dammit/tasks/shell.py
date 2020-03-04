@@ -175,13 +175,13 @@ def get_download_and_untar_task(url, target_dir, label=None):
     if label is None:
         label = os.path.basename(url)
 
-    cmd1 = 'mkdir -p {target_dir}; curl {url} | tar -xz -C {target_dir}'.format(**locals())
+    cmd1 = 'mkdir -p {target_dir}; curl -L {url} | tar -xz -C {target_dir}'.format(**locals())
     name = 'download_and_untar:{0}-{1}'.format(os.path.basename(target_dir), label)
     done = os.path.join(target_dir, name) + '.done'
     cmd2 = 'touch {done}'.format(done=done)
 
     return {'name': name,
-            'actions': [LongRunning(cmd1), cmd2],
+            'actions': [LongRunning(cmd1 + ' && ' + cmd2)],
             'targets': [done],
             'clean': [(clean_folder, [target_dir])],
             'uptodate': [True]}
