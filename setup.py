@@ -18,8 +18,8 @@ finally:
 
 from glob import glob
 
-if sys.version_info < (3, 5):
-    print >> sys.stderr, "ERROR: dammit! requires python 3.5 or greater"
+if sys.version_info < (3, 6):
+    print >> sys.stderr, "ERROR: dammit! requires python 3.6 or greater"
     sys.exit()
 
 version = open('dammit/VERSION').read().strip()
@@ -29,7 +29,7 @@ def main():
             version = version,
             description = 'dammit!',
             url = 'https://github.com/camillescott/dammit',
-            author = 'Camille Scott',
+            author = 'Camille Scott, Tessa Pierce',
             author_email = 'camille.scott.w@gmail.com',
             license = 'BSD',
             test_suite = 'pytest-runner',
@@ -42,15 +42,13 @@ def main():
                     'dammit=dammit.cli:component'
                 ]
             },
-            install_requires = ['setuptools>=0.6.35',
-                                'pandas>=0.18.1',
+            install_requires = ['setuptools',
+                                'pandas>=1.0',
                                 'khmer>=2.0',
-                                'doit>=0.29.0',
-                                'ficus>=0.1',
-                                'matplotlib>=1.0',
-                                'numexpr>=2.3.1',
+                                'click',
+                                'ope',
                                 'shmlast>=1.2',
-                                'filelock'],
+                                'snakemake==5.14'],
             include_package_data = True,
             zip_safe = False,  )
 
