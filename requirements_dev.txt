@@ -7,3 +7,4 @@ pytest-cov>2.3
 click
 ope
 snakemake==5.14
+mkdocs
