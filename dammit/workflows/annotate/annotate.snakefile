@@ -1,25 +1,6 @@
 import os
 from dammit.meta import __path__
 
-results_dir = config['dammit_dir']
-logs_dir = os.path.join(results_dir, 'logs')
-benchmarks_dir = os.path.join(results_dir, 'benchmarks')
-db_dir = config['db_dir']
-
-
-# replace this with dammit's rename_transcriptome
-rule cp_transcriptome:
-    input:
-        config['input_transcriptome']
-    output:
-        os.path.join(results_dir, '{transcriptome}.fasta')
-    log:
-        os.path.join(logs_dir, 'cp-{transcriptome}.log')
-    shell:
-        '''
-        cp {input} {output} 2> {log}
-        '''
-
 rule transdecoder_longorfs:
     input:
         fasta = os.path.join(results_dir, '{transcriptome}.fasta')
