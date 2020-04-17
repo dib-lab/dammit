@@ -4,11 +4,14 @@ channels:
   - defaults
 dependencies:
   - python >=3.6
-  - snakemake >=5.8.1
+  - snakemake =5.14
   - pyyaml
   - yaml
   - pandas
   - pytest
+  - shmlast
+  - click
+  - khmer >=2.0
   # these are for dag printing
   #- graphviz
   #- networkx
