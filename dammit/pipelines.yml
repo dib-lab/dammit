@@ -1,7 +1,7 @@
 pipelines:
   quick:
     programs:
-      - cp_transcriptome
+      - rename_transcriptome
       #- busco
       - transdecoder_longorfs
       - transdecoder_predict
@@ -9,7 +9,7 @@ pipelines:
       - BUSCO
   default:
     programs:
-      - cp_transcriptome
+      - rename_transcriptome
       #- busco
       - transdecoder_longorfs
       - transdecoder_predict
@@ -25,7 +25,7 @@ pipelines:
       #- BUSCO
   full:
     programs:
-      - cp_transcriptome
+      - rename_transcriptome
       #- busco
       - transdecoder_longorfs
       - transdecoder_predict
@@ -42,7 +42,7 @@ pipelines:
       - uniref90
   nr:
     programs:
-      - cp_transcriptome
+      - rename_transcriptome
       #- busco
       - transdecoder_longorfs
       - transdecoder_predict
