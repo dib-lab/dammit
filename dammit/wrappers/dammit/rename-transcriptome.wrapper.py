@@ -19,7 +19,7 @@ opts = []
 if snakemake.params.get('basename', False):
     opts.extend(['--basename', snakemake.params.get('basename')])
 
-opts.extend([snakemake.input, snakemake.output.fasta, snakemake.output.names])
+opts.extend([str(snakemake.input), snakemake.output.fasta, snakemake.output.names])
 
 log = snakemake.log_fmt_shell(stdout=True, stderr=True)
 opts = ' '.join(opts)
