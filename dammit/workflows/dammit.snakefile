@@ -30,6 +30,7 @@ onerror:
 
 
 include: "setup.snakefile"
+include: "file_conversions.snakefile"
 include: "databases/databases.snakefile"
 include: "annotate/annotate.snakefile"
 #subworkflow databases:
