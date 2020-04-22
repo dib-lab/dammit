@@ -1,48 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-    <url>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url>
      <loc>http://dib-lab.github.io/dammit/</loc>
-     <lastmod>2019-02-28</lastmod>
+     <lastmod>2020-04-22</lastmod>
      <changefreq>daily</changefreq>
-    </url>
-    <url>
+    </url><url>
      <loc>http://dib-lab.github.io/dammit/about/</loc>
-     <lastmod>2019-02-28</lastmod>
+     <lastmod>2020-04-22</lastmod>
      <changefreq>daily</changefreq>
-    </url>
-    <url>
+    </url><url>
      <loc>http://dib-lab.github.io/dammit/system_requirements/</loc>
-     <lastmod>2019-02-28</lastmod>
+     <lastmod>2020-04-22</lastmod>
      <changefreq>daily</changefreq>
-    </url>
-    <url>
+    </url><url>
      <loc>http://dib-lab.github.io/dammit/install/</loc>
-     <lastmod>2019-02-28</lastmod>
+     <lastmod>2020-04-22</lastmod>
      <changefreq>daily</changefreq>
-    </url>
-    <url>
+    </url><url>
      <loc>http://dib-lab.github.io/dammit/database-usage/</loc>
-     <lastmod>2019-02-28</lastmod>
+     <lastmod>2020-04-22</lastmod>
      <changefreq>daily</changefreq>
-    </url>
-    <url>
+    </url><url>
      <loc>http://dib-lab.github.io/dammit/database-about/</loc>
-     <lastmod>2019-02-28</lastmod>
+     <lastmod>2020-04-22</lastmod>
      <changefreq>daily</changefreq>
-    </url>
-    <url>
+    </url><url>
      <loc>http://dib-lab.github.io/dammit/database-advanced/</loc>
-     <lastmod>2019-02-28</lastmod>
+     <lastmod>2020-04-22</lastmod>
      <changefreq>daily</changefreq>
-    </url>
-    <url>
+    </url><url>
      <loc>http://dib-lab.github.io/dammit/tutorial/</loc>
-     <lastmod>2019-02-28</lastmod>
+     <lastmod>2020-04-22</lastmod>
      <changefreq>daily</changefreq>
-    </url>
-    <url>
+    </url><url>
      <loc>http://dib-lab.github.io/dammit/dev_notes/</loc>
-     <lastmod>2019-02-28</lastmod>
+     <lastmod>2020-04-22</lastmod>
      <changefreq>daily</changefreq>
     </url>
 </urlset>
