@@ -32,6 +32,9 @@ jobs:
         run: |
           python3 -m pip install --upgrade pip
           python3 -m pip install mkdocs
+      
+      - name: Checkout submodules
+        uses: dib-lab/mkdocs-material-dib@master 
 
       - name: Build site
         run: mkdocs build
