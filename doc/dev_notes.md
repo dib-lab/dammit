@@ -3,7 +3,7 @@
 [dammit!](https://github.com/dib-lab/dammit)
 
 
-## Setting up your local computer for `dammit` devevelopment
+## Setting up your local computer for `dammit` development
 
 We can basically follow the [instructions for travis](https://github.com/dib-lab/dammit/blob/master/.travis.yml), because we're telling [travis](https://travis-ci.org/dib-lab/dammit/) to do the same things we want to do on our local computers.
 
