@@ -26,8 +26,8 @@ lastdb:
 ## shmlast ##
 shmlast:
   output_suffix:
-    - .__database__.shmlast.csv
-    - .__database__.shmlast.gff3
+    - .x.__database__.shmlast_crbl.csv
+    - .x.__database__.shmlast_crbl.gff3
   databases:
     - userdb
   params:
@@ -52,6 +52,7 @@ hmmscan:
   databases:
     - Pfam-A
   params:
+    evalue: 0.00001
     extra: ""
 
 hmmsearch:
@@ -61,6 +62,7 @@ hmmsearch:
   databases:
     - Pfam-A
   params:
+    evalue: 0.00001
     extra: ""
 
 hmmpress:

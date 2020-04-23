@@ -68,9 +68,9 @@ rule dammit_maf_to_gff:
 rule dammit_shmlast_to_gff:
     message: "Given the CSV output from shmlast, convert it to GFF3 and save the results."
     input: 
-        os.path.join(results_dir, "{transcriptome}.{database}.shmlast.csv")
+        os.path.join(results_dir, "{transcriptome}.{database}.shmlast_crbl.csv")
     output:
-        os.path.join(results_dir, "{transcriptome}.{database}.shmlast.gff3")
+        os.path.join(results_dir, "{transcriptome}.{database}.shmlast_crbl.gff3")
     log:
         os.path.join(logs_dir, "{transcriptome}.{database}.shmlast-to-gff3.log")
     params:
