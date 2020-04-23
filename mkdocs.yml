@@ -24,12 +24,18 @@ theme:
     accent: 'purple'
   
   # fun logos! see https://material.io/icons/
-  logo:
-    icon: 'dns'
+  icon:
+    logo: material/cloud
+  #logo:
+  #  icon: 'dns'
 
   font:
     text: 'Roboto'
     code: 'Roboto Mono'
+  
+  features:
+    - tabs
+    - instant
 
 # this will add docs/css/custom.css to all your docs
 #extra_css:
