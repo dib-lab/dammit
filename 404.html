@@ -9,21 +9,19 @@
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
       
-        <link rel="canonical" href="http://dib-lab.github.io/dammit/database-usage/">
       
-      
-      <link rel="shortcut icon" href="../assets/images/favicon.png">
+      <link rel="shortcut icon" href="/dammit/assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.1, mkdocs-material-5.1.1">
     
     
       
-        <title>Database Usage</title>
+        <title>dammit</title>
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.a676eddb.min.css">
+      <link rel="stylesheet" href="/dammit/assets/stylesheets/main.a676eddb.min.css">
       
-        <link rel="stylesheet" href="../assets/stylesheets/palette.b302131d.min.css">
+        <link rel="stylesheet" href="/dammit/assets/stylesheets/palette.b302131d.min.css">
       
       
         
@@ -81,7 +79,7 @@
           </span>
           <span class="md-header-nav__topic md-ellipsis">
             
-              Database Usage
+              
             
           </span>
         </div>
@@ -181,7 +179,7 @@
 
 
   <li class="md-nav__item">
-    <a href=".." title="Home" class="md-nav__link">
+    <a href="/dammit/." title="Home" class="md-nav__link">
       Home
     </a>
   </li>
@@ -193,7 +191,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../about/" title="About" class="md-nav__link">
+    <a href="/dammit/about/" title="About" class="md-nav__link">
       About
     </a>
   </li>
@@ -230,7 +228,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../system_requirements/" title="Requirements" class="md-nav__link">
+    <a href="/dammit/system_requirements/" title="Requirements" class="md-nav__link">
       Requirements
     </a>
   </li>
@@ -242,7 +240,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../install/" title="Bioconda" class="md-nav__link">
+    <a href="/dammit/install/" title="Bioconda" class="md-nav__link">
       Bioconda
     </a>
   </li>
@@ -257,12 +255,10 @@
       
       
 
-  
 
-
-  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+  <li class="md-nav__item md-nav__item--nested">
     
-      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-4" type="checkbox" id="nav-4" checked>
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-4" type="checkbox" id="nav-4">
     
     <label class="md-nav__link" for="nav-4">
       Databases
@@ -284,18 +280,11 @@
           
           
 
-  
 
-
-  <li class="md-nav__item md-nav__item--active">
-    
-    <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-    
-    
-    <a href="./" title="Basic Usage" class="md-nav__link md-nav__link--active">
+  <li class="md-nav__item">
+    <a href="/dammit/database-usage/" title="Basic Usage" class="md-nav__link">
       Basic Usage
     </a>
-    
   </li>
 
         
@@ -305,7 +294,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../database-about/" title="About the Databases" class="md-nav__link">
+    <a href="/dammit/database-about/" title="About the Databases" class="md-nav__link">
       About the Databases
     </a>
   </li>
@@ -317,7 +306,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../database-advanced/" title="Advanced Database Handling" class="md-nav__link">
+    <a href="/dammit/database-advanced/" title="Advanced Database Handling" class="md-nav__link">
       Advanced Database Handling
     </a>
   </li>
@@ -334,7 +323,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../tutorial/" title="Tutorial" class="md-nav__link">
+    <a href="/dammit/tutorial/" title="Tutorial" class="md-nav__link">
       Tutorial
     </a>
   </li>
@@ -371,7 +360,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../dev_notes/" title="Notes for developers" class="md-nav__link">
+    <a href="/dammit/dev_notes/" title="Notes for developers" class="md-nav__link">
       Notes for developers
     </a>
   </li>
@@ -393,46 +382,8 @@
           <div class="md-content">
             <article class="md-content__inner md-typeset">
               
-                
-                
-                  
-                
-                
-                  <h1>Basic Usage</h1>
-                
-                <p>dammit handles databases under the <code>dammit databases</code> subcommand. By
-default, dammit looks for databases in
-<code>$HOME/.dammit/databases</code> and will install them there if
-missing. If you have some of the databases already, you can inform
-dammit with the <code>--database-dir</code> flag.</p>
-<p>To check for databases in the default location:</p>
-<pre><code>dammit databases
-</code></pre>
+  <h1>404 - Not found</h1>
 
-<p>To check for them in a custom location, you can either use the
-<code>--database-dir</code> flag:</p>
-<pre><code>dammit databases --database-dir /path/to/databases
-</code></pre>
-
-<p>or, you can set the <code>DAMMIT_DB_DIR</code> environment variable.
-The flag will supersede this variable, falling back to the default if
-neither is set. For example:</p>
-<pre><code>export DAMMIT_DB_DIR=/path/to/databases
-</code></pre>
-
-<p>This can also be added to your <code>$HOME/.bashrc</code> file to make
-it persistent.</p>
-<p>To download and install them into the default directory:</p>
-<pre><code>dammit databases --install
-</code></pre>
-
-<p>For info on the specific databases used in dammit, see <a href="../database-about/">About Databases</a>.</p>
-<p>For advanced installation and usage instructions, check out the
-<a href="../database-advanced/">Advanced Database Handling</a> section.</p>
-                
-                  
-                
-              
               
                 
 
@@ -445,41 +396,6 @@ it persistent.</p>
       
         
 <footer class="md-footer">
-  
-    <div class="md-footer-nav">
-      <nav class="md-footer-nav__inner md-grid" aria-label="Footer">
-        
-          <a href="../install/" title="Bioconda" class="md-footer-nav__link md-footer-nav__link--prev" rel="prev">
-            <div class="md-footer-nav__button md-icon">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20,11V13H8L13.5,18.5L12.08,19.92L4.16,12L12.08,4.08L13.5,5.5L8,11H20Z" /></svg>
-            </div>
-            <div class="md-footer-nav__title">
-              <div class="md-ellipsis">
-                <span class="md-footer-nav__direction">
-                  Previous
-                </span>
-                Bioconda
-              </div>
-            </div>
-          </a>
-        
-        
-          <a href="../database-about/" title="About the Databases" class="md-footer-nav__link md-footer-nav__link--next" rel="next">
-            <div class="md-footer-nav__title">
-              <div class="md-ellipsis">
-                <span class="md-footer-nav__direction">
-                  Next
-                </span>
-                About the Databases
-              </div>
-            </div>
-            <div class="md-footer-nav__button md-icon">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4,11V13H16L10.5,18.5L11.92,19.92L19.84,12L11.92,4.08L10.5,5.5L16,11H4Z" /></svg>
-            </div>
-          </a>
-        
-      </nav>
-    </div>
   
   <div class="md-footer-meta md-typeset">
     <div class="md-footer-meta__inner md-grid">
@@ -501,15 +417,15 @@ it persistent.</p>
       
     </div>
     
-      <script src="../assets/javascripts/vendor.c51dfa35.min.js"></script>
-      <script src="../assets/javascripts/bundle.eaaa3931.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents"}</script>
+      <script src="/dammit/assets/javascripts/vendor.c51dfa35.min.js"></script>
+      <script src="/dammit/assets/javascripts/bundle.eaaa3931.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents"}</script>
       
       <script>
         app = initialize({
-          base: "..",
+          base: "/dammit",
           features: ["instant"],
           search: Object.assign({
-            worker: "../assets/javascripts/worker/search.58d22e8e.min.js"
+            worker: "/dammit/assets/javascripts/worker/search.58d22e8e.min.js"
           }, typeof search !== "undefined" && search)
         })
       </script>
