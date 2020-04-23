@@ -25,17 +25,15 @@ theme:
   
   # fun logos! see https://material.io/icons/
   icon:
-    logo: material/cloud
-  #logo:
-  #  icon: 'dns'
+    logo: material/dns
 
   font:
     text: 'Roboto'
     code: 'Roboto Mono'
   
   features:
-    - tabs
     - instant
+#    - tabs
 
 # this will add docs/css/custom.css to all your docs
 #extra_css:
