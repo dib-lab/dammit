@@ -4,9 +4,6 @@ on:
   push:
     branches:
       - master
-  pull_request:
-    branches:
-      - master
 
 jobs:
   deploy:
@@ -36,9 +33,6 @@ jobs:
           python3 -m pip install --upgrade pip
           python3 -m pip install mkdocs
           python3 -m pip install mkdocs-material
-      
-#      - name: Checkout submodules
-#        uses: dib-lab/mkdocs-material-dib@master
 
       - name: Build site
         run: mkdocs build
