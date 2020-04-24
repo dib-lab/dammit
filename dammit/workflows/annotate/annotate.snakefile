@@ -53,7 +53,7 @@ rule lastal:
 rule shmlast_crbl:
     input:
         query = os.path.join(results_dir, '{transcriptome}.fasta'),
-        database = "{database}" # How to handle user database names!???
+        database = lambda w: user_databases[w.database] # get full path from dictionary in configfile 
     output:
         os.path.join(results_dir, '{transcriptome}.x.{database}.shmlast_crbl.csv')
     params:

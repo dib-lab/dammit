@@ -16,7 +16,7 @@ import six
 
 def cleaned_actions(actions):
     '''Get a cleanup list of actions: Python actions
-    have their <locals> portion stripped, which clutters 
+    have their <locals> portion stripped, which clutters
     up PythonActions that are closures.
     '''
     txt = ''
@@ -116,12 +116,12 @@ class Move(object):
         self.verbose = verbose
         self.target = target
         self.create = create
-   
+
     def __enter__(self):
         self.cwd = os.getcwd()
         if self.verbose:
-            print('Move to `{0}` from cwd: `{1}`'.format(self.target, 
-                                                     self.cwd, 
+            print('Move to `{0}` from cwd: `{1}`'.format(self.target,
+                                                     self.cwd,
                                                      file=sys.stderr))
         if self.create:
             try:
@@ -166,4 +166,29 @@ def which(program):
 
     return None
 
+def update_nested_dict(d, other):
+# Can't just update at top level, need to update nested params
+# Note that this only keeps keys that already exist in other
+#https://code.i-harness.com/en/q/3154af
+    for k, v in other.items():
+        if isinstance(v, collections.Mapping):
+            d_v = d.get(k)
+            if isinstance(d_v, collections.Mapping):
+                update_nested_dict(d_v, v)
+            else:
+                d[k] = v.copy()
+        else:
+            d[k] = v
 
+def read_yaml(filename):
+    with open(filename, 'r') as stream:
+        try:
+            yamlD = yaml.safe_load(stream) #, Loader=yaml.FullLoader)
+        except yaml.YAMLError as exc:
+            print(exc)
+    return yamlD
+
+
+def write_yaml(yamlD, paramsfile):
+    with open(paramsfile, 'w') as params:
+        yaml.dump(yamlD, stream=params, indent=2, default_flow_style=False)

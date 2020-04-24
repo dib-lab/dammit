@@ -249,6 +249,7 @@ class DammitApp(object):
     def generate_targets(self, db=False, annot=False):
         pipeline_info = self.pipeline_d["pipelines"][self.args.pipeline]
         targets=[]
+        userdbs = {}
         db_dir,out_dir="",""
         # set database_dir
         if self.args.database_dir:
@@ -258,6 +259,7 @@ class DammitApp(object):
         # generate database targets
         if db:
             databases = pipeline_info["databases"]
+            import pdb; pdb.set_trace()
             if "BUSCO" in databases:
                 #out_suffix = self.databases_d["BUSCO"]["output_suffix"][0] #donefile
                 #busco_dbinfo = self.databases_d["BUSCO"] #get busco database info
@@ -269,6 +271,7 @@ class DammitApp(object):
                 out_suffixes = self.databases_d[db]["output_suffix"]
                 targets += [fn + suffix for suffix in out_suffixes]
             targets = [os.path.join(db_dir, targ) for targ in targets]
+
         # generate annotation targets
         if annot:
             if any([self.args.transcriptome.endswith(".fa"),
@@ -287,11 +290,27 @@ class DammitApp(object):
             output_suffixes = []
             # not complete yet. need to include database name in annotation targ, where relevant
             # not sure how to represent this in the config.yml. databases arg for prog?
+
+            # handle user databases. currently not downloading - just using local dbs
+            user_databases = self.args.user_databases
+            for udb in user_databases:
+                # should we check if the file exists?
+                udb_path = os.path.abspath(os.path.expanduser(udb)) # get absolute path, expanding any `~`
+                udb_name = os.path.basename(db_path)
+                userdbs[udb_name] = udb_path
+                #shmlast_suffix = self.config_d["shmlast"]["output_suffix"]
+
+            # build annotation targets
             for prog in annotation_programs:
                 prog_suffixes = self.config_d[prog]["output_suffix"]
                 prog_databases = self.config_d[prog].get("databases")
                 if prog_databases:
-                    # only consider databases we're running in this pipeline
+                    # first handle user databases
+                    if "userdb" in prog_databases:
+                        # expand __userdatabase__ with user databases
+                        userdb_suffixes = [suffix.replace("__userdatabase__", db) for db in userdbs.keys() for suffix in prog_suffixes]
+                        output_suffixes.extend(userdb_suffixes)
+                    # now handle other databases. Only consider databases we're running in this pipeline
                     dbs_to_add = [db for db in prog_databases if db in annotation_databases]
                     # expand __database__ with appropriate databases
                     db_suffixes = []
@@ -305,7 +324,7 @@ class DammitApp(object):
                 output_suffixes.extend(prog_suffixes)
             annotate_targets = [os.path.join(out_dir, transcriptome_name + suffix) for suffix in output_suffixes]
             targets+=annotate_targets
-        return targets, db_dir, out_dir
+        return targets, db_dir, out_dir, userdbs
 
     def handle_databases(self):
         log.start_logging()
@@ -314,8 +333,8 @@ class DammitApp(object):
         workflow_file = os.path.join(__path__, 'workflows', 'dammit.snakefile')
         config_file = os.path.join(__path__, 'config.yml')
         cmd = ["snakemake", "-s", workflow_file, "--configfile", config_file]
-    
-        db_targets, db_dir, out_dir= self.generate_targets(db=True)
+
+        db_targets, db_dir, out_dir, userdbs = self.generate_targets(db=True)
         #handle user-specified database dir properly
         # note if `--config` is last arg, it will try to add the workflow targets (targets) to config (and fail)
         config = ["--config", f"db_dir={db_dir}"]
@@ -347,19 +366,21 @@ class DammitApp(object):
         cmd = ["snakemake", "-s", workflow_file, "--configfile", config_file]
 
         if self.config_d['force'] is True:
-            annot_targets, db_dir, out_dir = generate_targets(db=True, annot=True)
+            annot_targets, db_dir, out_dir, userdbs = generate_targets(db=True, annot=True)
             utd_msg = '*All database tasks up-to-date.*'
             ood_msg = '*Some database tasks out-of-date; '\
                       'FORCE is True, ignoring!'
         #    uptodate, statuses = db_handler.print_statuses(uptodate_msg=utd_msg,
         #                                                   outofdate_msg=ood_msg)
         else:
-            annot_targets, db_dir, out_dir = self.generate_targets(annot=True)
+            annot_targets, db_dir, out_dir, userdbs = self.generate_targets(annot=True)
             #databases.check_or_fail(db_handler)
 
         #handle user-specified database dir and output dir properly
         # note if `--config` is last arg, it will try to add the workflow targets (targets) to config (and fail)
         config = ["--config", f"db_dir={db_dir}", f"dammit_dir={out_dir}", f"input_transcriptome={self.args.transcriptome}"]
+        if userdbs:
+            config.extend(user_dbs={user})
         cmd.extend(config)
 
         helpful_args = ["-p", "--nolock", "--use-conda", "--rerun-incomplete", "-k", "--cores", f"{self.args.n_threads}"]

@@ -26,8 +26,8 @@ lastdb:
 ## shmlast ##
 shmlast:
   output_suffix:
-    - .x.__database__.shmlast_crbl.csv
-    - .x.__database__.shmlast_crbl.gff3
+    - .x.__userdatabase__.shmlast_crbl.csv
+    - .x.__userdatabase__.shmlast_crbl.gff3
   databases:
     - userdb
   params:
