@@ -7,7 +7,6 @@
 import click
 import pandas as pd
 
-from ..cli import component
 from ..fileio import EmptyFile
 
 from ..fileio.infernal import InfernalParser
@@ -17,19 +16,17 @@ from ..fileio.gff3 import (GFF3Writer, maf_to_gff3, shmlast_to_gff3,
 from ..fileio.maf import MafParser
 from ..utils import touch
 
-@component.group()
-def convert():
-    pass
 
-
-@convert.command(name='maf-to-gff3')
+@click.command(name='maf-to-gff3')
 @click.argument('input_filename')
 @click.argument('output_filename')
 @click.option('--dbxref', default='MAF-alignment',
               help='Database source to use in the GFF3 Dbxref'
                    ' field. You really should set this!')
 def maf_to_gff3_cmd(input_filename, output_filename, dbxref):
-    '''Given either a raw MAF file or a CSV file with the proper MAF
+    '''Convert MAF to GFF3.
+    
+    Given either a raw MAF file or a CSV file with the proper MAF
     colums, convert it to GFF3 and save the results.
     \f
 
@@ -54,15 +51,14 @@ def maf_to_gff3_cmd(input_filename, output_filename, dbxref):
         touch(output_filename)
 
 
-@convert.command(name='shmlast-to-gff3')
+@click.command(name='shmlast-to-gff3')
 @click.argument('input_filename')
 @click.argument('output_filename')
 @click.option('--dbxref', default='shmlast-alignment',
               help='Database source to use in the GFF3 Dbxref'
                    ' field. You really should set this!')
 def shmlast_to_gff3_cmd(input_filename, output_filename, dbxref):
-    '''Given the CSV output from shmlast, convert it to GFF3 and
-    save the results.
+    '''Convert shmlast CSV output to GFF3.
     \f
 
     Args:
@@ -82,14 +78,16 @@ def shmlast_to_gff3_cmd(input_filename, output_filename, dbxref):
         touch(output_filename)
 
 
-@convert.command(name='hmmscan-to-gff3')
+@click.command(name='hmmscan-to-gff3')
 @click.argument('input_filename')
 @click.argument('output_filename')
 @click.option('--dbxref', default='hmmscan-alignment',
               help='Database source to use in the GFF3 Dbxref'
                    ' field. You really should set this!')
 def hmmscan_to_gff3_cmd(input_filename, output_filename, dbxref):
-    '''Given HMMER output, convert it to GFF3 and
+    '''Convert HMMER to GFF3.
+    
+    Given HMMER output, convert it to GFF3 and
     save the results. The HMMER output can either be raw or
     dammit-converted zero-indexed, half-open interval CSV
     (as the good lord intended).
@@ -116,15 +114,14 @@ def hmmscan_to_gff3_cmd(input_filename, output_filename, dbxref):
         touch(output_filename)
 
 
-@convert.command(name='cmscan-to-gff3')
+@click.command(name='cmscan-to-gff3')
 @click.argument('input_filename')
 @click.argument('output_filename')
 @click.option('--dbxref', default='hmmscan-alignment',
               help='Database source to use in the GFF3 Dbxref'
                    ' field. You really should set this!')
 def cmscan_to_gff3_cmd(input_filename, output_filename, dbxref):
-    '''Given raw input from Infernal's cmscan, convert it to GFF3 and
-    save the results.
+    '''Convert Infernal's cmscan output to GFF3.
     \f
 
     Args:

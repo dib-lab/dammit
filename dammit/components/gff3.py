@@ -9,15 +9,14 @@ import subprocess
 
 import click
 
-from ..cli import component
 from ..fileio.gff3 import GFF3Writer
 
 
-@component.command()
+@click.command('merge-gff3')
 @click.argument('gff3_filenames', nargs=-1)
 @click.argument('output_filename')
-def merge_gff3(gff3_filenames, output_filename):
-    '''Given a list of GFF3 files, merge them all together.
+def merge_gff3_cmd(gff3_filenames, output_filename):
+    ''' Merge a collection of GFF3 files.
     \f
 
     Args:

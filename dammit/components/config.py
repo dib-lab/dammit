@@ -10,11 +10,10 @@ import yaml
 
 import click
 
-from ..cli import component, CONFIG
 from ..config import parse_config
 
 
-@component.group(name='config')
+@click.group(name='config')
 @click.pass_context
 def config_group(ctx):
     ''' Show dammit configuration information.'''
@@ -23,19 +22,19 @@ def config_group(ctx):
     ctx.obj = {'core': core, 'databases': databases, 'pipelines': pipelines}
 
 
-@config_group.command()
+@config_group.command('show-default')
 @click.pass_obj
 @click.argument('config_file', type=click.Choice(['core', 'databases', 'pipelines']))
 @click.option('--save', default='-', type=click.File('w'))
-def show_default(defaults, config_file, save):
+def show_default_cmd(defaults, config_file, save):
     ''' Show the selected default configuration file.'''
 
     save.write(yaml.dump(defaults.get(config_file)))
 
 
-@config_group.command()
+@config_group.command('busco-groups')
 @click.pass_obj
-def busco_groups(defaults):
+def busco_groups_cmd(defaults):
     ''' Lists the available BUSCO group databases.'''
 
     db = defaults['databases']

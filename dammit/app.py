@@ -63,70 +63,7 @@ class DammitApp(object):
         subparsers = parser.add_subparsers(title='dammit subcommands')
 
         def add_common_args(parser):
-            ''' Add shared options to a parser.
 
-            Shared options are added this way instead of to the main parser
-            because I'd rather they come after the subcommand name.
-
-            Args:
-                parser (object): The parser to which arguments will be added.
-            '''
-            parser.add_argument('--database-dir',
-                                default=databases.default_database_dir(self.logger),
-                                help='Directory to store databases. Existing'\
-                                     ' databases will not be overwritten.'\
-                                     ' By default, the database directory is'\
-                                     ' $HOME/.dammit/databases.'
-                                )
-
-            parser.add_argument('--busco-groups',
-                                default=['metazoa'],
-                                nargs="*",
-                                metavar='[metazoa, eukaryota, vertebrata, ...]',
-                                choices=list(self.databases_d['BUSCO'].keys()),
-                                help='Space separated list of BUSCO group(s)'\
-                                     ' to use. Should be chosen'\
-                                     ' based on the organism being annotated.'\
-                                     ' Full list of options is below.'
-                                )
-
-            parser.add_argument('--n_threads',
-                                type=int,
-                                default=1,
-                                help='For annotate, number of threads to pass to '\
-                                     'programs  supporting multithreading. For '\
-                                     'databases, number of simultaneous tasks '\
-                                     'to execute.'
-                                )
-
-            parser.add_argument('--config-file',
-                                help='A YAML or JSON file providing values to override'\
-                                     ' built-in config. Advanced use only!'
-                                )
-
-            parser.add_argument('--busco-config-file',
-                                help='Path to an alternative BUSCO config'\
-                                     ' file; otherwise, BUSCO will attempt'\
-                                     ' to use its default installation'\
-                                     ' which will likely only work on'\
-                                     ' bioconda. Advanced use only!')
-
-            parser.add_argument('--verbosity',
-                                default=0,
-                                type=int,
-                                choices=[0,1,2],
-                                help='Verbosity level for doit tasks.'
-                                )
-
-            parser.add_argument('--profile',
-                                default=False,
-                                action='store_true',
-                                help='Profile task execution.')
-
-            parser.add_argument('--force',
-                                default=False,
-                                action='store_true',
-                                help='Ignore missing database tasks.')
 
             parser.add_argument('--no-rename',
                                 default=False,
@@ -135,62 +72,11 @@ class DammitApp(object):
                                      ' Note: make sure your transcript names'\
                                      ' do not contain unusual characters.')
 
-            parser.add_argument('--pipeline',
-                                default='default',
-                                choices=["default", "quick", "full", "nr"],
-                                help='Which pipeline to use. Pipeline options:'\
-                                     ' quick: excludes: '
-                                     ' the Infernal Rfam tasks, the HMMER'\
-                                     ' Pfam tasks, and the LAST OrthoDB'\
-                                     ' and uniref90 tasks. Best for users'\
-                                     ' just looking to get basic stats'\
-                                     ' and conditional reciprocal best'\
-                                     ' LAST from a protein database.'\
-                                     ' \nfull: '\
-                                     'Run a "complete" annotation; includes'\
-                                     ' uniref90, which is left out of the'\
-                                     ' default pipeline because it is huge'\
-                                     ' and homology searches take a long'\
-                                     ' time.'
-                                     ' nr: '\
-                                     ' Also include annotation to NR database, which'\
-                                     ' is left out of the default and "full"'\
-                                     ' pipelines because it is huge and'\
-                                     ' homology searches take a long time.'\
-                                     ' More info  at https://dib-lab.github.io/dammit.'
-                                )
 
-        '''
-        Add the databases subcommand.
-        '''
-        desc = '''Check for databases and optionally download and prepare them
-               for use. By default, only check their status.'''
-        databases_parser = subparsers.add_parser(
-                               'databases',
-                                description=desc,
-                                epilog=self.epilog(),
-                                help=desc,
-                                formatter_class=argparse.ArgumentDefaultsHelpFormatter
-                                )
-
-        databases_parser.add_argument('--install',
-                                      action='store_true',
-                                      default=False,
-                                      help='Install missing databases. Downloads'
-                                           ' and preps where necessary'
-                                      )
-
-        add_common_args(databases_parser)
-        databases_parser.set_defaults(func=self.handle_databases)
 
         '''
         Add the annotation subcommand.
         '''
-        desc = '''The main annotation pipeline. Calculates assembly stats;
-               runs BUSCO; runs LAST against OrthoDB (and optionally uniref90),
-               HMMER against Pfam, Inferal against Rfam, and Conditional Reciprocal
-               Best-hit Blast against user databases; and aggregates all results in
-               a properly formatted GFF3 file.'''
         annotate_parser = subparsers.add_parser(
                               'annotate',
                               usage='%(prog)s <transcriptome> [OPTIONS]',

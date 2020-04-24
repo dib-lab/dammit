@@ -39,7 +39,7 @@ def main():
             scripts = glob('bin/*'),
             entry_points = {
                 'console_scripts': [
-                    'dammit=dammit.cli:component'
+                    'dammit=dammit.cli:main'
                 ]
             },
             install_requires = ['setuptools>=0.6.35',

@@ -9,86 +9,17 @@ import os
 import stat
 import sys
 
-from doit.action import PythonAction
-from doit.task import Task, InvalidTask
+import click
 import six
 
 
-def cleaned_actions(actions):
-    '''Get a cleanup list of actions: Python actions
-    have their <locals> portion stripped, which clutters 
-    up PythonActions that are closures.
-    '''
-    txt = ''
-    for action in actions:
-        txt_rep = six.text_type(action)
-        if isinstance(action, PythonAction):
-            # clean up inner fuctions in Python actions
-            txt_rep = txt_rep.replace('<locals>.', '')
-        else:
-            txt_rep = txt_rep[:5] + '`' + txt_rep[5:] + '`'
-        txt += "\n    * {0}".format(txt_rep)
-    return txt
-
-
-class DammitTask(Task):
-    '''Subclass doit.task.Task for dammit. Updates the string __repr__
-    and adds a uniform updated title function.
+class ShortChoice(click.Choice):
+    ''' Modified click.Choice parameter type that truncates
+    the list of choices.
     '''
 
-    def __repr__(self):
-        return '{{ DammitTask: {name}'\
-               '\n    actions: {actions}'\
-               '\n   file_dep: {file_dep}'\
-               '\n   task_dep: {task_dep}'\
-               '\n    targets: {targets} }}'.format(actions=self.actions,
-                                                    **vars(self))
-
-    def title(self):
-        if self.custom_title:
-            return self.custom_title(self)
-        else:
-            if self.actions:
-                title = cleaned_actions(self.actions)
-            else:
-                title = "Group: %s" % ", ".join(self.task_dep)
-            return "%s: %s"% (self.name, title)
-
-
-def dict_to_task(task_dict):
-    '''Given a doit task dict, return a DammitTask.
-
-    Args:
-        task_dict (dict): A doit task dict.
-
-    Returns:
-        DammitTask: Subclassed doit task.
-    '''
-
-    if 'actions' not in task_dict:
-        raise InvalidTask("Task %s must contain 'actions' field. %s" %
-                          (task_dict['name'], task_dict))
-
-    task_attrs = list(task_dict.keys())
-    valid_attrs = set(Task.valid_attr.keys())
-    for key in task_attrs:
-        if key not in valid_attrs:
-            raise InvalidTask("Task %s contains invalid field: '%s'"%
-                              (task_dict['name'], key))
-
-    return DammitTask(**task_dict)
-
-
-def doit_task(task_dict_func):
-    '''Wrapper to decorate functions returning pydoit
-    Task dictionaries and have them return pydoit Task
-    objects
-    '''
-    @wraps(task_dict_func)
-    def d_to_t(*args, **kwargs):
-        task_dict = task_dict_func(*args, **kwargs)
-        return dict_to_task(task_dict)
-    return d_to_t
+    def get_metavar(self, param):
+        return f"[{'|'.join(self.choices[:5])}|...]"
 
 
 def touch(filename):

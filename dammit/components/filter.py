@@ -7,20 +7,16 @@
 import click
 from shmlast import hits
 
-from ..cli import component
 from ..fileio.maf import MafParser
 
 
-@component.group(name='filter')
-def filter_group():
-    pass
-
-
-@filter_group.command()
+@click.command('best-hits')
 @click.argument('maf_fn')
 @click.argument('output_fn')
-def maf_best_hits(maf_fn, output_fn):
-    '''Get the best hits from a lastal MAF file: that is,
+def maf_best_hits_cmd(maf_fn, output_fn):
+    ''' Filter query best-hits from a MAF file.
+    
+    Get the best hits from a lastal MAF file: that is,
     for each query sequence, choose its top-scoring alignment.
     OUTPUT_FN is in csv format.
     \f

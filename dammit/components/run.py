@@ -11,10 +11,11 @@ import sys
 
 import click
 
-from ..cli import component, CONFIG, ShortChoice
+from ..config import CONFIG
+from ..utils import ShortChoice
 
 
-@component.group()
+@click.group('run')
 @click.pass_obj
 @click.option('--database-dir',
               default=os.path.join(os.environ['HOME'], '.dammit', 'databases'),
@@ -62,13 +63,15 @@ from ..cli import component, CONFIG, ShortChoice
                   ' pipelines because it is huge and'\
                   ' homology searches take a long time.'\
                   ' More info  at https://dib-lab.github.io/dammit.')
-def run(config,
-        database_dir,
-        busco_groups, 
-        n_threads, 
-        config_file, 
-        busco_config_file, 
-        pipeline):
+def run_group(config,
+              database_dir,
+              busco_groups, 
+              n_threads, 
+              config_file, 
+              busco_config_file, 
+              pipeline):
+    ''' Run the annotation pipeline or install databases.
+    '''
 
     if config_file:
         with open(config_file) as fp:
@@ -93,9 +96,9 @@ def run(config,
     click.echo(database_dir)
 
 
-@run.command()
+@run_group.command('annotate')
 @click.pass_obj
-def annotate(config):
+def annotate_cmd(config):
     ''' The main annotation pipeline. Calculates assembly stats;
     runs BUSCO; runs LAST against OrthoDB (and optionally uniref90),
     HMMER against Pfam, Inferal against Rfam, and Conditional Reciprocal
@@ -104,10 +107,12 @@ def annotate(config):
     pass
 
 
-@run.command()
+@run_group.command('databases')
 @click.pass_obj
 @click.option('--install', is_flag=True,
               help='Install missing databases. Downloads'
                    ' and preps where necessary')
-def databases(config, install):
+def databases_cmd(config, install):
+    ''' The database preparation pipeline.
+    '''
     pass

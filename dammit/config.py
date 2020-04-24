@@ -42,3 +42,13 @@ class Config:
         self.databases = databases
         self.pipelines = pipelines
         self.logger = logger
+
+
+#######
+#
+# GLOBAL CONFIG VAR
+#
+#######
+
+CONFIG = Config(*parse_config())
+
