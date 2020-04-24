@@ -29,3 +29,5 @@ dammit.egg-info/
 
 .ipynb_checkpoints/
 .pytest_cache/
+
+*.snakemake
