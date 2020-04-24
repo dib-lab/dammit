@@ -8,6 +8,7 @@ from functools import wraps
 import os
 import stat
 import sys
+import yaml
 
 from doit.action import PythonAction
 from doit.task import Task, InvalidTask

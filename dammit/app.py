@@ -332,13 +332,18 @@ class DammitApp(object):
 
         workflow_file = os.path.join(__path__, 'workflows', 'dammit.snakefile')
         config_file = os.path.join(__path__, 'config.yml')
-        cmd = ["snakemake", "-s", workflow_file, "--configfile", config_file]
+        full_config = utils.read_yaml(config_file)
+        cmd = ["snakemake", "-s", workflow_file] #, "--configfile", config_file]
 
         db_targets, db_dir, out_dir, userdbs = self.generate_targets(db=True)
         #handle user-specified database dir properly
         # note if `--config` is last arg, it will try to add the workflow targets (targets) to config (and fail)
-        config = ["--config", f"db_dir={db_dir}"]
-        cmd.extend(config)
+        #config = ["--config", f"db_dir={db_dir}"]
+        #cmd.extend(config)
+        additional_config = {"db_dir": db_dir}
+        full_config = utils.update_nested_dict(full_config, additional_config) # overkill for just this.
+        #if userdbs: # add this if we enable user db download
+        #    full_config["user_dbs"] = userdbs
 
         helpful_args = ["-p", "--nolock", "--use-conda", "--rerun-incomplete", "-k", "--cores", f"{self.args.n_threads}"]
         cmd.extend(helpful_args)
@@ -346,6 +351,14 @@ class DammitApp(object):
         # better way to do this?
         if not self.args.install:
             cmd.append("--dry_run")
+
+        #print workflow configfile
+        workflow_configfile = ".rundammit" # Where to put this file? Current path? Outdir for this run?
+        sys.stderr.write(f"Writing full config to {workflow_configfile}\n")
+        utils.write_yaml(full_config, workflow_configfile)
+
+        # add configfile to run command
+        cmd.extend([f"--configfiles {workflow_configfile}"])
 
         # finally, add targets
         cmd.extend(db_targets)
@@ -363,7 +376,9 @@ class DammitApp(object):
 
         workflow_file = os.path.join(__path__, 'workflows', 'dammit.snakefile')
         config_file = os.path.join(__path__, 'config.yml')
-        cmd = ["snakemake", "-s", workflow_file, "--configfile", config_file]
+
+        full_config = utils.read_yaml(config_file)
+        cmd = ["snakemake", "-s", workflow_file] #, "--configfile", config_file]
 
         if self.config_d['force'] is True:
             annot_targets, db_dir, out_dir, userdbs = generate_targets(db=True, annot=True)
@@ -378,15 +393,28 @@ class DammitApp(object):
 
         #handle user-specified database dir and output dir properly
         # note if `--config` is last arg, it will try to add the workflow targets (targets) to config (and fail)
-        config = ["--config", f"db_dir={db_dir}", f"dammit_dir={out_dir}", f"input_transcriptome={self.args.transcriptome}"]
-        if userdbs:
-            config.extend(user_dbs={user})
-        cmd.extend(config)
+        #config = ["--config", f"db_dir={db_dir}", f"dammit_dir={out_dir}", f"input_transcriptome={self.args.transcriptome}"]
+        #cmd.extend(config)
 
+        #build config to write out instead
+        additional_config = {"db_dir": db_dir, "dammit_dir":out_dir, "input_transcriptome": self.args.transcriptome}
+        # update full config
+        full_config = utils.update_nested_dict(full_config, additional_config)
+        if userdbs:
+            full_config["user_dbs"] = userdbs
+
+        # move these to a default dammit run profile?
         helpful_args = ["-p", "--nolock", "--use-conda", "--rerun-incomplete", "-k", "--cores", f"{self.args.n_threads}"]
         cmd.extend(helpful_args)
 
         cmd.extend(annot_targets)
+
+        workflow_configfile = ".rundammit" # Where to put this file? Current path? Outdir for this run?
+        sys.stderr.write(f"Writing full config to {workflow_configfile}\n")
+        utils.write_yaml(full_config, workflow_configfile)
+
+        # add configfile to run command
+        cmd.extend([f"--configfiles {workflow_configfile}"])
 
         print("Command: " + " ".join(cmd))
         try:
