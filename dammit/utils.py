@@ -22,6 +22,21 @@ class ShortChoice(click.Choice):
         return f"[{'|'.join(self.choices[:5])}|...]"
 
 
+def update_nested_dict(d, other):
+    # Can't just update at top level, need to update nested params
+    # Note that this only keeps keys that already exist in other
+    # https://code.i-harness.com/en/q/3154af
+    for k, v in other.items():
+        if isinstance(v, collections.Mapping):
+            d_v = d.get(k)
+            if isinstance(d_v, collections.Mapping):
+                update_nested_dict(d_v, v)
+            else:
+                d[k] = v.copy()
+        else:
+            d[k] = v
+
+
 def touch(filename):
     '''Perform the equivalent of bash's touch on the file.
 
