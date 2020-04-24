@@ -17,6 +17,8 @@ from ..cli import component, CONFIG, ShortChoice
 @component.group()
 @click.pass_obj
 @click.option('--database-dir',
+              default=os.path.join(os.environ['HOME'], '.dammit', 'databases'),
+              envvar='DAMMIT_DB_DIR',
               help='Directory to store databases. Existing'\
                     ' databases will not be overwritten.'\
                     ' By default, the database directory is'\
@@ -87,6 +89,8 @@ def run(config,
         config.core['pipeline'] = 'default'
     if pipeline:
         config.core['pipeline'] = pipeline
+
+    click.echo(database_dir)
 
 
 @run.command()

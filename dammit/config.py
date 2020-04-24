@@ -42,16 +42,3 @@ class Config:
         self.databases = databases
         self.pipelines = pipelines
         self.logger = logger
-
-        try:
-            directory = os.environ['DAMMIT_DB_DIR']
-            if logger is not None:
-                logger.debug('found DAMMIT_DB_DIR env variable')
-        except KeyError:
-            if logger is not None:
-                logger.debug('no DAMMIT_DB_DIR or --database-dir, using'\
-                             'default')
-            directory = os.path.join(os.environ['HOME'], '.dammit', 'databases')
-
-        self.core['database_dir'] = directory
-
