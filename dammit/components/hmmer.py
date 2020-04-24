@@ -29,13 +29,14 @@ def split_transdecoder_names(hmmer_df):
 
 
 @click.command('remap-hmmer-coords')
-@click.argument('hmmer_filename',
-                help='HMMER results given by alignment to TransDecoder ORFS.')
-@click.argument('pep_fa_filename',
-                help='TransDecoder ORFS given by TransDecoder.LongOrfs')
+@click.argument('hmmerfilename')
+@click.argument('pep_fa_filename')
 @click.argument('output_filename')
 def remap_hmmer_coords_cmd(hmmer_filename, pep_fa_filename, output_filename):
     '''Remap hmmscan coordinates using TransDecoder ORF coordinates.
+
+    HMMER_FILENAME: HMMER results given by alignment to TransDecoder ORFS.
+    PEP_FA_FILENAME: TransDecoder ORFS given by TransDecoder.LongOrfs.
     '''
 
 
