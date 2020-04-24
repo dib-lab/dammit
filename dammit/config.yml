@@ -1,5 +1,4 @@
 dammit_dir: .dammit
-db_dir: databases
 logs_dir: logs
 input_transcriptome: "test.fa"
 

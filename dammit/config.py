@@ -1,24 +1,18 @@
-# Copyright (C) 2015-2018 Camille Scott
-# All rights reserved.
-#
-# This software may be modified and distributed under the terms
-# of the BSD license.  See the LICENSE file for details.
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+# (c) Camille Scott, 2020
+# File   : config.py
+# License: MIT
+# Author : Camille Scott <camille.scott.w@gmail.com>
+# Date   : 17.04.2020
 
-'''
-Program metadata: the version, install path, description, and default config.
-'''
-import json
-import yaml
 import os
+import yaml
 
-__path__ = os.path.dirname(__file__)
-__version__ = open(os.path.join(__path__, 'VERSION')).read().strip()
-__authors__ = ['Camille Scott', "N. Tessa Pierce"]
-__description__ = 'a tool for easy de novo transcriptome annotation'
-__date__ = 2020
+from dammit.meta import __path__
 
 
-def get_config():
+def parse_config():
     '''Parse the default YAML or JSON config files and return them as dictionaries.
 
     Returns:
@@ -43,8 +37,21 @@ def get_config():
 
 
 class Config:
-    def __init__(self, core, databases, pipelines, logger):
-        self.logger = logger
+    def __init__(self, core, databases, pipelines, logger=None):
         self.core = core
         self.databases = databases
         self.pipelines = pipelines
+        self.logger = logger
+
+        try:
+            directory = os.environ['DAMMIT_DB_DIR']
+            if logger is not None:
+                logger.debug('found DAMMIT_DB_DIR env variable')
+        except KeyError:
+            if logger is not None:
+                logger.debug('no DAMMIT_DB_DIR or --database-dir, using'\
+                             'default')
+            directory = os.path.join(os.environ['HOME'], '.dammit', 'databases')
+
+        self.core['database_dir'] = directory
+
