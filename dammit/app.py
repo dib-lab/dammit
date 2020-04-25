@@ -343,14 +343,6 @@ class DammitApp(object):
         utils.update_nested_dict(full_config, additional_config) # overkill for just this.
         #if userdbs: # add this if we enable user db download
         #    full_config["user_dbs"] = userdbs
-
-        helpful_args = ["-p", "--nolock", "--use-conda", "--rerun-incomplete", "-k", "--cores", f"{self.args.n_threads}"]
-        cmd.extend(helpful_args)
-
-        # better way to do this?
-        if not self.args.install:
-            cmd.append("--dry_run")
-
         #print workflow configfile
         workflow_configfile = os.path.join(__path__, ".rundammit") # Where to put this file? Current path? Outdir for this run?
         sys.stderr.write(f"Writing full config to {workflow_configfile}\n")
@@ -358,6 +350,13 @@ class DammitApp(object):
 
         # add configfile to run command
         cmd.extend([f"--configfiles {workflow_configfile}"])
+
+        helpful_args = ["-p", "--nolock", "--use-conda", "--rerun-incomplete", "-k", "--cores", f"{self.args.n_threads}"]
+        cmd.extend(helpful_args)
+
+        # better way to do this?
+        if not self.args.install:
+            cmd.append("--dry_run")
 
         # finally, add targets
         cmd.extend(db_targets)
@@ -402,16 +401,15 @@ class DammitApp(object):
         if userdbs:
             full_config["user_dbs"] = userdbs
 
-        # move these to a default dammit run profile?
-        helpful_args = ["-p", "--nolock", "--use-conda", "--rerun-incomplete", "-k", "--cores", f"{self.args.n_threads}"]
-        cmd.extend(helpful_args)
-
         workflow_configfile = os.path.join(__path__, ".rundammit") # Where to put this file? Current path? Outdir for this run?
         sys.stderr.write(f"Writing full config to {workflow_configfile}\n")
         utils.write_yaml(full_config, workflow_configfile)
-
         # add configfile to run command
         cmd.extend([f"--configfiles {workflow_configfile}"])
+
+        # move these to a default dammit run profile?
+        helpful_args = ["-p", "--nolock", "--use-conda", "--rerun-incomplete", "-k", "--cores", f"{self.args.n_threads}"]
+        cmd.extend(helpful_args)
 
         # finally, add targets
         cmd.extend(annot_targets)
