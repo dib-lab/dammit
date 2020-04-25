@@ -349,7 +349,7 @@ class DammitApp(object):
         utils.write_yaml(full_config, workflow_configfile)
 
         # add configfile to run command
-        cmd.extend([f"--configfiles {workflow_configfile}"])
+        cmd.extend(["--configfiles", workflow_configfile])
 
         helpful_args = ["-p", "--nolock", "--use-conda", "--rerun-incomplete", "-k", "--cores", f"{self.args.n_threads}"]
         cmd.extend(helpful_args)
@@ -405,7 +405,7 @@ class DammitApp(object):
         sys.stderr.write(f"Writing full config to {workflow_configfile}\n")
         utils.write_yaml(full_config, workflow_configfile)
         # add configfile to run command
-        cmd.extend([f"--configfiles {workflow_configfile}"])
+        cmd.extend(["--configfiles", workflow_configfile])
 
         # move these to a default dammit run profile?
         helpful_args = ["-p", "--nolock", "--use-conda", "--rerun-incomplete", "-k", "--cores", f"{self.args.n_threads}"]
@@ -416,6 +416,7 @@ class DammitApp(object):
 
         print("Command: " + " ".join(cmd))
         try:
+            subprocess.check_call(["snakemake","--version"])
             subprocess.check_call(cmd)
         except subprocess.CalledProcessError as e:
             print(f'Error in snakemake invocation: {e}', file=sys.stderr)
