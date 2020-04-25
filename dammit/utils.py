@@ -9,6 +9,7 @@ import os
 import stat
 import sys
 import yaml
+import collections
 
 from doit.action import PythonAction
 from doit.task import Task, InvalidTask

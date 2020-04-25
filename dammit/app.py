@@ -259,7 +259,6 @@ class DammitApp(object):
         # generate database targets
         if db:
             databases = pipeline_info["databases"]
-            import pdb; pdb.set_trace()
             if "BUSCO" in databases:
                 #out_suffix = self.databases_d["BUSCO"]["output_suffix"][0] #donefile
                 #busco_dbinfo = self.databases_d["BUSCO"] #get busco database info
@@ -341,7 +340,7 @@ class DammitApp(object):
         #config = ["--config", f"db_dir={db_dir}"]
         #cmd.extend(config)
         additional_config = {"db_dir": db_dir}
-        full_config = utils.update_nested_dict(full_config, additional_config) # overkill for just this.
+        utils.update_nested_dict(full_config, additional_config) # overkill for just this.
         #if userdbs: # add this if we enable user db download
         #    full_config["user_dbs"] = userdbs
 
@@ -353,7 +352,7 @@ class DammitApp(object):
             cmd.append("--dry_run")
 
         #print workflow configfile
-        workflow_configfile = ".rundammit" # Where to put this file? Current path? Outdir for this run?
+        workflow_configfile = os.path.join(__path__, ".rundammit") # Where to put this file? Current path? Outdir for this run?
         sys.stderr.write(f"Writing full config to {workflow_configfile}\n")
         utils.write_yaml(full_config, workflow_configfile)
 
@@ -397,9 +396,9 @@ class DammitApp(object):
         #cmd.extend(config)
 
         #build config to write out instead
-        additional_config = {"db_dir": db_dir, "dammit_dir":out_dir, "input_transcriptome": self.args.transcriptome}
+        additional_config = {"db_dir": db_dir, "dammit_dir": out_dir, "input_transcriptome": self.args.transcriptome}
         # update full config
-        full_config = utils.update_nested_dict(full_config, additional_config)
+        utils.update_nested_dict(full_config, additional_config)
         if userdbs:
             full_config["user_dbs"] = userdbs
 
@@ -407,14 +406,15 @@ class DammitApp(object):
         helpful_args = ["-p", "--nolock", "--use-conda", "--rerun-incomplete", "-k", "--cores", f"{self.args.n_threads}"]
         cmd.extend(helpful_args)
 
-        cmd.extend(annot_targets)
-
-        workflow_configfile = ".rundammit" # Where to put this file? Current path? Outdir for this run?
+        workflow_configfile = os.path.join(__path__, ".rundammit") # Where to put this file? Current path? Outdir for this run?
         sys.stderr.write(f"Writing full config to {workflow_configfile}\n")
         utils.write_yaml(full_config, workflow_configfile)
 
         # add configfile to run command
         cmd.extend([f"--configfiles {workflow_configfile}"])
+
+        # finally, add targets
+        cmd.extend(annot_targets)
 
         print("Command: " + " ".join(cmd))
         try:
