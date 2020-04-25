@@ -1,8 +1,8 @@
 import os
 from dammit.meta import __path__
-from dammit.meta import get_databases
+from dammit.config import CONFIG
 
-databases_d = get_databases()
+databases_d = CONFIG.databases
 
 rule download_and_gunzip:
     output: os.path.join(config["db_dir"], '{database}.{file_type}')
