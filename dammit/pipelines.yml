@@ -5,6 +5,7 @@ pipelines:
       #- busco
       - transdecoder_longorfs
       - transdecoder_predict
+      - shmlast
     databases: 
       - BUSCO
   default:
@@ -15,7 +16,7 @@ pipelines:
       - transdecoder_predict
       - cmscan
       - lastal
-      #- userdb
+      - shmlast
     databases:
       - Pfam-A
       - Rfam
@@ -31,7 +32,7 @@ pipelines:
       - transdecoder_predict
       - cmscan
       - lastal
-      #- userdb
+      - shmlast
     databases:
       - Pfam-A
       - Rfam
@@ -48,7 +49,7 @@ pipelines:
       - transdecoder_predict
       - cmscan
       - lastal
-      #- userdb
+      - shmlast
     databases:
       - Pfam-A
       - Rfam

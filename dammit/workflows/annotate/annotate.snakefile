@@ -53,7 +53,7 @@ rule lastal:
 rule shmlast_crbl:
     input:
         query = os.path.join(results_dir, '{transcriptome}.fasta'),
-        database = lambda w: user_databases[w.database] # get full path from dictionary in configfile 
+        database = lambda w: config["user_dbs"][w.database] # get full path from dictionary in configfile 
     output:
         os.path.join(results_dir, '{transcriptome}.x.{database}.shmlast_crbl.csv')
     params:
@@ -141,7 +141,7 @@ rule busco_transcripts:
     threads: 8
     params:
         mode = 'transcriptome',
-        lineage=os.path.join(db_dir, '{busco_db}'), # hmmmm
+        lineage=os.path.join(db_dir, '{busco_db}'),
         #auto_lineage='euk',
         extra = config['busco']['params'].get('extra', ''),
     conda:

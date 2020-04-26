@@ -295,31 +295,20 @@ class DammitApp(object):
             for udb in user_databases:
                 # should we check if the file exists?
                 udb_path = os.path.abspath(os.path.expanduser(udb)) # get absolute path, expanding any `~`
-                udb_name = os.path.basename(db_path)
+                udb_name = os.path.basename(udb_path)
                 userdbs[udb_name] = udb_path
-                #shmlast_suffix = self.config_d["shmlast"]["output_suffix"]
 
             # build annotation targets
             for prog in annotation_programs:
                 prog_suffixes = self.config_d[prog]["output_suffix"]
                 prog_databases = self.config_d[prog].get("databases")
                 if prog_databases:
-                    # first handle user databases
-                    if "userdb" in prog_databases:
-                        # expand __userdatabase__ with user databases
-                        userdb_suffixes = [suffix.replace("__userdatabase__", db) for db in userdbs.keys() for suffix in prog_suffixes]
-                        output_suffixes.extend(userdb_suffixes)
                     # now handle other databases. Only consider databases we're running in this pipeline
                     dbs_to_add = [db for db in prog_databases if db in annotation_databases]
                     # expand __database__ with appropriate databases
-                    db_suffixes = []
-                    for suffix in prog_suffixes:
-                        if "__database__" in suffix:
-                            for db in dbs_to_add:
-                                db_suffixes.append(suffix.replace("__database__", db))
-                        else:
-                            db_suffixes.append(suffix)
-                    prog_suffixes = db_suffixes
+                    prog_suffixes = [suffix.replace("__userdatabase__", db) for db in userdbs.keys() for suffix in prog_suffixes]
+                    if dbs_to_add:
+                        prog_suffixes = [suffix.replace("__database__", db) for db in dbs_to_add for suffix in prog_suffixes]
                 output_suffixes.extend(prog_suffixes)
             annotate_targets = [os.path.join(out_dir, transcriptome_name + suffix) for suffix in output_suffixes]
             targets+=annotate_targets
