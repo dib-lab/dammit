@@ -4,4 +4,5 @@ channels:
   - defaults
 dependencies:
   - python>=3.6
-  - busco=4.0.2
+  - busco=4.0.6
+

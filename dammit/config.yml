@@ -37,9 +37,9 @@ shmlast:
 ## busco ##
 busco:
   output_suffix: 
-    - .__database__.busco.results
+    - .busco.__buscolineage__
   databases:
-    - BUSCO
+    - busco
   db_dir: busco2db
   params:
     extra: ""

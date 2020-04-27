@@ -2,16 +2,14 @@ pipelines:
   quick:
     programs:
       - rename_transcriptome
-      #- busco
+      - busco
       - transdecoder_longorfs
       - transdecoder_predict
       - shmlast
-    databases: 
-      - BUSCO
   default:
     programs:
       - rename_transcriptome
-      #- busco
+      - busco
       - transdecoder_longorfs
       - transdecoder_predict
       - cmscan
@@ -23,11 +21,10 @@ pipelines:
       - uniprot_sprot
       - OrthoDB
       - orthodb_genes
-      #- BUSCO
   full:
     programs:
       - rename_transcriptome
-      #- busco
+      - busco
       - transdecoder_longorfs
       - transdecoder_predict
       - cmscan
@@ -44,7 +41,7 @@ pipelines:
   nr:
     programs:
       - rename_transcriptome
-      #- busco
+      - busco
       - transdecoder_longorfs
       - transdecoder_predict
       - cmscan

@@ -257,13 +257,13 @@ class DammitApp(object):
         else:
             db_dir = self.config_d["db_dir"]
         # generate database targets
-        if db:
-            databases = pipeline_info["databases"]
-            if "BUSCO" in databases:
-                #out_suffix = self.databases_d["BUSCO"]["output_suffix"][0] #donefile
-                #busco_dbinfo = self.databases_d["BUSCO"] #get busco database info
-                #targets = [busco_dbinfo[db]["folder"] + out_suffix for db in list(self.args.busco_groups)]
-                databases.remove("BUSCO")
+        databases = pipeline_info.get("databases", None)
+        if db and databases:
+            #if "BUSCO" in databases:
+            #    out_suffix = self.databases_d["BUSCO"]["output_suffix"][0] #donefile
+            #    busco_dbinfo = self.databases_d["BUSCO"] #get busco database info
+            #    targets = [busco_dbinfo[db]["folder"] + out_suffix for db in list(self.args.busco_groups)]
+            #    databases.remove("BUSCO")
             for db in databases:
                 fn = self.databases_d[db]["filename"]
                 #out_suffixes = [""] # testing: ONLY DOWNLOAD
@@ -285,7 +285,7 @@ class DammitApp(object):
                 out_dir = transcriptome_name + self.config_d["dammit_dir"]
 
             annotation_programs = pipeline_info["programs"]
-            annotation_databases = pipeline_info["databases"]
+            annotation_databases = pipeline_info.get("databases", [])
             output_suffixes = []
             # not complete yet. need to include database name in annotation targ, where relevant
             # not sure how to represent this in the config.yml. databases arg for prog?
@@ -298,6 +298,8 @@ class DammitApp(object):
                 udb_name = os.path.basename(udb_path)
                 userdbs[udb_name] = udb_path
 
+            #handle busco_groups
+            busco_lineages = self.args.busco_groups
             # build annotation targets
             for prog in annotation_programs:
                 prog_suffixes = self.config_d[prog]["output_suffix"]
@@ -309,6 +311,9 @@ class DammitApp(object):
                     prog_suffixes = [suffix.replace("__userdatabase__", db) for db in userdbs.keys() for suffix in prog_suffixes]
                     if dbs_to_add:
                         prog_suffixes = [suffix.replace("__database__", db) for db in dbs_to_add for suffix in prog_suffixes]
+                    if busco_lineages:
+                        prog_suffixes = [suffix.replace("__buscolineage__", db) for db in busco_lineages for suffix in prog_suffixes]
+                        print(prog_suffixes)
                 output_suffixes.extend(prog_suffixes)
             annotate_targets = [os.path.join(out_dir, transcriptome_name + suffix) for suffix in output_suffixes]
             targets+=annotate_targets

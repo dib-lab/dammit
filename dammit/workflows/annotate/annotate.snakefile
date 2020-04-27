@@ -130,18 +130,18 @@ rule cmscan:
         f'file://{__path__}/wrappers/infernal/cmscan.wrapper.py'
 
 rule busco_transcripts:
-    input:
-        os.path.join(results_dir, '{transcriptome}.fa'),
+    input: os.path.join(results_dir,'{transcriptome}.fasta'),
     output: # don't auto detect lineach so we can set actual results files/folders!
-        directory(os.path.join(results_dir, 'busco', '{transcriptome}_{busco_db}')),
+        directory(os.path.join(results_dir, '{transcriptome}.busco.{busco_db}')),
     log:
         os.path.join(logs_dir, "{transcriptome}.x.{busco_db}.log")
     benchmark:
         os.path.join(logs_dir, "{transcriptome}.x.{busco_db}.benchmark")
     threads: 8
     params:
-        mode = 'transcriptome',
-        lineage=os.path.join(db_dir, '{busco_db}'),
+        mode = "transcriptome",
+        lineage=lambda w: w.busco_db,
+        #config="busco_config.ini",
         #auto_lineage='euk',
         extra = config['busco']['params'].get('extra', ''),
     conda:

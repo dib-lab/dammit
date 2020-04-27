@@ -312,6 +312,12 @@ BUSCO:
     fileformat: tar.gz
     folder: lactobacillales_odb9
     db_type: BUSCO
+  eukaryota_odb10:
+    url: None
+    access: download
+    fileformat: tar.gz
+    folder: eukaryota_odb10
+    db_type: BUSCO
   eukaryota:
     url: https://busco.ezlab.org/v2/datasets/eukaryota_odb9.tar.gz
     access: download
