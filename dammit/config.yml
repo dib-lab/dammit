@@ -6,6 +6,7 @@ input_transcriptome: "test.fa"
 lastal:
   output_suffix: 
     - .__database__.lastal.maf
+    - .__database__.lastal.gff3
   databases:
     - uniprot_sprot
     - OrthoDB
@@ -17,14 +18,15 @@ lastal:
   
 lastdb: 
   output_suffix: 
-    - ".fasta.prj" 
+    - .fasta.prj
   params:
    extra: " -w3 "
 
-## crb-blast ##
-crb-blast:
+## shmlast ##
+shmlast:
   output_suffix:
-    - .__database__.crb-blast
+    - .x.__userdatabase__.shmlast_crbl.csv
+    - .x.__userdatabase__.shmlast_crbl.gff3
   databases:
     - userdb
   params:
@@ -34,9 +36,9 @@ crb-blast:
 ## busco ##
 busco:
   output_suffix: 
-    - .__database__.busco.results
+    - .busco.__buscolineage__
   databases:
-    - BUSCO
+    - busco
   db_dir: busco2db
   params:
     extra: ""
@@ -45,17 +47,21 @@ busco:
 hmmscan:
   output_suffix:
     - .__database__.hmmscan-domtbl.txt
+    - .__database__.hmmscan.gff3
   databases:
     - Pfam-A
   params:
+    evalue: 0.00001
     extra: ""
 
 hmmsearch:
   output_suffix:
     - .__database__.hmmsearch-domtbl.txt
+    - .__database__.hmmsearch.gff3
   databases:
     - Pfam-A
   params:
+    evalue: 0.00001
     extra: ""
 
 hmmpress:
@@ -68,6 +74,7 @@ hmmpress:
 cmscan:
   output_suffix:
     - .__database__.cmscan-tblout.txt
+    - .__database__.cmscan.gff3
   databases:
     - Rfam
   params:
@@ -93,7 +100,7 @@ transdecoder_predict:
     extra: ""
 
 # dammit utilities
-cp_transcriptome:
+rename_transcriptome:
   output_suffix:
     - .fasta
   params:

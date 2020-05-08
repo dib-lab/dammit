@@ -1,25 +1,6 @@
 import os
 from dammit.meta import __path__
 
-results_dir = config['dammit_dir']
-logs_dir = os.path.join(results_dir, 'logs')
-benchmarks_dir = os.path.join(results_dir, 'benchmarks')
-db_dir = config['db_dir']
-
-
-# replace this with dammit's rename_transcriptome
-rule cp_transcriptome:
-    input:
-        config['input_transcriptome']
-    output:
-        os.path.join(results_dir, '{transcriptome}.fasta')
-    log:
-        os.path.join(logs_dir, 'cp-{transcriptome}.log')
-    shell:
-        '''
-        cp {input} {output} 2> {log}
-        '''
-
 rule transdecoder_longorfs:
     input:
         fasta = os.path.join(results_dir, '{transcriptome}.fasta')
@@ -69,6 +50,22 @@ rule lastal:
     conda: f'file://{__path__}/wrappers/last/environment.yml'
     script: f'file://{__path__}/wrappers/last/lastal.wrapper.py'
 
+rule shmlast_crbl:
+    input:
+        query = os.path.join(results_dir, '{transcriptome}.fasta'),
+        database = lambda w: config["user_dbs"][w.database] # get full path from dictionary in configfile 
+    output:
+        os.path.join(results_dir, '{transcriptome}.x.{database}.shmlast_crbl.csv')
+    params:
+        search_type="crbl",
+        evalue = config['shmlast']['params'].get('evalue', ""),
+        extra = config['shmlast']['params'].get('extra', ''),
+    log:
+        os.path.join(logs_dir, '{transcriptome}.x.{database}.shmlast.log')
+    threads: 8
+    conda: f'file://{__path__}/wrappers/shmlast/environment.yml'
+    script: f'file://{__path__}/wrappers/shmlast/shmlast.wrapper.py'
+
 # probably want to switch to hmmsearch instead of hmmscan
 rule hmmscan:
     input:
@@ -83,7 +80,7 @@ rule hmmscan:
     log:
         os.path.join(logs_dir, '{transcriptome}_hmmscan.log')
     params:
-        evalue_threshold = 0.00001,
+        evalue_threshold = config['hmmscan']['params'].get("evalue", 0.00001),
         # if bitscore threshold provided, hmmscan will use that instead
         #score_threshold=50,
         extra = config['hmmscan']['params'].get('extra', ''),
@@ -106,7 +103,7 @@ rule hmmsearch:
     log:
         os.path.join(logs_dir, '{transcriptome}_{database}_hmmsearch.log')
     params:
-        evalue_threshold = 0.00001,
+        evalue_threshold = config['hmmscan']['params'].get("evalue", 0.00001),
         # if bitscore threshold provided, hmmsearch will use that instead
         #score_threshold=50,
         extra = config['hmmsearch']['params'].get('extra', ''),
@@ -132,24 +129,22 @@ rule cmscan:
     wrapper:
         f'file://{__path__}/wrappers/infernal/cmscan.wrapper.py'
 
-'''
 rule busco_transcripts:
-    input:
-        os.path.join(results_dir, '{transcriptome}.fa'),
-    output:
-        directory(os.path.join(results_dir, 'busco', '{transcriptome}_{busco_db}')),
+    input: os.path.join(results_dir,'{transcriptome}.fasta'),
+    output: # don't auto detect lineach so we can set actual results files/folders!
+        directory(os.path.join(results_dir, '{transcriptome}.busco.{busco_db}')),
     log:
-        os.path.join(logs_dir, '{transcriptome}.{busco_db}.log')
+        os.path.join(logs_dir, "{transcriptome}.x.{busco_db}.log")
     benchmark:
-        os.path.join(benchmarks_dir, 'busco','{transcriptome}_trinity_busco.benchmark')
+        os.path.join(logs_dir, "{transcriptome}.x.{busco_db}.benchmark")
     threads: 8
     params:
-        mode = 'transcriptome',
-        #lineage=os.path.join(db_dir, '{busco_db}'),
+        mode = "transcriptome",
+        lineage=lambda w: w.busco_db,
+        #config="busco_config.ini",
         #auto_lineage='euk',
         extra = config['busco']['params'].get('extra', ''),
     conda:
         f'file://{__path__}/wrappers/busco/environment.yml'
     wrapper:
         f'file://{__path__}/wrappers/busco/busco.wrapper.py'
-'''

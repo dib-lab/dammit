@@ -2,6 +2,9 @@ setuptools
 pandas>=1.0
 khmer>=2.0
 shmlast>=1.2
+pytest>3
+pytest-cov>2.3
 click
 ope
 snakemake==5.15
+mkdocs

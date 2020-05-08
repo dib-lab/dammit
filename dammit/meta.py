@@ -16,6 +16,3 @@ __version__ = open(os.path.join(__path__, 'VERSION')).read().strip()
 __authors__ = ['Camille Scott', "N. Tessa Pierce"]
 __description__ = 'a tool for easy de novo transcriptome annotation'
 __date__ = 2020
-
-
-
