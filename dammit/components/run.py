@@ -136,6 +136,38 @@ def annotate_cmd(config,
     a properly formatted GFF3 file.'''
     
     print(transcriptome, name, evalue, output_dir, user_database)
+    workflow_file = os.path.join(__path__, 'workflows', 'dammit.snakefile')
+    config_file = os.path.join(__path__, 'config.yml')
+
+    cmd = ["snakemake", "-s", workflow_file, "--configfile", config_file]
+
+    if self.config_d['force'] is True:
+        annot_targets, db_dir, out_dir = generate_targets(db=True, annot=True)
+        utd_msg = '*All database tasks up-to-date.*'
+        ood_msg = '*Some database tasks out-of-date; '\
+                    'FORCE is True, ignoring!'
+    #    uptodate, statuses = db_handler.print_statuses(uptodate_msg=utd_msg,
+    #                                                   outofdate_msg=ood_msg)
+    else:
+        annot_targets, db_dir, out_dir = self.generate_targets(annot=True)
+        #databases.check_or_fail(db_handler)
+
+    #handle user-specified database dir and output dir properly
+    # note if `--config` is last arg, it will try to add the workflow targets (targets) to config (and fail)
+    config = ["--config", f"db_dir={db_dir}", f"dammit_dir={out_dir}", f"input_transcriptome={self.args.transcriptome}"]
+    cmd.extend(config)
+
+    helpful_args = ["-p", "--nolock", "--use-conda", "--rerun-incomplete", "-k", "--cores", f"{self.args.n_threads}"]
+    cmd.extend(helpful_args)
+
+    cmd.extend(annot_targets)
+
+    print("Command: " + " ".join(cmd))
+    try:
+        subprocess.check_call(cmd)
+    except subprocess.CalledProcessError as e:
+        print(f'Error in snakemake invocation: {e}', file=sys.stderr)
+        return e.returncode
 
 
 @run_group.command('databases')
@@ -194,47 +226,42 @@ def generate_database_targets(pipeline_info, database_dir, config):
 
     return targets
 
-'''
-def generate_annotation_targets
+
+def generate_annotation_targets(transcriptome, output_dir):
     # generate annotation targets
-    if annot:
-        #
-        # Generating targets for annotate subcommand
-        #
-        transcriptome = config.core['transcriptome']
-        if any([transcriptome.endswith(".fa"),
-                transcriptome.endswith(".fasta")]):
-            transcriptome_name = os.path.basename(transcriptome).rsplit(".fa")[0]
-        else:
-            raise ValueError('input transcriptome file must end with ".fa" or ".fasta"')
+    transcriptome = config.core['transcriptome']
+    if any([transcriptome.endswith(".fa"),
+            transcriptome.endswith(".fasta")]):
+        transcriptome_name = os.path.basename(transcriptome).rsplit(".fa")[0]
+    else:
+        raise ValueError('input transcriptome file must end with ".fa" or ".fasta"')
 
-        if self.args.output_dir:
-            out_dir = self.args.output_dir
-        else:
-            out_dir = transcriptome_name + self.config_d["dammit_dir"]
+    if self.args.output_dir:
+        out_dir = self.args.output_dir
+    else:
+        out_dir = transcriptome_name + self.config_d["dammit_dir"]
 
-        annotation_programs = pipeline_info["programs"]
-        annotation_databases = pipeline_info["databases"]
-        output_suffixes = []
-        # not complete yet. need to include database name in annotation targ, where relevant
-        # not sure how to represent this in the config.yml. databases arg for prog?
-        for prog in annotation_programs:
-            prog_suffixes = self.config_d[prog]["output_suffix"]
-            prog_databases = self.config_d[prog].get("databases")
-            if prog_databases:
-                # only consider databases we're running in this pipeline
-                dbs_to_add = [db for db in prog_databases if db in annotation_databases]
-                # expand __database__ with appropriate databases
-                db_suffixes = []
-                for suffix in prog_suffixes:
-                    if "__database__" in suffix:
-                        for db in dbs_to_add:
-                            db_suffixes.append(suffix.replace("__database__", db))
-                    else:
-                        db_suffixes.append(suffix)
-                prog_suffixes = db_suffixes
-            output_suffixes.extend(prog_suffixes)
-        annotate_targets = [os.path.join(out_dir, transcriptome_name + suffix) for suffix in output_suffixes]
-        targets+=annotate_targets
+    annotation_programs = pipeline_info["programs"]
+    annotation_databases = pipeline_info["databases"]
+    output_suffixes = []
+    # not complete yet. need to include database name in annotation targ, where relevant
+    # not sure how to represent this in the config.yml. databases arg for prog?
+    for prog in annotation_programs:
+        prog_suffixes = self.config_d[prog]["output_suffix"]
+        prog_databases = self.config_d[prog].get("databases")
+        if prog_databases:
+            # only consider databases we're running in this pipeline
+            dbs_to_add = [db for db in prog_databases if db in annotation_databases]
+            # expand __database__ with appropriate databases
+            db_suffixes = []
+            for suffix in prog_suffixes:
+                if "__database__" in suffix:
+                    for db in dbs_to_add:
+                        db_suffixes.append(suffix.replace("__database__", db))
+                else:
+                    db_suffixes.append(suffix)
+            prog_suffixes = db_suffixes
+        output_suffixes.extend(prog_suffixes)
+    annotate_targets = [os.path.join(out_dir, transcriptome_name + suffix) for suffix in output_suffixes]
+    targets+=annotate_targets
     return targets, db_dir, out_dir
-'''
