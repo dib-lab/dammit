@@ -39,7 +39,7 @@ busco:
   output_suffix: 
     - .__database__.busco.results
   databases:
-    - BUSCO
+    - busco
   db_dir: busco2db
   params:
     extra: ""

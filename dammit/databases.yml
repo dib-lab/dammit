@@ -75,7 +75,11 @@ orthodb_genes:
   url: ftp://cegg.unige.ch/OrthoDB8/Eukaryotes/Genes_to_OGs/ODB8_EukOGs_genes_ALL_levels.txt.gz
   output_suffix:
     - ""
-BUSCO:
+busco:
+  busco_config:
+    url: https://gitlab.com/ezlab/busco/-/raw/master/config/config.ini
+    access: download
+    filename: busco_config.ini
   output_suffix:
     - .done
   deltaepsilonsub:

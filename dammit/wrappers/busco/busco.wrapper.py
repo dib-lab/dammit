@@ -7,6 +7,7 @@ __license__ = "MIT"
 
 from snakemake.shell import shell
 from os import path
+from configparser import ConfigParser
 
 log = snakemake.log_fmt_shell(stdout=True, stderr=True)
 extra = snakemake.params.get("extra", "")
@@ -14,6 +15,20 @@ mode = snakemake.params.get("mode")
 assert mode is not None, "please input a run mode: genome, transcriptome or proteins"
 lineage = snakemake.params.get("lineage")
 auto_lineage = snakemake.params.get("auto_lineage") # prok, euk, all
+default_config = snakemake.params.get("default_configfile")
+out_path= snakemake.params.get("out_path")
+database_directory= snakemake.params.get("database_directory")
+
+# modify the configfile
+configur = ConfigParser()
+if default_config:
+    config = iniFile(default_config)
+    # set path for database downloads
+    if database_directory:
+        configur.set("busco","download_path", os.path.abspath(out_path))
+    # set path for output files
+    if out_path:
+        configur.set("busco_run","out_path", os.path.abspath(out_path))
 
 #assert lineage is not None, "please input the path to a lineage for busco assessment"
 if lineage is not None:
@@ -42,6 +57,6 @@ shell(
 )
 
 # move to intended location
-if out_name != outdir:
-    shell("cp -r {out_name} {outdir}")
-    shell("rm -rf {out_name}")
+#if out_name != outdir:
+ #   shell("cp -r {out_name} {outdir}")
+ #   shell("rm -rf {out_name}")

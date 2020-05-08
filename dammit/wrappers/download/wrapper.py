@@ -23,12 +23,14 @@ if output.endswith(".done"):
     output = output.rsplit(".done")[0]
 
 fileformat = snakemake.params.get("fileformat")
-if fileformat == "gz":
-    cmd.extend(['|', 'gunzip', '-c', '>', '{output}'])
-elif fileformat == "tar.gz":
-    cmd.extend(['|', 'tar', '-xzf', '>', '{output}'])
-else:
-    raise ValueError('Valid filetypes are "gz" and "tar.gz"')
+
+if fileformat:
+    if fileformat == "gz":
+        cmd.extend(['|', 'gunzip', '-c', '>', '{output}'])
+    elif fileformat == "tar.gz":
+        cmd.extend(['|', 'tar', '-xzf', '>', '{output}'])
+    else:
+        raise ValueError('Valid filetypes are "gz" and "tar.gz"')
 
 if snakemake.params.get('md5'):
     cmd.append('&& python -c "assert \'`md5sum {output} | '
