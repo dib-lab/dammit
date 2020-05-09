@@ -29,9 +29,9 @@ from ..utils import ShortChoice, read_yaml, write_yaml, update_nested_dict
                     ' By default, the database directory is'\
                     ' $HOME/.dammit/databases.')
 @click.option('--busco-group',
-              default=['metazoa'],
+              default=['metazoa_odb10'],
               multiple=True,
-              type=ShortChoice(list(CONFIG.databases['BUSCO']['groups'].keys()), case_sensitive=False),
+              type=ShortChoice(list(CONFIG.databases['busco']['lineages']), case_sensitive=False),
               help='BUSCO group(s) to use/install.')
 @click.option('--n-threads',
               type=int,
@@ -69,10 +69,10 @@ from ..utils import ShortChoice, read_yaml, write_yaml, update_nested_dict
                   ' More info  at https://dib-lab.github.io/dammit.')
 def run_group(config,
               database_dir,
-              busco_group, 
-              n_threads, 
-              config_file, 
-              busco_config_file, 
+              busco_group,
+              n_threads,
+              config_file,
+              busco_config_file,
               pipeline):
     ''' Run the annotation pipeline or install databases.
     '''
@@ -80,7 +80,7 @@ def run_group(config,
     if config_file:
         user_config = read_yaml(config_file)
         update_nested_dict(config.core, user_config)
-    
+
     if database_dir:
         config.core['db_dir'] = database_dir
     config.core['busco_groups'] = busco_group
@@ -136,7 +136,7 @@ def annotate_cmd(config,
     HMMER against Pfam, Inferal against Rfam, and Conditional Reciprocal
     Best-hit Blast against user databases; and aggregates all results in
     a properly formatted GFF3 file.'''
-    
+
     # Handle config updates
     if any([transcriptome.endswith(".fa"),
             transcriptome.endswith(".fasta")]):
@@ -151,7 +151,7 @@ def annotate_cmd(config,
     config.core['input_transcriptome'] = transcriptome
 
     config.core['user_dbs'] = wrangle_user_databases(user_database)
-    
+
     pipeline_config = config.pipelines['pipelines'][config.core['pipeline']]
 
     # Wrangle snakemake files
@@ -225,17 +225,12 @@ def generate_database_targets(pipeline_info, config):
     pipeline_databases = pipeline_info["databases"]
     database_dir = config.core['db_dir']
 
-    # TODO: fix BUSCO
-    if "BUSCO" in pipeline_databases:
-        pipeline_databases.remove("BUSCO")
-        #    out_suffix = self.databases_d["BUSCO"]["output_suffix"][0] #donefile
-        #    busco_dbinfo = self.databases_d["BUSCO"] #get busco database info
-        #    targets = [busco_dbinfo[db]["folder"] + out_suffix for db in list(self.args.busco_groups)]
-        #    databases.remove("BUSCO")
+    if "busco" in pipeline_databases:
+        targets = [self.databases_d["busco"]["filename"]] #ini configfile
+        databases.remove("busco")
 
     for db in pipeline_databases:
         fn = config.databases[db]["filename"]
-        #out_suffixes = [""] # testing: ONLY DOWNLOAD
         out_suffixes = config.databases[db]["output_suffix"]
         targets += [fn + suffix for suffix in out_suffixes]
     targets = [os.path.join(database_dir, targ) for targ in targets]
@@ -251,7 +246,7 @@ def generate_annotation_targets(pipeline_info, config):
     user_dbs = config.core['user_dbs']
     busco_lineages = config.core['busco_groups']
     output_suffixes = []
-    
+
     for prog in annotation_programs:
         prog_suffixes = config.core[prog]["output_suffix"]
         prog_databases = config.core[prog].get("databases", [])

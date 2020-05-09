@@ -6,6 +6,8 @@ pipelines:
       - transdecoder_longorfs
       - transdecoder_predict
       - shmlast
+    databases:
+      - busco
   default:
     programs:
       - rename_transcriptome
@@ -21,6 +23,7 @@ pipelines:
       - uniprot_sprot
       - OrthoDB
       - orthodb_genes
+      - busco
   full:
     programs:
       - rename_transcriptome
@@ -36,7 +39,7 @@ pipelines:
       - uniprot_sprot
       - OrthoDB
       - orthodb_genes
-      #- BUSCO
+      - busco
       - uniref90
   nr:
     programs:
@@ -53,5 +56,5 @@ pipelines:
       - uniprot_sprot
       - OrthoDB
       - orthodb_genes
-      #- BUSCO
+      - busco
       - nr
