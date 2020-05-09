@@ -226,8 +226,8 @@ def generate_database_targets(pipeline_info, config):
     database_dir = config.core['db_dir']
 
     if "busco" in pipeline_databases:
-        targets = [self.databases_d["busco"]["filename"]] #ini configfile
-        databases.remove("busco")
+        targets = [config.databases["busco"]["busco_config"]["filename"]] #ini configfile
+        pipeline_databases.remove("busco")
 
     for db in pipeline_databases:
         fn = config.databases[db]["filename"]
