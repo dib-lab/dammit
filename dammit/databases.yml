@@ -82,267 +82,274 @@ busco:
     filename: busco_config.ini
   output_suffix:
     - .done
-  deltaepsilonsub:
-    url: https://busco.ezlab.org/v2/datasets/deltaepsilonsub_odb9.tar.gz
-    access: download
-    fileformat: tar.gz
-    folder: deltaepsilonsub_odb9
-    db_type: BUSCO
-  basidiomycota:
-    url: https://busco.ezlab.org/v2/datasets/basidiomycota_odb9.tar.gz
-    access: download
-    fileformat: tar.gz
-    folder: basidiomycota_odb9
-    db_type: BUSCO
-  bacteria:
-    url: https://busco.ezlab.org/v2/datasets/bacteria_odb9.tar.gz
-    access: download
-    fileformat: tar.gz
-    folder: bacteria_odb9
-    db_type: BUSCO
-  dikarya:
-    url: https://busco.ezlab.org/v2/datasets/dikarya_odb9.tar.gz
-    access: download
-    fileformat: tar.gz
-    folder: dikarya_odb9
-    db_type: BUSCO
-  fungi:
-    url: https://busco.ezlab.org/v2/datasets/fungi_odb9.tar.gz
-    access: download
-    fileformat: tar.gz
-    folder: fungi_odb9
-    db_type: BUSCO
-  eurotiomycetes:
-    url: https://busco.ezlab.org/v2/datasets/eurotiomycetes_odb9.tar.gz
-    access: download
-    fileformat: tar.gz
-    folder: eurotiomycetes_odb9
-    db_type: BUSCO
-  alveolata_stramenophiles:
-    url: https://busco.ezlab.org/v2/datasets/alveolata_stramenophiles_ensembl.tar.gz
-    access: download
-    fileformat: tar.gz
-    folder: alveolata_stramenophiles_ensembl
-    db_type: BUSCO
-  pezizomycotina:
-    url: https://busco.ezlab.org/v2/datasets/pezizomycotina_odb9.tar.gz
-    access: download
-    fileformat: tar.gz
-    folder: pezizomycotina_odb9
-    db_type: BUSCO
-  proteobacteria:
-    url: https://busco.ezlab.org/v2/datasets/proteobacteria_odb9.tar.gz
-    access: download
-    fileformat: tar.gz
-    folder: proteobacteria_odb9
-    db_type: BUSCO
-  laurasiatheria:
-    url: https://busco.ezlab.org/v2/datasets/laurasiatheria_odb9.tar.gz
-    access: download
-    fileformat: tar.gz
-    folder: laurasiatheria_odb9
-    db_type: BUSCO
-  arthropoda:
-    url: https://busco.ezlab.org/v2/datasets/arthropoda_odb9.tar.gz
-    access: download
-    fileformat: tar.gz
-    folder: arthropoda_odb9
-    db_type: BUSCO
-  tetrapoda:
-    url: https://busco.ezlab.org/v2/datasets/tetrapoda_odb9.tar.gz
-    access: download
-    fileformat: tar.gz
-    folder: tetrapoda_odb9
-    db_type: BUSCO
-  clostridia:
-    url: https://busco.ezlab.org/v2/datasets/clostridia_odb9.tar.gz
-    access: download
-    fileformat: tar.gz
-    folder: clostridia_odb9
-    db_type: BUSCO
-  protists:
-    url: https://busco.ezlab.org/v2/datasets/protists_ensembl.tar.gz
-    access: download
-    fileformat: tar.gz
-    folder: protists_ensembl
-    db_type: BUSCO
-  enterobacteriales:
-    url: https://busco.ezlab.org/v2/datasets/enterobacteriales_odb9.tar.gz
-    access: download
-    fileformat: tar.gz
-    folder: enterobacteriales_odb9
-    db_type: BUSCO
-  gammaproteobacteria:
-    url: https://busco.ezlab.org/v2/datasets/gammaproteobacteria_odb9.tar.gz
-    access: download
-    fileformat: tar.gz
-    folder: gammaproteobacteria_odb9
-    db_type: BUSCO
-  mammalia:
-    url: https://busco.ezlab.org/v2/datasets/mammalia_odb9.tar.gz
-    access: download
-    fileformat: tar.gz
-    folder: mammalia_odb9
-    db_type: BUSCO
-  rhizobiales:
-    url: https://busco.ezlab.org/v2/datasets/rhizobiales_odb9.tar.gz
-    access: download
-    fileformat: tar.gz
-    folder: rhizobiales_odb9
-    db_type: BUSCO
-  nematoda:
-    url: https://busco.ezlab.org/v2/datasets/nematoda_odb9.tar.gz
-    access: download
-    fileformat: tar.gz
-    folder: nematoda_odb9
-    db_type: BUSCO
-  tenericutes:
-    url: https://busco.ezlab.org/v2/datasets/tenericutes_odb9.tar.gz
-    access: download
-    fileformat: tar.gz
-    folder: tenericutes_odb9
-    db_type: BUSCO
-  saccharomyceta:
-    url: https://busco.ezlab.org/v2/datasets/saccharomyceta_odb9.tar.gz
-    access: download
-    fileformat: tar.gz
-    folder: saccharomyceta_odb9
-    db_type: BUSCO
-  saccharomycetales:
-    url: https://busco.ezlab.org/v2/datasets/saccharomycetales_odb9.tar.gz
-    access: download
-    fileformat: tar.gz
-    folder: saccharomycetales_odb9
-    db_type: BUSCO
-  firmicutes:
-    url: https://busco.ezlab.org/v2/datasets/firmicutes_odb9.tar.gz
-    access: download
-    fileformat: tar.gz
-    folder: firmicutes_odb9
-    db_type: BUSCO
-  bacteroidetes:
-    url: https://busco.ezlab.org/v2/datasets/bacteroidetes_odb9.tar.gz
-    access: download
-    fileformat: tar.gz
-    folder: bacteroidetes_odb9
-    db_type: BUSCO
-  sordariomyceta:
-    url: https://busco.ezlab.org/v2/datasets/sordariomyceta_odb9.tar.gz
-    access: download
-    fileformat: tar.gz
-    folder: sordariomyceta_odb9
-    db_type: BUSCO
-  ascomycota:
-    url: https://busco.ezlab.org/v2/datasets/ascomycota_odb9.tar.gz
-    access: download
-    fileformat: tar.gz
-    folder: ascomycota_odb9
-    db_type: BUSCO
-  bacillales:
-    url: https://busco.ezlab.org/v2/datasets/bacillales_odb9.tar.gz
-    access: download
-    fileformat: tar.gz
-    folder: bacillales_odb9
-    db_type: BUSCO
-  insecta:
-    url: https://busco.ezlab.org/v2/datasets/insecta_odb9.tar.gz
-    access: download
-    fileformat: tar.gz
-    folder: insecta_odb9
-    db_type: BUSCO
-  diptera:
-    url: https://busco.ezlab.org/v2/datasets/diptera_odb9.tar.gz
-    access: download
-    fileformat: tar.gz
-    folder: diptera_odb9
-    db_type: BUSCO
-  actinopterygii:
-    url: https://busco.ezlab.org/v2/datasets/actinopterygii_odb9.tar.gz
-    access: download
-    fileformat: tar.gz
-    folder: actinopterygii_odb9
-    db_type: BUSCO
-  hymenoptera:
-    url: https://busco.ezlab.org/v2/datasets/hymenoptera_odb9.tar.gz
-    access: download
-    fileformat: tar.gz
-    folder: hymenoptera_odb9
-    db_type: BUSCO
-  euarchontoglires:
-    url: https://busco.ezlab.org/v2/datasets/euarchontoglires_odb9.tar.gz
-    access: download
-    fileformat: tar.gz
-    folder: euarchontoglires_odb9
-    db_type: BUSCO
-  aves:
-    url: https://busco.ezlab.org/v2/datasets/aves_odb9.tar.gz
-    access: download
-    fileformat: tar.gz
-    folder: aves_odb9
-    db_type: BUSCO
-  betaproteobacteria:
-    url: https://busco.ezlab.org/v2/datasets/betaproteobacteria_odb9.tar.gz
-    access: download
-    fileformat: tar.gz
-    folder: betaproteobacteria_odb9
-    db_type: BUSCO
-  cyanobacteria:
-    url: https://busco.ezlab.org/v2/datasets/cyanobacteria_odb9.tar.gz
-    access: download
-    fileformat: tar.gz
-    folder: cyanobacteria_odb9
-    db_type: BUSCO
-  endopterygota:
-    url: https://busco.ezlab.org/v2/datasets/endopterygota_odb9.tar.gz
-    access: download
-    fileformat: tar.gz
-    folder: endopterygota_odb9
-    db_type: BUSCO
-  embryophyta:
-    url: https://busco.ezlab.org/v2/datasets/embryophyta_odb9.tar.gz
-    access: download
-    fileformat: tar.gz
-    folder: embryophyta_odb9
-    db_type: BUSCO
-  microsporidia:
-    url: https://busco.ezlab.org/v2/datasets/microsporidia_odb9.tar.gz
-    access: download
-    fileformat: tar.gz
-    folder: microsporidia_odb9
-    db_type: BUSCO
-  lactobacillales:
-    url: https://busco.ezlab.org/v2/datasets/lactobacillales_odb9.tar.gz
-    access: download
-    fileformat: tar.gz
-    folder: lactobacillales_odb9
-    db_type: BUSCO
-  eukaryota:
-    url: https://busco.ezlab.org/v2/datasets/eukaryota_odb9.tar.gz
-    access: download
-    fileformat: tar.gz
-    folder: eukaryota_odb9
-    db_type: BUSCO
-  metazoa:
-    url: https://busco.ezlab.org/v2/datasets/metazoa_odb9.tar.gz
-    access: download
-    fileformat: tar.gz
-    folder: metazoa_odb9
-    db_type: BUSCO
-  actinobacteria:
-    url: https://busco.ezlab.org/v2/datasets/actinobacteria_odb9.tar.gz
-    access: download
-    fileformat: tar.gz
-    folder: actinobacteria_odb9
-    db_type: BUSCO
-  spirochaetes:
-    url: https://busco.ezlab.org/v2/datasets/spirochaetes_odb9.tar.gz
-    access: download
-    fileformat: tar.gz
-    folder: spirochaetes_odb9
-    db_type: BUSCO
-  vertebrata:
-    url: https://busco.ezlab.org/v2/datasets/vertebrata_odb9.tar.gz
-    access: download
-    fileformat: tar.gz
-    folder: vertebrata_odb9
-    db_type: BUSCO
+  groups:
+    deltaepsilonsub:
+      url: https://busco.ezlab.org/v2/datasets/deltaepsilonsub_odb9.tar.gz
+      access: download
+      fileformat: tar.gz
+      folder: deltaepsilonsub_odb9
+      db_type: BUSCO
+    basidiomycota:
+      url: https://busco.ezlab.org/v2/datasets/basidiomycota_odb9.tar.gz
+      access: download
+      fileformat: tar.gz
+      folder: basidiomycota_odb9
+      db_type: BUSCO
+    bacteria:
+      url: https://busco.ezlab.org/v2/datasets/bacteria_odb9.tar.gz
+      access: download
+      fileformat: tar.gz
+      folder: bacteria_odb9
+      db_type: BUSCO
+    dikarya:
+      url: https://busco.ezlab.org/v2/datasets/dikarya_odb9.tar.gz
+      access: download
+      fileformat: tar.gz
+      folder: dikarya_odb9
+      db_type: BUSCO
+    fungi:
+      url: https://busco.ezlab.org/v2/datasets/fungi_odb9.tar.gz
+      access: download
+      fileformat: tar.gz
+      folder: fungi_odb9
+      db_type: BUSCO
+    eurotiomycetes:
+      url: https://busco.ezlab.org/v2/datasets/eurotiomycetes_odb9.tar.gz
+      access: download
+      fileformat: tar.gz
+      folder: eurotiomycetes_odb9
+      db_type: BUSCO
+    alveolata_stramenophiles:
+      url: https://busco.ezlab.org/v2/datasets/alveolata_stramenophiles_ensembl.tar.gz
+      access: download
+      fileformat: tar.gz
+      folder: alveolata_stramenophiles_ensembl
+      db_type: BUSCO
+    pezizomycotina:
+      url: https://busco.ezlab.org/v2/datasets/pezizomycotina_odb9.tar.gz
+      access: download
+      fileformat: tar.gz
+      folder: pezizomycotina_odb9
+      db_type: BUSCO
+    proteobacteria:
+      url: https://busco.ezlab.org/v2/datasets/proteobacteria_odb9.tar.gz
+      access: download
+      fileformat: tar.gz
+      folder: proteobacteria_odb9
+      db_type: BUSCO
+    laurasiatheria:
+      url: https://busco.ezlab.org/v2/datasets/laurasiatheria_odb9.tar.gz
+      access: download
+      fileformat: tar.gz
+      folder: laurasiatheria_odb9
+      db_type: BUSCO
+    arthropoda:
+      url: https://busco.ezlab.org/v2/datasets/arthropoda_odb9.tar.gz
+      access: download
+      fileformat: tar.gz
+      folder: arthropoda_odb9
+      db_type: BUSCO
+    tetrapoda:
+      url: https://busco.ezlab.org/v2/datasets/tetrapoda_odb9.tar.gz
+      access: download
+      fileformat: tar.gz
+      folder: tetrapoda_odb9
+      db_type: BUSCO
+    clostridia:
+      url: https://busco.ezlab.org/v2/datasets/clostridia_odb9.tar.gz
+      access: download
+      fileformat: tar.gz
+      folder: clostridia_odb9
+      db_type: BUSCO
+    protists:
+      url: https://busco.ezlab.org/v2/datasets/protists_ensembl.tar.gz
+      access: download
+      fileformat: tar.gz
+      folder: protists_ensembl
+      db_type: BUSCO
+    enterobacteriales:
+      url: https://busco.ezlab.org/v2/datasets/enterobacteriales_odb9.tar.gz
+      access: download
+      fileformat: tar.gz
+      folder: enterobacteriales_odb9
+      db_type: BUSCO
+    gammaproteobacteria:
+      url: https://busco.ezlab.org/v2/datasets/gammaproteobacteria_odb9.tar.gz
+      access: download
+      fileformat: tar.gz
+      folder: gammaproteobacteria_odb9
+      db_type: BUSCO
+    mammalia:
+      url: https://busco.ezlab.org/v2/datasets/mammalia_odb9.tar.gz
+      access: download
+      fileformat: tar.gz
+      folder: mammalia_odb9
+      db_type: BUSCO
+    rhizobiales:
+      url: https://busco.ezlab.org/v2/datasets/rhizobiales_odb9.tar.gz
+      access: download
+      fileformat: tar.gz
+      folder: rhizobiales_odb9
+      db_type: BUSCO
+    nematoda:
+      url: https://busco.ezlab.org/v2/datasets/nematoda_odb9.tar.gz
+      access: download
+      fileformat: tar.gz
+      folder: nematoda_odb9
+      db_type: BUSCO
+    tenericutes:
+      url: https://busco.ezlab.org/v2/datasets/tenericutes_odb9.tar.gz
+      access: download
+      fileformat: tar.gz
+      folder: tenericutes_odb9
+      db_type: BUSCO
+    saccharomyceta:
+      url: https://busco.ezlab.org/v2/datasets/saccharomyceta_odb9.tar.gz
+      access: download
+      fileformat: tar.gz
+      folder: saccharomyceta_odb9
+      db_type: BUSCO
+    saccharomycetales:
+      url: https://busco.ezlab.org/v2/datasets/saccharomycetales_odb9.tar.gz
+      access: download
+      fileformat: tar.gz
+      folder: saccharomycetales_odb9
+      db_type: BUSCO
+    firmicutes:
+      url: https://busco.ezlab.org/v2/datasets/firmicutes_odb9.tar.gz
+      access: download
+      fileformat: tar.gz
+      folder: firmicutes_odb9
+      db_type: BUSCO
+    bacteroidetes:
+      url: https://busco.ezlab.org/v2/datasets/bacteroidetes_odb9.tar.gz
+      access: download
+      fileformat: tar.gz
+      folder: bacteroidetes_odb9
+      db_type: BUSCO
+    sordariomyceta:
+      url: https://busco.ezlab.org/v2/datasets/sordariomyceta_odb9.tar.gz
+      access: download
+      fileformat: tar.gz
+      folder: sordariomyceta_odb9
+      db_type: BUSCO
+    ascomycota:
+      url: https://busco.ezlab.org/v2/datasets/ascomycota_odb9.tar.gz
+      access: download
+      fileformat: tar.gz
+      folder: ascomycota_odb9
+      db_type: BUSCO
+    bacillales:
+      url: https://busco.ezlab.org/v2/datasets/bacillales_odb9.tar.gz
+      access: download
+      fileformat: tar.gz
+      folder: bacillales_odb9
+      db_type: BUSCO
+    insecta:
+      url: https://busco.ezlab.org/v2/datasets/insecta_odb9.tar.gz
+      access: download
+      fileformat: tar.gz
+      folder: insecta_odb9
+      db_type: BUSCO
+    diptera:
+      url: https://busco.ezlab.org/v2/datasets/diptera_odb9.tar.gz
+      access: download
+      fileformat: tar.gz
+      folder: diptera_odb9
+      db_type: BUSCO
+    actinopterygii:
+      url: https://busco.ezlab.org/v2/datasets/actinopterygii_odb9.tar.gz
+      access: download
+      fileformat: tar.gz
+      folder: actinopterygii_odb9
+      db_type: BUSCO
+    hymenoptera:
+      url: https://busco.ezlab.org/v2/datasets/hymenoptera_odb9.tar.gz
+      access: download
+      fileformat: tar.gz
+      folder: hymenoptera_odb9
+      db_type: BUSCO
+    euarchontoglires:
+      url: https://busco.ezlab.org/v2/datasets/euarchontoglires_odb9.tar.gz
+      access: download
+      fileformat: tar.gz
+      folder: euarchontoglires_odb9
+      db_type: BUSCO
+    aves:
+      url: https://busco.ezlab.org/v2/datasets/aves_odb9.tar.gz
+      access: download
+      fileformat: tar.gz
+      folder: aves_odb9
+      db_type: BUSCO
+    betaproteobacteria:
+      url: https://busco.ezlab.org/v2/datasets/betaproteobacteria_odb9.tar.gz
+      access: download
+      fileformat: tar.gz
+      folder: betaproteobacteria_odb9
+      db_type: BUSCO
+    cyanobacteria:
+      url: https://busco.ezlab.org/v2/datasets/cyanobacteria_odb9.tar.gz
+      access: download
+      fileformat: tar.gz
+      folder: cyanobacteria_odb9
+      db_type: BUSCO
+    endopterygota:
+      url: https://busco.ezlab.org/v2/datasets/endopterygota_odb9.tar.gz
+      access: download
+      fileformat: tar.gz
+      folder: endopterygota_odb9
+      db_type: BUSCO
+    embryophyta:
+      url: https://busco.ezlab.org/v2/datasets/embryophyta_odb9.tar.gz
+      access: download
+      fileformat: tar.gz
+      folder: embryophyta_odb9
+      db_type: BUSCO
+    microsporidia:
+      url: https://busco.ezlab.org/v2/datasets/microsporidia_odb9.tar.gz
+      access: download
+      fileformat: tar.gz
+      folder: microsporidia_odb9
+      db_type: BUSCO
+    lactobacillales:
+      url: https://busco.ezlab.org/v2/datasets/lactobacillales_odb9.tar.gz
+      access: download
+      fileformat: tar.gz
+      folder: lactobacillales_odb9
+      db_type: BUSCO
+    eukaryota_odb10:
+      url: None
+      access: download
+      fileformat: tar.gz
+      folder: eukaryota_odb10
+      db_type: BUSCO
+    eukaryota:
+      url: https://busco.ezlab.org/v2/datasets/eukaryota_odb9.tar.gz
+      access: download
+      fileformat: tar.gz
+      folder: eukaryota_odb9
+      db_type: BUSCO
+    metazoa:
+      url: https://busco.ezlab.org/v2/datasets/metazoa_odb9.tar.gz
+      access: download
+      fileformat: tar.gz
+      folder: metazoa_odb9
+      db_type: BUSCO
+    actinobacteria:
+      url: https://busco.ezlab.org/v2/datasets/actinobacteria_odb9.tar.gz
+      access: download
+      fileformat: tar.gz
+      folder: actinobacteria_odb9
+      db_type: BUSCO
+    spirochaetes:
+      url: https://busco.ezlab.org/v2/datasets/spirochaetes_odb9.tar.gz
+      access: download
+      fileformat: tar.gz
+      folder: spirochaetes_odb9
+      db_type: BUSCO
+    vertebrata:
+      url: https://busco.ezlab.org/v2/datasets/vertebrata_odb9.tar.gz
+      access: download
+      fileformat: tar.gz
+      folder: vertebrata_odb9
+      db_type: BUSCO

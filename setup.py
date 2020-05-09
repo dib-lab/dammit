@@ -39,7 +39,7 @@ def main():
             scripts = glob('bin/*'),
             entry_points = {
                 'console_scripts': [
-                    'dammit=dammit.cli:component'
+                    'dammit=dammit.cli:main'
                 ]
             },
             install_requires = ['setuptools',
@@ -48,7 +48,7 @@ def main():
                                 'click',
                                 'ope',
                                 'shmlast>=1.2',
-                                'snakemake==5.14'],
+                                'snakemake==5.15'],
             include_package_data = True,
             zip_safe = False,  )
 

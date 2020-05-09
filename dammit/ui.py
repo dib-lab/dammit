@@ -7,8 +7,6 @@
 import sys
 import textwrap
 
-from doit.reporter import ConsoleReporter
-
 
 def header(msg, level=1):
     '''Standardize output headers for submodules.
@@ -48,27 +46,3 @@ def listing(d):
         return '\n'.join(['* {0}'.format(e) for e in sorted(d)]) + '\n'
     else:
         return str(d)
-
-
-class GithubMarkdownReporter(ConsoleReporter):
-    '''Specialized doit reporter to make task output Github Markdown compliant.
-    '''
-
-    def execute_task(self, task):
-        """called when excution starts"""
-        # ignore tasks that do not define actions
-        # ignore private/hidden tasks (tasks that start with an underscore)
-        if task.actions and (task.name[0] != '_'):
-            self.write(checkbox('%s\n' % task.title(),
-                       checked=False))
-
-    def skip_uptodate(self, task):
-        """skipped up-to-date task"""
-        if task.name[0] != '_':
-            self.write(checkbox("%s\n" % task.title(),
-                       checked=True))
-
-    def skip_ignore(self, task):
-        """skipped ignored task"""
-        self.write(checkbox("(__ignored__) %s\n" % task.title(),
-                   checked=True))

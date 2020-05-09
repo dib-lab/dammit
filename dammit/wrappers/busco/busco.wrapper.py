@@ -11,6 +11,11 @@ from configparser import ConfigParser
 
 log = snakemake.log_fmt_shell(stdout=True, stderr=True)
 extra = snakemake.params.get("extra", "")
+config = snakemake.params.get("config", None)
+if config:
+    config_cmd = f" --config {config} "
+else:
+    config_cmd = ""
 mode = snakemake.params.get("mode")
 assert mode is not None, "please input a run mode: genome, transcriptome or proteins"
 lineage = snakemake.params.get("lineage")
@@ -53,10 +58,5 @@ else:
 shell(
     "busco --in {snakemake.input} --out {out_name} --force "
     " --cpu {snakemake.threads} --mode {mode} {lineage_cmd} "
-    " {extra} {log}"
+    " {config_cmd} {extra} {log}"
 )
-
-# move to intended location
-#if out_name != outdir:
- #   shell("cp -r {out_name} {outdir}")
- #   shell("rm -rf {out_name}")

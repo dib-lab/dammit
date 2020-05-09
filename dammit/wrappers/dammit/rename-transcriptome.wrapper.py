@@ -24,4 +24,4 @@ opts.extend([str(snakemake.input), snakemake.output.fasta, snakemake.output.name
 log = snakemake.log_fmt_shell(stdout=True, stderr=True)
 opts = ' '.join(opts)
 
-shell('dammit rename-transcriptome {opts} {log}')
+shell('dammit rename-fasta {opts} {log}')

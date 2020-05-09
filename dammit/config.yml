@@ -1,5 +1,5 @@
-dammit_dir: .dammit
-db_dir: databases
+dammit_dir_suffix: .dammit
+dammit_dir: results.dammit
 logs_dir: logs
 input_transcriptome: "test.fa"
 
@@ -26,8 +26,8 @@ lastdb:
 ## shmlast ##
 shmlast:
   output_suffix:
-    - .__database__.shmlast.csv
-    - .__database__.shmlast.gff3
+    - .x.__userdatabase__.shmlast_crbl.csv
+    - .x.__userdatabase__.shmlast_crbl.gff3
   databases:
     - userdb
   params:
@@ -37,7 +37,7 @@ shmlast:
 ## busco ##
 busco:
   output_suffix: 
-    - .__database__.busco.results
+    - .busco.__buscolineage__
   databases:
     - busco
   db_dir: busco2db
@@ -52,6 +52,7 @@ hmmscan:
   databases:
     - Pfam-A
   params:
+    evalue: 0.00001
     extra: ""
 
 hmmsearch:
@@ -61,6 +62,7 @@ hmmsearch:
   databases:
     - Pfam-A
   params:
+    evalue: 0.00001
     extra: ""
 
 hmmpress:

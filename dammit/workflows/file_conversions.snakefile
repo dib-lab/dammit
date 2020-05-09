@@ -13,7 +13,7 @@ rule dammit_cmscan_to_gff:
         database=lambda w: os.path.join(db_dir,"{w.database}.cm.i1i")
     shell:
         """
-        dammit convert cmscan-to-gff3 --dbxref {params.database} {input} {output} 2> {log}
+        dammit cmscan-to-gff3 --dbxref {params.database} {input} {output} 2> {log}
         """
 
 rule dammit_hmmsearch_to_gff:
@@ -28,7 +28,7 @@ rule dammit_hmmsearch_to_gff:
         database=lambda w: os.path.join(db_dir, '{database}.hmm.h3f') 
     shell:
         """
-        dammit convert hmmscan-to-gff3 --dbxref {params.database} {input} {output} 2> {log}
+        dammit hmmscan-to-gff3 --dbxref {params.database} {input} {output} 2> {log}
         """
 
 rule dammit_hmmscan_to_gff:
@@ -43,7 +43,7 @@ rule dammit_hmmscan_to_gff:
         database=lambda w: os.path.join(db_dir, '{database}.hmm.h3f') 
     shell:
         """
-        dammit convert hmmscan-to-gff3 --dbxref {params.database} {input} {output} 2> {log}
+        dammit hmmscan-to-gff3 --dbxref {params.database} {input} {output} 2> {log}
         """
 
 rule dammit_maf_to_gff:
@@ -62,20 +62,20 @@ rule dammit_maf_to_gff:
         database=lambda w: os.path.join(db_dir, "{database}.fasta.prj")
     shell:
         """
-        dammit convert maf-to-gff3 --dbxref {params.database} {input} {output} 2> {log}
+        dammit maf-to-gff3 --dbxref {params.database} {input} {output} 2> {log}
         """
 
 rule dammit_shmlast_to_gff:
     message: "Given the CSV output from shmlast, convert it to GFF3 and save the results."
     input: 
-        os.path.join(results_dir, "{transcriptome}.{database}.shmlast.csv")
+        os.path.join(results_dir, "{transcriptome}.{database}.shmlast_crbl.csv")
     output:
-        os.path.join(results_dir, "{transcriptome}.{database}.shmlast.gff3")
+        os.path.join(results_dir, "{transcriptome}.{database}.shmlast_crbl.gff3")
     log:
         os.path.join(logs_dir, "{transcriptome}.{database}.shmlast-to-gff3.log")
     params:
         database=lambda w: os.path.join(db_dir, "{w.database}.") #NOTE: add shmlast db extension
     shell:
         """
-        dammit convert shmlast-to-gff3 --dbxref {params.database} {input} {output} 2> {log}
+        dammit shmlast-to-gff3 --dbxref {params.database} {input} {output} 2> {log}
         """
