@@ -15,7 +15,7 @@ import click
 
 from ..config import CONFIG
 from ..meta import __path__
-from ..utils import ShortChoice
+from ..utils import ShortChoice, read_yaml, write_yaml, update_nested_dict
 
 
 
@@ -78,11 +78,11 @@ def run_group(config,
     '''
 
     if config_file:
-        with open(config_file) as fp:
-            config.core.update(yaml.safe_load(fp))
+        user_config = read_yaml(config_file)
+        update_nested_dict(config.core, user_config)
     
     if database_dir:
-        config.core['database_dir'] = database_dir
+        config.core['db_dir'] = database_dir
     config.core['busco_groups'] = busco_group
 
     if not n_threads and 'n_threads' not in config.core:
@@ -123,46 +123,59 @@ def run_group(config,
               multiple=True,
               help='Optional additional protein databases. '\
                    ' These will be searched with CRB-blast.')
+@click.option('--dry-run', is_flag=True)
 def annotate_cmd(config,
                  transcriptome,
                  name,
                  evalue,
                  output_dir,
-                 user_database):
+                 user_database,
+                 dry_run):
     ''' The main annotation pipeline. Calculates assembly stats;
     runs BUSCO; runs LAST against OrthoDB (and optionally uniref90),
     HMMER against Pfam, Inferal against Rfam, and Conditional Reciprocal
     Best-hit Blast against user databases; and aggregates all results in
     a properly formatted GFF3 file.'''
     
-    print(transcriptome, name, evalue, output_dir, user_database)
-    workflow_file = os.path.join(__path__, 'workflows', 'dammit.snakefile')
-    config_file = os.path.join(__path__, 'config.yml')
-
-    cmd = ["snakemake", "-s", workflow_file, "--configfile", config_file]
-
-    if self.config_d['force'] is True:
-        annot_targets, db_dir, out_dir = generate_targets(db=True, annot=True)
-        utd_msg = '*All database tasks up-to-date.*'
-        ood_msg = '*Some database tasks out-of-date; '\
-                    'FORCE is True, ignoring!'
-    #    uptodate, statuses = db_handler.print_statuses(uptodate_msg=utd_msg,
-    #                                                   outofdate_msg=ood_msg)
+    # Handle config updates
+    if any([transcriptome.endswith(".fa"),
+            transcriptome.endswith(".fasta")]):
+        transcriptome_name = os.path.basename(transcriptome).rsplit(".fa")[0]
     else:
-        annot_targets, db_dir, out_dir = self.generate_targets(annot=True)
-        #databases.check_or_fail(db_handler)
+        raise ValueError('input transcriptome file must end with ".fa" or ".fasta"')
+    config.core['transcriptome_name'] = transcriptome_name
 
-    #handle user-specified database dir and output dir properly
-    # note if `--config` is last arg, it will try to add the workflow targets (targets) to config (and fail)
-    config = ["--config", f"db_dir={db_dir}", f"dammit_dir={out_dir}", f"input_transcriptome={self.args.transcriptome}"]
-    cmd.extend(config)
+    if output_dir is None:
+        output_dir = transcriptome_name + config.core["dammit_dir_suffix"]
+    config.core['dammit_dir'] = output_dir
+    config.core['input_transcriptome'] = transcriptome
 
-    helpful_args = ["-p", "--nolock", "--use-conda", "--rerun-incomplete", "-k", "--cores", f"{self.args.n_threads}"]
-    cmd.extend(helpful_args)
+    config.core['user_dbs'] = wrangle_user_databases(user_database)
+    
+    pipeline_config = config.pipelines['pipelines'][config.core['pipeline']]
 
-    cmd.extend(annot_targets)
+    # Wrangle snakemake files
+    workflow_file = os.path.join(__path__, 'workflows', 'dammit.snakefile')
 
-    print("Command: " + " ".join(cmd))
+    try:
+        os.mkdir(output_dir)
+    except FileExistsError:
+        pass
+
+    workflow_config_file = os.path.join(output_dir, 'run.config.yml')
+    print(f'Writing full run config to {workflow_config_file}', file=sys.stderr)
+    write_yaml(config.core, workflow_config_file)
+
+    # Build snakemake command
+    cmd = ["snakemake", "-s", workflow_file, "--configfiles", workflow_config_file]
+    cmd.extend(snakemake_common_args(config.core['n_threads']))
+    if dry_run:
+        cmd.append('--dry-run')
+
+    targets = generate_annotation_targets(pipeline_config, config)
+    cmd.extend(targets)
+
+    print("Command: " + " ".join(cmd), file=sys.stderr)
     try:
         subprocess.check_call(cmd)
     except subprocess.CalledProcessError as e:
@@ -179,20 +192,18 @@ def databases_cmd(config, install):
     ''' The database preparation pipeline.
     '''
     workflow_file = os.path.join(__path__, 'workflows', 'dammit.snakefile')
-    config_file = os.path.join(__path__, 'config.yml')
-    database_dir = config.core['database_dir']
+    database_dir = config.core['db_dir']
+
+    workflow_config_file = os.path.join(database_dir, 'run.config.yml')
+    print(f'Writing full run config to {workflow_config_file}', file=sys.stderr)
+    write_yaml(config.core, workflow_config_file)
+
     pipeline_config = config.pipelines['pipelines'][config.core['pipeline']]
-    n_threads = config.core['n_threads']
 
-    cmd = ["snakemake", "-s", workflow_file, "--configfile", config_file]
+    cmd = ["snakemake", "-s", workflow_file, "--configfiles", workflow_config_file]
 
-    targets = generate_database_targets(pipeline_config, database_dir, config)
-    
-    config = ["--config", f"db_dir={database_dir}"]
-    cmd.extend(config)
-
-    helpful_args = ["-p", "--nolock", "--use-conda", "--rerun-incomplete", "-k", "--cores", f"{n_threads}"]
-    cmd.extend(helpful_args)
+    targets = generate_database_targets(pipeline_config, config)
+    cmd.extend(snakemake_common_args(config.core['n_threads']))
 
     # better way to do this?
     if not install:
@@ -200,7 +211,7 @@ def databases_cmd(config, install):
 
     # finally, add targets
     cmd.extend(targets)
-    print("Command: " + " ".join(cmd))
+    print("Command: " + " ".join(cmd), file=sys.stderr)
 
     try:
         subprocess.check_call(cmd)
@@ -209,13 +220,18 @@ def databases_cmd(config, install):
         return e.returncode
 
 
-def generate_database_targets(pipeline_info, database_dir, config):
+def generate_database_targets(pipeline_info, config):
     targets = []
     pipeline_databases = pipeline_info["databases"]
+    database_dir = config.core['db_dir']
 
     # TODO: fix BUSCO
     if "BUSCO" in pipeline_databases:
         pipeline_databases.remove("BUSCO")
+        #    out_suffix = self.databases_d["BUSCO"]["output_suffix"][0] #donefile
+        #    busco_dbinfo = self.databases_d["BUSCO"] #get busco database info
+        #    targets = [busco_dbinfo[db]["folder"] + out_suffix for db in list(self.args.busco_groups)]
+        #    databases.remove("BUSCO")
 
     for db in pipeline_databases:
         fn = config.databases[db]["filename"]
@@ -227,41 +243,43 @@ def generate_database_targets(pipeline_info, database_dir, config):
     return targets
 
 
-def generate_annotation_targets(transcriptome, output_dir):
-    # generate annotation targets
-    transcriptome = config.core['transcriptome']
-    if any([transcriptome.endswith(".fa"),
-            transcriptome.endswith(".fasta")]):
-        transcriptome_name = os.path.basename(transcriptome).rsplit(".fa")[0]
-    else:
-        raise ValueError('input transcriptome file must end with ".fa" or ".fasta"')
-
-    if self.args.output_dir:
-        out_dir = self.args.output_dir
-    else:
-        out_dir = transcriptome_name + self.config_d["dammit_dir"]
-
+def generate_annotation_targets(pipeline_info, config):
     annotation_programs = pipeline_info["programs"]
-    annotation_databases = pipeline_info["databases"]
+    annotation_databases = pipeline_info.get("databases", [])
+    transcriptome_name = config.core['transcriptome_name']
+    output_dir = config.core['dammit_dir']
+    user_dbs = config.core['user_dbs']
+    busco_lineages = config.core['busco_groups']
     output_suffixes = []
-    # not complete yet. need to include database name in annotation targ, where relevant
-    # not sure how to represent this in the config.yml. databases arg for prog?
+    
     for prog in annotation_programs:
-        prog_suffixes = self.config_d[prog]["output_suffix"]
-        prog_databases = self.config_d[prog].get("databases")
+        prog_suffixes = config.core[prog]["output_suffix"]
+        prog_databases = config.core[prog].get("databases", [])
         if prog_databases:
-            # only consider databases we're running in this pipeline
+            # now handle other databases. Only consider databases we're running in this pipeline
             dbs_to_add = [db for db in prog_databases if db in annotation_databases]
             # expand __database__ with appropriate databases
-            db_suffixes = []
-            for suffix in prog_suffixes:
-                if "__database__" in suffix:
-                    for db in dbs_to_add:
-                        db_suffixes.append(suffix.replace("__database__", db))
-                else:
-                    db_suffixes.append(suffix)
-            prog_suffixes = db_suffixes
+            if prog_suffixes and '__userdatabase__' in prog_suffixes[0]:
+                prog_suffixes = [suffix.replace("__userdatabase__", db) for db in user_dbs.keys() for suffix in prog_suffixes]
+            if dbs_to_add:
+                prog_suffixes = [suffix.replace("__database__", db) for db in dbs_to_add for suffix in prog_suffixes]
+            if busco_lineages:
+                prog_suffixes = [suffix.replace("__buscolineage__", db) for db in busco_lineages for suffix in prog_suffixes]
         output_suffixes.extend(prog_suffixes)
-    annotate_targets = [os.path.join(out_dir, transcriptome_name + suffix) for suffix in output_suffixes]
-    targets+=annotate_targets
-    return targets, db_dir, out_dir
+    targets = [os.path.join(output_dir, transcriptome_name + suffix) for suffix in output_suffixes]
+
+    return targets
+
+
+def snakemake_common_args(n_threads):
+    args = ["-p", "--nolock", "--use-conda", "--rerun-incomplete", "-k", "--cores", str(n_threads)]
+    return args
+
+
+def wrangle_user_databases(user_dbs):
+    dbs = {}
+    for udb in user_dbs:
+        udb_path = os.path.abspath(os.path.expanduser(udb)) # get absolute path, expanding any `~`
+        udb_name = os.path.basename(udb_path)
+        dbs[udb_name] = udb_path
+    return dbs

@@ -13,7 +13,7 @@ rule dammit_cmscan_to_gff:
         database=lambda w: os.path.join(db_dir,"{w.database}.cm.i1i")
     shell:
         """
-        dammit convert cmscan-to-gff3 --dbxref {params.database} {input} {output} 2> {log}
+        dammit cmscan-to-gff3 --dbxref {params.database} {input} {output} 2> {log}
         """
 
 rule dammit_hmmsearch_to_gff:
@@ -28,7 +28,7 @@ rule dammit_hmmsearch_to_gff:
         database=lambda w: os.path.join(db_dir, '{database}.hmm.h3f') 
     shell:
         """
-        dammit convert hmmscan-to-gff3 --dbxref {params.database} {input} {output} 2> {log}
+        dammit hmmscan-to-gff3 --dbxref {params.database} {input} {output} 2> {log}
         """
 
 rule dammit_hmmscan_to_gff:
@@ -43,7 +43,7 @@ rule dammit_hmmscan_to_gff:
         database=lambda w: os.path.join(db_dir, '{database}.hmm.h3f') 
     shell:
         """
-        dammit convert hmmscan-to-gff3 --dbxref {params.database} {input} {output} 2> {log}
+        dammit hmmscan-to-gff3 --dbxref {params.database} {input} {output} 2> {log}
         """
 
 rule dammit_maf_to_gff:
@@ -62,7 +62,7 @@ rule dammit_maf_to_gff:
         database=lambda w: os.path.join(db_dir, "{database}.fasta.prj")
     shell:
         """
-        dammit convert maf-to-gff3 --dbxref {params.database} {input} {output} 2> {log}
+        dammit maf-to-gff3 --dbxref {params.database} {input} {output} 2> {log}
         """
 
 rule dammit_shmlast_to_gff:
@@ -77,5 +77,5 @@ rule dammit_shmlast_to_gff:
         database=lambda w: os.path.join(db_dir, "{w.database}.") #NOTE: add shmlast db extension
     shell:
         """
-        dammit convert shmlast-to-gff3 --dbxref {params.database} {input} {output} 2> {log}
+        dammit shmlast-to-gff3 --dbxref {params.database} {input} {output} 2> {log}
         """

@@ -75,11 +75,11 @@ def rename_fasta(fasta_fn,
 @click.argument('names_fn')
 @click.option('--basename', default='Transcript', show_default=True)
 @click.option('--split-regex', default=None, type=str)
-def rename_fasta_cmd(transcriptome_fn,
-                             output_fn,
-                             names_fn,
-                             basename,
-                             split_regex):
+def rename_fasta_cmd(fasta_fn,
+                     output_fn,
+                     names_fn,
+                     basename,
+                     split_regex):
     ''' Copy a FASTA file and rename the headers.
     '''
 
