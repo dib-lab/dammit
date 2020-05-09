@@ -141,10 +141,9 @@ rule busco_transcripts:
     params:
         mode = "transcriptome",
         lineage=lambda w: w.busco_db,
+        config=config.get("busco_config_file", None), # enable user to input custom config
         default_config = os.path.join(db_dir, '{database}.ini'), # or hardcode busco_config.ini?
-        out_path= results_dir,
         database_directory= db_dir,
-        #config="busco_config.ini",
         #auto_lineage='euk', # enabled in wrapper, but not using this bc it changes output dir structure
         extra = config['busco']['params'].get('extra', ''),
     conda:
