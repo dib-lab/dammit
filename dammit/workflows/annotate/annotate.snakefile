@@ -130,7 +130,9 @@ rule cmscan:
         f'file://{__path__}/wrappers/infernal/cmscan.wrapper.py'
 
 rule busco_transcripts:
-    input: os.path.join(results_dir,'{transcriptome}.fasta'),
+    input:
+        fasta=os.path.join(results_dir,'{transcriptome}.fasta'),
+        config=config["busco_config_file"]
     output:
         directory(os.path.join(results_dir, '{transcriptome}.busco.{busco_db}')),
     log:
@@ -141,8 +143,6 @@ rule busco_transcripts:
     params:
         mode = "transcriptome",
         lineage=lambda w: w.busco_db,
-        config=config.get("busco_config_file", None), # enable user to input custom config
-        default_config = os.path.join(db_dir, '{database}.ini'), # or hardcode busco_config.ini?
         database_directory= db_dir,
         #auto_lineage='euk', # enabled in wrapper, but not using this bc it changes output dir structure
         extra = config['busco']['params'].get('extra', ''),
