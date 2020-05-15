@@ -14,6 +14,7 @@ benchmarks = config.get("benchmark_dir", "benchmarks")
 benchmarks_dir = os.path.join(results_dir, benchmarks)
 db_dir = config['db_dir']
 
+report: config.get("report_file", "dammit_report.rst")
 
 onstart:
     print("------------------------------")

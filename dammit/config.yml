@@ -2,6 +2,7 @@ dammit_dir_suffix: .dammit
 dammit_dir: results.dammit
 logs_dir: logs
 input_transcriptome: "test.fa"
+report_file: dammit_annotation_report.rst
 
 ## last ##
 lastal:
