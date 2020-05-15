@@ -130,8 +130,10 @@ rule cmscan:
         f'file://{__path__}/wrappers/infernal/cmscan.wrapper.py'
 
 rule busco_transcripts:
-    input: os.path.join(results_dir,'{transcriptome}.fasta'),
-    output: # don't auto detect lineach so we can set actual results files/folders!
+    input:
+        fasta=os.path.join(results_dir,'{transcriptome}.fasta'),
+        config=config["busco_config_file"]
+    output:
         directory(os.path.join(results_dir, '{transcriptome}.busco.{busco_db}')),
     log:
         os.path.join(logs_dir, "{transcriptome}.x.{busco_db}.log")
@@ -141,8 +143,8 @@ rule busco_transcripts:
     params:
         mode = "transcriptome",
         lineage=lambda w: w.busco_db,
-        #config="busco_config.ini",
-        #auto_lineage='euk',
+        database_directory= db_dir,
+        #auto_lineage='euk', # enabled in wrapper, but not using this bc it changes output dir structure
         extra = config['busco']['params'].get('extra', ''),
     conda:
         f'file://{__path__}/wrappers/busco/environment.yml'

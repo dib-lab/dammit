@@ -5,20 +5,46 @@ __copyright__ = "Copyright 2020, Tessa Pierce"
 __email__ = "ntpierce@gmail.com"
 __license__ = "MIT"
 
+import os
 from snakemake.shell import shell
-from os import path
+from configparser import ConfigParser
 
 log = snakemake.log_fmt_shell(stdout=True, stderr=True)
 extra = snakemake.params.get("extra", "")
-config = snakemake.params.get("config", None)
-if config:
-    config_cmd = f" --config {config} "
-else:
-    config_cmd = ""
 mode = snakemake.params.get("mode")
 assert mode is not None, "please input a run mode: genome, transcriptome or proteins"
 lineage = snakemake.params.get("lineage")
 auto_lineage = snakemake.params.get("auto_lineage") # prok, euk, all
+database_directory= snakemake.params.get("database_directory")
+config = snakemake.input.get("config", None)
+
+# separate output directory and output name from snakemake.output
+outdir = str(snakemake.output[0])
+out_path = ""
+if "/" in outdir:
+    out_path = os.path.dirname(outdir)
+    out_name = os.path.basename(outdir)
+else:
+    out_name = outdir
+
+# handle config file
+config_cmd = ""
+if config and any([out_path, database_directory]):
+    configur = ConfigParser()
+    config = configur.read(config)
+    # set path for database downloads
+    if database_directory:
+        configur.set("busco_run","download_path", os.path.abspath(out_path))
+    # set path for output files
+    if out_path:
+        configur.set("busco_run","out_path", os.path.abspath(out_path))
+
+    #print configfile to output directory
+    configfile = os.path.join(out_path, ".wrapper.busco_config.ini")
+    with open(configfile, "w") as outF:
+        configur.write(outF)
+    # cmd to point busco to this new configfile
+    config_cmd = f" --config {configfile} "
 
 #assert lineage is not None, "please input the path to a lineage for busco assessment"
 if lineage is not None:
@@ -31,24 +57,18 @@ elif auto_lineage is not None:
 else:   # doesn't matter if auto-lineage is all or left blank. default to auto if nothing else is provided
     lineage_cmd = " --auto-lineage "
 
-# busco does not allow you to direct output location: handle this by moving output
-outdir = str(snakemake.output[0])
-if "/" in outdir:
-    out_name = path.basename(outdir)
-else:
-    out_name = outdir
-
 # note: --force allows snakemake to handle rewriting files as necessary
 # without needing to specify *all* busco outputs as snakemake outputs
 shell(
-    "busco --in {snakemake.input} --out {out_name} --force "
+    "busco --in {snakemake.input.fasta} --out {out_name} --force "
     " --cpu {snakemake.threads} --mode {mode} {lineage_cmd} "
     " {config_cmd} {extra} {log}"
 )
 
-# move to intended location
-
-# IF USE CONFIG, can set outdir location and don't need to do this
-if out_name != outdir:
-    shell("cp -r {out_name} {outdir}")
+# if not using a config to specific output location, move output.
+# caveat: does not move output if user config incorrectly specifies out_path!
+if out_path and not config_cmd:
+    shell("cp -r {out_name} {out_path}")
     shell("rm -rf {out_name}")
+
+# should we remove printed ini file?
