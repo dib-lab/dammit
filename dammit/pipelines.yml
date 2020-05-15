@@ -2,58 +2,59 @@ pipelines:
   quick:
     programs:
       - rename_transcriptome
-      #- busco
+      - busco
       - transdecoder_longorfs
       - transdecoder_predict
-    databases: 
-      - BUSCO
+      - shmlast
+    databases:
+      - busco
   default:
     programs:
       - rename_transcriptome
-      #- busco
+      - busco
       - transdecoder_longorfs
       - transdecoder_predict
       - cmscan
       - lastal
-      #- userdb
+      - shmlast
     databases:
       - Pfam-A
       - Rfam
       - uniprot_sprot
       - OrthoDB
       - orthodb_genes
-      #- BUSCO
+      - busco
   full:
     programs:
       - rename_transcriptome
-      #- busco
+      - busco
       - transdecoder_longorfs
       - transdecoder_predict
       - cmscan
       - lastal
-      #- userdb
+      - shmlast
     databases:
       - Pfam-A
       - Rfam
       - uniprot_sprot
       - OrthoDB
       - orthodb_genes
-      #- BUSCO
+      - busco
       - uniref90
   nr:
     programs:
       - rename_transcriptome
-      #- busco
+      - busco
       - transdecoder_longorfs
       - transdecoder_predict
       - cmscan
       - lastal
-      #- userdb
+      - shmlast
     databases:
       - Pfam-A
       - Rfam
       - uniprot_sprot
       - OrthoDB
       - orthodb_genes
-      #- BUSCO
+      - busco
       - nr

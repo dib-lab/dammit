@@ -1,8 +1,8 @@
 import os
 from dammit.meta import __path__
-from dammit.meta import get_databases
+from dammit.config import CONFIG
 
-databases_d = get_databases()
+databases_d = CONFIG.databases
 
 rule download_and_gunzip:
     output: os.path.join(config["db_dir"], '{database}.{file_type}')
@@ -10,11 +10,11 @@ rule download_and_gunzip:
         url = lambda wildcards: databases_d[wildcards.database]['url'],
         md5 = lambda wildcards: databases_d[wildcards.database].get('md5', False),
         metalink = lambda wildcards: databases_d[wildcards.database].get('metalink', False),
-        fileformat = lambda wildcards: databases_d[wildcards.database]['fileformat'],
+        fileformat = lambda wildcards: databases_d[wildcards.database].get('fileformat', False),
         folder = lambda wildcards: databases_d[wildcards.database].get('folder', False)
     log: os.path.join(config["db_dir"], '{database}.{file_type}.log')
     wildcard_constraints:
-        file_type = "hmm|cm|fasta|txt|done"
+        file_type = "hmm|cm|fasta|txt|ini|done"
     script:
         f'file://{__path__}/wrappers/download/wrapper.py'
 
