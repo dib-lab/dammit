@@ -1,6 +1,18 @@
 import os
 from dammit.meta import __path__
 
+rule dammit_rename_transcriptome:
+    input:
+        config["input_transcriptome"],
+    output:
+        fasta=os.path.join(results_dir, "{transcriptome}.fasta"),
+        names=os.path.join(results_dir, "{transcriptome}.namemap.csv")
+    log:
+        os.path.join(logs_dir, "{transcriptome}.rename.log")
+    params:
+        basename = config.get("basename", "Txome"),
+    script: f'file://{__path__}/wrappers/dammit/rename-transcriptome.wrapper.py'
+
 rule dammit_cmscan_to_gff:
     message: "Given raw input from Infernal's cmscan, convert it to GFF3 and save the results."
     input: 
@@ -78,4 +90,29 @@ rule dammit_shmlast_to_gff:
     shell:
         """
         dammit shmlast-to-gff3 --dbxref {params.database} {input} {output} 2> {log}
+        """
+
+rule dammit_merge_gff:
+    #message: "Merge GFF files from the individual annotation programs"
+    input: config["gff_files"],
+    output:
+        os.path.join(results_dir, "{transcriptome}.dammit.gff3"),
+    log:
+        os.path.join(logs_dir, "{transcriptome}.merge_gffs.log")
+    shell:
+        """
+        dammit merge-gff3 {input} {output} 2> {log}
+        """
+
+rule dammit_annotate_fasta:
+    input:
+        fasta=rules.dammit_rename_transcriptome.output.fasta,
+        gff=rules.dammit_merge_gff.output
+    output:
+        os.path.join(results_dir, "{transcriptome}.dammit.fasta")
+    log:
+        os.path.join(logs_dir, "{transcriptome}.annotate_fasta.log")
+    shell:
+        """
+        dammit annotate-fasta {input.fasta} {input.gff} {output} 2> {log}
         """

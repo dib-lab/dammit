@@ -2,6 +2,9 @@ dammit_dir_suffix: .dammit
 dammit_dir: results.dammit
 logs_dir: logs
 input_transcriptome: "test.fa"
+output_suffix:
+  - .dammit.gff3
+  - .dammit.fasta
 
 ## last ##
 lastal:

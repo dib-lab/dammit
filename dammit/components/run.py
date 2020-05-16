@@ -165,6 +165,8 @@ def annotate_cmd(config,
     except FileExistsError:
         pass
 
+    targets = generate_annotation_targets(pipeline_config, config)
+
     workflow_config_file = os.path.join(output_dir, 'run.config.yml')
     print(f'Writing full run config to {workflow_config_file}', file=sys.stderr)
     write_yaml(config.core, workflow_config_file)
@@ -175,7 +177,6 @@ def annotate_cmd(config,
     if dry_run:
         cmd.append('--dry-run')
 
-    targets = generate_annotation_targets(pipeline_config, config)
     cmd.extend(targets)
 
     print("Command: " + " ".join(cmd), file=sys.stderr)
@@ -244,6 +245,7 @@ def generate_annotation_targets(pipeline_info, config):
     output_dir = config.core['dammit_dir']
     user_dbs = config.core['user_dbs']
     busco_lineages = config.core['busco_groups']
+
     output_suffixes = []
 
     for prog in annotation_programs:
@@ -261,6 +263,10 @@ def generate_annotation_targets(pipeline_info, config):
                 prog_suffixes = [suffix.replace("__buscolineage__", db) for db in busco_lineages for suffix in prog_suffixes]
         output_suffixes.extend(prog_suffixes)
     targets = [os.path.join(output_dir, transcriptome_name + suffix) for suffix in output_suffixes]
+
+    gff_files = [x for x in targets if x.endswith(".gff3")]
+    config.core["gff_files"] = gff_files
+    targets+=[os.path.join(output_dir, transcriptome_name + suffix) for suffix in config.core["output_suffix"]]
 
     return targets
 

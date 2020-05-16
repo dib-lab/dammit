@@ -29,7 +29,10 @@ onerror:
     print("Nope.\n")
 
 
-include: "setup.snakefile"
+wildcard_constraints:
+  transcriptome = config["transcriptome_name"]
+
+
 include: "file_conversions.snakefile"
 include: "databases/databases.snakefile"
 include: "annotate/annotate.snakefile"
