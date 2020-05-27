@@ -37,11 +37,11 @@ class DammitApp(object):
         self.config_d.update(vars(self.args))
  
     def run(self):
-        print(ui.header('dammit'))
+        print(ui.header('dammit'),flush=True)
         print(ui.header(__description__, level=2))
         about = '\nby {0}\n\n**v{1}**, {2}\n'.format(', '.join(__authors__),
                                            __version__, __date__)
-        print(about)
+        print(about,flush=True)
         return self.args.func()
 
     def description(self):
@@ -87,6 +87,15 @@ class DammitApp(object):
                                 metavar='[metazoa, eukaryota, vertebrata, ...]',
                                 choices=list(self.databases_d['BUSCO'].keys()),
                                 help='Which BUSCO group to use. Should be chosen'\
+                                     ' based on the organism being annotated.'\
+                                     ' Full list of options is below.'
+                                )
+
+            parser.add_argument('--orthodb-group',
+                                default='metazoa',
+                                metavar='[metazoa, arthropoda, vertebrata, ...]',
+                                choices=list(self.databases_d['OrthoDB'].keys()),
+                                help='Which orthoDB group to use. Should be chosen'\
                                      ' based on the organism being annotated.'\
                                      ' Full list of options is below.'
                                 )
@@ -273,7 +282,7 @@ class DammitApp(object):
 
     def handle_databases(self):
         log.start_logging()
-        print(ui.header('submodule: databases', level=2))
+        print(ui.header('submodule: databases', level=2),flush=True)
 
         handler = databases.get_handler(self.config_d)
         if self.args.quick:
@@ -293,7 +302,7 @@ class DammitApp(object):
 
     def handle_annotate(self):
         log.start_logging()
-        print(ui.header('submodule: annotate', level=2))
+        print(ui.header('submodule: annotate', level=2),flush=True)
 
         db_handler = databases.get_handler(self.config_d)
 

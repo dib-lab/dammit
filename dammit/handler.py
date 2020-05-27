@@ -159,17 +159,17 @@ class TaskHandler(TaskLoader):
 
         uptodate, statuses = self.check_uptodate()
         if uptodate:
-            print(ui.paragraph(uptodate_msg))
+            print(ui.paragraph(uptodate_msg),flush=True)
         else:
             print(ui.paragraph(outofdate_msg))
             uptodate_list = [t for t,s in statuses.items() if s is True]
             outofdate_list = [t for t,s in statuses.items() if s is False]
             if uptodate_list:
-                print('\nUp-to-date tasks:')
-                print(ui.listing(uptodate_list))
+                print('\nUp-to-date tasks:',flush=True)
+                print(ui.listing(uptodate_list),flush=True)
             if outofdate_list:
-                print('\nOut-of-date tasks:')
-                print(ui.listing(outofdate_list))
+                print('\nOut-of-date tasks:',flush=True)
+                print(ui.listing(outofdate_list),flush=True)
         return uptodate, statuses
 
     def check_uptodate(self):
@@ -207,7 +207,7 @@ class TaskHandler(TaskLoader):
             int: Exit status of the doit command.
         '''
         if verbose:
-            print(ui.header('Run Tasks', level=4))
+            print(ui.header('Run Tasks', level=4),flush=True)
         if doit_args is None:
             doit_args = ['run']
             if self.n_threads > 1:

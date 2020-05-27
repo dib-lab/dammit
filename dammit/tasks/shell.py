@@ -208,6 +208,28 @@ def get_cat_task(file_list, target_fn):
             'targets': [target_fn],
             'clean': [clean_targets]}
 
+@doit_task
+def get_unexisting_folder_cat_task(file_dir, target_fn):
+    '''Create a doit task to `cat` together all .fs files in folder
+    result to the given target.
+
+    Args:
+        file_dir (str): The directory containing files to `cat`.
+        target_fn (str): The target file.
+
+    Returns:
+        dict: A doit task.
+    '''
+    file_list = file_dir+"/*.fs"
+
+    cmd = 'cat {files} > {t}'.format(files=file_list, t=target_fn)
+
+    return {'name': 'cat:' + os.path.basename(target_fn),
+            'actions': [cmd],
+            'targets': [target_fn],
+            'uptodate': [run_once],
+            'clean': [clean_targets]}
+
 
 @doit_task
 def get_copy_file_task(src, dst):

@@ -44,7 +44,7 @@ class Profiler(object):
         self.blockname = blockname
         self.running = True
         self.lock = filelock.FileLock('{0}.lock'.format(self.filename))
-        print('Profiling is ON:', self.filename, '\n', file=sys.stderr)
+        print('Profiling is ON:', self.filename, '\n', file=sys.stderr,flush=True)
 
     def write_result(self, task_name, start_time, end_time, elapsed_time):
         '''Write results to the file, using the given task name as the
