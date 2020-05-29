@@ -22,7 +22,7 @@ from ..utils import ShortChoice, read_yaml, write_yaml, update_nested_dict
 @click.group('run')
 @click.pass_obj
 @click.option('--database-dir',
-              default=os.path.join(os.environ['HOME'], '.dammit', 'databases'),
+              default=os.path.join(os.environ['HOME'], '.config', 'dammit'),
               envvar='DAMMIT_DB_DIR',
               help='Directory to store databases. Existing'\
                     ' databases will not be overwritten.'\
@@ -149,9 +149,9 @@ def annotate_cmd(config,
     config.core['transcriptome_name'] = transcriptome_name
 
     if output_dir is None:
-        output_dir = transcriptome_name + config.core["dammit_dir_suffix"]
+        output_dir = os.path.abspath(transcriptome_name + config.core["dammit_dir_suffix"])
     config.core['dammit_dir'] = output_dir
-    config.core['input_transcriptome'] = transcriptome
+    config.core['input_transcriptome'] = os.path.abspath(transcriptome)
 
     config.core['user_dbs'] = wrangle_user_databases(user_database)
 
@@ -170,8 +170,10 @@ def annotate_cmd(config,
     write_yaml(config.core, workflow_config_file)
 
     # Build snakemake command
-    cmd = ["snakemake", "-s", workflow_file, "--configfiles", workflow_config_file]
-    cmd.extend(snakemake_common_args(config.core['n_threads']))
+    cmd = ["snakemake", "-s", workflow_file,
+           "--configfiles", workflow_config_file,
+           "--directory", output_dir]
+    cmd.extend(snakemake_common_args(config.core['n_threads'], config.core['db_dir']))
     if dry_run:
         cmd.append('--dry-run')
 
@@ -206,7 +208,7 @@ def databases_cmd(config, install):
     cmd = ["snakemake", "-s", workflow_file, "--configfiles", workflow_config_file]
 
     targets = generate_database_targets(pipeline_config, config)
-    cmd.extend(snakemake_common_args(config.core['n_threads']))
+    cmd.extend(snakemake_common_args(config.core['n_threads'], database_dir))
 
     # better way to do this?
     if not install:
@@ -265,8 +267,10 @@ def generate_annotation_targets(pipeline_info, config):
     return targets
 
 
-def snakemake_common_args(n_threads):
-    args = ["-p", "--nolock", "--use-conda", "--rerun-incomplete", "-k", "--cores", str(n_threads)]
+def snakemake_common_args(n_threads, dammit_db_dir):
+    args = ["--debug-dag", "-p", "--nolock",
+            "--use-conda", "--conda-prefix", dammit_db_dir,
+            "--rerun-incomplete", "-k", "--cores", str(n_threads)]
     return args
 
 

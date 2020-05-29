@@ -2,6 +2,7 @@ import os
 from dammit.meta import __path__
 
 rule transdecoder_longorfs:
+    message: "Run TransDecoder.LongOrfs, which fings the longest likely open reading frames."
     input:
         fasta = os.path.join(results_dir, '{transcriptome}.fasta')
     output:
@@ -16,10 +17,61 @@ rule transdecoder_longorfs:
     wrapper:
         f'file://{__path__}/wrappers/transdecoder/transdecoder-longorfs.wrapper.py'
 
+
+'''
+rule hmmsearch:
+    input:
+        fasta   = os.path.join(results_dir, '{transcriptome}.transdecoder_dir/longest_orfs.pep'),
+        profile = os.path.join(db_dir, 'Pfam-A.hmm.h3f')
+    output:
+        # only one of these is required
+        tblout = os.path.join(results_dir, '{transcriptome}.x.Pfam-A.hmmsearch-domtbl.txt'), # save parseable table of per-domain hits to file <f>
+        #tblout=os.path.join(results_dir, '{transcriptome}_{database}.hmmsearch-tbl.txt'), # save parseable table of per-sequence hits to file <f>
+        #alignment_hits=os.path.join(results_dir,'{transcriptome}_{database}.hmmsearch-alignment-hits.txt'), # Save a multiple alignment of all significant hits (those satisfying inclusion thresholds) to the file <f>
+        #outfile=os.path.join(results_dir,'{transcriptome}_{database}.hmmsearch-out.txt'), # Direct the main human-readable output to a file <f> instead of the default stdout. 
+    log:
+        os.path.join(logs_dir, '{transcriptome}.x.Pfam-A.hmmsearch.log')
+    params:
+        evalue_threshold = config['hmmscan']['params'].get("evalue", 0.00001),
+        # if bitscore threshold provided, hmmsearch will use that instead
+        #score_threshold=50,
+        extra = config['hmmsearch']['params'].get('extra', ''),
+    threads: 4
+    conda:
+        f'file://{__path__}/wrappers/hmmer/environment.yml'
+    wrapper:
+        f'file://{__path__}/wrappers/hmmer/hmmsearch.wrapper.py'
+'''
+
+
+# probably want to switch to hmmsearch instead of hmmscan
+rule hmmscan:
+    input:
+        fasta   = os.path.join(results_dir, '{transcriptome}.transdecoder_dir/longest_orfs.pep'),
+        profile = os.path.join(db_dir, 'Pfam-A.hmm.h3f'),
+    output:
+        # only one of these is required
+        domtblout  = os.path.join(results_dir,'{transcriptome}.x.Pfam-A.hmmscan-domtbl.txt'), # save parseable table of per-domain hits to file <f>
+        outfile    = os.path.join(results_dir,'{transcriptome}.x.Pfam-A.hmmscan-out.txt'), # Direct the main human-readable output to a file <f> instead of the default stdout.
+    log:
+        os.path.join(logs_dir, '{transcriptome}.x.Pfam-A.hmmscan.log')
+    params:
+        evalue_threshold = config['hmmscan']['params'].get("evalue", 0.00001),
+        # if bitscore threshold provided, hmmscan will use that instead
+        #score_threshold=50,
+        extra = config['hmmscan']['params'].get('extra', ''),
+    threads: 4
+    conda:
+        f'file://{__path__}/wrappers/hmmer/environment.yml'
+    wrapper:
+        f'file://{__path__}/wrappers/hmmer/hmmscan.wrapper.py'
+
+
 rule transdecoder_predict:
     input:
         fasta = os.path.join(results_dir, '{transcriptome}.fasta'),
-        longorfs = os.path.join(results_dir, '{transcriptome}.transdecoder_dir/longest_orfs.pep')
+        longorfs = os.path.join(results_dir, '{transcriptome}.transdecoder_dir/longest_orfs.pep'),
+        pfam = os.path.join(results_dir, '{transcriptome}.x.Pfam-A.hmmscan-domtbl.txt')
     output:
         os.path.join(results_dir, '{transcriptome}.fasta.transdecoder.bed'),
         os.path.join(results_dir, '{transcriptome}.fasta.transdecoder.cds'),
@@ -35,17 +87,18 @@ rule transdecoder_predict:
     wrapper:
         f'file://{__path__}/wrappers/transdecoder/transdecoder-predict.wrapper.py'
 
+
 rule lastal:
     input:
         data = os.path.join(results_dir, '{transcriptome}.fasta'),
         lastdb = os.path.join(db_dir, '{database}.fasta.prj')
     output:
-        maf = os.path.join(results_dir, '{transcriptome}.{database}.lastal.maf')
+        maf = os.path.join(results_dir, '{transcriptome}.x.{database}.lastal.maf')
     params:
         frameshift_cost = config['lastal']['params'].get('frameshift_cost', 15),
         extra           = config['lastal']['params'].get('extra', ''),
     log:
-        os.path.join(logs_dir, '{transcriptome}.{database}.lastal.log')
+        os.path.join(logs_dir, '{transcriptome}.x.{database}.lastal.log')
     threads: 8
     conda: f'file://{__path__}/wrappers/last/environment.yml'
     script: f'file://{__path__}/wrappers/last/lastal.wrapper.py'
@@ -66,61 +119,15 @@ rule shmlast_crbl:
     conda: f'file://{__path__}/wrappers/shmlast/environment.yml'
     script: f'file://{__path__}/wrappers/shmlast/shmlast.wrapper.py'
 
-# probably want to switch to hmmsearch instead of hmmscan
-rule hmmscan:
-    input:
-        fasta   = os.path.join(results_dir, '{transcriptome}.fasta'),
-        profile = os.path.join(db_dir, '{database}.hmm.h3f'),
-    output:
-        # only one of these is required
-        tblout     = os.path.join(results_dir, '{transcriptome}.hmmscan-tbl.txt'), # save parseable table of per-sequence hits to file <f>
-        domtblout  = os.path.join(results_dir,'{transcriptome}.hmmscan-domtbl.txt'), # save parseable table of per-domain hits to file <f>
-        pfamtblout = os.path.join(results_dir,'{transcriptome}.hmmscan-pfamtbl.txt'), # save table of hits and domains to file, in Pfam format <f>
-        outfile    = os.path.join(results_dir,'{transcriptome}.hmmscan-out.txt'), # Direct the main human-readable output to a file <f> instead of the default stdout.
-    log:
-        os.path.join(logs_dir, '{transcriptome}_hmmscan.log')
-    params:
-        evalue_threshold = config['hmmscan']['params'].get("evalue", 0.00001),
-        # if bitscore threshold provided, hmmscan will use that instead
-        #score_threshold=50,
-        extra = config['hmmscan']['params'].get('extra', ''),
-    threads: 4
-    conda:
-        f'file://{__path__}/wrappers/hmmer/environment.yml'
-    wrapper:
-        f'file://{__path__}/wrappers/hmmer/hmmscan.wrapper.py'
-
-rule hmmsearch:
-    input:
-        fasta   = os.path.join(results_dir, '{transcriptome}.fasta'),
-        profile = os.path.join(db_dir, '{database}.hmm.h3f')
-    output:
-        # only one of these is required
-        domtblout = os.path.join(results_dir, '{transcriptome}_{database}.hmmsearch-domtbl.txt'), # save parseable table of per-domain hits to file <f>
-        #tblout=os.path.join(results_dir, '{transcriptome}_{database}.hmmsearch-tbl.txt'), # save parseable table of per-sequence hits to file <f>
-        #alignment_hits=os.path.join(results_dir,'{transcriptome}_{database}.hmmsearch-alignment-hits.txt'), # Save a multiple alignment of all significant hits (those satisfying inclusion thresholds) to the file <f>
-        #outfile=os.path.join(results_dir,'{transcriptome}_{database}.hmmsearch-out.txt'), # Direct the main human-readable output to a file <f> instead of the default stdout. 
-    log:
-        os.path.join(logs_dir, '{transcriptome}_{database}_hmmsearch.log')
-    params:
-        evalue_threshold = config['hmmscan']['params'].get("evalue", 0.00001),
-        # if bitscore threshold provided, hmmsearch will use that instead
-        #score_threshold=50,
-        extra = config['hmmsearch']['params'].get('extra', ''),
-    threads: 4
-    conda:
-        f'file://{__path__}/wrappers/hmmer/environment.yml'
-    wrapper:
-        f'file://{__path__}/wrappers/hmmer/hmmsearch.wrapper.py'
 
 rule cmscan:
     input:
         fasta   = os.path.join(results_dir,'{transcriptome}.fasta'),
         profile = os.path.join(db_dir,'{database}.cm.i1i')
     output:
-        tblout = os.path.join(results_dir,'{transcriptome}.{database}.cmscan-tblout.txt'),
+        tblout = os.path.join(results_dir,'{transcriptome}.x.{database}.cmscan-tblout.txt'),
     log:
-        os.path.join(logs_dir, '{transcriptome}.{database}.cmscan.log')
+        os.path.join(logs_dir, '{transcriptome}.x.{database}.cmscan.log')
     params:
         extra = config['hmmsearch']['params'].get('extra', ''),
     threads: 4
