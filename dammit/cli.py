@@ -17,7 +17,7 @@ from dammit import cloup
 
 from dammit.log import start_logging
 from dammit.config import CONFIG
-from dammit.meta import __version__, __authors__, __description__, __date__
+from dammit.meta import __version__, __authors__, __description__, __year__
 
 from dammit.components.convert import (maf_to_gff3_cmd,
                                        shmlast_to_gff3_cmd,
@@ -34,7 +34,7 @@ from dammit.components.config import config_group
 
 
 @cloup.group(help=f'\b\ndammit: {__description__}\n'\
-                  f'v{__version__}, {__date__}\n'\
+                  f'v{__version__}, {__year__}\n'\
                   f'by {" ".join(__authors__)}',
              align_sections=True)
 @click.version_option(version=__version__)

@@ -13,6 +13,7 @@ pipelines:
       - rename_transcriptome
       - busco
       - transdecoder_longorfs
+      - hmmscan
       - transdecoder_predict
       - cmscan
       - lastal

@@ -38,6 +38,17 @@ if config and any([out_path, database_directory]):
     # set path for output files
     if out_path:
         configur.set("busco_run","out_path", os.path.abspath(out_path))
+    # using conda installs: everything should be avail in path
+    configur.set("tblastn","path", "")
+    configur.set("makeblastdb","path", "")
+    configur.set("augustus","path", "")
+    configur.set("etraining","path", "")
+    configur.set("gff2gbSmallDNA.pl","path", "")
+    configur.set("new_species.pl","path", "")
+    configur.set("optimize_augustus.pl","path", "")
+    configur.set("hmmsearch","path", "")
+    configur.set("sepp","path", "")
+    configur.set("prodigal","path", "")
 
     #print configfile to output directory
     configfile = os.path.join(out_path, ".wrapper.busco_config.ini")

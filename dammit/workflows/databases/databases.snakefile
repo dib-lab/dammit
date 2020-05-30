@@ -16,7 +16,7 @@ rule download_and_gunzip:
     wildcard_constraints:
         file_type = "hmm|cm|fasta|txt|ini|done"
     script:
-        f'file://{__path__}/wrappers/download/wrapper.py'
+        f'file:/{__path__}/wrappers/download/wrapper.py'
 
 rule lastdb:
     input:
@@ -30,8 +30,8 @@ rule lastdb:
         file_type = "fasta|txt"
     log:
         os.path.join(config["db_dir"], "{database}.{file_type}_lastdb.log")
-    conda: f"file://{__path__}/wrappers/last/environment.yml"
-    script: f"file://{__path__}/wrappers/last/lastdb.wrapper.py"
+    conda: f"file:/{__path__}/wrappers/last/environment.yml"
+    script: f"file:/{__path__}/wrappers/last/lastdb.wrapper.py"
 
 rule hmmpress:
     input:
@@ -46,8 +46,8 @@ rule hmmpress:
     params:
         extra=config["hmmpress"]["params"].get("extra", ""),
     threads: 4
-    conda: f"file://{__path__}/wrappers/hmmer/environment.yml"
-    script: f"file://{__path__}/wrappers/hmmer/hmmpress.wrapper.py"
+    conda: f"file:/{__path__}/wrappers/hmmer/environment.yml"
+    script: f"file:/{__path__}/wrappers/hmmer/hmmpress.wrapper.py"
 
 #rule hmmbuild:
 #    input:
@@ -74,5 +74,5 @@ rule infernal_cmpress:
         os.path.join(config["db_dir"], "cmpress_{database}.log")
     params:
         extra=config["cmpress"]["params"].get("extra", ""),
-    conda: f"file://{__path__}/wrappers/infernal/environment.yml"
-    script: f"file://{__path__}/wrappers/infernal/cmpress.wrapper.py"
+    conda: f"file:/{__path__}/wrappers/infernal/environment.yml"
+    script: f"file:/{__path__}/wrappers/infernal/cmpress.wrapper.py"
