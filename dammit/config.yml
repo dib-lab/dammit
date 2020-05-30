@@ -1,7 +1,8 @@
 dammit_dir_suffix: .dammit
-dammit_dir: results.dammit
+dammit_dir: PLACEHOLDER.dammit
 logs_dir: logs
-input_transcriptome: "test.fa"
+input_transcriptome: "PLACEHOLDER.fa"
+transcriptome_name: "PLACEHOLDER"
 output_suffix:
   - .dammit.gff3
   - .dammit.fasta
@@ -9,8 +10,8 @@ output_suffix:
 ## last ##
 lastal:
   output_suffix: 
-    - .__database__.lastal.maf
-    - .__database__.lastal.gff3
+    - .x.__database__.lastal.maf
+    - .x.__database__.lastal.gff3
   databases:
     - uniprot_sprot
     - OrthoDB
@@ -51,8 +52,8 @@ busco:
 ## hmmer ##
 hmmscan:
   output_suffix:
-    - .__database__.hmmscan-domtbl.txt
-    - .__database__.hmmscan.gff3
+    - .x.__database__.hmmscan-domtbl.txt
+    - .x.__database__.hmmscan.gff3
   databases:
     - Pfam-A
   params:
@@ -61,8 +62,8 @@ hmmscan:
 
 hmmsearch:
   output_suffix:
-    - .__database__.hmmsearch-domtbl.txt
-    - .__database__.hmmsearch.gff3
+    - .x.__database__.hmmsearch-domtbl.txt
+    - .x.__database__.hmmsearch.gff3
   databases:
     - Pfam-A
   params:
@@ -78,8 +79,8 @@ hmmpress:
 ## infernal ##
 cmscan:
   output_suffix:
-    - .__database__.cmscan-tblout.txt
-    - .__database__.cmscan.gff3
+    - .x.__database__.cmscan-tblout.txt
+    - .x.__database__.cmscan.gff3
   databases:
     - Rfam
   params:

@@ -1,6 +1,7 @@
 import os
 from dammit.meta import __path__
 
+
 rule dammit_rename_transcriptome:
     input:
         config["input_transcriptome"],
@@ -13,50 +14,70 @@ rule dammit_rename_transcriptome:
         basename = config.get("basename", "Txome"),
     script: f'file://{__path__}/wrappers/dammit/rename-transcriptome.wrapper.py'
 
+
 rule dammit_cmscan_to_gff:
     message: "Given raw input from Infernal's cmscan, convert it to GFF3 and save the results."
     input: 
-        os.path.join(results_dir,"{transcriptome}.{database}.cmscan-tblout.txt")
+        os.path.join(results_dir,"{transcriptome}.x.{database}.cmscan-tblout.txt")
     output:
-        os.path.join(results_dir, "{transcriptome}.{database}.cmscan.gff3")
+        os.path.join(results_dir, "{transcriptome}.x.{database}.cmscan.gff3")
     log:
-        os.path.join(logs_dir, "{transcriptome}.{database}.cmscan-to-gff3.log")
-    params:
-        database=lambda w: os.path.join(db_dir,"{w.database}.cm.i1i")
+        os.path.join(logs_dir, "{transcriptome}.x.{database}.cmscan-to-gff3.log")
     shell:
         """
-        dammit cmscan-to-gff3 --dbxref {params.database} {input} {output} 2> {log}
+        dammit cmscan-to-gff3 --dbxref {wildcards.database} {input} {output} 2> {log}
         """
+
 
 rule dammit_hmmsearch_to_gff:
-    message: "Given raw input from hmmer's hmmsearch, convert it to GFF3 and save the results."
+    message: 
+        """
+        Convert hmmsearch's domain table output to GFF3.
+        """
     input: 
-        os.path.join(results_dir, "{transcriptome}.{database}.hmmsearch-domtbl.txt")
+        os.path.join(results_dir, '{transcriptome}.x.Pfam-A.hmmsearch-domtbl.txt')
     output:
-        os.path.join(results_dir, "{transcriptome}.{database}.hmmsearch.gff3")
+        os.path.join(results_dir, "{transcriptome}.x.Pfam-A.hmmsearch.gff3")
     log:
-        os.path.join(logs_dir, "{transcriptome}.{database}.hmmsearch-to-gff3.log")
-    params:
-        database=lambda w: os.path.join(db_dir, '{database}.hmm.h3f') 
+        os.path.join(logs_dir, "{transcriptome}.x.Pfam-A.hmmsearch-to-gff3.log")
     shell:
         """
-        dammit hmmscan-to-gff3 --dbxref {params.database} {input} {output} 2> {log}
+        dammit hmmscan-to-gff3 --dbxref Pfam-A {input} {output} 2> {log}
         """
 
+
 rule dammit_hmmscan_to_gff:
-    message: "Given raw input from hmmer's hmmscan, convert it to GFF3 and save the results."
+    message:
+        """
+        Convert hmmscan's domain table output to GFF3.
+        """
     input: 
-        os.path.join(results_dir, "{transcriptome}.{database}.hmmscan-domtbl.txt")
+        os.path.join(results_dir, "{transcriptome}.x.{database}.hmmscan-domtbl.txt")
     output:
-        os.path.join(results_dir, "{transcriptome}.{database}.hmmscan.gff3")
+        os.path.join(results_dir, "{transcriptome}.x.{database}.hmmscan.gff3")
     log:
-        os.path.join(logs_dir, "{transcriptome}.{database}.hmmscan-to-gff3.log")
-    params:
-        database=lambda w: os.path.join(db_dir, '{database}.hmm.h3f') 
+        os.path.join(logs_dir, "{transcriptome}.x.{database}.hmmscan-to-gff3.log")
     shell:
         """
-        dammit hmmscan-to-gff3 --dbxref {params.database} {input} {output} 2> {log}
+        dammit hmmscan-to-gff3 --dbxref {wildcards.database} {input} {output} 2> {log}
         """
+
+
+rule dammit_maf_best_hits:
+    message:
+        """
+        Filter out only the best (top-scoring) hits for each transcript from the 
+        MAF alignments.
+        """
+    input:
+        os.path.join(results_dir, "{transcriptome}.x.{database}.lastal.maf")
+    output:
+        os.path.join(results_dir, "{transcriptome}.x.{database}.lastal.best.csv")
+    shell:
+        """
+        dammit best-hits {input} {output}
+        """
+
 
 rule dammit_maf_to_gff:
     message: 
@@ -65,31 +86,27 @@ rule dammit_maf_to_gff:
         convert it to GFF3 and save the results.
         """
     input: 
-        os.path.join(results_dir, "{transcriptome}.{database}.lastal.maf")
+        os.path.join(results_dir, "{transcriptome}.x.{database}.lastal.best.csv")
     output:
-        os.path.join(results_dir, "{transcriptome}.{database}.lastal.gff3")
+        os.path.join(results_dir, "{transcriptome}.x.{database}.lastal.gff3")
     log:
-        os.path.join(logs_dir, "{transcriptome}.{database}.lastal.maf-to-gff3.log")
-    params:
-        database=lambda w: os.path.join(db_dir, "{database}.fasta.prj")
+        os.path.join(logs_dir, "{transcriptome}.x.{database}.lastal.maf-to-gff3.log")
     shell:
         """
-        dammit maf-to-gff3 --dbxref {params.database} {input} {output} 2> {log}
+        dammit maf-to-gff3 --dbxref {wildcards.database} {input} {output} 2> {log}
         """
 
 rule dammit_shmlast_to_gff:
     message: "Given the CSV output from shmlast, convert it to GFF3 and save the results."
     input: 
-        os.path.join(results_dir, "{transcriptome}.{database}.shmlast_crbl.csv")
+        os.path.join(results_dir, "{transcriptome}.x.{database}.shmlast_crbl.csv")
     output:
-        os.path.join(results_dir, "{transcriptome}.{database}.shmlast_crbl.gff3")
+        os.path.join(results_dir, "{transcriptome}.x.{database}.shmlast_crbl.gff3")
     log:
-        os.path.join(logs_dir, "{transcriptome}.{database}.shmlast-to-gff3.log")
-    params:
-        database=lambda w: os.path.join(db_dir, "{w.database}.") #NOTE: add shmlast db extension
+        os.path.join(logs_dir, "{transcriptome}.x.{database}.shmlast-to-gff3.log")
     shell:
         """
-        dammit shmlast-to-gff3 --dbxref {params.database} {input} {output} 2> {log}
+        dammit shmlast-to-gff3 --dbxref {wildcards.database} {input} {output} 2> {log}
         """
 
 rule dammit_merge_gff:
