@@ -7,12 +7,14 @@
 # Date   : 23.04.2020
 
 import os
+import shutil
 import sys
 import yaml
 
 import click
 
-from ..config import (parse_config, DEFAULT_DATABASES_DIR, DEFAULT_TEMP_DIR, TEMP_SUBDIRS)
+from ..config import (parse_config, DEFAULT_DATABASES_DIR, CONDA_ENV_TEMPDIR,
+                      DEFAULT_TEMP_DIR, TEMP_SUBDIRS, WORKFLOW_CONFIG_TEMPDIR)
 
 
 @click.group(name='config')
@@ -48,12 +50,24 @@ def show_directories_cmd(database_dir, temp_dir):
 @click.option('--temp-dir',
               default=DEFAULT_TEMP_DIR,
               envvar='DAMMIT_TEMP_DIR')
-def clean_tmp_cmd(temp_dir):
+@click.option('--envs', is_flag=True)
+@click.option('--force', is_flag=True)
+def clean_tmp_cmd(temp_dir, envs, force):
     ''' Clear out shared dammit temp files.
     '''
-    print('Cleaning files from:', *(os.path.join(temp_dir, child) for child in TEMP_SUBDIRS),
-          file=sys.stderr)
 
+    temp_config_dir = os.path.join(temp_dir, WORKFLOW_CONFIG_TEMPDIR)
+    print('Cleaning old config files in', temp_config_dir, file=sys.stderr)
+    if not shutil.rmtree.avoids_symlink_attacks and not force:
+        print('WARNING: platform and implementation is not restistant to symlink attacks.'
+              ' Using the clean function could put this system at risk. Remove the directory'
+              ' manually or use --force to preoceed.', file=sys.stderr)
+    else:
+        shutil.rmtree(temp_config_dir)
+        if envs:
+            conda_env_dir = os.path.join(temp_dir, CONDA_ENV_TEMPDIR)
+            print('Removing conda environments in', conda_env_dir, file=sys.stderr)
+            shutil.rmtree(conda_env_dir)
 
 @config_group.command('show-default')
 @click.pass_obj
