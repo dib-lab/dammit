@@ -134,7 +134,7 @@ rule busco_transcripts:
         fasta=os.path.join(results_dir,'{transcriptome}.fasta'),
         config=config["busco_config_file"]
     output:
-        directory(os.path.join(results_dir, '{transcriptome}.busco.{busco_db}')),
+        os.path.join(results_dir, '{transcriptome}.busco.{busco_db}', "run_{busco_db}", "short_summary.txt")
     log:
         os.path.join(logs_dir, "{transcriptome}.x.{busco_db}.log")
     benchmark:
@@ -150,3 +150,30 @@ rule busco_transcripts:
         f'file://{__path__}/wrappers/busco/environment.yml'
     wrapper:
         f'file://{__path__}/wrappers/busco/busco.wrapper.py'
+
+def aggregate_busco_summaries(w):
+    busco_files = expand(os.path.join(results_dir, '{transcriptome}.busco.{busco_db}', "run_{busco_db}", "short_summary.txt"), busco_db = config["busco_groups"], transcriptome=w.transcriptome)
+    summary_files=[]
+    for s in busco_files:
+        buscoD = os.path.dirname(os.path.dirname(s))
+        summary_files+= glob.glob(os.path.join(buscoD, "short_summary*.txt"))
+    #  (short_summary.[generic|specific].dataset.label.txt)
+    return summary_files
+
+localrules: plot_busco_summaries
+
+rule plot_busco_summaries:
+    input: aggregate_busco_summaries
+    output: os.path.join(results_dir, "{transcriptome}.busco_summary_plot.png")
+    log: os.path.join(logs_dir, "busco", "{transcriptome}.x.plot_summaries.log")
+    params:
+        outdir= os.path.join(results_dir, "busco_summaries")
+    conda:
+        f'file://{__path__}/wrappers/busco/environment.yml'
+    shell:
+        """
+        mkdir -p {params.outdir}
+        cp {input} {params.outdir}
+        generate_plot.py --working_directory {params.outdir} 2> {log}
+        cp {params.outdir}/busco_figure.png {output}
+        """
