@@ -30,6 +30,11 @@ if input_fasta.endswith("gz"):
 else:
     input_fa = input_fasta
 
+checkpoints_dir=os.path.join(output_dir, "__checkpoints")
+
+# removing checkpoints enables snakemake to manage rerunning as necessary
+shell("rm -rf {checkpoints_dir}")
+
 shell("TransDecoder.Predict --output_dir {output_dir} -t {input_fa} {addl_outputs} {extra} {log}")
 
 outputs = snakemake.output

@@ -3,6 +3,9 @@ dammit_dir: PLACEHOLDER.dammit
 logs_dir: logs
 input_transcriptome: "PLACEHOLDER.fa"
 transcriptome_name: "PLACEHOLDER"
+output_suffix:
+  - .dammit.gff3
+  - .dammit.fasta
 
 ## last ##
 lastal:

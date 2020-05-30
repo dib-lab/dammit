@@ -6,7 +6,6 @@ import glob
 
 from dammit.meta import __path__
 
-print(__path__)
 
 results_dir = config["dammit_dir"]
 logs = config.get("logs_dir", "logs")
@@ -36,7 +35,6 @@ onerror:
     print("Nope.\n")
 
 
-include: "setup.snakefile"
 include: "databases/databases.snakefile"
 include: "annotate/annotate.snakefile"
 include: "file_conversions.snakefile"
