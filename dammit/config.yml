@@ -1,7 +1,8 @@
 dammit_dir_suffix: .dammit
-dammit_dir: results.dammit
+dammit_dir: PLACEHOLDER.dammit
 logs_dir: logs
-input_transcriptome: "test.fa"
+input_transcriptome: "PLACEHOLDER.fa"
+transcriptome_name: "PLACEHOLDER"
 
 ## last ##
 lastal:

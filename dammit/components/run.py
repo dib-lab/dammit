@@ -13,8 +13,10 @@ import yaml
 
 import click
 
-from ..config import CONFIG
-from ..meta import __path__
+from ..config import (CONFIG, DEFAULT_CONFIG_DIR, CONDA_ENV_TEMPDIR,
+                      WORKFLOW_CONFIG_TEMPDIR, DEFAULT_DATABASES_DIR,
+                      DEFAULT_TEMP_DIR, create_tempdirs)
+from ..meta import __path__, __time__
 from ..utils import ShortChoice, read_yaml, write_yaml, update_nested_dict
 
 
@@ -22,12 +24,17 @@ from ..utils import ShortChoice, read_yaml, write_yaml, update_nested_dict
 @click.group('run')
 @click.pass_obj
 @click.option('--database-dir',
-              default=os.path.join(os.environ['HOME'], '.config', 'dammit'),
+              default=DEFAULT_DATABASES_DIR,
               envvar='DAMMIT_DB_DIR',
               help='Directory to store databases. Existing'\
-                    ' databases will not be overwritten.'\
-                    ' By default, the database directory is'\
-                    ' $HOME/.dammit/databases.')
+                    ' databases will not be overwritten.')
+@click.option('--temp-dir',
+              default=DEFAULT_TEMP_DIR,
+              envvar='DAMMIT_TEMP_DIR',
+              help='Directory to store dammit temporary files.'\
+                   ' These will include the final workflow configs'\
+                   ' for individual database runs as well as conda'\
+                   ' environments for snakemake rules.')
 @click.option('--busco-group',
               default=['metazoa_odb10'],
               multiple=True,
@@ -69,6 +76,7 @@ from ..utils import ShortChoice, read_yaml, write_yaml, update_nested_dict
                   ' More info  at https://dib-lab.github.io/dammit.')
 def run_group(config,
               database_dir,
+              temp_dir,
               busco_group,
               n_threads,
               config_file,
@@ -81,9 +89,13 @@ def run_group(config,
         user_config = read_yaml(config_file)
         update_nested_dict(config.core, user_config)
 
-    if database_dir:
-        config.core['db_dir'] = database_dir
-    config.core['busco_groups'] = busco_group
+    config.core['db_dir'] = database_dir
+    os.makedirs(database_dir, exist_ok=True)
+    
+    config.core['temp_dir'] = temp_dir
+    create_tempdirs(temp_dir)
+
+    config.core['busco_groups'] = list(busco_group)
 
     if not n_threads and 'n_threads' not in config.core:
         config.core['n_threads'] = 1
@@ -160,10 +172,8 @@ def annotate_cmd(config,
     # Wrangle snakemake files
     workflow_file = os.path.join(__path__, 'workflows', 'dammit.snakefile')
 
-    try:
-        os.mkdir(output_dir)
-    except FileExistsError:
-        pass
+    # Create the output directory
+    os.makedirs(output_dir, exist_ok=True)
 
     workflow_config_file = os.path.join(output_dir, 'run.config.yml')
     print(f'Writing full run config to {workflow_config_file}', file=sys.stderr)
@@ -173,7 +183,7 @@ def annotate_cmd(config,
     cmd = ["snakemake", "-s", workflow_file,
            "--configfiles", workflow_config_file,
            "--directory", output_dir]
-    cmd.extend(snakemake_common_args(config.core['n_threads'], config.core['db_dir']))
+    cmd.extend(snakemake_common_args(config.core['n_threads'], config.core['temp_dir']))
     if dry_run:
         cmd.append('--dry-run')
 
@@ -199,7 +209,9 @@ def databases_cmd(config, install):
     workflow_file = os.path.join(__path__, 'workflows', 'dammit.snakefile')
     database_dir = config.core['db_dir']
 
-    workflow_config_file = os.path.join(database_dir, 'run.config.yml')
+    workflow_config_file = os.path.join(config.core['temp_dir'],
+                                        WORKFLOW_CONFIG_TEMPDIR,
+                                        f'databases.config.{__time__}.yml')
     print(f'Writing full run config to {workflow_config_file}', file=sys.stderr)
     write_yaml(config.core, workflow_config_file)
 
@@ -208,7 +220,7 @@ def databases_cmd(config, install):
     cmd = ["snakemake", "-s", workflow_file, "--configfiles", workflow_config_file]
 
     targets = generate_database_targets(pipeline_config, config)
-    cmd.extend(snakemake_common_args(config.core['n_threads'], database_dir))
+    cmd.extend(snakemake_common_args(config.core['n_threads'], config.core['temp_dir']))
 
     # better way to do this?
     if not install:
@@ -267,9 +279,9 @@ def generate_annotation_targets(pipeline_info, config):
     return targets
 
 
-def snakemake_common_args(n_threads, dammit_db_dir):
-    args = ["--debug-dag", "-p", "--nolock",
-            "--use-conda", "--conda-prefix", dammit_db_dir,
+def snakemake_common_args(n_threads, temp_dir):
+    args = ["-p", "--nolock",
+            "--use-conda", "--conda-prefix", os.path.join(temp_dir, CONDA_ENV_TEMPDIR),
             "--rerun-incomplete", "-k", "--cores", str(n_threads)]
     return args
 

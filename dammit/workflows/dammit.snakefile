@@ -6,7 +6,7 @@ import glob
 
 from dammit.meta import __path__
 
-print('__path__:', __path__)
+print(__path__)
 
 results_dir = config["dammit_dir"]
 logs = config.get("logs_dir", "logs")

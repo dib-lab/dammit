@@ -12,4 +12,4 @@ rule dammit_rename_transcriptome:
         os.path.join(logs_dir, "{transcriptome}.rename.log")
     params:
         basename = config.get("basename", "Txome"),
-    script: f'file:/{__path__}/wrappers/dammit/rename-transcriptome.wrapper.py'
+    script: f'file://{__path__}/wrappers/dammit/rename-transcriptome.wrapper.py'

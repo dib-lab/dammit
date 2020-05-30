@@ -11,6 +11,13 @@ import yaml
 
 from dammit.meta import __path__
 
+DEFAULT_CONFIG_DIR = os.path.join(os.environ['HOME'], '.config', 'dammit')
+DEFAULT_DATABASES_DIR = os.path.join(DEFAULT_CONFIG_DIR, 'databases')
+DEFAULT_TEMP_DIR = os.path.join(DEFAULT_CONFIG_DIR, 'temp')
+CONDA_ENV_TEMPDIR = 'envs'
+WORKFLOW_CONFIG_TEMPDIR = 'configs'
+TEMP_SUBDIRS = [CONDA_ENV_TEMPDIR, WORKFLOW_CONFIG_TEMPDIR]
+
 
 def parse_config():
     '''Parse the default YAML or JSON config files and return them as dictionaries.
@@ -34,6 +41,11 @@ def parse_config():
         except yaml.YAMLError as exc:
             print(exc)
     return config_d, databases_d, pipelines_d
+
+
+def create_tempdirs(root):
+    for child in TEMP_SUBDIRS:
+        os.makedirs(os.path.join(root, child), exist_ok=True)
 
 
 class Config:
