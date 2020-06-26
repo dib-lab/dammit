@@ -1,4 +1,5 @@
 import os
+import shutil
 
 from dammit.config import DEFAULT_TEMP_DIR
 from dammit.meta import __wrappers__
