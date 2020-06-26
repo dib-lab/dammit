@@ -1,7 +1,7 @@
-
 import os
+from dammit.meta import __wrappers__, __path__
 
-DATA_DIR="../../tests/test-data" #"../../tests/test-data/"
+DATA_DIR = os.path.join(__path__, 'tests', 'test-data')
 
 rule test_infernal:
     input: os.path.join(DATA_DIR,"tr-infernal-tblout.txt")
@@ -18,8 +18,7 @@ rule infernal_cmpress:
         "logs/cmpress.log"
     params:
         extra = "",
-    conda: "environment.yml"
-    script: "cmpress.wrapper.py"
+    wrapper: f'file://{__wrappers__}/infernal/cmpress.wrapper.py'
 
 rule cmscan_profile:
     input:
@@ -32,5 +31,4 @@ rule cmscan_profile:
     params:
         extra = "",
     threads: 4
-    conda: "environment.yml"
-    script: "cmscan.wrapper.py"
+    wrapper: f'file://{__wrappers__}/infernal/cmscan.wrapper.py'

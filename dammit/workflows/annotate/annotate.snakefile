@@ -126,10 +126,7 @@ rule cmscan:
     params:
         extra = config['hmmsearch']['params'].get('extra', ''),
     threads: 4
-    conda:
-        f'file://{__path__}/wrappers/infernal/environment.yml'
-    wrapper:
-        f'file://{__path__}/wrappers/infernal/cmscan.wrapper.py'
+    wrapper: f'file://{__wrappers__}/infernal/cmscan.wrapper.py'
 
 rule busco_transcripts:
     input:

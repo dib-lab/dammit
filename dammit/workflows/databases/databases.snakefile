@@ -73,5 +73,4 @@ rule infernal_cmpress:
         os.path.join(config["db_dir"], "cmpress_{database}.log")
     params:
         extra=config["cmpress"]["params"].get("extra", ""),
-    conda: f"file:/{__path__}/wrappers/infernal/environment.yml"
-    script: f"file:/{__path__}/wrappers/infernal/cmpress.wrapper.py"
+    wrapper: f'file://{__wrappers__}/infernal/cmpress.wrapper.py'
