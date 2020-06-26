@@ -1,13 +1,12 @@
-
 import os
 
-DATA_DIR="../../tests/test-data/"
+from dammit.meta import __wrappers__, __path__
 
-## not working atm .. will figure it out later. these tests work in my snakemake-wrappers repo
-# for now, test with: snakemake -s last.rule --use-conda
+DATA_DIR = os.path.join(__path__, 'tests', 'test-data')
 
-rule test_last:
-    input: "test-tr-x-prot.maf", "test-transcript.maf"
+
+#rule test_last:
+#    input: "test-tr-x-prot.maf", "test-transcript.maf"
 
 rule lastdb_transcript:
     input:
@@ -18,9 +17,10 @@ rule lastdb_transcript:
         protein_input = False,
         extra = ""
     log:
-        "logs/lastdb/test-transcript.log"
-    conda: "environment.yml"
-    script: "lastdb.wrapper.py"
+        "test-transcript.log"
+    conda: f'file://{__wrappers__}/last/environment.yml'
+    wrapper: f'file://{__wrappers__}/last/lastdb.wrapper.py'
+
 
 rule lastdb_protein:
     input:
