@@ -3,6 +3,10 @@ from dammit.meta import __path__
 
 
 rule dammit_rename_transcriptome:
+    message:
+        """
+        Reformat and rename FASTA headers for compatibility. 
+        """
     input:
         config["input_transcriptome"],
     output:
@@ -16,7 +20,10 @@ rule dammit_rename_transcriptome:
 
 
 rule dammit_cmscan_to_gff:
-    message: "Given raw input from Infernal's cmscan, convert it to GFF3 and save the results."
+    message: 
+        """
+        Given raw input from Infernal's cmscan, convert it to GFF3 and save the results.
+        """
     input: 
         os.path.join(results_dir,"{transcriptome}.x.{database}.cmscan-tblout.txt")
     output:
