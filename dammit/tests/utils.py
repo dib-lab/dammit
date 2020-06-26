@@ -182,7 +182,7 @@ def runscript(scriptname, args, in_directory=None,
     return status, out, err
     
 
-def run(args, **kwargs):
+def run(*args, **kwargs):
     return runscript('dammit', args, **kwargs)
 
 
