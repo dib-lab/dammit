@@ -1,5 +1,5 @@
 import os
-from dammit.meta import __path__
+from dammit.meta import __path__, __wrappers__
 
 rule transdecoder_longorfs:
     message: "Run TransDecoder.LongOrfs, which fings the longest likely open reading frames."
@@ -100,8 +100,7 @@ rule lastal:
     log:
         os.path.join(logs_dir, '{transcriptome}.x.{database}.lastal.log')
     threads: 8
-    conda: f'file://{__path__}/wrappers/last/environment.yml'
-    script: f'file://{__path__}/wrappers/last/lastal.wrapper.py'
+    wrapper: f'file://{__wrappers__}/last/lastal.wrapper.py'
 
 rule shmlast_crbl:
     input:

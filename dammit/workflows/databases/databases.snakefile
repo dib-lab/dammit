@@ -1,5 +1,5 @@
 import os
-from dammit.meta import __path__
+from dammit.meta import __path__, __wrappers__
 from dammit.config import CONFIG
 
 databases_d = CONFIG.databases
@@ -30,8 +30,7 @@ rule lastdb:
         file_type = "fasta|txt"
     log:
         os.path.join(config["db_dir"], "{database}.{file_type}_lastdb.log")
-    conda: f"file:/{__path__}/wrappers/last/environment.yml"
-    script: f"file:/{__path__}/wrappers/last/lastdb.wrapper.py"
+    wrapper: f"file:/{__wrappers__}/last/lastdb.wrapper.py"
 
 rule hmmpress:
     input:
