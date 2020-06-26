@@ -12,10 +12,8 @@ rule transdecoder_longorfs:
     params:
         extra = config['transdecoder_longorfs']['params'].get('extra', '-m 80 ')
     threads: 4
-    conda: 
-        f'file://{__path__}/wrappers/transdecoder/environment.yml'
     wrapper:
-        f'file://{__path__}/wrappers/transdecoder/transdecoder-longorfs.wrapper.py'
+        f'file://{__wrappers__}/transdecoder/transdecoder-longorfs.wrapper.py'
 
 
 '''
@@ -82,10 +80,8 @@ rule transdecoder_predict:
     params:
         extra= config['transdecoder_predict']['params'].get('extra', '')
     threads: 4
-    conda: 
-        f'file://{__path__}/wrappers/transdecoder/environment.yml'
     wrapper:
-        f'file://{__path__}/wrappers/transdecoder/transdecoder-predict.wrapper.py'
+        f'file://{__wrappers__}/transdecoder/transdecoder-predict.wrapper.py'
 
 
 rule lastal:
