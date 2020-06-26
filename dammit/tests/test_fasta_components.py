@@ -13,6 +13,8 @@ from utils import run, runscript
 
 
 def test_rename_fasta_defaults(tmpdir, datadir):
+    '''The defaults should produce Transcript_0'''
+
     with tmpdir.as_cwd():
         input_fa = datadir('test-transcript.fa')
         names_fn = 'names.csv'
@@ -35,6 +37,7 @@ def test_rename_fasta_defaults(tmpdir, datadir):
 
 
 def test_rename_fasta_basename(tmpdir, datadir):
+    '''--basename Test should produce Test_0'''
     with tmpdir.as_cwd():
         input_fa = datadir('test-transcript.fa')
         names_fn = 'names.csv'
@@ -50,6 +53,8 @@ def test_rename_fasta_basename(tmpdir, datadir):
 
 
 def test_rename_fasta_regex(tmpdir, datadir):
+    '''--split-refex (?P<name>^[a-zA-Z0-9]+) should produce SPAC212'''
+
     with tmpdir.as_cwd():
         input_fa = datadir('test-transcript.fa')
         names_fn = 'names.csv'
@@ -66,6 +71,7 @@ def test_rename_fasta_regex(tmpdir, datadir):
 
 
 def test_rename_fasta_conflicting(tmpdir, datadir):
+    '''--split-refex (?P<name>^[a-zA-Z0-9]+) should override --basename Test'''
     with tmpdir.as_cwd():
         input_fa = datadir('test-transcript.fa')
         names_fn = 'names.csv'
