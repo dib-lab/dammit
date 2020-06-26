@@ -83,6 +83,9 @@ def rename_fasta_cmd(fasta_fn,
     ''' Copy a FASTA file and rename the headers.
     '''
 
+    if split_regex is not None and basename != 'Transcript':
+        print('NOTE: --split-regex supersedes --basename', file=sys.stderr)
+
     rename_fasta(fasta_fn, output_fn, names_fn, basename, split_regex)
 
 
