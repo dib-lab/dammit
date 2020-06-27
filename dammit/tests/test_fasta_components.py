@@ -176,3 +176,21 @@ class TestAnnotateFasta:
 
             sequence_header = list(ReadParser(output_fa))[0].name
             assert sequence_header == 'Transcript_0 len=5662 CDS=0-5661 exon=0-5662 gene=0-5662 mRNA=0-5662 hmm_matches=DEAD:3603-4089,Helicase_C:4206-4548,Helicase_C:5217-5274 three_prime_UTR=5661-5662 homologies=TLH2_SCHPO:0-5661,sp|P0CT33|TLH1_SCHPO:0-5661'
+
+
+class TestBestHits:
+    '''dammit best-hits'''
+
+    def test_defaults(self, tmpdir, datadir):
+        '''extracts the top scoring hit for pom.single.fa against OrthoDB'''
+        with tmpdir.as_cwd():
+            input_maf = datadir('pom.single.fa.x.OrthoDB.maf')
+            output_csv = 'best.csv'
+
+            run('best-hits', input_maf, output_csv)
+
+            hits_df = pd.read_csv(output_csv)
+            assert hits_df.s_name[0] == 'TLH2_SCHPO'
+            assert hits_df.E[0] == 0
+            assert hits_df.score[0] == 10676.0
+            assert hits_df.s_len[0] == 1919
