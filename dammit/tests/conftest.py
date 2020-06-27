@@ -49,14 +49,23 @@ def datadir(tmpdir, request):
 
 @pytest.fixture
 def snakemake_rule(conda_env_dir):
-    def run(rule_path, target=None, extra_args = [], **kwargs):
+    def run(rule_path, target=None, config=None, extra_args = [], **kwargs):
+        if '--config' in extra_args:
+            raise RuntimeError('pass --config to config keyword')
         rule_path = os.path.join(__wrappers__, rule_path)
+
+        args = []
+        if config is not None:
+            args.append('--config')
+            args.append(' '.join((f'{k}={v}' for k, v in config.items())))
+
         args = ['-s', rule_path, '--use-conda', '--conda-prefix', conda_env_dir, '-j', '1']
+        args.extend(extra_args)
         if target is not None:
             if isinstance(target, str):
                 args.append(target)
             else:
                 args.extend(target)
-        args.extend(extra_args)
+        print(' '.join(args))
         return runscript('snakemake', args, **kwargs)
     return run
