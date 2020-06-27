@@ -14,7 +14,7 @@ rule run_busco:
     output:
         "txome_busco/full_table_txome_busco.tsv",
     log:
-        "logs/transcriptome_busco.log"
+        "test-busco.log"
     threads: 8
     params:
         mode="transcriptome",
