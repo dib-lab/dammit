@@ -172,5 +172,33 @@ def test_infernal_cmpress(snakemake_rule, tmpdir, datadir):
         print(out)
         assert os.path.isfile('test-covariance-model.cm.i1i')
         assert os.path.isfile('test-cmpress.log')
-       # print(open('test-cmpress.log').read())
         assert 'Working...    done.' in open('test-cmpress.log').read()
+
+
+def test_infernal_cmscan_dryrun(snakemake_rule, tmpdir, datadir):
+    with tmpdir.as_cwd():
+        datadir('test-covariance-model.cm')
+        datadir('test-transcript.fa')
+        status, out, err = snakemake_rule('infernal/infernal.rule',
+                                           target='infernal_cmscan',
+                                           config={'DATA_DIR': str(tmpdir)},
+                                           extra_args=["-n"])
+
+        assert status == 0
+
+
+@pytest.mark.long
+def test_infernal_cmscan(snakemake_rule, tmpdir, datadir):
+    with tmpdir.as_cwd():
+        datadir('test-covariance-model.cm')
+        datadir('test-transcript.fa')
+        status, out, err = snakemake_rule('infernal/infernal.rule',
+                                           target='infernal_cmscan',
+                                           config={'DATA_DIR': str(tmpdir)})
+
+        print(out)
+        assert os.path.isfile('tr-infernal-tblout.txt')
+        assert os.path.isfile('test-cmscan.log')
+       # print(open('test-cmscan.log').read())
+        assert '[ok]' in open('test-cmscan.log').read()
+

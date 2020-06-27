@@ -23,7 +23,7 @@ rule infernal_cmpress:
         extra = "",
     wrapper: f'file://{__wrappers__}/infernal/cmpress.wrapper.py'
 
-rule cmscan_profile:
+rule infernal_cmscan:
     input:
         fasta=  os.path.join(DATA_DIR,"test-transcript.fa"),
         profile= os.path.join(DATA_DIR,"test-covariance-model.cm.i1i")
