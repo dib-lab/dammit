@@ -118,9 +118,9 @@ def maf_to_gff3(maf_df, tag='', database='',
         data = []
         data.append('ID=homology:{0}'.format(next_ID()))
         data.append('Name={0}'.format(row.s_name))
-        data.append('Target={0} {1} {2} {3}'.format(row.s_name, row.s_start,
-                                                 row.s_start + row.s_aln_len,
-                                                 row.s_strand))
+        data.append('Target={0} {1} {2} {3}'.format(row.s_name, row.s_start + 1,
+                                                    row.s_start + row.s_aln_len,
+                                                    row.s_strand))
         if database:
             data.append('database={0}'.format(database))
 
