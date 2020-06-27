@@ -158,3 +158,21 @@ class TestTranscriptomeStats:
             assert results['n_ambiguous'] == 10
 
             assert round(results['GCperc'], 4) == 0.4152
+
+
+class TestAnnotateFasta:
+    '''dammit annotate-fasta'''
+
+    def test_defaults(self, tmpdir, datadir):
+        '''annotates (renamed) pom.single.fa from provided GFF3 file'''
+        with tmpdir.as_cwd():
+            base_fa = datadir('pom.single.fa')
+            renamed_fa = 'pom.renamed.fa'
+            gff3 = datadir('pom.single.fa.dammit.gff3')
+            output_fa = 'pom.annotated.fa'
+
+            run('rename-fasta', base_fa, renamed_fa, 'names.csv')
+            run('annotate-fasta', renamed_fa, gff3, output_fa)
+
+            sequence_header = list(ReadParser(output_fa))[0].name
+            assert sequence_header == 'Transcript_0 len=5662 CDS=0-5661 exon=0-5662 gene=0-5662 mRNA=0-5662 hmm_matches=DEAD:3603-4089,Helicase_C:4206-4548,Helicase_C:5217-5274 three_prime_UTR=5661-5662 homologies=TLH2_SCHPO:0-5661,sp|P0CT33|TLH1_SCHPO:0-5661'
