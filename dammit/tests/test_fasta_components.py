@@ -194,3 +194,39 @@ class TestBestHits:
             assert hits_df.E[0] == 0
             assert hits_df.score[0] == 10676.0
             assert hits_df.s_len[0] == 1919
+
+
+class TestMafToGFF3:
+    '''dammit maf-to-gff3'''
+
+    def check_pom_gff3(self, filename):
+        raw_gff3 = open(filename).readlines()
+        assert len(raw_gff3) == 47
+
+        row = raw_gff3[1].split('\t')
+        assert row[0] == 'Transcript_0'
+        assert row[3] == '1'
+        assert row[4] == '5661'
+        assert 'TLH2_SCHPO 1 1887' in row[-1]
+
+    def test_maf_input(self, tmpdir, datadir):
+        '''converts raw MAF input to corresponding GFF3'''
+        with tmpdir.as_cwd():
+            input_maf = datadir('pom.single.fa.x.OrthoDB.maf')
+            output_gff3 = 'maf.gff3'
+
+            run('maf-to-gff3', '--dbxref', 'OrthoDB', input_maf, output_gff3)
+
+            self.check_pom_gff3(output_gff3)
+
+
+    def test_csv_input(self, tmpdir, datadir):
+        '''converts shmlast-style MAF CSV input to GFF3'''
+        with tmpdir.as_cwd():
+            input_csv = datadir('pom.single.fa.x.OrthoDB.maf.csv')
+            output_gff3 = 'maf.gff3'
+
+            run('maf-to-gff3', '--dbxref', 'OrthoDB', input_csv, output_gff3)
+
+            self.check_pom_gff3(output_gff3)
+
