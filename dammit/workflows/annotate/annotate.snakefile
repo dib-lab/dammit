@@ -35,10 +35,8 @@ rule hmmsearch:
         #score_threshold=50,
         extra = config['hmmsearch']['params'].get('extra', ''),
     threads: 4
-    conda:
-        f'file://{__path__}/wrappers/hmmer/environment.yml'
     wrapper:
-        f'file://{__path__}/wrappers/hmmer/hmmsearch.wrapper.py'
+        f'file://{__wrappers__}/hmmer/hmmsearch.wrapper.py'
 '''
 
 
@@ -59,10 +57,8 @@ rule hmmscan:
         #score_threshold=50,
         extra = config['hmmscan']['params'].get('extra', ''),
     threads: 4
-    conda:
-        f'file://{__path__}/wrappers/hmmer/environment.yml'
     wrapper:
-        f'file://{__path__}/wrappers/hmmer/hmmscan.wrapper.py'
+        f'file://{__wrappers__}/hmmer/hmmscan.wrapper.py'
 
 
 rule transdecoder_predict:
@@ -111,8 +107,7 @@ rule shmlast_crbl:
     log:
         os.path.join(logs_dir, '{transcriptome}.x.{database}.shmlast.log')
     threads: 8
-    conda: f'file://{__path__}/wrappers/shmlast/environment.yml'
-    script: f'file://{__path__}/wrappers/shmlast/shmlast.wrapper.py'
+    wrapper: f'file://{__wrappers__}/shmlast/shmlast.wrapper.py'
 
 
 rule cmscan:
@@ -145,10 +140,7 @@ rule busco_transcripts:
         database_directory= db_dir,
         #auto_lineage='euk', # enabled in wrapper, but not using this bc it changes output dir structure
         extra = config['busco']['params'].get('extra', ''),
-    conda:
-        f'file://{__path__}/wrappers/busco/environment.yml'
-    wrapper:
-        f'file://{__path__}/wrappers/busco/busco.wrapper.py'
+    wrapper: f'file://{__wrappers__}/busco/busco.wrapper.py'
 
 def aggregate_busco_summaries(w):
     busco_files = expand(os.path.join(results_dir, '{transcriptome}.busco.{busco_db}', "run_{busco_db}", "short_summary.txt"), busco_db = config["busco_groups"], transcriptome=w.transcriptome)
@@ -168,7 +160,7 @@ rule plot_busco_summaries:
     params:
         outdir= os.path.join(results_dir, "busco_summaries")
     conda:
-        f'file://{__path__}/wrappers/busco/environment.yml'
+        f'file://{__path__}/wrappers/busco/environment.yaml'
     shell:
         """
         mkdir -p {params.outdir}

@@ -1,4 +1,5 @@
 import os
+from dammit.meta import __wrappers__, __path__
 
 try:
     DATA_DIR = config['DATA_DIR']
@@ -20,5 +21,4 @@ rule run_busco:
         lineage_path=os.path.join(DATA_DIR, "example-busco-lineage"),
         # optional parameters
         extra="" 
-    conda: "environment.yml"
-    script: "busco.wrapper.py"
+    wrapper: f'file://{__wrappers__}/busco/busco.wrapper.py'

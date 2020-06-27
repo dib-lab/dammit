@@ -15,8 +15,8 @@ rule download_and_gunzip:
     log: os.path.join(config["db_dir"], '{database}.{file_type}.log')
     wildcard_constraints:
         file_type = "hmm|cm|fasta|txt|ini|done"
-    script:
-        f'file:/{__path__}/wrappers/download/wrapper.py'
+    #script:
+    wrapper: f'file:/{__wrappers__}/download/wrapper.py'
 
 rule lastdb:
     input:
@@ -45,8 +45,8 @@ rule hmmpress:
     params:
         extra=config["hmmpress"]["params"].get("extra", ""),
     threads: 4
-    conda: f"file:/{__path__}/wrappers/hmmer/environment.yml"
-    script: f"file:/{__path__}/wrappers/hmmer/hmmpress.wrapper.py"
+    wrapper: f'file://{__wrappers__}/hmmer/hmmpress.wrapper.py'
+
 
 #rule hmmbuild:
 #    input:

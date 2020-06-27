@@ -19,8 +19,7 @@ rule hmmbuild_profile:
     params:
         extra="",
     threads: 4
-    conda: "environment.yml"
-    script: "hmmbuild.wrapper.py"
+    wrapper: f'file://{__wrappers__}/hmmer/hmmbuild.wrapper.py'
 
 rule hmmpress_profile:
     input:
@@ -35,8 +34,7 @@ rule hmmpress_profile:
     params:
         extra="",
     threads: 4
-    conda: "environment.yml"
-    script: "hmmpress.wrapper.py"
+    wrapper: f'file://{__wrappers__}/hmmer/hmmpress.wrapper.py'
 
 rule hmmscan_profile:
     input:
@@ -56,8 +54,7 @@ rule hmmscan_profile:
         #score_threshold=50,
         extra="",
     threads: 4
-    conda: "environment.yml"
-    script: "hmmscan.wrapper.py"
+    wrapper: f'file://{__wrappers__}/hmmer/hmmscan.wrapper.py'
 
 rule hmmsearch_profile:
     input:
@@ -77,5 +74,4 @@ rule hmmsearch_profile:
         #score_threshold=50,
         extra="",
     threads: 4
-    conda: "environment.yml"
-    script: "hmmsearch.wrapper.py"
+    wrapper: f'file://{__wrappers__}/hmmer/hmmsearch.wrapper.py'
