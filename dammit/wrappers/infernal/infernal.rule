@@ -15,7 +15,7 @@ rule infernal_cmpress:
         os.path.join(DATA_DIR,"test-covariance-model.cm.i1m"),
         os.path.join(DATA_DIR,"test-covariance-model.cm.i1p")
     log:
-        "logs/cmpress.log"
+        "test-cmpress.log"
     params:
         extra = "",
     wrapper: f'file://{__wrappers__}/infernal/cmpress.wrapper.py'
@@ -27,7 +27,7 @@ rule cmscan_profile:
     output:
         tblout = os.path.join(DATA_DIR,"tr-infernal-tblout.txt"),
     log:
-        "logs/cmscan.log"
+        "test-cmscan.log"
     params:
         extra = "",
     threads: 4

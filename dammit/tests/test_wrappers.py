@@ -103,3 +103,21 @@ def test_transdecoder_predict(snakemake_rule, tmpdir):
         assert os.path.isfile('test-predict.log')
         assert 'transdecoder is finished' in open('test-predict.log').read()
 
+
+def test_infernal_cmpress_dryrun(snakemake_rule, tmpdir):
+    with tmpdir.as_cwd():
+        status, out, err = snakemake_rule('infernal/infernal.rule', target='infernal_cmpress', extra_args =["-n"])
+
+        assert status == 0
+
+
+@pytest.mark.long
+def test_infernal_cmpress(snakemake_rule, tmpdir):
+    with tmpdir.as_cwd():
+        snakemake_rule('infernal/infernal.rule', target='infernal_cmpress')
+
+        assert os.path.isfile('test-covariance-model.cm.i1i')
+        assert os.path.isfile('test-cmpress.log')
+        #print(open('test-cmpress.log').read())
+        assert 'Working...    done.' in open('test-cmpress.log').read()
+
