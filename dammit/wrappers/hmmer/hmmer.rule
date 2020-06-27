@@ -1,11 +1,15 @@
 import os
 
-DATA_DIR= "../../tests/test-data/"
+try:
+    DATA_DIR = config['DATA_DIR']
+except KeyError:
+    DATA_DIR = os.path.join(__path__, 'tests', 'test-data')
 
 rule test_hmmer:
     input: "hmmscan/test-prot-tbl.txt", "hmmsearch/test-prot-tbl.txt"
 
 rule hmmbuild_profile:
+# not currently using this in dammit
     input:
         os.path.join(DATA_DIR, "test-profile.sto")
     output:

@@ -10,7 +10,7 @@ from snakemake.shell import shell
 
 extra = snakemake.params.get("extra", "")
 
-log = snakemake.log_fmt_shell(stdout=False, stderr=True)
+log = snakemake.log_fmt_shell(stdout=True, stderr=True)
 
 # -F enables overwrite of old (otherwise cmpress will fail if old versions exist)
 shell("cmpress -F {snakemake.input} {log}")

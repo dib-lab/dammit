@@ -1,6 +1,9 @@
 import os
 
-DATA_DIR="../../tests/test-data/"
+try:
+    DATA_DIR = config['DATA_DIR']
+except KeyError:
+    DATA_DIR = os.path.join(__path__, 'tests', 'test-data')
 
 # for now, test with: snakemake -s busco.rule --use-conda
 

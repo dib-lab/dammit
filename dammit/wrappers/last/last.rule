@@ -2,7 +2,10 @@ import os
 
 from dammit.meta import __wrappers__, __path__
 
-DATA_DIR = os.path.join(__path__, 'tests', 'test-data')
+try:
+    DATA_DIR = config['DATA_DIR']
+except KeyError:
+    DATA_DIR = os.path.join(__path__, 'tests', 'test-data')
 
 rule test_last:
     input: "test-tr-x-prot.maf", "test-transcript.maf"
