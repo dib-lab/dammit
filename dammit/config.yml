@@ -6,6 +6,7 @@ transcriptome_name: "PLACEHOLDER"
 output_suffix:
   - .dammit.gff3
   - .dammit.fasta
+basename: "PLACEHOLDER"
 
 ## last ##
 lastal:
@@ -42,7 +43,7 @@ shmlast:
 busco:
   output_suffix: 
     - ".busco.__buscolineage__/run___buscolineage__/short_summary.txt"
-    - .busco_summary_plot.png
+##    - .busco_summary_plot.png
   databases:
     - busco
   db_dir: busco2db

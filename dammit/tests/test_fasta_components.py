@@ -52,7 +52,17 @@ class TestRenameFasta:
 
             renamed_records = list(ReadParser(renamed_fn))
             assert renamed_records[0].name == 'Test_0'
+    
+    def test_basename_bad_chars(self, tmpdir, datadir):
+        '''--basename with invalid characters fails'''
+        with tmpdir.as_cwd():
+            input_fa = datadir('test-transcript.fa')
+            names_fn = 'names.csv'
+            renamed_fn = 'renamed.fa'
 
+            status, out, err = run('rename-fasta', '--basename', 'Test%$', input_fa, renamed_fn, names_fn)
+            assert status == 1
+            assert 'conform' in err
 
     def test_split_regex(self, tmpdir, datadir):
         '''--split-refex (?P<name>^[a-zA-Z0-9]+) should produce SPAC212'''
@@ -208,6 +218,9 @@ class TestMafToGFF3:
         assert row[3] == '1'
         assert row[4] == '5661'
         assert 'TLH2_SCHPO 1 1887' in row[-1]
+        assert ';database=OrthoDB' in row[-1]
+
+        return row
 
     def test_maf_input(self, tmpdir, datadir):
         '''converts raw MAF input to corresponding GFF3'''
@@ -219,7 +232,6 @@ class TestMafToGFF3:
 
             self.check_pom_gff3(output_gff3)
 
-
     def test_csv_input(self, tmpdir, datadir):
         '''converts shmlast-style MAF CSV input to GFF3'''
         with tmpdir.as_cwd():
@@ -230,3 +242,14 @@ class TestMafToGFF3:
 
             self.check_pom_gff3(output_gff3)
 
+    def test_shmlast_input(self, tmpdir, datadir):
+        '''works the same as shmlast-to-gff3'''
+        with tmpdir.as_cwd():
+            input_csv = datadir('pom.single.fa.x.OrthoDB.maf.csv')
+            output_gff3 = 'maf.gff3'
+
+            run('shmlast-to-gff3', '--dbxref', 'OrthoDB', input_csv, output_gff3)
+
+            row = self.check_pom_gff3(output_gff3)
+            assert row[1] == 'shmlast.LAST'
+            assert row[2] == 'conditional_reciprocal_best_LAST'

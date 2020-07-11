@@ -83,6 +83,11 @@ def rename_fasta_cmd(fasta_fn,
     ''' Copy a FASTA file and rename the headers.
     '''
 
+    allowed = r'[a-zA-Z0-9_\-:|\.]+'
+    if not re.fullmatch(allowed, basename):
+        print('ERROR: --basename must conform to {allowed}, please simplify it.', file=sys.stderr)
+        sys.exit(1)
+
     if split_regex is not None and basename != 'Transcript':
         print('NOTE: --split-regex supersedes --basename', file=sys.stderr)
 

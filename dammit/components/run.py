@@ -118,7 +118,7 @@ def run_group(config,
 @run_group.command('annotate')
 @click.pass_obj
 @click.argument('transcriptome')
-@click.option('-n', '--name', default='Transcript',
+@click.option('-n', '--base-name', default='Transcript',
               help='Base name to use for renaming the'\
                    ' input transcripts. The new names'\
                    ' will be of the form <name>_<X>.'\
@@ -141,7 +141,7 @@ def run_group(config,
 @click.option('--dry-run', is_flag=True)
 def annotate_cmd(config,
                  transcriptome,
-                 name,
+                 base_name,
                  evalue,
                  output_dir,
                  user_database,
@@ -164,6 +164,7 @@ def annotate_cmd(config,
         output_dir = os.path.abspath(transcriptome_name + config.core["dammit_dir_suffix"])
     config.core['dammit_dir'] = output_dir
     config.core['input_transcriptome'] = os.path.abspath(transcriptome)
+    config.core['basename'] = basename
 
     config.core['user_dbs'] = wrangle_user_databases(user_database)
 
