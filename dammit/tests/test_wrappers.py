@@ -204,6 +204,7 @@ def test_infernal_cmscan(snakemake_rule, tmpdir, datadir):
 def test_busco_dryrun(snakemake_rule, tmpdir, datadir):
     with tmpdir.as_cwd():
         datadir('target.fa')
+        datadir('busco-config.ini')
         status, out, err = snakemake_rule('busco/busco.rule',
                                            target='run_busco',
                                            config={'DATA_DIR': str(tmpdir)},
@@ -212,17 +213,123 @@ def test_busco_dryrun(snakemake_rule, tmpdir, datadir):
         assert status == 0
 
 
-#@pytest.mark.long
-#def test_busco(snakemake_rule, tmpdir, datadir):
+@pytest.mark.long
+def test_busco(snakemake_rule, tmpdir, datadir):
+    with tmpdir.as_cwd():
+        datadir('target.fa')
+        datadir('busco-config.ini')
+        status, out, err = snakemake_rule('busco/busco.rule',
+                                           target='run_busco',
+                                           config={'DATA_DIR': str(tmpdir)})
+
+        print(out)
+        #assert os.path.isfile('txome_busco/full_table_txome_busco.tsv')
+        assert os.path.isfile('test-busco.log')
+        print(open('test-busco.log').read())
+        assert 'Results from dataset metazoa_odb10' in open('test-busco.log').read()
+        assert "C:0.1%[S:0.1%,D:0.0%],F:0.0%,M:99.9%,n:954" in open('test-busco.log').read()
+        assert 'BUSCO analysis done.' in open('test-busco.log').read()
+
+
+# TODO: explicitly test busco configuration?
+
+def test_hmmscan_dryrun(snakemake_rule, tmpdir, datadir):
+    with tmpdir.as_cwd():
+        datadir('test-protein.fa')
+        #datadir('test-protein-multi.fa')
+        datadir('test-profile.sto')
+        status, out, err = snakemake_rule('hmmer/hmmer.rule',
+                                           target='hmmscan_profile',
+                                           config={'DATA_DIR': str(tmpdir)},
+                                           extra_args=["-n"])
+
+        assert status == 0
+
+def test_hmmscan(snakemake_rule, tmpdir, datadir):
+    with tmpdir.as_cwd():
+        datadir('test-protein.fa')
+        datadir('test-profile.hmm')
+        status, out, err = snakemake_rule('hmmer/hmmer.rule',
+                                           target='hmmscan_profile',
+                                           config={'DATA_DIR': str(tmpdir)})
+
+
+        # check hmmpress
+        assert "Pressed and indexed 1 HMMs (1 names and 1 accessions)." in open('hmmpress.log').read()
+        assert "Profiles (remainder) pressed into: test-profile.hmm.h3p" in open('hmmpress.log').read()
+        # check hmmscan
+        assert os.path.isfile('hmmscan.log')
+        ### not getting any hits in here; prior test on same data (in test_hmmer.py found 2 hits)
+        print(open('hmmscan/test-prot-tbl.txt').read())
+        print(open('hmmscan/test-prot-out.txt').read())
+
+
+def test_hmmpress_dryrun(snakemake_rule, tmpdir, datadir):
+    with tmpdir.as_cwd():
+        datadir('test-profile.hmm')
+        status, out, err = snakemake_rule('hmmer/hmmer.rule',
+                                           target='hmmpress_profile',
+                                           config={'DATA_DIR': str(tmpdir)},
+                                           extra_args=["-n"])
+
+        assert status == 0
+
+def test_hmmpress(snakemake_rule, tmpdir, datadir):
+    with tmpdir.as_cwd():
+        datadir('test-profile.hmm')
+        status, out, err = snakemake_rule('hmmer/hmmer.rule',
+                                           target='hmmpress_profile',
+                                           config={'DATA_DIR': str(tmpdir)})
+
+        assert os.path.isfile('hmmpress.log')
+        # check hmmpress
+        assert "Pressed and indexed 1 HMMs (1 names and 1 accessions)." in open('hmmpress.log').read()
+        assert "Profiles (remainder) pressed into: test-profile.hmm.h3p" in open('hmmpress.log').read()
+
+
+def test_hmmbuild_dryrun(snakemake_rule, tmpdir, datadir):
+    with tmpdir.as_cwd():
+        datadir('test-profile.sto')
+        status, out, err = snakemake_rule('hmmer/hmmer.rule',
+                                           target='hmmbuild_profile',
+                                           config={'DATA_DIR': str(tmpdir)},
+                                           extra_args=["-n"])
+
+        assert status == 0
+
+def test_hmmbuild(snakemake_rule, tmpdir, datadir):
+    with tmpdir.as_cwd():
+        datadir('test-profile.sto')
+        status, out, err = snakemake_rule('hmmer/hmmer.rule',
+                                           target='hmmbuild_profile',
+                                           config={'DATA_DIR': str(tmpdir)})
+
+        assert os.path.isfile('test-profile-hmmbuild.log')
+        #check hmmbuild
+        assert all (("1     Ribosomal_L22        11354   603   325" in open("test-profile-hmmbuild.log").read(),
+                   "17.71  0.590 Ribosomal protein L22p/L17e" in open("test-profile-hmmbuild.log").read()))
+
+
+
+#def test_download_and_gunzip(snakemake_rule, tmpdir, datadir):
 #    with tmpdir.as_cwd():
 #        datadir('target.fa')
-#        status, out, err = snakemake_rule('busco/busco.rule',
-#                                           target='run_busco',
-#                                           config={'DATA_DIR': str(tmpdir)})
+#        status, out, err = snakemake_rule('download/shmlast.rule',
+#                                           target='',
+#                                           config={'DATA_DIR': str(tmpdir)},
+#                                           extra_args=["-n"])
 #
-#        print(out)
-#        assert os.path.isfile('txome_busco/full_table_txome_busco.tsv')
-#        assert os.path.isfile('test-busco.log')
-#        print(open('test-busco.log').read())
-#        #assert '[ok]' in open('test-busco.log').read()
+#        assert status == 0
+
+
+#def test_shmlast_crbl_dryrun(snakemake_rule, tmpdir, datadir):
+#    with tmpdir.as_cwd():
+#        datadir('target.fa')
+#        status, out, err = snakemake_rule('shmlast/shmlast.rule',
+#                                           target='',
+#                                           config={'DATA_DIR': str(tmpdir)},
+#                                           extra_args=["-n"])
+#
+#        assert status == 0
+
 

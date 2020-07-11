@@ -10,7 +10,8 @@ except KeyError:
 
 rule run_busco:
     input:
-        os.path.join(DATA_DIR, "target.fa")
+       fasta= os.path.join(DATA_DIR, "target.fa"),
+       config=os.path.join(DATA_DIR, "busco-config.ini"),
     output:
         "txome_busco/full_table_txome_busco.tsv",
     log:
@@ -18,7 +19,9 @@ rule run_busco:
     threads: 8
     params:
         mode="transcriptome",
-        lineage_path=os.path.join(DATA_DIR, "example-busco-lineage"),
+        lineage="metazoa",
+        database_directory="./",
         # optional parameters
+        #lineage_path=os.path.join(DATA_DIR, "example-busco-lineage"),
         extra="" 
     wrapper: f'file://{__wrappers__}/busco/busco.wrapper.py'

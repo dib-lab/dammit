@@ -1,4 +1,5 @@
 import os
+from dammit.meta import __wrappers__, __path__
 
 try:
     DATA_DIR = config['DATA_DIR']
@@ -15,7 +16,7 @@ rule hmmbuild_profile:
     output:
         "test-profile.hmm"
     log:
-        "logs/test-profile-hmmbuild.log"
+        "test-profile-hmmbuild.log"
     params:
         extra="",
     threads: 4
@@ -30,7 +31,7 @@ rule hmmpress_profile:
         "test-profile.hmm.h3m",
         "test-profile.hmm.h3p"
     log:
-        "logs/hmmpress.log"
+        "hmmpress.log"
     params:
         extra="",
     threads: 4
@@ -39,6 +40,7 @@ rule hmmpress_profile:
 rule hmmscan_profile:
     input:
         fasta=os.path.join(DATA_DIR,"test-protein.fa"),
+        #fasta=os.path.join(DATA_DIR,"test-protein-multi.fa"),
         profile="test-profile.hmm.h3f",
     output:
         # only one of these is required
@@ -47,9 +49,9 @@ rule hmmscan_profile:
         pfamtblout="hmmscan/test-prot-pfamtbl.txt", # save table of hits and domains to file, in Pfam format <f>
         outfile="hmmscan/test-prot-out.txt", # Direct the main human-readable output to a file <f> instead of the default stdout.
     log:
-        "logs/hmmscan.log"
+        "hmmscan.log"
     params:
-        evalue_threshold=0.00001,
+        evalue_threshold=1.0,  #just for test data -- recommended default 0.00001,
         # if bitscore threshold provided, hmmscan will use that instead
         #score_threshold=50,
         extra="",
@@ -67,7 +69,7 @@ rule hmmsearch_profile:
         alignment_hits="hmmsearch/test-prot-alignment-hits.txt", # Save a multiple alignment of all significant hits (those satisfying inclusion thresholds) to the file <f>
         outfile="hmmsearch/test-prot-out.txt", # Direct the main human-readable output to a file <f> instead of the default stdout. 
     log:
-        "logs/hmmsearch.log"
+        "hmmsearch.log"
     params:
         evalue_threshold=0.00001,
         # if bitscore threshold provided, hmmsearch will use that instead
