@@ -259,9 +259,6 @@ class TestMafToGFF3:
 class TestHMMERToGFF3:
     '''dammit hmmscan-to-gff3'''
 
-    def check_gff3(self, filename):
-        pass
-
     def test_defaults(self, tmpdir, datadir):
         '''converts hmmscan tbl to proper GFF3'''
         with tmpdir.as_cwd():
@@ -270,5 +267,20 @@ class TestHMMERToGFF3:
             expected_gff3 = datadir('test-protein-x-pfam-a.gff3')
 
             run('hmmscan-to-gff3', '--dbxref', 'Pfam', input_tbl, output_gff3)
+
+            assert filecmp.cmp(output_gff3, expected_gff3, shallow=False)
+
+
+class TestInfernalToGFF3:
+    '''dammit cmscan-to-gff3'''
+
+    def test_defaults(self, tmpdir, datadir):
+        '''converts cmscan tbl to proper GFF3'''
+        with tmpdir.as_cwd():
+            input_tbl = datadir('rnaseP.tbl')
+            output_gff3 = 'rnaseP.out.gff3'
+            expected_gff3 = datadir('rnaseP.tbl.gff3')
+
+            run('cmscan-to-gff3', '--dbxref', 'Rfam', input_tbl, output_gff3)
 
             assert filecmp.cmp(output_gff3, expected_gff3, shallow=False)
