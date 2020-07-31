@@ -284,3 +284,31 @@ class TestInfernalToGFF3:
             run('cmscan-to-gff3', '--dbxref', 'Rfam', input_tbl, output_gff3)
 
             assert filecmp.cmp(output_gff3, expected_gff3, shallow=False)
+
+
+class TestMergeGFF3:
+    '''dammit merge-gff3'''
+
+    def test_defaults(self, tmpdir, datadir):
+        '''merged gff3 files are sane'''
+        with tmpdir.as_cwd():
+            input_gff3_1 = datadir('test-protein-x-pfam-a.gff3')
+            input_gff3_2 = datadir('rnaseP.tbl.gff3')
+            expected = datadir('merged.gff3')
+            actual = 'actual.gff3'
+
+            run('merge-gff3', input_gff3_1, input_gff3_2, actual)
+
+            assert filecmp.cmp(expected, actual, shallow=False)
+
+    def test_ordering(self, tmpdir, datadir):
+        '''merged gff3 files are agnostic to input order'''
+        with tmpdir.as_cwd():
+            input_gff3_1 = datadir('test-protein-x-pfam-a.gff3')
+            input_gff3_2 = datadir('rnaseP.tbl.gff3')
+            expected = datadir('merged.gff3')
+            actual = 'actual.gff3'
+
+            run('merge-gff3', input_gff3_2, input_gff3_1, actual)
+
+            assert filecmp.cmp(expected, actual, shallow=False)
