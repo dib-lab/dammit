@@ -3,7 +3,7 @@ import shutil
 
 from dammit.config import DEFAULT_TEMP_DIR
 from dammit.meta import __wrappers__
-from utils import runscript
+from .utils import runscript
 
 import pytest
 

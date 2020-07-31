@@ -3,13 +3,14 @@
 # * dammit transcriptome-stats
 # * dammit annotate-fasta
 
+import filecmp
 import json
 import os
 
 from khmer import ReadParser
 import pandas as pd
 
-from utils import run, runscript
+from .utils import run, runscript
 
 class TestRenameFasta:
     '''dammit rename-fasta'''
@@ -253,3 +254,21 @@ class TestMafToGFF3:
             row = self.check_pom_gff3(output_gff3)
             assert row[1] == 'shmlast.LAST'
             assert row[2] == 'conditional_reciprocal_best_LAST'
+
+
+class TestHMMERToGFF3:
+    '''dammit hmmscan-to-gff3'''
+
+    def check_gff3(self, filename):
+        pass
+
+    def test_defaults(self, tmpdir, datadir):
+        '''converts hmmscan tbl to proper GFF3'''
+        with tmpdir.as_cwd():
+            input_tbl = datadir('test-protein-x-pfam-a.tbl')
+            output_gff3 = 'protein.gff3'
+            expected_gff3 = datadir('test-protein-x-pfam-a.gff3')
+
+            run('hmmscan-to-gff3', '--dbxref', 'Pfam', input_tbl, output_gff3)
+
+            assert filecmp.cmp(output_gff3, expected_gff3, shallow=False)
