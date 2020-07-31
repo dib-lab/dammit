@@ -8,7 +8,7 @@ __license__ = "MIT"
 from snakemake.shell import shell
 
 extra = snakemake.params.get("extra", "")
-log = snakemake.log_fmt_shell(stdout=False, stderr=True)
+log = snakemake.log_fmt_shell(stdout=True, stderr=True)
 
 evalue = snakemake.params.get("evalue", "0.000001")
 
