@@ -35,7 +35,7 @@ from dammit.components.config import config_group
 
 @cloup.group(help=f'\b\ndammit: {__description__}\n'\
                   f'v{__version__}, {__year__}\n'\
-                  f'by {" ".join(__authors__)}',
+                  f'by {" and ".join(__authors__)}',
              align_sections=True)
 @click.version_option(version=__version__, message='%(version)s')
 @click.pass_context
