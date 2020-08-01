@@ -360,3 +360,13 @@ class TestConfigInfo:
             assert item in out
         
         assert out.count('.config/dammit') == 3
+    
+    def test_busco_groups(self):
+        '''busco-groups contains enough entries'''
+        status, out, err = run('config', 'busco-groups')
+        assert status == 0
+        
+        groups = out.split(' ')
+        assert 'bacteria_odb10' in groups
+        assert 'solanales_odb10' in groups
+        
