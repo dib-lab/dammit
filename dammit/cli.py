@@ -37,7 +37,7 @@ from dammit.components.config import config_group
                   f'v{__version__}, {__year__}\n'\
                   f'by {" ".join(__authors__)}',
              align_sections=True)
-@click.version_option(version=__version__)
+@click.version_option(version=__version__, message='%(version)s')
 @click.pass_context
 def main(ctx):
     logger = logging.getLogger('dammit.component')

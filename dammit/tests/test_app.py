@@ -7,15 +7,9 @@
 import os
 import stat
 
-from dammit.app import DammitApp
-
-from utils import datadir, runscript
-
+from .utils import run
 
 PATH_BACKUP = os.environ['PATH']
-
-def run(args, **kwargs):
-    return runscript('dammit', args, **kwargs)
 
 
 def test_dammit_version():
@@ -23,7 +17,7 @@ def test_dammit_version():
     '''
 
     from dammit.meta import __version__
-    status, out, err = run(['--version'])
+    status, out, err = run('--version')
     print(status, out, err)
     assert status == 0
-    assert out.strip() ==  'dammit {0}'.format(__version__)
+    assert out.strip() ==  __version__
