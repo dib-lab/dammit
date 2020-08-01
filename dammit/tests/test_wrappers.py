@@ -310,18 +310,6 @@ def test_hmmbuild(snakemake_rule, tmpdir, datadir):
                    "17.71  0.590 Ribosomal protein L22p/L17e" in open("test-profile-hmmbuild.log").read()))
 
 
-
-#def test_download_and_gunzip(snakemake_rule, tmpdir, datadir):
-#    with tmpdir.as_cwd():
-#        datadir('target.fa')
-#        status, out, err = snakemake_rule('download/shmlast.rule',
-#                                           target='',
-#                                           config={'DATA_DIR': str(tmpdir)},
-#                                           extra_args=["-n"])
-#
-#        assert status == 0
-
-
 def test_shmlast_crbl_dryrun(snakemake_rule, tmpdir, datadir):
     with tmpdir.as_cwd():
         datadir('test-transcript.fa')
@@ -332,6 +320,7 @@ def test_shmlast_crbl_dryrun(snakemake_rule, tmpdir, datadir):
                                            extra_args=["-n"])
 
         assert status == 0
+
 
 def test_shmlast_crbl(snakemake_rule, tmpdir, datadir):
     with tmpdir.as_cwd():
@@ -346,4 +335,33 @@ def test_shmlast_crbl(snakemake_rule, tmpdir, datadir):
         assert "--- Begin Task Execution ---" in open("test-shmlast-crbl.log").read()
         assert all(("2.7e-88,2.5e-76,87.56863623584101,0,310.9231784374275,158,0,1888" in open("transcripts.x.pep.reduced.shmlast_crbl.csv").read(),
                     "SPAC212_RecQ_type_DNA_helicase_TRANSCRIPT" in open("transcripts.x.pep.reduced.shmlast_crbl.csv").read()))
+
+
+def test_download_and_gunzip_dryrun(snakemake_rule, tmpdir, datadir):
+    with tmpdir.as_cwd():
+        datadir('test-transcript.fa')
+        status, out, err = snakemake_rule('download/download.rule',
+                                           target='download_and_gunzip_url',
+                                           config={'DATA_DIR': str(tmpdir)},
+                                           extra_args=["-n"])
+
+        assert status == 0
+
+def test_download_and_gunzip_url(snakemake_rule, tmpdir, datadir):
+    with tmpdir.as_cwd():
+        datadir('test-transcript.fa')
+        status, out, err = snakemake_rule('download/download.rule',
+                                           target='download_and_gunzip_url')
+                                           #config={'DATA_DIR': str(tmpdir)})
+
+        assert status == 0
+
+def test_download_and_gunzip_url_md5(snakemake_rule, tmpdir, datadir):
+    with tmpdir.as_cwd():
+        datadir('test-transcript.fa')
+        status, out, err = snakemake_rule('download/download.rule',
+                                           target='download_and_gunzip_urL_md5')
+                                           #config={'DATA_DIR': str(tmpdir)})
+
+        assert status == 0
 
