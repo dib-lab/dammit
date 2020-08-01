@@ -15,7 +15,7 @@ rule download_and_gunzip:
     log: os.path.join(config["db_dir"], '{database}.{file_type}.log')
     wildcard_constraints:
         file_type = "hmm|cm|fasta|txt|ini|done"
-    script: f'file:/{__wrappers__}/download/wrapper.py'
+    script: f'file://{__wrappers__}/download/wrapper.py'
 
 rule lastdb:
     input:
