@@ -6,6 +6,7 @@
 import filecmp
 import json
 import os
+import yaml
 
 from khmer import ReadParser
 import pandas as pd
@@ -312,3 +313,50 @@ class TestMergeGFF3:
             run('merge-gff3', input_gff3_2, input_gff3_1, actual)
 
             assert filecmp.cmp(expected, actual, shallow=False)
+
+
+class TestConfigInfo:
+    '''dammit config'''
+
+    def test_show_default_core(self, tmpdir):
+        '''show-defaults core produces reasonable yaml'''
+
+        status, out, err = run('config', 'show-default', 'core')
+        assert status == 0
+
+        data = yaml.safe_load(out)
+
+        assert data['basename'] == 'PLACEHOLDER'
+        assert data['dammit_dir'] == 'PLACEHOLDER.dammit'
+        assert data['dammit_dir_suffix'] == '.dammit'
+        assert data['input_transcriptome'] == 'PLACEHOLDER.fa'
+
+    def test_show_default_databases(self, tmpdir):
+        '''show-defaults databases produces reasonable yaml'''
+
+        status, out, err = run('config', 'show-default', 'databases')
+        assert status == 0
+
+        data = yaml.safe_load(out)
+
+        assert set(['OrthoDB', 'Pfam-A', 'Rfam', 'busco', 'busco', 'nr']) < set(data.keys())
+
+    def test_show_default_pipelines(self, tmpdir):
+        '''show-defaults pipelines produces reasonable yaml'''
+
+        status, out, err = run('config', 'show-default', 'pipelines')
+        assert status == 0
+
+        data = yaml.safe_load(out)
+
+        assert set(['default', 'full', 'nr', 'quick']) <= set(data['pipelines'].keys())
+    
+    def test_show_directories(self):
+        '''show-directories contains the right keys'''
+        status, out, err = run('config', 'show-directories')
+        assert status == 0
+
+        for item in ['Databases:', 'Temp root:', 'Temp subdirs:']:
+            assert item in out
+        
+        assert out.count('.config/dammit') == 3

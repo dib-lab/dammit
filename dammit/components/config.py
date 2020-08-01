@@ -35,15 +35,16 @@ def config_group(ctx):
               default=DEFAULT_TEMP_DIR,
               envvar='DAMMIT_TEMP_DIR',
               hidden=True)
-def show_directories_cmd(database_dir, temp_dir):
+@click.option('--save', default='-', type=click.File('w'))
+def show_directories_cmd(database_dir, temp_dir, save):
     '''List dammit directory locations.
     
     Locations come either from defaults or environment variables.'''
 
-    print('Databases:', database_dir, file=sys.stderr)
-    print('Temp root:', temp_dir, file=sys.stderr)
+    print('Databases:', database_dir, file=save)
+    print('Temp root:', temp_dir, file=save)
     print('Temp subdirs:', *(os.path.join(temp_dir, child) for child in TEMP_SUBDIRS),
-          file=sys.stderr)
+          file=save)
 
 
 @config_group.command('clean-temp')
