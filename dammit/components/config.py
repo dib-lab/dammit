@@ -82,8 +82,9 @@ def show_default_cmd(defaults, config_file, save):
 
 @config_group.command('busco-groups')
 @click.pass_obj
-def busco_groups_cmd(defaults):
+@click.option('--save', default='-', type=click.File('w'))
+def busco_groups_cmd(defaults, save):
     ''' Lists the available BUSCO group databases.'''
 
     db = defaults['databases']
-    click.echo(' '.join(db['BUSCO']['groups'].keys()))
+    save.write(' '.join(db['busco']['lineages']))
