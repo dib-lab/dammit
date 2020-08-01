@@ -61,27 +61,6 @@ def touch(filename):
     os.chmod(filename, stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
 
 
-@fixture
-def datadir(tmpdir, request):
-    '''
-    Fixture responsible for locating the test data directory and copying it
-    into a temporary directory.
-    '''
-    filename   = request.module.__file__
-    test_dir   = os.path.dirname(filename)
-    data_dir   = os.path.join(test_dir, 'test-data')
-
-    def getter(filename, as_str=True):
-        filepath = tmpdir.join(filename)
-        shutil.copyfile(os.path.join(data_dir, filename),
-                        filepath)
-        if as_str:
-            return str(filepath)
-        return filepath
-
-    return getter
-
-
 '''
 These script running functions were taken from the khmer project:
 https://github.com/dib-lab/khmer/blob/master/tests/khmer_tst_utils.py
