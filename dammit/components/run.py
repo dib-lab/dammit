@@ -91,7 +91,7 @@ def run_group(config,
 
     config.core['db_dir'] = database_dir
     os.makedirs(database_dir, exist_ok=True)
-    
+
     config.core['temp_dir'] = temp_dir
     create_tempdirs(temp_dir)
 
@@ -287,7 +287,7 @@ def generate_annotation_targets(pipeline_info, config):
 
 
 def snakemake_common_args(n_threads, temp_dir):
-    args = ["-p", "--nolock",
+    args = ["-p", "--nolock", "--conda-frontend", "mamba",
             "--use-conda", "--conda-prefix", os.path.join(temp_dir, CONDA_ENV_TEMPDIR),
             "--rerun-incomplete", "-k", "--cores", str(n_threads)]
     return args

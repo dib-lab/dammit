@@ -47,8 +47,8 @@ def main():
                                 'khmer>=2.0',
                                 'click',
                                 'ope',
-                                'shmlast>=1.2',
-                                'snakemake==5.15'],
+                                'shmlast>=1.4',
+                                'snakemake==5.20.1'],
             include_package_data = True,
             zip_safe = False,  )
 
