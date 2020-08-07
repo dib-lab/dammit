@@ -47,7 +47,7 @@ else:
 # all other params should be entered in "extra" param
 extra = snakemake.params.get("extra", "")
 
-log = snakemake.log_fmt_shell(stdout=False, stderr=True)
+log = snakemake.log_fmt_shell(stdout=True, stderr=True)
 
 shell(
     "hmmscan {out_cmd} {thresh_cmd} --cpu {snakemake.threads}"

@@ -1,0 +1,26 @@
+import os
+from dammit.meta import __wrappers__, __path__
+
+try:
+    DATA_DIR = config['DATA_DIR']
+except KeyError:
+    DATA_DIR = os.path.join(__path__, 'tests', 'test-data')
+
+rule test_shmlast:
+    input: "transcripts.x.pep.reduced.shmlast_crbl.csv"
+
+rule shmlast_crbl:
+    input:
+        query = os.path.join(DATA_DIR, "test-transcript.fa"),
+        database = os.path.join(DATA_DIR, "pep.reduced.fa"),
+    output:
+         "transcripts.x.pep.reduced.shmlast_crbl.csv"
+    params:
+        search_type="crbl",
+        #evalue = ,
+        extra = "" 
+    threads: 1
+    log:
+        "test-shmlast-crbl.log"
+    wrapper: f'file://{__wrappers__}/shmlast/shmlast.wrapper.py'
+

@@ -59,7 +59,7 @@ def snakemake_rule(conda_env_dir):
             args.append('--config')
             args.append(' '.join((f'{k}={v}' for k, v in config.items())))
 
-        args = ['-s', rule_path, '--use-conda', '--conda-prefix', conda_env_dir, '-j', '1']
+        args.extend(['-s', rule_path, '--use-conda', '--conda-prefix', conda_env_dir, '-j', '1'])
         args.extend(extra_args)
         if target is not None:
             if isinstance(target, str):
