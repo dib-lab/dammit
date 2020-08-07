@@ -1,7 +1,7 @@
 import os
 import shutil
 
-from dammit.config import DEFAULT_TEMP_DIR
+from dammit.config import create_tempdirs, CONDA_ENV_TEMPDIR
 from dammit.meta import __wrappers__
 from .utils import runscript
 
@@ -19,11 +19,20 @@ def pytest_itemcollected(item):
         item._nodeid = ' '.join((pref, suf))
 
 
-@pytest.fixture
-def conda_env_dir():
-    TEST_ENV_DIR = os.path.join(DEFAULT_TEMP_DIR, 'test-envs')
-    os.makedirs(TEST_ENV_DIR, exist_ok=True)
-    return TEST_ENV_DIR
+@pytest.fixture(scope="session")
+def monkeysession(request):
+    from _pytest.monkeypatch import MonkeyPatch
+    mpatch = MonkeyPatch()
+    yield mpatch
+    mpatch.undo()
+
+
+@pytest.fixture(scope='session', autouse=True)
+def setup_test_environment(monkeysession, tmpdir_factory):
+    testing_temp_dir = tmpdir_factory.mktemp('dammit-testing-temp-base')
+    create_tempdirs(testing_temp_dir)
+    monkeysession.setenv('DAMMIT_TEMP_DIR', str(testing_temp_dir))
+    return testing_temp_dir
 
 
 @pytest.fixture
@@ -48,7 +57,9 @@ def datadir(tmpdir, request):
 
 
 @pytest.fixture
-def snakemake_rule(conda_env_dir):
+def snakemake_rule(setup_test_environment):
+    conda_env_dir = os.path.join(setup_test_environment, CONDA_ENV_TEMPDIR)
+
     def run(rule_path, target=None, config=None, extra_args = [], **kwargs):
         if '--config' in extra_args:
             raise RuntimeError('pass --config to config keyword')

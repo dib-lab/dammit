@@ -1,6 +1,6 @@
 import os
 import pytest
-from utils import run, runscript
+from .utils import run, runscript
 
 
 def test_lastdb_transcript_dryrun(snakemake_rule, tmpdir, datadir):

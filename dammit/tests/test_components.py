@@ -358,8 +358,6 @@ class TestConfigInfo:
 
         for item in ['Databases:', 'Temp root:', 'Temp subdirs:']:
             assert item in out
-        
-        assert out.count('.config/dammit') == 3
     
     def test_busco_groups(self):
         '''busco-groups contains enough entries'''
