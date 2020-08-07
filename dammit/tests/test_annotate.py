@@ -35,15 +35,6 @@ def compare_gff(fn_a, fn_b):
 
 class TestDammitAnnotate:
 
-    def setup_method(self):
-        '''This was fun to diagnose! Because the acceptance tests are actually
-        being executed in the current namespace with eval, this global generator
-        was retaining its state between tests. Oops!
-        '''
-
-        gff3.next_ID = gff3.id_gen_wrapper()
-        self.maxDiff = None
-
     @pytest.mark.long
     @pytest.mark.requires_databases
     def test_annotate_basic(self, tmpdir, datadir):

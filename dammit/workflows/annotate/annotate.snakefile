@@ -1,5 +1,5 @@
 import os
-from dammit.meta import __path__
+from dammit.meta import __path__, __wrappers__
 
 rule transdecoder_longorfs:
     message: "Run TransDecoder.LongOrfs, which fings the longest likely open reading frames."
@@ -12,10 +12,8 @@ rule transdecoder_longorfs:
     params:
         extra = config['transdecoder_longorfs']['params'].get('extra', '-m 80 ')
     threads: 4
-    conda: 
-        f'file://{__path__}/wrappers/transdecoder/environment.yml'
     wrapper:
-        f'file://{__path__}/wrappers/transdecoder/transdecoder-longorfs.wrapper.py'
+        f'file://{__wrappers__}/transdecoder/transdecoder-longorfs.wrapper.py'
 
 
 '''
@@ -37,10 +35,8 @@ rule hmmsearch:
         #score_threshold=50,
         extra = config['hmmsearch']['params'].get('extra', ''),
     threads: 4
-    conda:
-        f'file://{__path__}/wrappers/hmmer/environment.yml'
     wrapper:
-        f'file://{__path__}/wrappers/hmmer/hmmsearch.wrapper.py'
+        f'file://{__wrappers__}/hmmer/hmmsearch.wrapper.py'
 '''
 
 
@@ -61,10 +57,8 @@ rule hmmscan:
         #score_threshold=50,
         extra = config['hmmscan']['params'].get('extra', ''),
     threads: 4
-    conda:
-        f'file://{__path__}/wrappers/hmmer/environment.yml'
     wrapper:
-        f'file://{__path__}/wrappers/hmmer/hmmscan.wrapper.py'
+        f'file://{__wrappers__}/hmmer/hmmscan.wrapper.py'
 
 
 rule transdecoder_predict:
@@ -82,10 +76,8 @@ rule transdecoder_predict:
     params:
         extra= config['transdecoder_predict']['params'].get('extra', '')
     threads: 4
-    conda: 
-        f'file://{__path__}/wrappers/transdecoder/environment.yml'
     wrapper:
-        f'file://{__path__}/wrappers/transdecoder/transdecoder-predict.wrapper.py'
+        f'file://{__wrappers__}/transdecoder/transdecoder-predict.wrapper.py'
 
 
 rule lastal:
@@ -100,8 +92,7 @@ rule lastal:
     log:
         os.path.join(logs_dir, '{transcriptome}.x.{database}.lastal.log')
     threads: 8
-    conda: f'file://{__path__}/wrappers/last/environment.yml'
-    script: f'file://{__path__}/wrappers/last/lastal.wrapper.py'
+    wrapper: f'file://{__wrappers__}/last/lastal.wrapper.py'
 
 rule shmlast_crbl:
     input:
@@ -116,8 +107,7 @@ rule shmlast_crbl:
     log:
         os.path.join(logs_dir, '{transcriptome}.x.{database}.shmlast.log')
     threads: 8
-    conda: f'file://{__path__}/wrappers/shmlast/environment.yml'
-    script: f'file://{__path__}/wrappers/shmlast/shmlast.wrapper.py'
+    wrapper: f'file://{__wrappers__}/shmlast/shmlast.wrapper.py'
 
 
 rule cmscan:
@@ -131,10 +121,7 @@ rule cmscan:
     params:
         extra = config['hmmsearch']['params'].get('extra', ''),
     threads: 4
-    conda:
-        f'file://{__path__}/wrappers/infernal/environment.yml'
-    wrapper:
-        f'file://{__path__}/wrappers/infernal/cmscan.wrapper.py'
+    wrapper: f'file://{__wrappers__}/infernal/cmscan.wrapper.py'
 
 rule busco_transcripts:
     input:
@@ -153,10 +140,7 @@ rule busco_transcripts:
         database_directory= db_dir,
         #auto_lineage='euk', # enabled in wrapper, but not using this bc it changes output dir structure
         extra = config['busco']['params'].get('extra', ''),
-    conda:
-        f'file://{__path__}/wrappers/busco/environment.yml'
-    wrapper:
-        f'file://{__path__}/wrappers/busco/busco.wrapper.py'
+    wrapper: f'file://{__wrappers__}/busco/busco.wrapper.py'
 
 def aggregate_busco_summaries(w):
     busco_files = expand(os.path.join(results_dir, '{transcriptome}.busco.{busco_db}', "run_{busco_db}", "short_summary.txt"), busco_db = config["busco_groups"], transcriptome=w.transcriptome)
@@ -176,7 +160,7 @@ rule plot_busco_summaries:
     params:
         outdir= os.path.join(results_dir, "busco_summaries")
     conda:
-        f'file://{__path__}/wrappers/busco/environment.yml'
+        f'file://{__path__}/wrappers/busco/environment.yaml'
     shell:
         """
         mkdir -p {params.outdir}

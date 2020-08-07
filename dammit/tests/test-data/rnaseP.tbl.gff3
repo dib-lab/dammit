@@ -1,0 +1,2 @@
+##gff-version 3.2.1
+B.subtilis	Infernal	RNA_sequence_secondary_structure	43	383	8.700000e-13	+	.	ID=homology:26cce239e4244a67b748c3f906e4b5ce4c963283;Name=rnaseP-eubact;Target=rnaseP-eubact 1 307 +;Note=-;Dbxref="Rfam:-";trunc=no;bitscore=34.4

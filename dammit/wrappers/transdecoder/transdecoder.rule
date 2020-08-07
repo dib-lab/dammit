@@ -1,7 +1,10 @@
-
 import os
+from dammit.meta import __wrappers__, __path__
 
-DATA_DIR="../../tests/test-data/"
+try:
+    DATA_DIR = config['DATA_DIR']
+except KeyError:
+    DATA_DIR = os.path.join(__path__, 'tests', 'test-data')
 
 # until we get tests set up, check rule works with:
 #    snakemake -s transdecoder.rule --use-conda 
@@ -15,12 +18,11 @@ rule transdecoder_longorfs:
     output:
         "test.fa.transdecoder_dir/longest_orfs.pep"
     log:
-        'logs/transdecoder/test-longorfs.log'
+        'test-longorfs.log'
     params:
         extra=""
     threads: 4
-    conda: "environment.yml"
-    script: "transdecoder-longorfs.wrapper.py"
+    wrapper: f'file://{__wrappers__}/transdecoder/transdecoder-longorfs.wrapper.py'
 
 rule transdecoder_predict:
     input:
@@ -32,9 +34,8 @@ rule transdecoder_predict:
         "test.fa.transdecoder.pep",
         "test.fa.transdecoder.gff3"
     log:
-        'logs/transdecoder/test-predict.log'
+        'test-predict.log'
     params:
         extra=""
     threads: 4
-    conda: "environment.yml"
-    script: "transdecoder-predict.wrapper.py"
+    wrapper: f'file://{__wrappers__}/transdecoder/transdecoder-predict.wrapper.py'

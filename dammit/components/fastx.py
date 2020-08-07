@@ -83,6 +83,14 @@ def rename_fasta_cmd(fasta_fn,
     ''' Copy a FASTA file and rename the headers.
     '''
 
+    allowed = r'[a-zA-Z0-9_\-:|\.]+'
+    if not re.fullmatch(allowed, basename):
+        print('ERROR: --basename must conform to {allowed}, please simplify it.', file=sys.stderr)
+        sys.exit(1)
+
+    if split_regex is not None and basename != 'Transcript':
+        print('NOTE: --split-regex supersedes --basename', file=sys.stderr)
+
     rename_fasta(fasta_fn, output_fn, names_fn, basename, split_regex)
 
 
@@ -113,15 +121,22 @@ def transcriptome_stats(transcriptome_fn, output_fn, k):
 
             if DNA.match(sequence) is None:
                 raise RuntimeError('non-ACGTN characters not supported. '\
-                                   'Offending transcript: \n>{0}\n{1}\nbad'\
+                                   'Offending transcript: \n>{0}\n{1}'\
                                    .format(contig.name, contig.sequence))
+            
+            contig_n_ambiguous = 0
             if 'N' in sequence:
+                contig_n_ambiguous += sequence.count('N')
+                n_ambiguous += contig_n_ambiguous
                 sequence = sequence.replace('N', 'A')
-                n_ambiguous += 1
 
             hll.consume_string(sequence)
-            gc_len += contig.sequence.count('C')
-            gc_len += contig.sequence.count('G')
+            gc_len += sequence.count('C')
+            gc_len += sequence.count('G')
+
+            # just assume gc content is .5 as a prior i suppose
+            gc_len += contig_n_ambiguous // 2
+
         S = pd.Series(lens, index=names)
         try:
             S.sort_values()
@@ -147,7 +162,7 @@ def transcriptome_stats(transcriptome_fn, output_fn, k):
 
     lens, uniq_kmers, gc_perc, n_amb = parse(transcriptome_fn)
 
-    exp_kmers = (lens - (k+1)).sum()
+    exp_kmers = (lens - k + 1).sum()
     redundancy = float(exp_kmers - uniq_kmers) / exp_kmers
     if redundancy < 0:
         redundancy = 0.0
@@ -184,7 +199,7 @@ def transcriptome_stats_cmd(transcriptome_fn, output_fn, k):
     ''' Run basic metrics on a transcriptome
     '''
 
-    transcriptome_stats(transcriptome_fn, output_fn, K)
+    transcriptome_stats(transcriptome_fn, output_fn, k)
 
 
 def generate_sequence_name(original_name, sequence, annotation_df):

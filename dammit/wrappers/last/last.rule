@@ -1,10 +1,11 @@
-
 import os
 
-DATA_DIR="../../tests/test-data/"
+from dammit.meta import __wrappers__, __path__
 
-## not working atm .. will figure it out later. these tests work in my snakemake-wrappers repo
-# for now, test with: snakemake -s last.rule --use-conda
+try:
+    DATA_DIR = config['DATA_DIR']
+except KeyError:
+    DATA_DIR = os.path.join(__path__, 'tests', 'test-data')
 
 rule test_last:
     input: "test-tr-x-prot.maf", "test-transcript.maf"
@@ -18,9 +19,9 @@ rule lastdb_transcript:
         protein_input = False,
         extra = ""
     log:
-        "logs/lastdb/test-transcript.log"
-    conda: "environment.yml"
-    script: "lastdb.wrapper.py"
+        "test-transcript.log"
+    wrapper: f'file://{__wrappers__}/last/lastdb.wrapper.py'
+
 
 rule lastdb_protein:
     input:
@@ -31,9 +32,8 @@ rule lastdb_protein:
         protein_input = True,
         extra = ""
     log:
-        "logs/lastdb/test-protein.log"
-    conda: "environment.yml"
-    script: "lastdb.wrapper.py"
+        "test-protein.log"
+    wrapper: f'file://{__wrappers__}/last/lastdb.wrapper.py'
 
 rule lastal_nucl_x_nucl:
     input:
@@ -44,10 +44,9 @@ rule lastal_nucl_x_nucl:
     params:
         extra=""
     log:
-        "logs/lastal/test.log"
+        "lastal_nucl_x_nucl.log"
     threads: 8
-    conda: "environment.yml"
-    script: "lastal.wrapper.py"
+    wrapper: f'file://{__wrappers__}/last/lastal.wrapper.py'
 
 rule lastal_nucl_x_prot:
     input:
@@ -58,7 +57,6 @@ rule lastal_nucl_x_prot:
     params:
         extra=""
     log:
-        "logs/lastal/test.log"
+        "lastal_nucl_x_prot.log"
     threads: 8
-    conda: "environment.yml"
-    script: "lastal.wrapper.py"
+    wrapper: f'file://{__wrappers__}/last/lastal.wrapper.py'

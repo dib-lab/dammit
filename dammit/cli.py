@@ -32,12 +32,25 @@ from dammit.components.hmmer import remap_hmmer_coords_cmd
 from dammit.components.run import run_group, annotate_cmd, databases_cmd
 from dammit.components.config import config_group
 
+banner = f'''
+\b
+     _                           _ _   
+  __| | __ _ _ __ ___  _ __ ___ (_) |_ 
+ / _` |/ _` | '_ ` _ \| '_ ` _ \| | __|
+| (_| | (_| | | | | | | | | | | | | |_ 
+ \__,_|\__,_|_| |_| |_|_| |_| |_|_|\__|
+                                       
+\b
+{__description__}
+\b
+v{__version__}, {__year__}
+by {" and ".join(__authors__)}
+'''
 
-@cloup.group(help=f'\b\ndammit: {__description__}\n'\
-                  f'v{__version__}, {__year__}\n'\
-                  f'by {" ".join(__authors__)}',
+
+@cloup.group(help=banner,
              align_sections=True)
-@click.version_option(version=__version__)
+@click.version_option(version=__version__, message='%(version)s')
 @click.pass_context
 def main(ctx):
     logger = logging.getLogger('dammit.component')

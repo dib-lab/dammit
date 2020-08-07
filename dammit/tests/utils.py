@@ -16,13 +16,10 @@ import warnings as _warnings
 from pkg_resources import Requirement, resource_filename, ResolutionError
 from tempfile import mkdtemp
 
-from doit.cmd_base import TaskLoader
-from doit.doit_cmd import DoitMain
-from doit.dependency import Dependency, DbmDB
-
 from pytest import fixture
 
 from dammit import log
+
 log.start_logging(test=True)
 logger = logging.getLogger('Tests')
 
@@ -53,31 +50,6 @@ except ImportError:
     from io import StringIO
 
 
-def check_status(task, tasks=None, dep_file='.doit.db'):
-    if tasks is None:
-        tasks = [task]
-    mgr = Dependency(DbmDB, os.path.abspath(dep_file))
-    status = mgr.get_status(task, tasks)
-    return status
-
-
-def run_tasks(tasks, args, config={'verbosity': 0}):
-    
-    if type(tasks) is not list:
-        raise TypeError('tasks must be a list')
-   
-    class Loader(TaskLoader):
-        @staticmethod
-        def load_tasks(cmd, opt_values, pos_args):
-            return tasks, config
-   
-    return DoitMain(Loader()).run(args)
-
-
-def run_task(task, cmd='run', verbosity=0):
-    return run_tasks([task], [cmd], config={'verbosity': verbosity})
-
-
 def touch(filename):
     '''Perform the equivalent of bash's touch on the file.
 
@@ -87,27 +59,6 @@ def touch(filename):
 
     open(filename, 'a').close()
     os.chmod(filename, stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
-
-
-@fixture
-def datadir(tmpdir, request):
-    '''
-    Fixture responsible for locating the test data directory and copying it
-    into a temporary directory.
-    '''
-    filename   = request.module.__file__
-    test_dir   = os.path.dirname(filename)
-    data_dir   = os.path.join(test_dir, 'test-data')
-
-    def getter(filename, as_str=True):
-        filepath = tmpdir.join(filename)
-        shutil.copyfile(os.path.join(data_dir, filename),
-                        filepath)
-        if as_str:
-            return str(filepath)
-        return filepath
-
-    return getter
 
 
 '''
@@ -208,6 +159,10 @@ def runscript(scriptname, args, in_directory=None,
         print('STDERR:', err)
 
     return status, out, err
+    
+
+def run(*args, **kwargs):
+    return runscript('dammit', args, **kwargs)
 
 
 def run_shell_cmd(cmd, fail_ok=False, in_directory=None):

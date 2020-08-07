@@ -35,15 +35,16 @@ def config_group(ctx):
               default=DEFAULT_TEMP_DIR,
               envvar='DAMMIT_TEMP_DIR',
               hidden=True)
-def show_directories_cmd(database_dir, temp_dir):
+@click.option('--save', default='-', type=click.File('w'))
+def show_directories_cmd(database_dir, temp_dir, save):
     '''List dammit directory locations.
     
     Locations come either from defaults or environment variables.'''
 
-    print('Databases:', database_dir, file=sys.stderr)
-    print('Temp root:', temp_dir, file=sys.stderr)
+    print('Databases:', database_dir, file=save)
+    print('Temp root:', temp_dir, file=save)
     print('Temp subdirs:', *(os.path.join(temp_dir, child) for child in TEMP_SUBDIRS),
-          file=sys.stderr)
+          file=save)
 
 
 @config_group.command('clean-temp')
@@ -81,8 +82,9 @@ def show_default_cmd(defaults, config_file, save):
 
 @config_group.command('busco-groups')
 @click.pass_obj
-def busco_groups_cmd(defaults):
+@click.option('--save', default='-', type=click.File('w'))
+def busco_groups_cmd(defaults, save):
     ''' Lists the available BUSCO group databases.'''
 
     db = defaults['databases']
-    click.echo(' '.join(db['BUSCO']['groups'].keys()))
+    save.write(' '.join(db['busco']['lineages']))

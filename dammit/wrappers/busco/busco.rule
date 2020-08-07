@@ -1,21 +1,27 @@
 import os
+from dammit.meta import __wrappers__, __path__
 
-DATA_DIR="../../tests/test-data/"
+try:
+    DATA_DIR = config['DATA_DIR']
+except KeyError:
+    DATA_DIR = os.path.join(__path__, 'tests', 'test-data')
 
 # for now, test with: snakemake -s busco.rule --use-conda
 
 rule run_busco:
     input:
-        os.path.join(DATA_DIR, "target.fa")
+       fasta= os.path.join(DATA_DIR, "target.fa"),
+       config=os.path.join(DATA_DIR, "busco-config.ini"),
     output:
         "txome_busco/full_table_txome_busco.tsv",
     log:
-        "logs/transcriptome_busco.log"
+        "test-busco.log"
     threads: 8
     params:
         mode="transcriptome",
-        lineage_path=os.path.join(DATA_DIR, "example-busco-lineage"),
+        lineage="metazoa",
+        database_directory="./",
         # optional parameters
+        #lineage_path=os.path.join(DATA_DIR, "example-busco-lineage"),
         extra="" 
-    conda: "environment.yml"
-    script: "busco.wrapper.py"
+    wrapper: f'file://{__wrappers__}/busco/busco.wrapper.py'

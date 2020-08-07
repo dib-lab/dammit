@@ -6,6 +6,7 @@
 
 import csv
 from itertools import count
+import hashlib
 import pandas as pd
 import sys
 import warnings
@@ -15,13 +16,10 @@ from dammit.utils import touch
 
 gff_version = '3.2.1'
 
-def id_gen_wrapper():
-    ID_GEN = count()
-    def get_next():
-        return next(ID_GEN)
-    return get_next
 
-next_ID = id_gen_wrapper()
+def row_ID(row):
+    return hashlib.sha1(row.to_json().encode()).hexdigest()
+
 
 class GFF3Parser(ChunkParser):
 
@@ -116,11 +114,11 @@ def maf_to_gff3(maf_df, tag='', database='',
 
     def build_attr(row):
         data = []
-        data.append('ID=homology:{0}'.format(next_ID()))
+        data.append('ID=homology:{0}'.format(row_ID(row)))
         data.append('Name={0}'.format(row.s_name))
-        data.append('Target={0} {1} {2} {3}'.format(row.s_name, row.s_start,
-                                                 row.s_start + row.s_aln_len,
-                                                 row.s_strand))
+        data.append('Target={0} {1} {2} {3}'.format(row.s_name, row.s_start + 1,
+                                                    row.s_start + row.s_aln_len,
+                                                    row.s_strand))
         if database:
             data.append('database={0}'.format(database))
 
@@ -155,7 +153,7 @@ def hmmscan_to_gff3(hmmscan_df, tag='', database=''):
 
     def build_attr(row):
         data = []
-        data.append('ID=homology:{0}'.format(next_ID()))
+        data.append('ID=homology:{0}'.format(row_ID(row)))
         data.append('Name={0}'.format(row.target_name))
         data.append('Target={0} {1} {2} +'.format(row.target_name,
                                                     row.hmm_coord_from+1,
@@ -196,7 +194,7 @@ def cmscan_to_gff3(cmscan_df, tag='', database=''):
 
     def build_attr(row):
         data = []
-        data.append('ID=homology:{0}'.format(next_ID()))
+        data.append('ID=homology:{0}'.format(row_ID(row)))
         data.append('Name={0}'.format(row.target_name))
         data.append('Target={0} {1} {2} +'.format(row.target_name,
                                                     row.mdl_from+1,
