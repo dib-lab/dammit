@@ -10,10 +10,7 @@ import logging
 import stat
 import pandas as pd
 
-from dammit import databases
-from dammit.meta import get_config
-
-from utils import datadir, runscript, logger
+from .utils import run, logger
 import pytest
 
 names = ['TransDecoder',
@@ -39,12 +36,8 @@ execs = ['hmmscan',
          'lastdb',
          'crb-blast']
 
-PATH_BACKUP = os.environ['PATH']
 
-def run(args, **kwargs):
-    return runscript('dammit', args, **kwargs)
-
-
+@pytest.mark.skip
 class TestDatabases():
     '''Tests for the dammit databases subcommand and the
     databases module. Assumes that DAMMIT_DB_DIR has been exported

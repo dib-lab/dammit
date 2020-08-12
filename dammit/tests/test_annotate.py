@@ -11,10 +11,9 @@ import pytest
 import traceback
 import sys
 
-from dammit.app import DammitApp
 from dammit.fileio import gff3
 
-from utils import datadir, runscript
+from .utils import runscript
 
 PATH_BACKUP = os.environ['PATH']
 
