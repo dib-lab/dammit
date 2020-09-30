@@ -4,4 +4,4 @@ khmer>=2.0
 shmlast>=1.2
 click
 ope
-snakemake==5.15
+snakemake==5.20.1
