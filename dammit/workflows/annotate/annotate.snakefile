@@ -134,11 +134,16 @@ def expand_busco_summaries(w):
 
 rule plot_busco_summaries:
     input: expand_busco_summaries
-    output: os.path.join(results_dir, '{transcriptome}.busco', "busco_figure.png")
-    log: os.path.join(logs_dir, "busco", "{transcriptome}.busco_figure.log")
+    output: os.path.join(results_dir, '{transcriptome}.busco', "summary_figure.png")
+    log: os.path.join(logs_dir, "{transcriptome}.busco", "summary_figure.log")
     conda:
         f'file://{__path__}/wrappers/busco/environment.yaml'
+    params:
+        summary_dir = lambda w: os.path.join(results_dir, f'{w.transcriptome}.busco', 'summary_data')
     shell:
         """
-        generate_plot.py --working_directory {wildcards.transcriptome}.busco 2> {log}
+        mkdir -p {params.summary_dir}
+        cp {wildcards.transcriptome}.busco/*_outputs/short_summary.*.txt {params.summary_dir}
+        generate_plot.py --working_directory {params.summary_dir} 2> {log}
+        cp {params.summary_dir}/busco_figure.png {output}
         """

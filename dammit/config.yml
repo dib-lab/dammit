@@ -43,7 +43,7 @@ shmlast:
 busco:
   output_suffix: 
     - .busco/__buscolineage___outputs/run___buscolineage__/short_summary.txt
-    - .busco/busco_figure.png
+    - .busco/summary_figure.png
   databases:
     - busco
   db_dir: busco2db
