@@ -13,12 +13,9 @@ import sys
 
 from dammit.fileio import gff3
 
-from .utils import runscript
+from .utils import run
 
 PATH_BACKUP = os.environ['PATH']
-
-def run(args, **kwargs):
-    return runscript('dammit', args, **kwargs)
 
 
 def compare_gff(fn_a, fn_b):
@@ -45,10 +42,10 @@ class TestDammitAnnotate:
             exp_gff3 = datadir('pom.single.fa.dammit.gff3')
             exp_fasta = datadir('pom.single.fa.dammit.fasta')
 
-            args = ['annotate', transcripts]
-            status, out, err = run(args)
+            args = ['run', 'annotate', transcripts]
+            status, out, err = run(*args)
 
-            outdir = '{0}.dammit'.format(transcripts)
+            outdir = 'pom.single.dammit'
             gff3_fn = os.path.join(outdir, 'pom.single.fa.dammit.gff3')
             fasta_fn = os.path.join(outdir, 'pom.single.fa.dammit.fasta')
 

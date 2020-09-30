@@ -10,4 +10,4 @@ include dammit/databases.yml
 recursive-include dammit *.json
 recursive-include dammit/wrappers wrapper.py *.wrapper.py *.yml *.yaml *.rule
 recursive-include dammit/workflows *.snakefile
-include dammit/busco_config.ini
+include dammit/busco.default.ini

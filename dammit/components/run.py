@@ -105,7 +105,7 @@ def run_group(config,
     if busco_config_file:
         config.core['busco_config_file'] = busco_config_file
     else:
-        config.core['busco_config_file'] = os.path.join(database_dir, config.databases["busco"]["filename"])
+        config.core['busco_config_file'] = os.path.join(__path__, config.core["busco"]["configfile"])
 
     if not pipeline and 'pipeline' not in config.core:
         config.core['pipeline'] = 'default'
@@ -164,7 +164,7 @@ def annotate_cmd(config,
         output_dir = os.path.abspath(transcriptome_name + config.core["dammit_dir_suffix"])
     config.core['dammit_dir'] = output_dir
     config.core['input_transcriptome'] = os.path.abspath(transcriptome)
-    config.core['basename'] = basename
+    config.core['basename'] = base_name
 
     config.core['user_dbs'] = wrangle_user_databases(user_database)
 

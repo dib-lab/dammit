@@ -42,11 +42,12 @@ shmlast:
 ## busco ##
 busco:
   output_suffix: 
-    - ".busco.__buscolineage__/run___buscolineage__/short_summary.txt"
-##    - .busco_summary_plot.png
+    - .busco/__buscolineage___outputs/run___buscolineage__/short_summary.txt
+    - .busco/busco_figure.png
   databases:
     - busco
   db_dir: busco2db
+  configfile: busco.default.ini
   params:
     extra: ""
 

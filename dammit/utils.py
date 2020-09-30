@@ -12,7 +12,6 @@ import yaml
 import collections
 
 import click
-import six
 
 
 class ShortChoice(click.Choice):
@@ -37,6 +36,16 @@ def update_nested_dict(d, other):
                 d[k] = v.copy()
         else:
             d[k] = v
+
+
+def touch(filename):
+    '''Perform the equivalent of bash's touch on the file.
+
+    Args:
+        filename (str): File path to touch.
+    '''
+
+    open(filename, 'a').close()
 
 
 def read_yaml(filename):
