@@ -21,14 +21,15 @@ mean programs with nonfree licenses *or* programs which are overly
 difficult to install and configure \-- we believe that access is a part
 of openness.
 
+
 Details
 =======
 
-Authors:  Camille Scott
+Authors: Camille Scott and N. Tessa Pierce
 
 Contact: <camille.scott.w@gmail.com>
 
-GitHub: <https://github.com/camillescott/dammit>
+GitHub: <https://github.com/dib-lab/dammit>
 
 License: BSD
 
