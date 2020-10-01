@@ -23,8 +23,9 @@ Then, finish conda setup by configuring channels:
     conda config --add channels bioconda
     conda config --add channels conda-forge
 
-> Note that these commands stack. 
-> In this case, the highest priority channel will be `conda-forge`, followed by `bioconda` and then the `defaults` channel.
+**_A note on channel priority_:** 
+These commands stack, so the highest priority channel here will be `conda-forge`, followed by `bioconda` and then the `defaults` channel. 
+This is the recommended channel order. You can reorder your channels at any time by reexecuting these `config` commands.
 
 ## Install dammit
 

@@ -30,19 +30,7 @@ Implicit to these motivations is some idea of what a good annotator
 
 ![The Workflow](static/workflow.svg)
 
-## Software Used
-
--   TransDecoder
--   BUSCO
--   HMMER
--   Infernal
--   LAST
--   crb-blast (for now)
--   pydoit (under the hood)
-
-All of these are Free Software, as in freedom and beer
-
-## Databases
+## Databases Used
 
 -   Pfam-A
 -   Rfam
@@ -51,49 +39,91 @@ All of these are Free Software, as in freedom and beer
 -   Uniref90
 -   User-supplied protein databases
 
-The last one is important, and sometimes ignored.
+The last one is important, and sometimes ignored. To see more about these databases, 
+see the [About Databases](database-about.md) section.
 
-## Conditional Reciprocal Best LAST
+## Software Used
 
-Building off Richard and co's work on Conditional Reciprocal Best
-BLAST, I've implemented a new version with Python and LAST -- CRBL.
-The original lives [here](https://github.com/cboursnell/crb-blast).
+For now, the software run is:
 
-Why??
+-   TransDecoder
+-   BUSCO
+-   HMMER
+-   Infernal
+-   LAST
+-   shmlast (for crb-blast to user-supplied protein databases)
+-   snakemake (under the hood)
 
--   BLAST is too slooooooow
--   Ruby is yet another dependency to have users install
--   With Python and scikit learn, I have freedom to toy with models (and
-    learn stuff)
+All of these are Free Software, as in freedom and beer. 
 
-And, of course, some of these databases are BIG. Doing `blastx` and
-`tblastn` between a reasonably sized transcriptome and Uniref90 is not
-an experience you want to have.
+## Annotation Pipelines
 
-ie, practical concerns.
+The annotation software run depends on the selected workflow.
 
-## A brief intro to CRBB
+By default, `dammit` runs the following:
 
--   Reciprocal Best Hits (RBH) is a standard method for ortholog
-    detection
--   Transcriptomes have multiple multiple transcript isoforms, which
-    confounds RBH
--   CRBB uses machine learning to get at this problem
+- **default:**
+    - `busco`quality assessment
+    - `transdecoder ORF prediction`
+    - `shmlast` to any user databases
+    - `hmscan` - Pfam A (+ orthodb?)
+    - `cmscan` - Rfam
+    - `LAST` mapping to swiss-prot
+
+
+Alternative annotation pipelines:
+
+- **quick (`--pipeline quick`):**
+    - `busco`quality assessment
+    - `transdecoder ORF prediction`
+    - `shmlast` to any user databases
+
+- **full (`--pipeline full`):**
+    - `busco` quality assessment
+    - `transdecoder` ORF prediction
+    - `shmlast` to any user databases
+    - `hmscan` - Pfam A (+ orthodb?)
+    - `cmscan` - Rfam
+    - `LAST` mapping to swiss-prot, **UniRef90**
+
+- **nr (`--pipeline nr`):**
+    - `busco` quality assessment
+    - `transdecoder` ORF prediction
+    - `shmlast` to any user databases
+    - `hmscan` - Pfam A (+ orthodb?)
+    - `cmscan` - Rfam
+    - `LAST` mapping to swiss-prot **NR**
+
+> Note: `full` and `nr` involve very large databases, and take
+> significantly more time than the `default` pipeline.
+
+
+## Mapping to user databases using a Conditional Reciprocal Best BLAST Approach
+
+Reciprocal Best Hit mapping (RBH) is a standard method for ortholog detection.
+However, transcriptomes have multiple transcript isoforms, which confound RBH.
 
 ![](static/RBH.svg)
 
-CRBB attempts to associate those isoforms with appropriate annotations
-by learning an appropriate e-value cutoff for different transcript
-lengths.
+**Conditional Reciprocal Best Blast (CRBB)** attempts to associate those isoforms
+with appropriate annotations by learning an appropriate e-value cutoff for 
+different transcript lengths. The original implementation of CRBB 
+can be found [here](https://github.com/cboursnell/crb-blast). 
 
 ![CRBB](static/CRBB_decision.png)
 
 *from
 http://journals.plos.org/plosgenetics/article?id=10.1371/journal.pgen.1004365\#s5*
 
-## CRBL
+## shmlast: Conditional Reciprocal Best BLAST
 
-For CRBL, instead of fitting a linear model, we train a model.
+shmlast is a reimplementation of the Conditional Reciprocal Best Hits 
+algorithm for finding potential orthologs between a transcriptome and 
+a species-specific protein database. It uses the LAST aligner and the 
+pydata stack to achieve much better performance while staying in the 
+Python ecosystem. 
+
+For CRBL (shmalst), instead of fitting a linear model, we train a model.
 
 -   SVM
 -   Naive bayes
