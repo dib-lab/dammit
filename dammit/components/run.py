@@ -85,6 +85,8 @@ def run_group(config,
     ''' Run the annotation pipeline or install databases.
     '''
 
+    print(config.banner, file=sys.stderr)
+
     if config_file:
         user_config = read_yaml(config_file)
         update_nested_dict(config.core, user_config)
