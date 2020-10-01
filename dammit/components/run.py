@@ -162,6 +162,9 @@ def annotate_cmd(config,
 
     if output_dir is None:
         output_dir = os.path.abspath(transcriptome_name + config.core["dammit_dir_suffix"])
+    else:
+        output_dir = os.path.abspath(output_dir)
+
     config.core['dammit_dir'] = output_dir
     config.core['input_transcriptome'] = os.path.abspath(transcriptome)
     config.core['basename'] = base_name
