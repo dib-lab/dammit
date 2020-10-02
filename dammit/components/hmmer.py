@@ -30,7 +30,7 @@ def split_transdecoder_names(hmmer_df):
 
 
 @click.command('remap-hmmer-coords')
-@click.argument('hmmerfilename')
+@click.argument('hmmer_filename')
 @click.argument('pep_fa_filename')
 @click.argument('output_filename')
 def remap_hmmer_coords_cmd(hmmer_filename, pep_fa_filename, output_filename):
