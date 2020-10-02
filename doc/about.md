@@ -1,8 +1,4 @@
-# About
-
-This page goes a little more in depth on the software and its goals.
-
-## Motivations
+# Background and Motivations
 
 Several different factors motivated dammit's development. The first of
 these was the sea lamprey transcriptome project, which had annotation as
@@ -41,6 +37,7 @@ Implicit to these motivations is some idea of what a good annotator
 
 The last one is important, and sometimes ignored. To see more about these databases, 
 see the [About Databases](database-about.md) section.
+**Details below on mapping to user-supplied protein databases.**
 
 ## Software Used
 
@@ -55,48 +52,7 @@ For now, the software run is:
 -   snakemake (under the hood)
 
 All of these are Free Software, as in freedom and beer. 
-
-## Annotation Pipelines
-
-The annotation software run depends on the selected workflow.
-
-By default, `dammit` runs the following:
-
-- **default:**
-    - `busco`quality assessment
-    - `transdecoder ORF prediction`
-    - `shmlast` to any user databases
-    - `hmscan` - Pfam A (+ orthodb?)
-    - `cmscan` - Rfam
-    - `LAST` mapping to swiss-prot
-
-
-Alternative annotation pipelines:
-
-- **quick (`--pipeline quick`):**
-    - `busco`quality assessment
-    - `transdecoder ORF prediction`
-    - `shmlast` to any user databases
-
-- **full (`--pipeline full`):**
-    - `busco` quality assessment
-    - `transdecoder` ORF prediction
-    - `shmlast` to any user databases
-    - `hmscan` - Pfam A (+ orthodb?)
-    - `cmscan` - Rfam
-    - `LAST` mapping to swiss-prot, **UniRef90**
-
-- **nr (`--pipeline nr`):**
-    - `busco` quality assessment
-    - `transdecoder` ORF prediction
-    - `shmlast` to any user databases
-    - `hmscan` - Pfam A (+ orthodb?)
-    - `cmscan` - Rfam
-    - `LAST` mapping to swiss-prot **NR**
-
-> Note: `full` and `nr` involve very large databases, and take
-> significantly more time than the `default` pipeline.
-
+**The specific set of software and databases used can be modified by specifying different [pipelines](pipelines.md).**
 
 ## Mapping to user databases using a Conditional Reciprocal Best BLAST Approach
 
@@ -123,11 +79,13 @@ a species-specific protein database. It uses the LAST aligner and the
 pydata stack to achieve much better performance while staying in the 
 Python ecosystem. 
 
-For CRBL (shmalst), instead of fitting a linear model, we train a model.
+For CRBL (shmlast), instead of fitting a linear model, we train a model.
 
 -   SVM
 -   Naive bayes
 
 One limitation is that LAST has no equivalent to `tblastn`. So, we find
 the RBHs using the TransDecoder ORFs, and then use the model on the
-translated transcriptome versus database hits.
+translated transcriptome versus database hits. 
+
+`shmlast` is published in JOSS, doi:[10.21105/joss.00142](https://joss.theoj.org/papers/10.21105/joss.00142).

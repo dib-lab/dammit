@@ -38,23 +38,25 @@ extra_css:
 # give a title for each page
 nav:
   - 'Home': 'index.md'
-  - 'About': 
-    - 'Why use dammit?': 'about.md'
-    - 'What databases are included?': 'database-about.md'
-  
-  - 'Installation':
-    - 'System Requirements': 'system_requirements.md'
-    - 'Install dammit via conda': 'install.md'
+  - 'Background and Motivations': 'about.md'
+  - 'Installation': 'install.md'
+  - 'Quickstart: run sample data': quickstart.md
+  - 'Databases to used': 
+    - 'About the Databases': 'database-about.md'
+    - 'Annotation Pipelines': 'pipelines.md' # just give memory, cpu rec's in here
 
-  - 'Quickstart': quickstart.md
+  #- 'Configuration':
+  #  - 'Memory and CPU Recommendations': 'dammit-configuration.md'
 
-  - 'Dammit Subworkflows': 
+  - 'Dammit Components': 
+    - 'Components': dammit-components.md
     - 'Databases': 'database-usage.md'
     - 'Annotate': 'annotate.md'
     
   #- 'Full Tutorial': 'tutorial.md'
 
-  - 'Advanced Usage':
+  - 'Advanced Configuration':
+    - 'Configuring Memory and CPU': 'configuration.md'
     - 'Advanced Database Handling': 'database-advanced.md'
     - 'Parsing Dammit Results': 'results-parsing.md'
     
