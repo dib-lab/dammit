@@ -103,8 +103,7 @@ rule cmscan:
 
 rule busco_transcripts:
     input:
-        fasta = os.path.join(results_dir,'{transcriptome}.fasta'),
-        config = config["busco_config_file"]
+        fasta = os.path.join(results_dir,'{transcriptome}.fasta')
     output:
         os.path.join(results_dir, '{transcriptome}.busco', '{busco_db}_outputs', 'run_{busco_db}', 'short_summary.txt')
     log:
