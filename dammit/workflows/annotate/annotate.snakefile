@@ -56,6 +56,20 @@ rule transdecoder_predict:
         f'file://{__wrappers__}/transdecoder/transdecoder-predict.wrapper.py'
 
 
+rule hmmer_remap:
+    input:
+        tbl = os.path.join(results_dir,'{transcriptome}.x.Pfam-A.hmmscan-domtbl.txt'),
+        pep = os.path.join(results_dir, '{transcriptome}.transdecoder_dir/longest_orfs.pep')
+    output:
+        os.path.join(results_dir, '{transcriptome}.x.{database}.remapped.csv')
+    log:
+        os.path.join(logs_dir, '{transcriptome}.x.{database}.hmmer_remap.log')
+    shell:
+        """
+        dammit remap-hmmer-coords {input.tbl} {input.pep} {output} 2> {log}
+        """
+
+
 rule lastal:
     input:
         data = os.path.join(results_dir, '{transcriptome}.fasta'),

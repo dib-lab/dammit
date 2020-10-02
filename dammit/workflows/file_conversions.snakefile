@@ -36,30 +36,13 @@ rule dammit_cmscan_to_gff:
         """
 
 
-rule dammit_hmmsearch_to_gff:
-    message: 
-        """
-        Convert hmmsearch's domain table output to GFF3.
-        """
-    input: 
-        os.path.join(results_dir, '{transcriptome}.x.Pfam-A.hmmsearch-domtbl.txt')
-    output:
-        os.path.join(results_dir, "{transcriptome}.x.Pfam-A.hmmsearch.gff3")
-    log:
-        os.path.join(logs_dir, "{transcriptome}.x.Pfam-A.hmmsearch-to-gff3.log")
-    shell:
-        """
-        dammit hmmscan-to-gff3 --dbxref Pfam-A {input} {output} 2> {log}
-        """
-
-
 rule dammit_hmmscan_to_gff:
     message:
         """
         Convert hmmscan's domain table output to GFF3.
         """
     input: 
-        os.path.join(results_dir, "{transcriptome}.x.{database}.hmmscan-domtbl.txt")
+        os.path.join(results_dir, "{transcriptome}.x.{database}.remapped.csv")
     output:
         os.path.join(results_dir, "{transcriptome}.x.{database}.hmmscan.gff3")
     log:
@@ -104,7 +87,10 @@ rule dammit_maf_to_gff:
         """
 
 rule dammit_shmlast_to_gff:
-    message: "Given the CSV output from shmlast, convert it to GFF3 and save the results."
+    message: 
+        """
+        Given the CSV output from shmlast, convert it to GFF3 and save the results.
+        """
     input: 
         os.path.join(results_dir, "{transcriptome}.x.{database}.shmlast_crbl.csv")
     output:
@@ -117,7 +103,10 @@ rule dammit_shmlast_to_gff:
         """
 
 rule dammit_merge_gff:
-    #message: "Merge GFF files from the individual annotation programs"
+    message: 
+        """
+        Merge GFF files from the individual annotation programs.
+        """
     input: config["gff_files"],
     output:
         os.path.join(results_dir, "{transcriptome}.dammit.gff3"),
@@ -129,6 +118,10 @@ rule dammit_merge_gff:
         """
 
 rule dammit_annotate_fasta:
+    message:
+        """
+        Annotate the headers of a FASTA file with a summary of each sequence.
+        """
     input:
         fasta=rules.dammit_rename_transcriptome.output.fasta,
         gff=rules.dammit_merge_gff.output
