@@ -7,7 +7,7 @@
 import click
 from shmlast import hits
 
-from ..fileio.maf import MafParser
+from ope.io.maf import MafParser
 
 
 @click.command('best-hits')

@@ -9,8 +9,9 @@ import os
 import click
 import pandas as pd
 
-from ..fileio.hmmer import HMMerParser
-from ..fileio.gff3 import GFF3Parser 
+from ope.io.hmmer import HMMerParser
+from ope.io.gff3 import GFF3Parser 
+from ope.io.transdecoder import TransDecoderPepParser
 
 
 def split_transdecoder_names(hmmer_df):

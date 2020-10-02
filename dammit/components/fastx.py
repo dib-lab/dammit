@@ -19,7 +19,7 @@ from khmer import HLLCounter, ReadParser
 import pandas as pd
 
 from .. import cloup
-from ..fileio.gff3 import GFF3Parser
+from ope.io.gff3 import GFF3Parser
 
 
 seq_ext = re.compile(r'(.fasta)|(.fa)|(.fastq)|(.fq)')
