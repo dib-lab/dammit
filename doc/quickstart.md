@@ -1,33 +1,15 @@
-# Quickstart: run dammit with some sample data
+# Quickstart: prepare databases and test annotation
 
-Once you have dammit [installed](install.md), it's time to actually
-annotate something! This guide will take you through a short example on
-some sample data.
+Once you have dammit [installed](install.md), you'll need to download
+and prepare databases before you can annotate a transcriptome. This
+quickstart takes you through database preparation (with `dammit run databases`).
+These will take a while to prepare, but are the same databases you'll need
+for all default annotation runs. Finally, we run annotation using a very small sample dataset.
 
-## First, download some test data
+## First, check and prepare databases
 
-First let's download some test data. We'll start small and use a
-*Schizosaccharomyces pombe* transcriptome. Make a working directory and
-move there, and then download the file:
-
-```
-mkdir dammit_test
-cd dammit_test
-wget ftp://ftp.ebi.ac.uk/pub/databases/pombase/OLD/20170322/FASTA/cdna_nointrons_utrs.fa.gz
-wget ftp://ftp.ebi.ac.uk/pub/databases/pombase/OLD/20170322/FASTA/pep.fa.gz
-```
-
-Decompress the file with gunzip:
-
-```
-gunzip cdna_nointrons_utrs.fa.gz pep.fa.gz
-```
-
-## Next, check and prepare databases
-
-If you're just starting, you probably haven't downloaded the databases
-yet. Here, we'll install the main databases, as well as the
-`eukaryota` BUSCO database for our yeast dataset. This could
+Here, we'll install the main databases, as well as the
+`eukaryota` BUSCO database for our test yeast dataset (below). This could
 take a while, so consider walking away and getting yourself a cup of
 coffee.
 
@@ -48,18 +30,37 @@ By default, dammit downloads databases to your home directory: `$HOME/.dammit/da
 > or if you've already downloaded some databases and you'd like to use them with dammit, 
 > see the [Database Usage](database-usage.md) section to specify a custom location.
 
-While the initial download takes a while, once its done, you won't need
+While the initial download takes a while, once it's done, you won't need
 to do it again. `dammit` keeps track of the database state and won't
-repeat work its already completed, even if you accidentally rerun with
+repeat work it's already completed, even if you accidentally rerun with
 the `--install` flag.
 
-## Annotate a transcriptome
+## Now, let's download some test data that we can annotate
 
-Now that the default databases are installed, we can do a simple run of
+First let's download some test data. We'll start small and use a
+*Schizosaccharomyces pombe* transcriptome. Make a working directory and
+move there, and then download the file:
+
+```
+mkdir dammit_test
+cd dammit_test
+wget ftp://ftp.ebi.ac.uk/pub/databases/pombase/OLD/20170322/FASTA/cdna_nointrons_utrs.fa.gz
+wget ftp://ftp.ebi.ac.uk/pub/databases/pombase/OLD/20170322/FASTA/pep.fa.gz
+```
+
+Decompress the file with gunzip:
+
+```
+gunzip cdna_nointrons_utrs.fa.gz pep.fa.gz
+```
+
+## Just annotate it, dammit!
+
+With the default databases installed and sample data in hand, we can do a simple run of
 the annotator. We'll use `pep.fa` as a user database; this is a toy example,
 seeing as these proteins came from the same set of transcripts as we're
 annotating, but they illustrate the usage nicely enough. We'll also
-specify a non-default BUSCO groupi (eukaryota). You can replace the argument to
+specify a non-default BUSCO group (eukaryota). You can replace the argument to
 `--n_threads` with however many cores are available on your system in
 order to speed it up.:
 
@@ -68,6 +69,38 @@ dammit run annotate cdna_nointrons_utrs.fa --user-databases pep.fa --busco-group
 ```
 
 This will take a bit, so go get another cup of coffee...
+
+## TODO, run sample data and copy output ls below! fix txt, this is from elvers docs.
+
+## dammit output
+
+After a successful run, you'll have a new directory called `BASENAME.fasta.dammit`. If you look inside, you'll see a lot of files. For example, for a transcriptome with basename `trinity.nema`, the folder `trinity.nema.fasta.dammit` should contain the following files:
+
+```
+ls trinity.nema.fasta.dammit/
+```    
+```    
+    annotate.doit.db                              trinity.nema.fasta.dammit.namemap.csv  trinity.nema.fasta.transdecoder.pep
+    dammit.log                                    trinity.nema.fasta.dammit.stats.json   trinity.nema.fasta.x.nema.reference.prot.faa.crbl.csv
+    run_trinity.nema.fasta.metazoa.busco.results  trinity.nema.fasta.transdecoder.bed    trinity.nema.fasta.x.nema.reference.prot.faa.crbl.gff3
+    tmp                                           trinity.nema.fasta.transdecoder.cds    trinity.nema.fasta.x.nema.reference.prot.faa.crbl.model.csv
+    trinity.nema.fasta                            trinity.nema.fasta.transdecoder_dir    trinity.nema.fasta.x.nema.reference.prot.faa.crbl.model.plot.pdf
+    trinity.nema.fasta.dammit.fasta               trinity.nema.fasta.transdecoder.gff3
+    trinity.nema.fasta.dammit.gff3                trinity.nema.fasta.transdecoder.mRNA
+```
+
+The two most important files are `trinity.nema.fasta.dammit.fasta` and `trinity.nema.fasta.dammit.gff3`, as they contain the aggregated annotation info per transcript.
+`trinity.nema.fasta.dammit.stats.json` also gives summary stats that are quite useful.
+
+If the above `dammit` command is run again, there will be a message:
+`**Pipeline is already completed!**`
+
+
+## Parsing dammit output
+
+TODO: include jupyter code form https://angus.readthedocs.io/en/2018/dammit_annotation.html? R code?
+
+
 
 ## Other tutorials and Workshop materials
 
