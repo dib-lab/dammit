@@ -1,4 +1,4 @@
-# Quickstart: run dammit! with some sample data
+# Quickstart: run dammit with some sample data
 
 Once you have dammit [installed](install.md), it's time to actually
 annotate something! This guide will take you through a short example on
