@@ -2,7 +2,7 @@
 
 Once you have dammit [installed](install.md), it's time to actually
 annotate something! This guide will take you through a short example on
-some test data. 
+some sample data.
 
 ## First, download some test data
 
@@ -55,9 +55,9 @@ the `--install` flag.
 
 ## Annotate a transcriptome
 
-Now we'll do a simple run of the annotator. We'll use
-`pep.fa` as a user database; this is a toy example, seeing
-as these proteins came from the same set of transcripts as we're
+Now that the default databases are installed, we can do a simple run of
+the annotator. We'll use `pep.fa` as a user database; this is a toy example,
+seeing as these proteins came from the same set of transcripts as we're
 annotating, but they illustrate the usage nicely enough. We'll also
 specify a non-default BUSCO groupi (eukaryota). You can replace the argument to
 `--n_threads` with however many cores are available on your system in

@@ -41,12 +41,9 @@ nav:
   - 'Background and Motivations': 'about.md'
   - 'Installation': 'install.md'
   - 'Quickstart: run sample data': quickstart.md
-  - 'Databases to used': 
+  - 'Annotation Databases and Pipelines': 
     - 'About the Databases': 'database-about.md'
-    - 'Annotation Pipelines': 'pipelines.md' # just give memory, cpu rec's in here
-
-  #- 'Configuration':
-  #  - 'Memory and CPU Recommendations': 'dammit-configuration.md'
+    - 'Annotation Pipelines': 'pipelines.md'
 
   - 'Dammit Components': 
     - 'Components': dammit-components.md
@@ -55,9 +52,10 @@ nav:
     
   #- 'Full Tutorial': 'tutorial.md'
 
-  - 'Advanced Configuration':
-    - 'Configuring Memory and CPU': 'configuration.md'
-    - 'Advanced Database Handling': 'database-advanced.md'
+  - 'Advanced Usage and Configuration':
+    - 'Tool-Specific Configuration': 'configuration.md'
+    - 'Distributing dammit jobs on a Cluster': cluster.md
+    - 'Advanced Database Setup': 'database-advanced.md'
     - 'Parsing Dammit Results': 'results-parsing.md'
     
   - 'For developers':

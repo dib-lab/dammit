@@ -1,10 +1,6 @@
 # Database Usage
 
-`dammit` is composed of two main workflows, `databases`, and `annotate`.
-
-  - `databases` handles downloading and preparing the annotation databases,
-  - `annotate` uses these databases for transcriptome annotation
-
+The dammit `databases` component handles downloading and preparing the annotation databases.
 
 ## Check and install databases
 
