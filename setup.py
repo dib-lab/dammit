@@ -39,8 +39,8 @@ def main():
                                 'pandas>=1.0',
                                 'khmer>=2.0',
                                 'click',
-                                'ope',
-                                'shmlast>=1.4',
+                                'ope>=0.6',
+                                'shmlast>=1.6',
                                 'snakemake==5.20.1'],
             include_package_data = True,
             zip_safe = False,  )
