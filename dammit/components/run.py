@@ -105,9 +105,9 @@ def run_group(config,
         config.core['n_threads'] = n_threads
 
     if busco_config_file:
-        config.core['busco_config_file'] = busco_config_file
+        config.core['busco']['configfile'] = busco_config_file
     else:
-        config.core['busco_config_file'] = os.path.join(__path__, config.core["busco"]["configfile"])
+        config.core['busco']['configfile'] = os.path.join(__path__, config.core["busco"]["configfile"])
 
     if not pipeline and 'pipeline' not in config.core:
         config.core['pipeline'] = 'default'

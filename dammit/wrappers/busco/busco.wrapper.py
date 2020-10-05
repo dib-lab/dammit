@@ -13,10 +13,11 @@ log = snakemake.log_fmt_shell(stdout=True, stderr=True)
 extra = snakemake.params.get("extra", "")
 mode = snakemake.params.get("mode")
 assert mode is not None, "please input a run mode: genome, transcriptome or proteins"
+
 lineage = snakemake.params.get("lineage")
 auto_lineage = snakemake.params.get("auto_lineage") # prok, euk, all
 database_directory = snakemake.params.get("database_directory")
-config = snakemake.input.get("config", None)
+config = snakemake.params.get("config", None)
 
 out_path = snakemake.params.get("out_path", None)
 assert out_path is not None, "must specific out_path param for busco"

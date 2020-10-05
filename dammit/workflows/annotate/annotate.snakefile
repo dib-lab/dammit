@@ -128,6 +128,7 @@ rule busco_transcripts:
     params:
         out_name = '{busco_db}_outputs',
         out_path = lambda w: os.path.join(results_dir, f'{w.transcriptome}.busco'),
+        config = config['busco']['configfile'],
         mode = "transcriptome",
         lineage = lambda w: w.busco_db,
         database_directory = db_dir,

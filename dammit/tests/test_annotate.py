@@ -11,7 +11,7 @@ import pytest
 import traceback
 import sys
 
-from dammit.fileio import gff3
+from ope.io import gff3
 
 from .utils import run
 
@@ -33,21 +33,21 @@ class TestDammitAnnotate:
 
     @pytest.mark.long
     @pytest.mark.requires_databases
-    def test_annotate_basic(self, tmpdir, datadir):
+    def test_annotate_default(self, tmpdir, datadir):
         '''Run a basic annotation and verify the results.
         '''
 
         with tmpdir.as_cwd():
-            transcripts = datadir('pom.single.fa')
-            exp_gff3 = datadir('pom.single.fa.dammit.gff3')
-            exp_fasta = datadir('pom.single.fa.dammit.fasta')
+            transcripts = datadir('pom.20.fa')
+            exp_gff3 = datadir('pom.20.dammit.gff3')
+            exp_fasta = datadir('pom.20.dammit.fasta')
 
             args = ['run', 'annotate', transcripts]
             status, out, err = run(*args)
 
-            outdir = 'pom.single.dammit'
-            gff3_fn = os.path.join(outdir, 'pom.single.fa.dammit.gff3')
-            fasta_fn = os.path.join(outdir, 'pom.single.fa.dammit.fasta')
+            outdir = 'pom.20.dammit'
+            gff3_fn = os.path.join(outdir, 'pom.20.dammit.gff3')
+            fasta_fn = os.path.join(outdir, 'pom.20.dammit.fasta')
 
             print(os.listdir(outdir))
             print(gff3_fn, fasta_fn)
