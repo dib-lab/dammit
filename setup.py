@@ -7,14 +7,7 @@
 
 import sys, platform
 
-# Automatically download setuptools if not available
-try:
-    from setuptools import *
-except ImportError:
-    from distribute_setup import use_setuptools
-    use_setuptools()
-finally:
-    from setuptools import *
+from setuptools import *
 
 from glob import glob
 
