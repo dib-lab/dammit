@@ -2,7 +2,7 @@
 title: 'About the Databases'
 ---
 
-dammit uses the following databases:
+dammit can make use of the following databases:
 
 1.  [Pfam-A](http://pfam.xfam.org/)
 
@@ -32,13 +32,7 @@ dammit uses the following databases:
     > domains of life. They are used with an accompanying BUSCO program
     > which assesses the completeness of a genome, transcriptome, or
     > list of genes. There are multiple BUSCO databases, and which one
-    > you use depends on your particular organism. Currently available
-    > databases are:
-    >
-    > 1.  Metazoa
-    > 2.  Vertebrata
-    > 3.  Arthropoda
-    > 4.  Eukaryota
+    > you use depends on your particular organism.
     >
     > dammit uses the metazoa database by default, but different
     > databases can be used with the `--busco-group` parameter. You
@@ -77,5 +71,5 @@ To install, for example, all databases required for `full`
 in a custom location (`/path/to/dbs`), you could run the following:
 
 ```
-dammit databases --install --database-dir /path/to/dbs --pipeline full 
+dammit run databases --install --database-dir /path/to/dbs --pipeline full 
 ```

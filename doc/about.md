@@ -1,4 +1,8 @@
-# Background and Motivations
+# About
+
+This page goes a little more in depth on the software and its goals.
+
+## Background and Motivations
 
 Several different factors motivated dammit's development. The first of
 these was the sea lamprey transcriptome project, which had annotation as
@@ -35,13 +39,17 @@ Implicit to these motivations is some idea of what a good annotator
 -   Uniref90
 -   User-supplied protein databases
 
-The last one is important, and sometimes ignored. To see more about these databases, 
+The last one is important, and sometimes ignored. 
+Dammit uses an approach similar to Conditional Reciprocal Best Blast
+to map to user-supplied protein databases (details below).
+
+To see more about the included databases, 
 see the [About Databases](database-about.md) section.
-**Details below on mapping to user-supplied protein databases.**
 
-## Software Used
+## External Software Used
 
-For now, the software run is:
+The specific set of software and databases used can be modified by specifying different [pipelines](pipelines.md).
+The full set of software than can be run is:
 
 -   TransDecoder
 -   BUSCO
@@ -49,12 +57,10 @@ For now, the software run is:
 -   Infernal
 -   LAST
 -   shmlast (for crb-blast to user-supplied protein databases)
--   snakemake (under the hood)
 
 All of these are Free Software, as in freedom and beer. 
-**The specific set of software and databases used can be modified by specifying different [pipelines](pipelines.md).**
 
-## Mapping to user databases using a Conditional Reciprocal Best BLAST Approach
+### shmlast: Conditional Reciprocal Best LAST for mapping to user databases
 
 Reciprocal Best Hit mapping (RBH) is a standard method for ortholog detection.
 However, transcriptomes have multiple transcript isoforms, which confound RBH.
@@ -71,9 +77,7 @@ can be found [here](https://github.com/cboursnell/crb-blast).
 *from
 http://journals.plos.org/plosgenetics/article?id=10.1371/journal.pgen.1004365\#s5*
 
-## shmlast: Conditional Reciprocal Best BLAST
-
-shmlast is a reimplementation of the Conditional Reciprocal Best Hits 
+**shmlast** is a reimplementation of the Conditional Reciprocal Best Hits 
 algorithm for finding potential orthologs between a transcriptome and 
 a species-specific protein database. It uses the LAST aligner and the 
 pydata stack to achieve much better performance while staying in the 
@@ -89,3 +93,16 @@ the RBHs using the TransDecoder ORFs, and then use the model on the
 translated transcriptome versus database hits. 
 
 `shmlast` is published in JOSS, doi:[10.21105/joss.00142](https://joss.theoj.org/papers/10.21105/joss.00142).
+
+
+## The Dammit Software
+
+Under the hood, dammit uses the snakemake workflow management system
+to manage database downloads and run the external annotation software.
+As each of these programs produces output in a different format, one
+of dammit's most important additions is a set of file conversion
+utilites that properly combine the outputs of those individual tools
+into a single annotation set, output both as gff3 and fasta. Each of these
+conversion utilities can now also be run independently from the main dammit 
+workflow. For details, see the [components](dammit-components.md) section.
+

@@ -18,8 +18,8 @@ By default, `dammit` runs the following:
     - `busco`quality assessment
     - `transdecoder` ORF prediction
     - `shmlast` to any user databases
-    - `hmscan` - Pfam-A
-    - `cmscan` - Rfam
+    - `hmmscan` to Pfam-A
+    - `cmscan` to Rfam
     - `LAST` mapping to OrthoDB and Swiss-Prot
 
 The databases used for this pipeline require approximately ~18GB of storage space,
@@ -68,8 +68,8 @@ database, UniRef90.
     - `busco` quality assessment
     - `transdecoder` ORF prediction
     - `shmlast` to any user databases
-    - `hmscan` - Pfam-A
-    - `cmscan` - Rfam
+    - `hmmscan` to Pfam-A
+    - `cmscan` to Rfam
     - `LAST` mapping to OrthoDB, Swiss-Prot, and **UniRef90**
 
 As of fall 2020, the UniRef90 fasta is 26G (gzipped).
@@ -94,8 +94,8 @@ documentation](https://www.uniprot.org/help/uniref) for more.
     - `busco` quality assessment
     - `transdecoder` ORF prediction
     - `shmlast` to any user databases
-    - `hmscan` to Pfam-A
-    - `cmscan` - Rfam
+    - `hmmscan` to Pfam-A
+    - `cmscan` to Rfam
     - `LAST` mapping to OrthoDB, Swiss-Prot, and **nr**
 
 As of fall 2020, the nr fasta is 81G (gzipped).

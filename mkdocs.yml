@@ -38,9 +38,9 @@ extra_css:
 # give a title for each page
 nav:
   - 'Home': 'index.md'
-  - 'Background and Motivations': 'about.md'
+  - 'About dammit': 'about.md'
   - 'Installation': 'install.md'
-  - 'Quickstart: run sample data': quickstart.md
+  - 'Prepare databases and test annotation': quickstart.md
   - 'Annotation Databases and Pipelines': 
     - 'About the Databases': 'database-about.md'
     - 'Annotation Pipelines': 'pipelines.md'

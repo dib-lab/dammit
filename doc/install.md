@@ -12,7 +12,8 @@ available via bioconda soon.
 For the standard pipeline, dammit needs ~18GB of storage space to store its
 prepared databases, plus a few hundred MB per BUSCO database. For the
 standard annotation pipeline, we recommend at least 16GB of RAM. This can be
-reduced by editing LAST parameters via a custom configuration file.
+reduced by editing LAST parameters via a custom configuration file (see
+the [configuration](configuration.md) section.
 
 The full pipeline, which uses uniref90, needs several hundred GB of
 space and considerable RAM to prepare the databases. You'll also want
@@ -34,7 +35,6 @@ you can follow these commands to install it directly into your home folder.
 If on Mac, please follow the bioconda instructions [here](https://bioconda.github.io/user/install.html).
 
     wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh && bash miniconda.sh -b -p $HOME/miniconda
-    echo 'export PATH="$HOME/miniconda/bin:$PATH"' >> $HOME/.bashrc
 
 Then, finish conda setup by configuring channels:
 

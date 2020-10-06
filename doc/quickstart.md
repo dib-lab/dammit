@@ -4,7 +4,7 @@ Once you have dammit [installed](install.md), you'll need to download
 and prepare databases before you can annotate a transcriptome. This
 quickstart takes you through database preparation (with `dammit run databases`).
 These will take a while to prepare, but are the same databases you'll need
-for all default annotation runs. Finally, we run annotation using a very small sample dataset.
+for most annotation runs. Finally, we run annotation using a very small sample dataset.
 
 ## First, check and prepare databases
 
