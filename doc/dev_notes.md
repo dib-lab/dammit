@@ -1,89 +1,78 @@
 # For `dammit` developers
 
-[dammit!](https://github.com/dib-lab/dammit)
-
-
 ## Setting up your local computer for `dammit` devevelopment
-
-We can basically follow the [instructions for travis](https://github.com/dib-lab/dammit/blob/master/.travis.yml), because we're telling [travis](https://travis-ci.org/dib-lab/dammit/) to do the same things we want to do on our local computers.
 
 Make sure conda is installed. If not, here are instructions:
 ```
-wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
-bash Miniconda3-latest-Linux-x86_64.sh -b
-export PATH="$HOME/miniconda3/bin:$PATH"
+wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh && bash miniconda.sh -b -p $HOME/miniconda
 ```
 
-Fork `dammit` repository to your account. Clone this fork to your local computer, then create a dev branch called `testing`:
+### Conda Setup 
+
+Make sure conda is configured properly
+```
+conda config --set always_yes yes
+conda config --add channels defaults
+conda config --add channels bioconda
+conda config --add channels conda-forge
+```
+
+### Dammit Repository Setup
+
+Fork the `dammit` repository to your account. Clone this fork to your local computer, then create and name a development branch.
+In this example, we name our dev branch `testing`:
 
 ```
-git clone https://github.com/username/dammit.git
-git remote add upstream https://github.com/dib-lab/dammit.git 
+git clone https://github.com/YOUR-USERNAME/dammit.git
 git checkout -b testing
 git branch
 ```
 Now you are on the `testing` branch.
 
-Keep original repository in the `master` branch. Make sure it is up-to-date periodically by running:
+Keep original repository in the `master` branch, so that you can stay up to date with any changes in the main repo.
+To do this, first add a remote called `upstream`, which links to the main dammit repository.
+```
+git remote add upstream https://github.com/dib-lab/dammit.git 
+```
+
+Then, make sure the `master` branch is up-to-date by periodically running:
 ```
 git pull upstream master
 ```
-Set up a Python 3 environment to work in:
+
+### Create a development environment
+
+Create a conda environment with dependencies installed
+```
+conda env create -f environment.yml -n dammit_dev
+conda activate dammit_dev
+```
+Now, install the dammit software into the `dammit_dev` environment:
 
 ```
-conda create -n dammit_dev python=3
-source activate dammit_dev
-```
-Install dependencies:
-```
-conda config --set always_yes yes --set changeps1 no
-conda config --add channels defaults
-conda config --add channels bioconda
-conda config --add channels conda-forge
-
-conda install python numpy pandas numexpr>=2.3.1 khmer>=2.1 sphinx>1.3.1 sphinx_rtd_theme>=0.1.9 pytest pytest-runner doit>=0.29.0 matplotlib shmlast infernal hmmer transdecoder=3.0.1 last busco=3.0.2 parallel bioconductor-seqlogo
-python setup.py install
-```
-Last line of the output should be:
-```
-Finished processing dependencies for dammit==1.0rc2
+pip install -e '.'
 ```
 
-Lastly, install databases  (will install in `~/.dammit/databases/`)
+### Test your Installation
+
+#### Install databases
+
+Install databases  (will install in `~/.dammit/databases/` unless you specify an alternate location with `--database-dir`)
 ```
-dammit databases --install
+dammit run databases --install
 ```
-Output should be:
+
+#### Do a quick annotation run
+
 ```
-(dammit_dev) campus-019-072:dammit johnsolk$ dammit databases --install
-Unable to revert mtime: /Library/Fonts
-# dammit
-## a tool for easy de novo transcriptome annotation
-
-by Camille Scott
-
-**v1.0rc2**, 2018
-
-## submodule: databases
-### Database Install
-#### Info
-* Database Directory: /Users/johnsolk/.dammit/databases
-* Doit Database: /Users/johnsolk/.dammit/databases/databases.doit.db
-
-
-*All database tasks up-to-date.*
-
-Nothing to install!
+dammit run annotate ...FINISH THIS...
 ```
-Now you are ready to edit and make changes!
 
 ## To-do for `dammit`
 
 - [ ] update transdecoder version
 - [ ] orthodb version (other database versions?)
 - [ ] add swissprot
-- [x] change order of conda channels to include conda-forge last
-- [ ] update documentation
 - [ ] add pipeline for accepting .pep file as input (skips transdecoder, transcriptome stats and BUSCO tasks)
 
 #### Versioning
@@ -94,18 +83,15 @@ A new version is required when a new version of a database is added or a major c
 
 ## Notes on dammit
 
-Written by [Camille Scott](http://www.camillescott.org/). See [tutorial](https://angus.readthedocs.io/en/2018/dammit_annotation.html).
+Written by [Camille Scott](http://www.camillescott.org/ and [N Tessa Pierce](http://bluegenes.github.io/).
 
-1. Look at [pydoit](http://pydoit.org/index.html) documentation, and [Camille's workshop](https://dib-training.readthedocs.io/en/pub/2016-01-20-pydoit-lr.html)
-2. [pypi](https://pypi.org/project/dammit/#history) and [bioconda](https://anaconda.org/bioconda/dammit) (supported method of installation)
-
-```
-conda config --add channels defaults
-conda config --add channels bioconda
-conda config --add channels conda-forge
-```
+Dammit relies on the snakemake workflow software. 
+To learn snakemake, check out the [documentation](https://snakemake.readthedocs.io/en/stable/), and start with snakemake tutorials such as [this one by ctb](https://github.com/ctb/2019-snakemake-ucdavis).
 
 ### Architecture:
+
+**TO DO: UPDATE THIS FOR DAMMIT 2**
+
 
 #### Take a look at code and tests in the `dammit` directory:
 

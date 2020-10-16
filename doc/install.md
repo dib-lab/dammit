@@ -15,7 +15,7 @@ standard annotation pipeline, we recommend at least 16GB of RAM. This can be
 reduced by editing LAST parameters via a custom configuration file (see
 the [configuration](configuration.md) section.
 
-The full pipeline, which uses uniref90, needs several hundred GB of
+The `full` pipeline, which uses uniref90, needs several hundred GB of
 space and considerable RAM to prepare the databases. You'll also want
 either a fat internet connection or a big cup of patience to download
 uniref.
