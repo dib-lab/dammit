@@ -46,6 +46,12 @@ if frameshift_cost:
 
 lastdb_name = str(snakemake.input["lastdb"]).rsplit(".", 1)[0]
 
-shell(
-    "lastal -D {d_len} -P {snakemake.threads} {extra} {lastdb_name} {snakemake.input.data} > {outF} {log}"
-)
+if snakemake.threads == 1:
+    shell(
+        "lastal -D {d_len} -P {snakemake.threads} {extra} {lastdb_name} {snakemake.input.data} > {outF} {log}"
+    )
+else:
+    shell(
+        "ope parallel -j {snakemake.threads} {snakemake.input.data} "
+        "lastal -D {d_len} -P 1 {extra} {lastdb_name} /dev/stdin > {outF} {log}"
+    )
