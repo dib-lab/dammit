@@ -83,7 +83,7 @@ A new version is required when a new version of a database is added or a major c
 
 ## Notes on dammit
 
-Written by [Camille Scott](http://www.camillescott.org/ and [N Tessa Pierce](http://bluegenes.github.io/).
+Written by [Camille Scott](http://www.camillescott.org/) and [N Tessa Pierce](http://bluegenes.github.io/).
 
 Dammit relies on the snakemake workflow software. 
 To learn snakemake, check out the [documentation](https://snakemake.readthedocs.io/en/stable/), and start with snakemake tutorials such as [this one by ctb](https://github.com/ctb/2019-snakemake-ucdavis).
