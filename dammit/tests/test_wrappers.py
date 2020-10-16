@@ -235,7 +235,7 @@ def test_busco(snakemake_rule, tmpdir, datadir):
 
 def test_hmmscan_dryrun(snakemake_rule, tmpdir, datadir):
     with tmpdir.as_cwd():
-        datadir('test-protein.fa')
+        datadir('test-protein-multi.fa')
         #datadir('test-protein-multi.fa')
         datadir('test-profile.sto')
         status, out, err = snakemake_rule('hmmer/hmmer.rule',
@@ -245,15 +245,20 @@ def test_hmmscan_dryrun(snakemake_rule, tmpdir, datadir):
 
         assert status == 0
 
-def test_hmmscan(snakemake_rule, tmpdir, datadir):
+
+@pytest.mark.parametrize('n_threads', (1,4))
+def test_hmmscan(snakemake_rule, tmpdir, datadir, n_threads):
     with tmpdir.as_cwd():
-        datadir('test-protein.fa')
+        datadir('test-protein-multi.fa')
         datadir('test-profile.hmm')
         status, out, err = snakemake_rule('hmmer/hmmer.rule',
                                            target='hmmscan_profile',
-                                           config={'DATA_DIR': str(tmpdir)})
+                                           config={'DATA_DIR': str(tmpdir)},
+                                           n_threads=n_threads)
 
-
+        assert status == 0
+        print('STDOUT:', out)
+        print('STDERR:', err)
         # check hmmpress
         assert "Pressed and indexed 1 HMMs (1 names and 1 accessions)." in open('hmmpress.log').read()
         assert "Profiles (remainder) pressed into: test-profile.hmm.h3p" in open('hmmpress.log').read()

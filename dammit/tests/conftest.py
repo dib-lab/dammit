@@ -60,7 +60,7 @@ def datadir(tmpdir, request):
 def snakemake_rule(setup_test_environment):
     conda_env_dir = os.path.join(setup_test_environment, CONDA_ENV_TEMPDIR)
 
-    def run(rule_path, target=None, config=None, extra_args = [], **kwargs):
+    def run(rule_path, target=None, config=None, n_threads=1, extra_args = [], **kwargs):
         if '--config' in extra_args:
             raise RuntimeError('pass --config to config keyword')
         rule_path = os.path.join(__wrappers__, rule_path)
@@ -70,7 +70,7 @@ def snakemake_rule(setup_test_environment):
             args.append('--config')
             args.append(' '.join((f'{k}={v}' for k, v in config.items())))
 
-        args.extend(['-s', rule_path, '--use-conda', '--conda-prefix', conda_env_dir, '-j', '1'])
+        args.extend(['-s', rule_path, '--use-conda', '--conda-prefix', conda_env_dir, '-p', '-j', str(n_threads)])
         args.extend(extra_args)
         if target is not None:
             if isinstance(target, str):

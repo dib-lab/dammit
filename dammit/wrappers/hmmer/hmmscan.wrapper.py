@@ -49,7 +49,14 @@ extra = snakemake.params.get("extra", "")
 
 log = snakemake.log_fmt_shell(stdout=True, stderr=True)
 
-shell(
-    "hmmscan {out_cmd} {thresh_cmd} --cpu {snakemake.threads}"
-    " {extra} {profile} {snakemake.input.fasta} {log}"
-)
+if snakemake.threads == 1:
+
+    shell(
+        "hmmscan {out_cmd} {thresh_cmd} --cpu {snakemake.threads}"
+        " {extra} {profile} {snakemake.input.fasta} {log}"
+    )
+else:
+    shell(
+        "ope parallel -j {snakemake.threads} {snakemake.input.fasta} "
+        "hmmscan {out_cmd} {thresh_cmd} {extra} {profile} /dev/stdin {log}"
+    )

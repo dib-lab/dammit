@@ -6,6 +6,8 @@ try:
 except KeyError:
     DATA_DIR = os.path.join(__path__, 'tests', 'test-data')
 
+TEST_PROTEIN = os.path.join(DATA_DIR, "test-protein-multi.fa")
+
 rule test_hmmer:
     input: "hmmscan/test-prot-tbl.txt", "hmmsearch/test-prot-tbl.txt"
 
@@ -39,7 +41,7 @@ rule hmmpress_profile:
 
 rule hmmscan_profile:
     input:
-        fasta=os.path.join(DATA_DIR,"test-protein.fa"),
+        fasta=TEST_PROTEIN,
         #fasta=os.path.join(DATA_DIR,"test-protein-multi.fa"),
         profile="test-profile.hmm.h3f",
     output:
@@ -60,7 +62,7 @@ rule hmmscan_profile:
 
 rule hmmsearch_profile:
     input:
-        fasta=os.path.join(DATA_DIR,"test-protein.fa"),
+        fasta=TEST_PROTEIN,
         profile="test-profile.hmm.h3f",
     output:
         # only one of these is required
