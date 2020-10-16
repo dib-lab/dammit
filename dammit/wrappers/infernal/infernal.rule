@@ -6,6 +6,8 @@ try:
 except KeyError:
     DATA_DIR = os.path.join(__path__, 'tests', 'test-data')
 
+TEST_TRANSCRIPT = os.path.join(DATA_DIR, "pom.5.fa")
+
 rule test_infernal:
     input: os.path.join(DATA_DIR,"tr-infernal-tblout.txt")
 
@@ -25,8 +27,8 @@ rule infernal_cmpress:
 
 rule infernal_cmscan:
     input:
-        fasta=  os.path.join(DATA_DIR,"test-transcript.fa"),
-        profile= os.path.join(DATA_DIR,"test-covariance-model.cm.i1i")
+        fasta   = TEST_TRANSCRIPT,
+        profile = os.path.join(DATA_DIR,"test-covariance-model.cm.i1i")
     output:
         tblout = os.path.join(DATA_DIR, "tr-infernal-tblout.txt"),
     log:

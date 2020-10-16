@@ -190,7 +190,7 @@ def test_infernal_cmpress(snakemake_rule, tmpdir, datadir):
 def test_infernal_cmscan_dryrun(snakemake_rule, tmpdir, datadir):
     with tmpdir.as_cwd():
         datadir('test-covariance-model.cm')
-        datadir('test-transcript.fa')
+        datadir('pom.5.fa')
         status, out, err = snakemake_rule('infernal/infernal.rule',
                                            target='infernal_cmscan',
                                            config={'DATA_DIR': str(tmpdir)},
@@ -200,18 +200,21 @@ def test_infernal_cmscan_dryrun(snakemake_rule, tmpdir, datadir):
 
 
 @pytest.mark.long
-def test_infernal_cmscan(snakemake_rule, tmpdir, datadir):
+@pytest.mark.parametrize('n_threads', (1,2))
+def test_infernal_cmscan(snakemake_rule, tmpdir, datadir, n_threads):
     with tmpdir.as_cwd():
         datadir('test-covariance-model.cm')
-        datadir('test-transcript.fa')
+        datadir('pom.5.fa')
         status, out, err = snakemake_rule('infernal/infernal.rule',
                                            target='infernal_cmscan',
+                                           n_threads=n_threads,
                                            config={'DATA_DIR': str(tmpdir)})
 
         print(out)
         assert os.path.isfile('tr-infernal-tblout.txt')
         assert os.path.isfile('test-cmscan.log')
         assert '[ok]' in open('test-cmscan.log').read()
+
 
 def test_busco_dryrun(snakemake_rule, tmpdir, datadir):
     with tmpdir.as_cwd():

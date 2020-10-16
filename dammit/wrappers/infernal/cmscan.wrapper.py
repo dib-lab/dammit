@@ -40,6 +40,12 @@ extra = snakemake.params.get("extra", "")
 
 log = snakemake.log_fmt_shell(stdout=True, stderr=True)
 
-shell(
-    "cmscan {out_cmd} {thresh_cmd} {extra} --cpu {snakemake.threads} {profile} {snakemake.input.fasta} {log}"
-)
+if snakemake.threads == 1:
+    shell(
+        "cmscan {out_cmd} {thresh_cmd} {extra} --cpu 1 {profile} {snakemake.input.fasta} {log}"
+    )
+else:
+    shell(
+        "ope parallel -j {snakemake.threads} {snakemake.input.fasta} "
+        "cmscan {out_cmd} {thresh_cmd} {extra} {profile} /dev/stdin {log}"
+    )
