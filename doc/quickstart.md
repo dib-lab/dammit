@@ -72,6 +72,8 @@ This will take a bit, so go get another cup of coffee...
 
 ## TODO, run sample data and copy output ls below! fix txt, this is from elvers docs.
 
+**consider using https://angus.readthedocs.io/en/2019/dammit_annotation.html#annotation-with-dammit**
+
 ## dammit output
 
 After a successful run, you'll have a new directory called `BASENAME.fasta.dammit`. If you look inside, you'll see a lot of files. For example, for a transcriptome with basename `trinity.nema`, the folder `trinity.nema.fasta.dammit` should contain the following files:
@@ -98,8 +100,35 @@ If the above `dammit` command is run again, there will be a message:
 
 ## Parsing dammit output
 
-TODO: include jupyter code form https://angus.readthedocs.io/en/2018/dammit_annotation.html? R code?
+```
+import pandas as pd
+from dammit.fileio.gff3 import GFF3Parser
+```
 
+```
+gff_file = "nema-trinity.fa.dammit/nema-trinity.fa.dammit.gff3"
+annotations = GFF3Parser(filename=gff_file).read()
+names = annotations.sort_values(by=['seqid', 'score'], ascending=True).query('score < 1e-05').drop_duplicates(subset='seqid')[['seqid', 'Name']]
+new_file = names.dropna(axis=0,how='all')
+new_file.head()
+```
+
+Try commands like:
+```
+annotations.columns
+```
+
+```
+annotations.head()
+```
+
+```
+annotations.head(50)
+```
+
+
+
+**todo: add R code?**
 
 
 ## Other tutorials and Workshop materials
