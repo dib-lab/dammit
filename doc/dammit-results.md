@@ -34,12 +34,12 @@ external program results:
 
 
 
-## Parsing dammit output
+## Parsing the dammit GFF3
 
 Dammit provides transcript annotations for mapping against all of the databases in the pipeline you selected
 in the final dammit files, `BASENAME.fasta.dammit.fasta` and `BASENAME.fasta.dammit.gff3`.
 If you'd like to select certain annotations (e.g. to create an alternative gene-to-transcript map), you can
-use python or R to parse the `gff3` results file. If using python, dammit provides a `GFF3Parser` utility to facilitat parsing.
+use python or R to parse the `gff3` results file. If using python, dammit provides a `GFF3Parser` utility to facilitate parsing.
 
 ```
 import pandas as pd
