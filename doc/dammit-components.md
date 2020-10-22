@@ -13,6 +13,13 @@ to manage database downloads and run the external annotation software.
   > databases must be used to properly prepare databases pror to running annotatation
   - [**`annotate`**](annotate.md) uses these databases for transcriptome annotation. Usage info [here](annotate.md).
 
+
+
+TODO: add note on _where_ command line args need to go (shared args vs unique args)
+
+
+
+
 ## dammit file conversion components
 
 Each annotation program run as part of a dammit pipeline produces an
