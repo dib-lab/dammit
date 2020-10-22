@@ -94,45 +94,4 @@ ls trinity.nema.fasta.dammit/
 The two most important files are `trinity.nema.fasta.dammit.fasta` and `trinity.nema.fasta.dammit.gff3`, as they contain the aggregated annotation info per transcript.
 `trinity.nema.fasta.dammit.stats.json` also gives summary stats that are quite useful.
 
-If the above `dammit` command is run again, there will be a message:
-`**Pipeline is already completed!**`
-
-
-## Parsing dammit output
-
-```
-import pandas as pd
-from dammit.fileio.gff3 import GFF3Parser
-```
-
-```
-gff_file = "nema-trinity.fa.dammit/nema-trinity.fa.dammit.gff3"
-annotations = GFF3Parser(filename=gff_file).read()
-names = annotations.sort_values(by=['seqid', 'score'], ascending=True).query('score < 1e-05').drop_duplicates(subset='seqid')[['seqid', 'Name']]
-new_file = names.dropna(axis=0,how='all')
-new_file.head()
-```
-
-Try commands like:
-```
-annotations.columns
-```
-
-```
-annotations.head()
-```
-
-```
-annotations.head(50)
-```
-
-
-
-**todo: add R code?**
-
-
-## Other tutorials and Workshop materials
-
-See this workshop [tutorial](https://angus.readthedocs.io/en/2018/dammit_annotation.html) for further practice with using `dammit` for annotating a *de novo* transcriptome assembly.
-Please note that the commands used were for a prior version of dammit, but all analysis remains relevant.
-
+For more information on the results, see [dammit results](dammit-results.md).

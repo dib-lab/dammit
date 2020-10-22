@@ -40,23 +40,25 @@ nav:
   - 'Home': 'index.md'
   - 'About dammit': 'about.md'
   - 'Installation': 'install.md'
-  - 'Prepare databases and test annotation': quickstart.md
-  - 'Annotation Databases and Pipelines': 
-    - 'About the Databases': 'database-about.md'
-    - 'Annotation Pipelines': 'pipelines.md'
+  - 'Quickstart: prepare databases and test annotation': quickstart.md
 
-  - 'Dammit Components': 
-    - 'Components': dammit-components.md
-    - 'Databases': 'database-usage.md'
-    - 'Annotate': 'annotate.md'
+  - 'dammit results':
+    - 'Use and parse results': 'dammit-results.md'
+
+  - 'dammit details':
+    - 'Components': 'dammit-components.md'
+    - 'Databases':
+      - 'Database Usage': 'database-usage.md'
+      - 'Database Info': 'database-about.md'
+    - 'Annotate':
+      - 'Annotate Usage': 'annotate.md'
+      - 'Annotation Pipelines': 'pipelines.md'
     
   #- 'Full Tutorial': 'tutorial.md'
-
   - 'Advanced Usage and Configuration':
-    - 'Tool-Specific Configuration': 'configuration.md'
+    - 'Advanced Configuration': 'configuration.md'
     - 'Distributing dammit jobs on a Cluster': cluster.md
     - 'Advanced Database Setup': 'database-advanced.md'
-    - 'Parsing Dammit Results': 'results-parsing.md'
     
   - 'For developers':
     - 'Notes for developers': 'dev_notes.md'

@@ -49,7 +49,6 @@ to map to any user databases. While this pipeline may require less database
 space, we still recommend running with 16G of RAM, especially if mapping
 to a user-provided protein database.
 
-
 code to run this pipeline:
 
     dammit run databases --install --pipeline quick
@@ -63,6 +62,11 @@ _warning: time and resource intensive!_
 
 The `full` pipeline starts from the `default` pipeline and adds a mapping 
 database, UniRef90. 
+
+**UniRef90** is a set of UniProt sequences clustered
+by >=90% sequence identity. UniRef allows a searching to a larger set of
+sequence records while hiding redundant sequences. See the [UniRef
+documentation](https://www.uniprot.org/help/uniref) for more.
 
 - **full (`--pipeline full`):**
     - `busco` quality assessment
@@ -85,10 +89,11 @@ code to run this pipeline:
 
 _warning: REALLY time and resource intensive!_
 
-**UniRef90** is a set of UniProt sequences clustered
-by >=90% sequence identity. UniRef allows a searching to a larger set of
-sequence records while hiding redundant sequences. See the [UniRef 
-documentation](https://www.uniprot.org/help/uniref) for more.
+**nr** is a very large database consisting of both non-curated
+and curated database entries. While the name stands for "non-redundant",
+this databse is no longer non-redundant. Given the time and memory requirments,
+nr is only a good choice for species and/or sequences you're unable to confidently
+annotate via other databases.
 
 - **nr (`--pipeline nr`):**
     - `busco` quality assessment
