@@ -127,10 +127,10 @@ def run_group(config,
                    ' It should not have spaces, pipes,'\
                    ' ampersands, or other characters'\
                    ' with special meaning to BASH.')
-@click.option('-e', '--evalue',
-              default=1e-5,
+@click.option('-e', '--global-evalue',
+              default=None,
               type=float,
-              help='e-value cutoff for similarity searches.')
+              help='global e-value cutoff for similarity searches.')
 @click.option('-o', '--output-dir',
               default=None,
               help='Output directory. By default this will'\
@@ -144,7 +144,7 @@ def run_group(config,
 def annotate_cmd(config,
                  transcriptome,
                  base_name,
-                 evalue,
+                 global_evalue,
                  output_dir,
                  user_database,
                  dry_run):
@@ -154,7 +154,7 @@ def annotate_cmd(config,
     Best-hit Blast against user databases; and aggregates all results in
     a properly formatted GFF3 file.'''
 
-    # Handle config updates
+    # Strip the extension from the txome and use as the global prefix name
     if any([transcriptome.endswith(".fa"),
             transcriptome.endswith(".fasta")]):
         transcriptome_name = os.path.basename(transcriptome).rsplit(".fa")[0]
@@ -162,17 +162,24 @@ def annotate_cmd(config,
         raise ValueError('input transcriptome file must end with ".fa" or ".fasta"')
     config.core['transcriptome_name'] = transcriptome_name
 
+    # if an output folder is not provided, use the default suffix
     if output_dir is None:
         output_dir = os.path.abspath(transcriptome_name + config.core["dammit_dir_suffix"])
     else:
         output_dir = os.path.abspath(output_dir)
-
     config.core['dammit_dir'] = output_dir
+
+    # we want the absolute path to the input txome
     config.core['input_transcriptome'] = os.path.abspath(transcriptome)
     config.core['basename'] = base_name
+    
+    # the default global_evalue is null 
+    if global_evalue is not None:
+        config.core['global_evalue'] = global_evalue
 
     config.core['user_dbs'] = wrangle_user_databases(user_database)
 
+    # extract the given pipeline from the config
     pipeline_config = config.pipelines['pipelines'][config.core['pipeline']]
 
     # Wrangle snakemake files
@@ -183,6 +190,7 @@ def annotate_cmd(config,
 
     targets = generate_annotation_targets(pipeline_config, config)
 
+    # config file for *this run*. gets put in the dammit output directory
     workflow_config_file = os.path.join(output_dir, 'run.config.yml')
     print(f'Writing full run config to {workflow_config_file}', file=sys.stderr)
     write_yaml(config.core, workflow_config_file)
