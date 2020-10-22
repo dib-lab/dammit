@@ -1,5 +1,7 @@
 # For `dammit` developers
 
+_in progress_
+
 ## Setting up your local computer for `dammit` devevelopment
 
 Make sure conda is installed. If not, here are instructions:

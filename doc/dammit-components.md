@@ -1,5 +1,7 @@
 # Dammit Components
 
+_in progress_
+
 Under the hood, dammit uses the snakemake workflow management system
 to manage database downloads and run the external annotation software.
 

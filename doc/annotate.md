@@ -1,7 +1,8 @@
 # Annotate
 
-The dammit `annotate` component uses the installed databases for transcriptome annotation.
+_in progress_
 
+The dammit `annotate` component uses the installed databases for transcriptome annotation.
 
 ## Just annotate it, dammit!
 
@@ -21,9 +22,9 @@ If you'd like to customize the output or other parameters such as the e-value fo
 you can provide customization on the command line or in a configuration file
 
 
-## Command-line configuration
+## Additional Usage info 
 
-To see the general dammit usage configuration, run:
+To see the general dammit usage information, run:
 
     dammit run --help
 
