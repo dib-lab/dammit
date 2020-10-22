@@ -5,6 +5,12 @@ The [annotation pipelines](pipelines.md) section contains info on the
 recommended minimum resources for each pipeline.
 
 
+Dammit can be configured in two ways:
+
+  - providing options on the command line
+  - providing options within a YAML configuration file.
+
+
 ## **`dammit config`**
 
 ```
@@ -27,11 +33,6 @@ Commands:
 ## Tool-Specific Specification
 
 Tool-specific parameters can be modified via a custom configuration file.
-
-
-## Distributing dammit Jobs across a Cluster
-
-
 
 
 

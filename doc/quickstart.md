@@ -6,7 +6,7 @@ quickstart takes you through database preparation (with `dammit run databases`).
 These will take a while to prepare, but are the same databases you'll need
 for most annotation runs. Finally, we run annotation using a very small sample dataset.
 
-## First, check and prepare databases
+## Check and prepare databases
 
 Here, we'll install the main databases, as well as the
 `eukaryota` BUSCO database for our test yeast dataset (below). This could
@@ -35,7 +35,7 @@ to do it again. `dammit` keeps track of the database state and won't
 repeat work it's already completed, even if you accidentally rerun with
 the `--install` flag.
 
-## Now, let's download some test data that we can annotate
+## Download test data for annotation
 
 First let's download some test data. We'll start small and use a
 *Schizosaccharomyces pombe* transcriptome. Make a working directory and
