@@ -2,32 +2,20 @@
 Transcript_0	HMMER	protein_hmm_match	3604	4089	2.100000e-10	.	.	ID=homology:e673180f3df39246b4993504e4893155499042b6;Name=DEAD;Target=DEAD 10 174 +;Note=DEAD/DEAH box helicase;accuracy=0.75;env_coords=3580 4092;Dbxref="Pfam-A:PF00270.25"
 Transcript_0	HMMER	protein_hmm_match	4207	4548	3.200000e-18	.	.	ID=homology:488f96cc4e5cbb8d5590bdbebee7888a3f8598b2;Name=Helicase_C;Target=Helicase_C 8 105 +;Note=Helicase conserved C-terminal domain;accuracy=0.87;env_coords=4186 4548;Dbxref="Pfam-A:PF00271.27"
 Transcript_0	HMMER	protein_hmm_match	5218	5274	1.100000e+04	.	.	ID=homology:839a02b6f729f8bfa4de32545adba3e4f30c6f71;Name=Helicase_C;Target=Helicase_C 16 34 +;Note=Helicase conserved C-terminal domain;accuracy=0.78;env_coords=5203 5307;Dbxref="Pfam-A:PF00271.27"
-Transcript_0	Infernal	RNA_sequence_secondary_structure	2399	2433	2.500000e+00	-	.	ID=homology:7246cdbbc32b0e9023545fbbb08aa8e86bab1501;Name=FTX_1;Target=FTX_1 17 54 +;Note=-;Dbxref="Rfam:RF02119";trunc=-;bitscore=12.1
-Transcript_0	Infernal	RNA_sequence_secondary_structure	3743	3769	6.600000e+00	+	.	ID=homology:41941283993450c08cc4c93771f8fc92f2d5932d;Name=SNORD35;Target=SNORD35 1 88 +;Note=-;Dbxref="Rfam:RF00211";trunc=no;bitscore=16.1
-Transcript_0	Infernal	RNA_sequence_secondary_structure	4609	4665	8.400000e+00	+	.	ID=homology:54a93a76770621db929b78f8e494b36dcd142139;Name=ceN69;Target=ceN69 1 107 +;Note=-;Dbxref="Rfam:RF01651";trunc=no;bitscore=17.4
-Transcript_0	Infernal	RNA_sequence_secondary_structure	4768	4879	3.000000e+00	-	.	ID=homology:e41daf06a0dfda79fc429e4421b2881911df2db4;Name=mir-363;Target=mir-363 1 88 +;Note=-;Dbxref="Rfam:RF01898";trunc=no;bitscore=17.7
-Transcript_0	Infernal	RNA_sequence_secondary_structure	4925	4992	9.700000e+00	-	.	ID=homology:c985eb39ca2dfc9104fbc41689db3bd1e528efcb;Name=SNORD75;Target=SNORD75 1 62 +;Note=-;Dbxref="Rfam:RF00612";trunc=no;bitscore=14.1
-Transcript_0	Infernal	RNA_sequence_secondary_structure	5160	5255	1.200000e+00	+	.	ID=homology:352d6c44d9d0b04670aea6c67525abcec2a401cc;Name=mir-598;Target=mir-598 1 97 +;Note=-;Dbxref="Rfam:RF01059";trunc=no;bitscore=22.3
-Transcript_0	Infernal	RNA_sequence_secondary_structure	5472	5504	3.400000e+00	-	.	ID=homology:2221c56fd7fb995b5846b43a76697ded76db8233;Name=CRISPR-DR63;Target=CRISPR-DR63 1 37 +;Note=-;Dbxref="Rfam:RF01376";trunc=no;bitscore=22.2
-Transcript_0	LAST	translated_nucleotide_match	2435	4252	2.100000e-104	+	.	ID=homology:3a7aef9d1f56d5e77281a20d7b110b97ab556a31;Name=C5DX72_ZYGRC;Target=C5DX72_ZYGRC 152 1921 +;database=OrthoDB
-Transcript_0	LAST	translated_nucleotide_match	7	5658	5.900000e-299	+	.	ID=homology:fbbe0d85050d9cdb8364c1fede26ce65e850e10d;Name=sp|Q7Z5P9|MUC19_HUMAN;Target=sp|Q7Z5P9|MUC19_HUMAN 2547 8064 +;database=uniprot_sprot
+Transcript_0	LAST	translated_nucleotide_match	1	5661	0.000000e+00	+	.	ID=homology:25cad5c2eb001018b5f654f0dd86b1abaf3c25bd;Name=TLH2_SCHPO;Target=TLH2_SCHPO 1 1887 +;database=OrthoDB
+Transcript_0	LAST	translated_nucleotide_match	1	5661	0.000000e+00	+	.	ID=homology:b00529b1b48d13da6c417b0ebd7a5482d9feab00;Name=sp|P0CT33|TLH1_SCHPO;Target=sp|P0CT33|TLH1_SCHPO 1 1887 +;database=uniprot_sprot
 Transcript_0	transdecoder	CDS	1	5661	.	+	0	ID=cds.Transcript_0.p1;Parent=Transcript_0.p1
 Transcript_0	transdecoder	exon	1	5662	.	+	.	ID=Transcript_0.p1.exon1;Parent=Transcript_0.p1
-Transcript_0	transdecoder	gene	1	5662	.	+	.	ID=GENE.Transcript_0~~Transcript_0.p1;Name=ORF%20type%3A3prime_partial%20len%3A1888%20%28%2B%29%2Cscore%3D480.68
-Transcript_0	transdecoder	mRNA	1	5662	.	+	.	ID=Transcript_0.p1;Parent=GENE.Transcript_0~~Transcript_0.p1;Name=ORF%20type%3A3prime_partial%20len%3A1888%20%28%2B%29%2Cscore%3D480.68
+Transcript_0	transdecoder	gene	1	5662	.	+	.	ID=GENE.Transcript_0~~Transcript_0.p1;Name=ORF%20type%3A3prime_partial%20len%3A1888%20%28%2B%29%2Cscore%3D464.77%2CHelicase_C%7CPF00271.27%7C3.2e-18%2CHelicase_C%7CPF00271.27%7C1.1e%2B04%2CDEAD%7CPF00270.25%7C2.1e-10
+Transcript_0	transdecoder	mRNA	1	5662	.	+	.	ID=Transcript_0.p1;Parent=GENE.Transcript_0~~Transcript_0.p1;Name=ORF%20type%3A3prime_partial%20len%3A1888%20%28%2B%29%2Cscore%3D464.77%2CHelicase_C%7CPF00271.27%7C3.2e-18%2CHelicase_C%7CPF00271.27%7C1.1e%2B04%2CDEAD%7CPF00270.25%7C2.1e-10
 Transcript_10	HMMER	protein_hmm_match	200	340	1.300000e-10	.	.	ID=homology:499a5d3b0771ee05419a7b824790dcb9f3714247;Name=Pombe_5TM;Target=Pombe_5TM 1 52 +;Note=Pombe specific 5TM protein;accuracy=0.95;env_coords=200 352;Dbxref="Pfam-A:PF09437.6"
 Transcript_10	HMMER	protein_hmm_match	356	598	5.100000e-26	.	.	ID=homology:45e1cff60885b818c24b3c65411f930132c06531;Name=Pombe_5TM;Target=Pombe_5TM 118 220 +;Note=Pombe specific 5TM protein;accuracy=0.93;env_coords=341 634;Dbxref="Pfam-A:PF09437.6"
-Transcript_10	Infernal	RNA_sequence_secondary_structure	339	388	1.300000e+00	-	.	ID=homology:2c28e654fc80d16ecdb7cd548f7133ac5f369015;Name=PK-PYVV;Target=PK-PYVV 1 58 +;Note=-;Dbxref="Rfam:RF01078";trunc=no;bitscore=17.8
-Transcript_10	Infernal	RNA_sequence_secondary_structure	636	766	2.900000e+00	-	.	ID=homology:23158163152b211d350368a88e0e7760456223a2;Name=SNORA7;Target=SNORA7 1 140 +;Note=-;Dbxref="Rfam:RF00409";trunc=no;bitscore=13.9
-Transcript_10	Infernal	RNA_sequence_secondary_structure	8	88	6.000000e+00	-	.	ID=homology:16a01864dc105f9e852812b378e4db254b166c3c;Name=snosnR66;Target=snosnR66 1 104 +;Note=-;Dbxref="Rfam:RF00477";trunc=no;bitscore=18.1
-Transcript_10	Infernal	RNA_sequence_secondary_structure	926	959	4.400000e+00	-	.	ID=homology:b591cd471eb1f7bce29d2519ee67cbc3d2bdb508;Name=SAM-SAH;Target=SAM-SAH 1 49 +;Note=-;Dbxref="Rfam:RF01727";trunc=no;bitscore=12.4
-Transcript_10	LAST	translated_nucleotide_match	315	956	3.700000e-57	+	.	ID=homology:bb15125159cd8d67fbb93349e32fb128adf9b99d;Name=sp|P08399|PHXR5_MOUSE;Target=sp|P08399|PHXR5_MOUSE 59 672 +;database=uniprot_sprot
-Transcript_10	LAST	translated_nucleotide_match	77	975	8.300000e-78	+	.	ID=homology:c8b85d7209d8ec19df4c922f8a818ac541b282be;Name=FBpp0077084;Target=FBpp0077084 119 1016 +;database=OrthoDB
+Transcript_10	LAST	translated_nucleotide_match	197	634	3.900000e-123	+	.	ID=homology:d7745efbf296300014077bd96aea0065db061a76;Name=sp|P0CU07|YI72_SCHPO;Target=sp|P0CU07|YI72_SCHPO 1 146 +;database=uniprot_sprot
 Transcript_10	transdecoder	CDS	197	637	.	+	0	ID=cds.Transcript_10.p1;Parent=Transcript_10.p1
 Transcript_10	transdecoder	exon	1	979	.	+	.	ID=Transcript_10.p1.exon1;Parent=Transcript_10.p1
 Transcript_10	transdecoder	five_prime_UTR	1	196	.	+	.	ID=Transcript_10.p1.utr5p1;Parent=Transcript_10.p1
-Transcript_10	transdecoder	gene	1	979	.	+	.	ID=GENE.Transcript_10~~Transcript_10.p1;Name=ORF%20type%3Acomplete%20len%3A147%20%28%2B%29%2Cscore%3D84.41
-Transcript_10	transdecoder	mRNA	1	979	.	+	.	ID=Transcript_10.p1;Parent=GENE.Transcript_10~~Transcript_10.p1;Name=ORF%20type%3Acomplete%20len%3A147%20%28%2B%29%2Cscore%3D84.41
+Transcript_10	transdecoder	gene	1	979	.	+	.	ID=GENE.Transcript_10~~Transcript_10.p1;Name=ORF%20type%3Acomplete%20len%3A147%20%28%2B%29%2Cscore%3D82.86%2CPombe_5TM%7CPF09437.6%7C1.3e-10%2CPombe_5TM%7CPF09437.6%7C5.1e-26
+Transcript_10	transdecoder	mRNA	1	979	.	+	.	ID=Transcript_10.p1;Parent=GENE.Transcript_10~~Transcript_10.p1;Name=ORF%20type%3Acomplete%20len%3A147%20%28%2B%29%2Cscore%3D82.86%2CPombe_5TM%7CPF09437.6%7C1.3e-10%2CPombe_5TM%7CPF09437.6%7C5.1e-26
 Transcript_10	transdecoder	three_prime_UTR	638	979	.	+	.	ID=Transcript_10.p1.utr3p1;Parent=Transcript_10.p1
 Transcript_11	HMMER	protein_hmm_match	22	342	1.400000e-11	.	.	ID=homology:c47f5a8eafd35024c4663bccddca7dee8257bdd7;Name=Methyltransf_23;Target=Methyltransf_23 21 120 +;Note=Methyltransferase domain;accuracy=0.79;env_coords=1 420;Dbxref="Pfam-A:PF13489.2"
 Transcript_11	HMMER	protein_hmm_match	28	252	7.500000e-06	.	.	ID=homology:4cf2d0e32905f04f3de7deab1a3434c7c8c37fd6;Name=TPMT;Target=TPMT 38 126 +;Note=Thiopurine S-methyltransferase (TPMT);accuracy=0.66;env_coords=7 360;Dbxref="Pfam-A:PF05724.7"
@@ -36,209 +24,144 @@ Transcript_11	HMMER	protein_hmm_match	31	276	5.400000e-09	.	.	ID=homology:2d2085
 Transcript_11	HMMER	protein_hmm_match	37	267	8.600000e-09	.	.	ID=homology:7bef4530a0bc80d0f8e341c712e505126fc1dd92;Name=Methyltransf_25;Target=Methyltransf_25 1 82 +;Note=Methyltransferase domain;accuracy=0.88;env_coords=37 354;Dbxref="Pfam-A:PF13649.2"
 Transcript_11	HMMER	protein_hmm_match	40	279	1.800000e-09	.	.	ID=homology:9b03d41c3d361a25bf81d09e4a5a01cd7cb553de;Name=Methyltransf_12;Target=Methyltransf_12 1 80 +;Note=Methyltransferase domain;accuracy=0.74;env_coords=40 315;Dbxref="Pfam-A:PF08242.8"
 Transcript_11	HMMER	protein_hmm_match	40	279	7.900000e-10	.	.	ID=homology:9dd98f1b4f3d230f515d763fd4fd4db96df1db36;Name=Methyltransf_11;Target=Methyltransf_11 1 77 +;Note=Methyltransferase domain;accuracy=0.85;env_coords=40 333;Dbxref="Pfam-A:PF08241.8"
-Transcript_11	Infernal	RNA_sequence_secondary_structure	307	371	8.900000e+00	-	.	ID=homology:4ba64f06092beddec652e976c65c120c295c777d;Name=sn2343;Target=sn2343 1 78 +;Note=-;Dbxref="Rfam:RF01172";trunc=no;bitscore=11.7
-Transcript_11	LAST	translated_nucleotide_match	1	369	5.400000e-46	+	.	ID=homology:95d4986704884d531cb6f478b5f71e10756fa0bc;Name=AMEM011785-PA;Target=AMEM011785-PA 260 647 +;database=OrthoDB
-Transcript_11	LAST	translated_nucleotide_match	2	343	6.500000e-35	+	.	ID=homology:40afb5f60358099099db540d4964aa96af5d8cd5;Name=sp|P08399|PHXR5_MOUSE;Target=sp|P08399|PHXR5_MOUSE 331 672 +;database=uniprot_sprot
+Transcript_11	LAST	translated_nucleotide_match	1	435	3.300000e-132	+	.	ID=homology:aa9d4b276cffc52778f370c8225bc254acb5072d;Name=sp|Q9P7U5|YI73_SCHPO;Target=sp|Q9P7U5|YI73_SCHPO 1 145 +;database=uniprot_sprot
+Transcript_11	LAST	translated_nucleotide_match	1	435	3.700000e-131	+	.	ID=homology:2deb7f13b0697a4833b90329034b17977fb2dd93;Name=YI73_SCHPO;Target=YI73_SCHPO 1 145 +;database=OrthoDB
 Transcript_11	transdecoder	CDS	1	438	.	+	0	ID=cds.Transcript_11.p1;Parent=Transcript_11.p1
 Transcript_11	transdecoder	exon	1	438	.	+	.	ID=Transcript_11.p1.exon1;Parent=Transcript_11.p1
-Transcript_11	transdecoder	gene	1	438	.	+	.	ID=GENE.Transcript_11~~Transcript_11.p1;Name=ORF%20type%3Acomplete%20len%3A146%20%28%2B%29%2Cscore%3D87.54
-Transcript_11	transdecoder	mRNA	1	438	.	+	.	ID=Transcript_11.p1;Parent=GENE.Transcript_11~~Transcript_11.p1;Name=ORF%20type%3Acomplete%20len%3A146%20%28%2B%29%2Cscore%3D87.54
-Transcript_12	Infernal	RNA_sequence_secondary_structure	302	396	2.200000e+00	-	.	ID=homology:61b3fe93bceb42b989ef871dc5fa2346c5fc3c86;Name=snoZ223;Target=snoZ223 1 94 +;Note=-;Dbxref="Rfam:RF00135";trunc=no;bitscore=16.8
-Transcript_12	LAST	translated_nucleotide_match	14	589	3.300000e-56	+	.	ID=homology:0874aa3b9674bfbce8328fbc32cbc45edc0df8ca;Name=sp|P08399|PHXR5_MOUSE;Target=sp|P08399|PHXR5_MOUSE 83 655 +;database=uniprot_sprot
-Transcript_12	LAST	translated_nucleotide_match	156	590	1.200000e-40	+	.	ID=homology:5763eb33882f7991b1a80d487a7fba78d282c84c;Name=FBpp0221794;Target=FBpp0221794 102 477 +;database=OrthoDB
-Transcript_12	transdecoder	CDS	52	519	.	+	0	ID=cds.Transcript_12.p1;Parent=Transcript_12.p1
+Transcript_11	transdecoder	gene	1	438	.	+	.	ID=GENE.Transcript_11~~Transcript_11.p1;Name=ORF%20type%3Acomplete%20len%3A146%20%28%2B%29%2Cscore%3D85.63%2CMethyltransf_23%7CPF13489.2%7C1.4e-11%2CMethyltransf_31%7CPF13847.2%7C6.1e-10%2CMethyltransf_11%7CPF08241.8%7C7.9e-10%2CMethyltransf_12%7CPF08242.8%7C1.8e-09%2CMethyltransf_18%7CPF12847.3%7C5.4e-09%2CMethyltransf_25%7CPF13649.2%7C8.6e-09%2CTPMT%7CPF05724.7%7C7.5e-06
+Transcript_11	transdecoder	mRNA	1	438	.	+	.	ID=Transcript_11.p1;Parent=GENE.Transcript_11~~Transcript_11.p1;Name=ORF%20type%3Acomplete%20len%3A146%20%28%2B%29%2Cscore%3D85.63%2CMethyltransf_23%7CPF13489.2%7C1.4e-11%2CMethyltransf_31%7CPF13847.2%7C6.1e-10%2CMethyltransf_11%7CPF08241.8%7C7.9e-10%2CMethyltransf_12%7CPF08242.8%7C1.8e-09%2CMethyltransf_18%7CPF12847.3%7C5.4e-09%2CMethyltransf_25%7CPF13649.2%7C8.6e-09%2CTPMT%7CPF05724.7%7C7.5e-06
+Transcript_12	LAST	translated_nucleotide_match	16	516	3.400000e-150	+	.	ID=homology:ed844a94d06f03d404f60badcf6b313ffbb2aca6;Name=sp|P0CU11|YHEG_SCHPO;Target=sp|P0CU11|YHEG_SCHPO 319 485 +;database=uniprot_sprot
+Transcript_12	LAST	translated_nucleotide_match	16	516	3.700000e-149	+	.	ID=homology:3ab680bb9509c286c323e823bd0d85914e2da6a9;Name=YLZ2_SCHPO;Target=YLZ2_SCHPO 319 485 +;database=OrthoDB
+Transcript_12	transdecoder	CDS	1	519	.	+	0	ID=cds.Transcript_12.p1;Parent=Transcript_12.p1
 Transcript_12	transdecoder	exon	1	681	.	+	.	ID=Transcript_12.p1.exon1;Parent=Transcript_12.p1
-Transcript_12	transdecoder	five_prime_UTR	1	51	.	+	.	ID=Transcript_12.p1.utr5p1;Parent=Transcript_12.p1
-Transcript_12	transdecoder	gene	1	681	.	+	.	ID=GENE.Transcript_12~~Transcript_12.p1;Name=ORF%20type%3Acomplete%20len%3A173%20%28%2B%29%2Cscore%3D104.85
-Transcript_12	transdecoder	mRNA	1	681	.	+	.	ID=Transcript_12.p1;Parent=GENE.Transcript_12~~Transcript_12.p1;Name=ORF%20type%3Acomplete%20len%3A173%20%28%2B%29%2Cscore%3D104.85
+Transcript_12	transdecoder	gene	1	681	.	+	.	ID=GENE.Transcript_12~~Transcript_12.p1;Name=ORF%20type%3A5prime_partial%20len%3A173%20%28%2B%29%2Cscore%3D104.11
+Transcript_12	transdecoder	mRNA	1	681	.	+	.	ID=Transcript_12.p1;Parent=GENE.Transcript_12~~Transcript_12.p1;Name=ORF%20type%3A5prime_partial%20len%3A173%20%28%2B%29%2Cscore%3D104.11
 Transcript_12	transdecoder	three_prime_UTR	520	681	.	+	.	ID=Transcript_12.p1.utr3p1;Parent=Transcript_12.p1
 Transcript_13	HMMER	protein_hmm_match	31	612	6.700000e-107	.	.	ID=homology:7a28c022243acd750a11f0e6c3917cd138a788e3;Name=Vel1p;Target=Vel1p 8 201 +;Note=Yeast-specific zinc responsive;accuracy=0.97;env_coords=7 612;Dbxref="Pfam-A:PF10339.5"
-Transcript_13	Infernal	RNA_sequence_secondary_structure	115	127	6.600000e+00	-	.	ID=homology:18553502f937a461d26b6f2c79e8a4530aa68247;Name=HCV_SLIV;Target=HCV_SLIV 13 25 +;Note=-;Dbxref="Rfam:RF00469";trunc=no;bitscore=11.6
-Transcript_13	Infernal	RNA_sequence_secondary_structure	147	213	1.100000e+00	+	.	ID=homology:5a7cdec3890c3e6072447cff2f457f318ca914b0;Name=SNORD22;Target=SNORD22 1 126 +;Note=-;Dbxref="Rfam:RF00099";trunc=no;bitscore=15.6
-Transcript_13	Infernal	RNA_sequence_secondary_structure	40	59	2.300000e-01	-	.	ID=homology:5ed32d4b1dfd3463365fe8189e242721adb9a58e;Name=JUMPstart;Target=JUMPstart 1 38 +;Note=-;Dbxref="Rfam:RF01707";trunc=no;bitscore=17.8
-Transcript_13	Infernal	RNA_sequence_secondary_structure	465	538	8.100000e+00	-	.	ID=homology:f57fbe95fdaf6f6d9a5919e6b93f0d3fd5708fbb;Name=PrfA;Target=PrfA 1 132 +;Note=-;Dbxref="Rfam:RF00038";trunc=no;bitscore=17.4
-Transcript_13	LAST	translated_nucleotide_match	118	425	3.200000e-35	+	.	ID=homology:b059b7024682405a490d9703260a144591e574dd;Name=FBpp0144633;Target=FBpp0144633 81 404 +;database=OrthoDB
-Transcript_13	LAST	translated_nucleotide_match	6	613	1.900000e-33	+	.	ID=homology:f9b8ad34befba1cc10bbca94cde21f9874848c3d;Name=sp|Q9P6S0|GSF2_SCHPO;Target=sp|Q9P6S0|GSF2_SCHPO 835 1451 +;database=uniprot_sprot
+Transcript_13	LAST	translated_nucleotide_match	1	612	3.600000e-190	+	.	ID=homology:bd2ea78b868445647f83c5e044a9df2f499546aa;Name=sp|Q9P7U4|YI75_SCHPO;Target=sp|Q9P7U4|YI75_SCHPO 1 204 +;database=uniprot_sprot
+Transcript_13	LAST	translated_nucleotide_match	1	612	4.000000e-189	+	.	ID=homology:097dac34f882cfed65927b265157be588dd774b8;Name=YI75_SCHPO;Target=YI75_SCHPO 1 204 +;database=OrthoDB
 Transcript_13	transdecoder	CDS	1	615	.	+	0	ID=cds.Transcript_13.p1;Parent=Transcript_13.p1
 Transcript_13	transdecoder	exon	1	615	.	+	.	ID=Transcript_13.p1.exon1;Parent=Transcript_13.p1
-Transcript_13	transdecoder	gene	1	615	.	+	.	ID=GENE.Transcript_13~~Transcript_13.p1;Name=ORF%20type%3Acomplete%20len%3A205%20%28%2B%29%2Cscore%3D128.89
-Transcript_13	transdecoder	mRNA	1	615	.	+	.	ID=Transcript_13.p1;Parent=GENE.Transcript_13~~Transcript_13.p1;Name=ORF%20type%3Acomplete%20len%3A205%20%28%2B%29%2Cscore%3D128.89
+Transcript_13	transdecoder	gene	1	615	.	+	.	ID=GENE.Transcript_13~~Transcript_13.p1;Name=ORF%20type%3Acomplete%20len%3A205%20%28%2B%29%2Cscore%3D126.49%2CVel1p%7CPF10339.5%7C6.7e-107
+Transcript_13	transdecoder	mRNA	1	615	.	+	.	ID=Transcript_13.p1;Parent=GENE.Transcript_13~~Transcript_13.p1;Name=ORF%20type%3Acomplete%20len%3A205%20%28%2B%29%2Cscore%3D126.49%2CVel1p%7CPF10339.5%7C6.7e-107
 Transcript_14	HMMER	protein_hmm_match	16	432	6.000000e-78	.	.	ID=homology:ddf286ee1578eaaf11395598ef03599c1f66ce0e;Name=DUF999;Target=DUF999 1 143 +;Note=Protein of unknown function (DUF999);accuracy=0.99;env_coords=16 432;Dbxref="Pfam-A:PF06198.7"
 Transcript_14	HMMER	protein_hmm_match	481	510	1.100000e+04	.	.	ID=homology:afee542990a023d9ca36b2b559219e40f6fdabe7;Name=DUF999;Target=DUF999 92 101 +;Note=Protein of unknown function (DUF999);accuracy=0.55;env_coords=460 555;Dbxref="Pfam-A:PF06198.7"
-Transcript_14	Infernal	RNA_sequence_secondary_structure	148	268	4.500000e+00	-	.	ID=homology:bb2c47bd086e6205ccc929b0e45921fc66abada3;Name=sau-41;Target=sau-41 1 156 +;Note=-;Dbxref="Rfam:RF02390";trunc=no;bitscore=16.1
-Transcript_14	Infernal	RNA_sequence_secondary_structure	306	362	4.900000e+00	+	.	ID=homology:79082addea455fc06fc9e23b742e48a614367099;Name=sn668;Target=sn668 1 65 +;Note=-;Dbxref="Rfam:RF01162";trunc=no;bitscore=14.5
-Transcript_14	Infernal	RNA_sequence_secondary_structure	480	541	8.500000e+00	-	.	ID=homology:4afa26b169d1afe8afe54c99758a9f80a839591b;Name=snoR16;Target=snoR16 1 86 +;Note=-;Dbxref="Rfam:RF00296";trunc=no;bitscore=16.0
-Transcript_14	Infernal	RNA_sequence_secondary_structure	48	139	8.000000e+00	+	.	ID=homology:b032b502cb945bd90607e22de8ae78ae4cb8d6e1;Name=BsrF;Target=BsrF 1 113 +;Note=-;Dbxref="Rfam:RF01411";trunc=no;bitscore=13.2
-Transcript_14	Infernal	RNA_sequence_secondary_structure	508	590	1.300000e+00	+	.	ID=homology:16cf6cb68c86da6a4f542a6cf2bb12238b5cb43b;Name=snR41;Target=snR41 1 111 +;Note=-;Dbxref="Rfam:RF01218";trunc=no;bitscore=18.9
-Transcript_14	Infernal	RNA_sequence_secondary_structure	522	599	6.900000e+00	-	.	ID=homology:f9fe7cf5beeda74e55e4f8001fc9fd6e9ef416d2;Name=mir-651;Target=mir-651 1 97 +;Note=-;Dbxref="Rfam:RF00972";trunc=no;bitscore=15.0
-Transcript_14	LAST	translated_nucleotide_match	236	580	6.600000e-56	+	.	ID=homology:5169a35a6c8211299ccb9167d12f81dbbac6ee0f;Name=FBpp0230571;Target=FBpp0230571 100 439 +;database=OrthoDB
-Transcript_14	LAST	translated_nucleotide_match	53	568	1.100000e-71	+	.	ID=homology:17c8f849129f2843c0c9110a1aa1d1e1bf1942f1;Name=sp|Q6S6W0|GP2_EHV1V;Target=sp|Q6S6W0|GP2_EHV1V 21 525 +;database=uniprot_sprot
+Transcript_14	LAST	translated_nucleotide_match	16	582	1.100000e-172	+	.	ID=homology:99703e43e9358e91ee82f9767b68e8b9950ba4ac;Name=YI76_SCHPO;Target=YI76_SCHPO 1 189 +;database=OrthoDB
+Transcript_14	LAST	translated_nucleotide_match	16	607	7.400000e-175	+	.	ID=homology:87cdee4fe33e89227c7b10ee276818ca399a7ca5;Name=sp|Q9P3V3|YI47_SCHPO;Target=sp|Q9P3V3|YI47_SCHPO 1 198 +;database=uniprot_sprot
 Transcript_14	transdecoder	CDS	1	585	.	+	0	ID=cds.Transcript_14.p1;Parent=Transcript_14.p1
 Transcript_14	transdecoder	exon	1	607	.	+	.	ID=Transcript_14.p1.exon1;Parent=Transcript_14.p1
-Transcript_14	transdecoder	gene	1	607	.	+	.	ID=GENE.Transcript_14~~Transcript_14.p1;Name=ORF%20type%3A5prime_partial%20len%3A195%20%28%2B%29%2Cscore%3D147.66
-Transcript_14	transdecoder	mRNA	1	607	.	+	.	ID=Transcript_14.p1;Parent=GENE.Transcript_14~~Transcript_14.p1;Name=ORF%20type%3A5prime_partial%20len%3A195%20%28%2B%29%2Cscore%3D147.66
+Transcript_14	transdecoder	gene	1	607	.	+	.	ID=GENE.Transcript_14~~Transcript_14.p1;Name=ORF%20type%3A5prime_partial%20len%3A195%20%28%2B%29%2Cscore%3D142.29%2CDUF999%7CPF06198.7%7C6e-78%2CDUF999%7CPF06198.7%7C1.1e%2B04
+Transcript_14	transdecoder	mRNA	1	607	.	+	.	ID=Transcript_14.p1;Parent=GENE.Transcript_14~~Transcript_14.p1;Name=ORF%20type%3A5prime_partial%20len%3A195%20%28%2B%29%2Cscore%3D142.29%2CDUF999%7CPF06198.7%7C6e-78%2CDUF999%7CPF06198.7%7C1.1e%2B04
 Transcript_14	transdecoder	three_prime_UTR	586	607	.	+	.	ID=Transcript_14.p1.utr3p1;Parent=Transcript_14.p1
 Transcript_15	HMMER	protein_hmm_match	178	180	4.700000e+03	.	.	ID=homology:dd7078be9447def220158c4c709ee07f9695b4bf;Name=PA14_2;Target=PA14_2 97 97 +;Note=GLEYA domain;accuracy=0.59;env_coords=55 291;Dbxref="Pfam-A:PF10528.5"
 Transcript_15	HMMER	protein_hmm_match	385	477	6.000000e+03	.	.	ID=homology:6f644c481f7839f84976bea0846bd1510638ec24;Name=PA14_2;Target=PA14_2 64 95 +;Note=GLEYA domain;accuracy=0.48;env_coords=334 540;Dbxref="Pfam-A:PF10528.5"
 Transcript_15	HMMER	protein_hmm_match	832	1182	1.200000e-49	.	.	ID=homology:bb90c6caa58b35e8e55a47480d9e7d36c893d579;Name=PA14_2;Target=PA14_2 1 115 +;Note=GLEYA domain;accuracy=0.98;env_coords=832 1185;Dbxref="Pfam-A:PF10528.5"
-Transcript_15	Infernal	RNA_sequence_secondary_structure	256	284	1.400000e+00	+	.	ID=homology:5b9a0ece6c7cec19fea28948854367565f589f80;Name=CRISPR-DR41;Target=CRISPR-DR41 1 29 +;Note=-;Dbxref="Rfam:RF01350";trunc=no;bitscore=17.8
-Transcript_15	Infernal	RNA_sequence_secondary_structure	898	929	9.600000e+00	+	.	ID=homology:668036d39e21471eab69447c4516e697e7838aeb;Name=snoR28;Target=snoR28 1 78 +;Note=-;Dbxref="Rfam:RF00355";trunc=no;bitscore=15.5
-Transcript_15	LAST	translated_nucleotide_match	119	1215	6.200000e-70	+	.	ID=homology:7c5110f9eb5e958e8abc1079a5c5186dc713d1c0;Name=S8AAP1_DACHA;Target=S8AAP1_DACHA 102 1165 +;database=OrthoDB
-Transcript_15	LAST	translated_nucleotide_match	2	1251	7.800000e-59	+	.	ID=homology:d3352d51e4fb2f330fba48b31acfb64ea52627e4;Name=sp|P13837|G156_PARPR;Target=sp|P13837|G156_PARPR 1297 2593 +;database=uniprot_sprot
+Transcript_15	LAST	translated_nucleotide_match	1	1248	0.000000e+00	+	.	ID=homology:830fb4e50a103a9e5aaae0b1d8301c8c69b45b64;Name=YI48_SCHPO;Target=YI48_SCHPO 1 416 +;database=OrthoDB
+Transcript_15	LAST	translated_nucleotide_match	1	1248	0.000000e+00	+	.	ID=homology:a4f0f18708f5763c04ed85917515cf67030cdd67;Name=sp|P0CU05|PFL6_SCHPO;Target=sp|P0CU05|PFL6_SCHPO 1 416 +;database=uniprot_sprot
 Transcript_15	transdecoder	CDS	1	1251	.	+	0	ID=cds.Transcript_15.p1;Parent=Transcript_15.p1
 Transcript_15	transdecoder	exon	1	1251	.	+	.	ID=Transcript_15.p1.exon1;Parent=Transcript_15.p1
-Transcript_15	transdecoder	gene	1	1251	.	+	.	ID=GENE.Transcript_15~~Transcript_15.p1;Name=ORF%20type%3Acomplete%20len%3A417%20%28%2B%29%2Cscore%3D271.89
-Transcript_15	transdecoder	mRNA	1	1251	.	+	.	ID=Transcript_15.p1;Parent=GENE.Transcript_15~~Transcript_15.p1;Name=ORF%20type%3Acomplete%20len%3A417%20%28%2B%29%2Cscore%3D271.89
+Transcript_15	transdecoder	gene	1	1251	.	+	.	ID=GENE.Transcript_15~~Transcript_15.p1;Name=ORF%20type%3Acomplete%20len%3A417%20%28%2B%29%2Cscore%3D268.06%2CPA14_2%7CPF10528.5%7C4.7e%2B03%2CPA14_2%7CPF10528.5%7C6e%2B03%2CPA14_2%7CPF10528.5%7C1.2e-49
+Transcript_15	transdecoder	mRNA	1	1251	.	+	.	ID=Transcript_15.p1;Parent=GENE.Transcript_15~~Transcript_15.p1;Name=ORF%20type%3Acomplete%20len%3A417%20%28%2B%29%2Cscore%3D268.06%2CPA14_2%7CPF10528.5%7C4.7e%2B03%2CPA14_2%7CPF10528.5%7C6e%2B03%2CPA14_2%7CPF10528.5%7C1.2e-49
 Transcript_16	HMMER	protein_hmm_match	106	510	2.000000e-12	.	.	ID=homology:60d77b3578c76031658c906032e75749c5cb92ae;Name=adh_short_C2;Target=adh_short_C2 46 184 +;Note=Enoyl-(Acyl carrier protein) reductase;accuracy=0.83;env_coords=64 669;Dbxref="Pfam-A:PF13561.2"
 Transcript_16	HMMER	protein_hmm_match	76	528	9.100000e-36	.	.	ID=homology:85ad5e7aef94d220d9b5502b9a0f3d10d45e39cd;Name=adh_short;Target=adh_short 37 191 +;Note=short chain dehydrogenase;accuracy=0.94;env_coords=61 540;Dbxref="Pfam-A:PF00106.21"
-Transcript_16	Infernal	RNA_sequence_secondary_structure	101	180	6.100000e-01	+	.	ID=homology:2ddd7f6fcec49abbe1913bde480971b5f39fda13;Name=snoZ266;Target=snoZ266 1 90 +;Note=-;Dbxref="Rfam:RF00332";trunc=no;bitscore=19.7
-Transcript_16	Infernal	RNA_sequence_secondary_structure	694	757	3.900000e+00	+	.	ID=homology:ede9713fce30e4ead9731d861cea4d137b16935a;Name=ceN108;Target=ceN108 1 70 +;Note=-;Dbxref="Rfam:RF01611";trunc=no;bitscore=14.5
-Transcript_16	LAST	translated_nucleotide_match	458	774	9.500000e-45	+	.	ID=homology:b86d0eaa19eac45b2d1d6f4924a1563727e66ef4;Name=ENSDARP00000102693;Target=ENSDARP00000102693 196 511 +;database=OrthoDB
-Transcript_16	LAST	translated_nucleotide_match	86	721	7.200000e-47	+	.	ID=homology:b2c0e1fdaeb4a56c37038a97cd34ac91bce54409;Name=sp|Q54GV8|Y8625_DICDI;Target=sp|Q54GV8|Y8625_DICDI 497 1116 +;database=uniprot_sprot
+Transcript_16	LAST	translated_nucleotide_match	61	768	2.000000e-213	+	.	ID=homology:e1089386152a95a30bbefa51cfd3fac35005c42e;Name=sp|P0CU01|YI49_SCHPO;Target=sp|P0CU01|YI49_SCHPO 1 236 +;database=uniprot_sprot
+Transcript_16	LAST	translated_nucleotide_match	61	768	2.300000e-212	+	.	ID=homology:43cdc387a951d0949a9ae8aeb3620c675e5a060b;Name=YI78_SCHPO;Target=YI78_SCHPO 1 236 +;database=OrthoDB
 Transcript_16	transdecoder	CDS	61	771	.	+	0	ID=cds.Transcript_16.p1;Parent=Transcript_16.p1
 Transcript_16	transdecoder	exon	1	825	.	+	.	ID=Transcript_16.p1.exon1;Parent=Transcript_16.p1
 Transcript_16	transdecoder	five_prime_UTR	1	60	.	+	.	ID=Transcript_16.p1.utr5p1;Parent=Transcript_16.p1
-Transcript_16	transdecoder	gene	1	825	.	+	.	ID=GENE.Transcript_16~~Transcript_16.p1;Name=ORF%20type%3Acomplete%20len%3A237%20%28%2B%29%2Cscore%3D136.52
-Transcript_16	transdecoder	mRNA	1	825	.	+	.	ID=Transcript_16.p1;Parent=GENE.Transcript_16~~Transcript_16.p1;Name=ORF%20type%3Acomplete%20len%3A237%20%28%2B%29%2Cscore%3D136.52
+Transcript_16	transdecoder	gene	1	825	.	+	.	ID=GENE.Transcript_16~~Transcript_16.p1;Name=ORF%20type%3Acomplete%20len%3A237%20%28%2B%29%2Cscore%3D135.27%2Cadh_short%7CPF00106.21%7C9.1e-36%2Cadh_short_C2%7CPF13561.2%7C2e-12
+Transcript_16	transdecoder	mRNA	1	825	.	+	.	ID=Transcript_16.p1;Parent=GENE.Transcript_16~~Transcript_16.p1;Name=ORF%20type%3Acomplete%20len%3A237%20%28%2B%29%2Cscore%3D135.27%2Cadh_short%7CPF00106.21%7C9.1e-36%2Cadh_short_C2%7CPF13561.2%7C2e-12
 Transcript_16	transdecoder	three_prime_UTR	772	825	.	+	.	ID=Transcript_16.p1.utr3p1;Parent=Transcript_16.p1
 Transcript_17	HMMER	protein_hmm_match	633	2081	7.100000e-204	.	.	ID=homology:175fcb43a7711b5ddaa13ac6bca38534698c1b8e;Name=PLA2_B;Target=PLA2_B 1 490 +;Note=Lysophospholipase catalytic domain;accuracy=0.99;env_coords=633 2084;Dbxref="Pfam-A:PF01735.14"
-Transcript_17	Infernal	RNA_sequence_secondary_structure	1308	1367	4.800000e+00	+	.	ID=homology:7eb7701c2d4d6da5060f38ee9de9bb77908f3f19;Name=SNORD108;Target=SNORD108 1 71 +;Note=-;Dbxref="Rfam:RF01158";trunc=no;bitscore=17.1
-Transcript_17	Infernal	RNA_sequence_secondary_structure	1397	1498	2.200000e+00	+	.	ID=homology:d70e24d504c89c88ebce2e44a05ebf5079606e05;Name=TtnuHACA7;Target=TtnuHACA7 1 129 +;Note=-;Dbxref="Rfam:RF02314";trunc=no;bitscore=17.8
-Transcript_17	Infernal	RNA_sequence_secondary_structure	2096	2198	4.600000e+00	-	.	ID=homology:39be345f089ef3eeee2eaaf82b1e6858391e79db;Name=snoZ119;Target=snoZ119 1 98 +;Note=-;Dbxref="Rfam:RF00361";trunc=no;bitscore=18.2
-Transcript_17	Infernal	RNA_sequence_secondary_structure	315	340	5.600000e+00	+	.	ID=homology:9406077ad167618999818b29ba505ab0a1cc5172;Name=SNORD75;Target=SNORD75 33 58 +;Note=-;Dbxref="Rfam:RF00612";trunc=no;bitscore=13.8
-Transcript_17	LAST	translated_nucleotide_match	143	816	1.800000e-71	+	.	ID=homology:1c41daa300eb9396285f4150dfaf31a01cb3fcd6;Name=89036;Target=89036 34 694 +;database=OrthoDB
-Transcript_17	LAST	translated_nucleotide_match	4	2302	5.800000e-237	+	.	ID=homology:b38b229dec2e1c46ecf803091596ad4fe48aaca6;Name=sp|Q6PZE0|MUC19_MOUSE;Target=sp|Q6PZE0|MUC19_MOUSE 4867 7282 +;database=uniprot_sprot
+Transcript_17	LAST	translated_nucleotide_match	240	2258	0.000000e+00	+	.	ID=homology:4175797d0b6f06254c831125c8084826b634f04f;Name=sp|P0CU02|PLB4_SCHPO;Target=sp|P0CU02|PLB4_SCHPO 1 673 +;database=uniprot_sprot
+Transcript_17	LAST	translated_nucleotide_match	240	2258	0.000000e+00	+	.	ID=homology:df7604cc090c9e105ae1b23e894991617c03e9dd;Name=PLB4_SCHPO;Target=PLB4_SCHPO 1 673 +;database=OrthoDB
 Transcript_17	transdecoder	CDS	240	2261	.	+	0	ID=cds.Transcript_17.p1;Parent=Transcript_17.p1
 Transcript_17	transdecoder	exon	1	2461	.	+	.	ID=Transcript_17.p1.exon1;Parent=Transcript_17.p1
 Transcript_17	transdecoder	five_prime_UTR	1	239	.	+	.	ID=Transcript_17.p1.utr5p1;Parent=Transcript_17.p1
-Transcript_17	transdecoder	gene	1	2461	.	+	.	ID=GENE.Transcript_17~~Transcript_17.p1;Name=ORF%20type%3Acomplete%20len%3A674%20%28%2B%29%2Cscore%3D458.11
-Transcript_17	transdecoder	mRNA	1	2461	.	+	.	ID=Transcript_17.p1;Parent=GENE.Transcript_17~~Transcript_17.p1;Name=ORF%20type%3Acomplete%20len%3A674%20%28%2B%29%2Cscore%3D458.11
+Transcript_17	transdecoder	gene	1	2461	.	+	.	ID=GENE.Transcript_17~~Transcript_17.p1;Name=ORF%20type%3Acomplete%20len%3A674%20%28%2B%29%2Cscore%3D453.37%2CPLA2_B%7CPF01735.14%7C7.1e-204
+Transcript_17	transdecoder	mRNA	1	2461	.	+	.	ID=Transcript_17.p1;Parent=GENE.Transcript_17~~Transcript_17.p1;Name=ORF%20type%3Acomplete%20len%3A674%20%28%2B%29%2Cscore%3D453.37%2CPLA2_B%7CPF01735.14%7C7.1e-204
 Transcript_17	transdecoder	three_prime_UTR	2262	2461	.	+	.	ID=Transcript_17.p1.utr3p1;Parent=Transcript_17.p1
 Transcript_18	HMMER	protein_hmm_match	1217	2473	2.600000e-76	.	.	ID=homology:88d59998c82243c679c6c3f389db2aaef9743b7d;Name=Na_H_Exchanger;Target=Na_H_Exchanger 1 381 +;Note=Sodium/hydrogen exchanger family;accuracy=0.95;env_coords=1217 2473;Dbxref="Pfam-A:PF00999.17"
-Transcript_18	Infernal	RNA_sequence_secondary_structure	1072	1155	7.000000e+00	-	.	ID=homology:826fe034d29fd57d7e7fa2235b308bae588ed09d;Name=snR83;Target=snR83 1 308 +;Note=-;Dbxref="Rfam:RF01264";trunc=no;bitscore=12.4
-Transcript_18	Infernal	RNA_sequence_secondary_structure	1074	1164	4.500000e+00	-	.	ID=homology:e786022a3f1834d272d39380e2cb98a0c1b702fc;Name=snoR104;Target=snoR104 1 118 +;Note=-;Dbxref="Rfam:RF01220";trunc=no;bitscore=18.3
-Transcript_18	Infernal	RNA_sequence_secondary_structure	1246	1280	2.900000e+00	+	.	ID=homology:d2c8fc375e2456437ac2611243195334a141d07a;Name=DdR35;Target=DdR35 13 47 +;Note=-;Dbxref="Rfam:RF01571";trunc=no;bitscore=18.2
-Transcript_18	Infernal	RNA_sequence_secondary_structure	1568	1628	1.600000e+00	+	.	ID=homology:5f16c50ce0591c7a17c43205d45c3febf81255e3;Name=mir-155;Target=mir-155 1 65 +;Note=-;Dbxref="Rfam:RF00731";trunc=no;bitscore=19.1
-Transcript_18	Infernal	RNA_sequence_secondary_structure	1701	1749	3.200000e+00	+	.	ID=homology:20ef23df143a512f3e4ec95f27c381e9a9ce943a;Name=TtnuCD10;Target=TtnuCD10 15 61 +;Note=-;Dbxref="Rfam:RF02287";trunc=-;bitscore=10.7
-Transcript_18	Infernal	RNA_sequence_secondary_structure	2418	2483	9.100000e+00	+	.	ID=homology:2e1f6190311ad33ba7d97768c885eb842ca2b168;Name=mir-BART2;Target=mir-BART2 1 62 +;Note=-;Dbxref="Rfam:RF00364";trunc=no;bitscore=17.6
-Transcript_18	Infernal	RNA_sequence_secondary_structure	2486	2508	2.000000e+00	+	.	ID=homology:71e57f8dba9488ce133782c63441e4ee10c4d59c;Name=TMV_UPD-PK3;Target=TMV_UPD-PK3 1 31 +;Note=-;Dbxref="Rfam:RF01072";trunc=no;bitscore=14.4
-Transcript_18	Infernal	RNA_sequence_secondary_structure	2705	2824	2.400000e+00	+	.	ID=homology:0561b7c9cff20dbe3290754613172c84c18d9a97;Name=MIR169_5;Target=MIR169_5 1 129 +;Note=-;Dbxref="Rfam:RF00865";trunc=no;bitscore=17.7
-Transcript_18	Infernal	RNA_sequence_secondary_structure	749	863	6.500000e+00	-	.	ID=homology:c365807283db33bdb16e10cb606c70fa82543fb9;Name=SCARNA7;Target=SCARNA7 1 330 +;Note=-;Dbxref="Rfam:RF01295";trunc=no;bitscore=10.5
-Transcript_18	LAST	translated_nucleotide_match	7	2777	2.900000e-190	+	.	ID=homology:f4045735eb64bea769b8b3d02a251901f46d3144;Name=sp|Q7Z5P9|MUC19_HUMAN;Target=sp|Q7Z5P9|MUC19_HUMAN 3434 6170 +;database=uniprot_sprot
-Transcript_18	LAST	translated_nucleotide_match	814	2720	2.000000e-123	+	.	ID=homology:27c763f33c09265b95a6c1f2588c0996f633ba58;Name=ENSBTAP00000010897;Target=ENSBTAP00000010897 2243 4048 +;database=OrthoDB
+Transcript_18	LAST	translated_nucleotide_match	1172	2575	0.000000e+00	+	.	ID=homology:011cfd603608cdc170f0b5aa39c93ef9f27bdeb2;Name=NAH_SCHPO;Target=NAH_SCHPO 1 468 +;database=OrthoDB
+Transcript_18	LAST	translated_nucleotide_match	1172	2575	0.000000e+00	+	.	ID=homology:89e3a5ea0c17acb65855233b5ba8ad3215e76e26;Name=sp|P36606|NAH_SCHPO;Target=sp|P36606|NAH_SCHPO 1 468 +;database=uniprot_sprot
 Transcript_18	transdecoder	CDS	947	2578	.	+	0	ID=cds.Transcript_18.p1;Parent=Transcript_18.p1
 Transcript_18	transdecoder	exon	1	2836	.	+	.	ID=Transcript_18.p1.exon1;Parent=Transcript_18.p1
 Transcript_18	transdecoder	five_prime_UTR	1	946	.	+	.	ID=Transcript_18.p1.utr5p1;Parent=Transcript_18.p1
-Transcript_18	transdecoder	gene	1	2836	.	+	.	ID=GENE.Transcript_18~~Transcript_18.p1;Name=ORF%20type%3Acomplete%20len%3A544%20%28%2B%29%2Cscore%3D305.69
-Transcript_18	transdecoder	mRNA	1	2836	.	+	.	ID=Transcript_18.p1;Parent=GENE.Transcript_18~~Transcript_18.p1;Name=ORF%20type%3Acomplete%20len%3A544%20%28%2B%29%2Cscore%3D305.69
+Transcript_18	transdecoder	gene	1	2836	.	+	.	ID=GENE.Transcript_18~~Transcript_18.p1;Name=ORF%20type%3Acomplete%20len%3A544%20%28%2B%29%2Cscore%3D299.04%2CNa_H_Exchanger%7CPF00999.17%7C2.6e-76
+Transcript_18	transdecoder	mRNA	1	2836	.	+	.	ID=Transcript_18.p1;Parent=GENE.Transcript_18~~Transcript_18.p1;Name=ORF%20type%3Acomplete%20len%3A544%20%28%2B%29%2Cscore%3D299.04%2CNa_H_Exchanger%7CPF00999.17%7C2.6e-76
 Transcript_18	transdecoder	three_prime_UTR	2579	2836	.	+	.	ID=Transcript_18.p1.utr3p1;Parent=Transcript_18.p1
 Transcript_19	HMMER	protein_hmm_match	237	566	2.000000e-15	.	.	ID=homology:18804ab45925f1aa42c8ab3b15e8dfd667cbbda9;Name=CRCB;Target=CRCB 3 88 +;Note=CrcB-like protein, Camphor Resistance (CrcB);accuracy=0.84;env_coords=231 599;Dbxref="Pfam-A:PF02537.11"
 Transcript_19	HMMER	protein_hmm_match	711	755	5.000000e+03	.	.	ID=homology:21f35dc1ff2f0fe53e3fb602334566d59e967253;Name=CRCB;Target=CRCB 41 53 +;Note=CrcB-like protein, Camphor Resistance (CrcB);accuracy=0.58;env_coords=651 764;Dbxref="Pfam-A:PF02537.11"
 Transcript_19	HMMER	protein_hmm_match	783	1103	9.100000e-15	.	.	ID=homology:63e4effda0a466b0078c31520ace97b2aa478927;Name=CRCB;Target=CRCB 3 90 +;Note=CrcB-like protein, Camphor Resistance (CrcB);accuracy=0.84;env_coords=777 1130;Dbxref="Pfam-A:PF02537.11"
-Transcript_19	Infernal	RNA_sequence_secondary_structure	103	148	1.400000e+00	+	.	ID=homology:7d75b4cf83c87ad0e95097b02deaeede6313aea3;Name=Histone3;Target=Histone3 1 46 +;Note=-;Dbxref="Rfam:RF00032";trunc=no;bitscore=14.2
-Transcript_19	Infernal	RNA_sequence_secondary_structure	188	315	2.100000e+00	+	.	ID=homology:0b26c4fc2a83e16de8cbef6beecd695571262778;Name=leu-phe_leader;Target=leu-phe_leader 1 162 +;Note=-;Dbxref="Rfam:RF01743";trunc=no;bitscore=18.7
-Transcript_19	Infernal	RNA_sequence_secondary_structure	677	768	5.700000e+00	+	.	ID=homology:082eaedebb82a8f26adb91b3c3b2823c6a0a98b7;Name=fstAT;Target=fstAT 1 94 +;Note=-;Dbxref="Rfam:RF01797";trunc=no;bitscore=16.3
-Transcript_19	LAST	translated_nucleotide_match	156	1249	1.600000e-90	+	.	ID=homology:9ee697feb30175bb77c94a83668e6e4e603d2d0f;Name=S8AAP1_DACHA;Target=S8AAP1_DACHA 82 1150 +;database=OrthoDB
-Transcript_19	LAST	translated_nucleotide_match	28	1249	3.700000e-133	+	.	ID=homology:e9eaa1c11bf564d2b3a28024acdc2eb10262a135;Name=sp|Q6PZE0|MUC19_MOUSE;Target=sp|Q6PZE0|MUC19_MOUSE 1213 2520 +;database=uniprot_sprot
+Transcript_19	LAST	translated_nucleotide_match	216	1148	1.100000e-288	+	.	ID=homology:bd90f88c0726d6831cbc2b13e51f4cc1960210c5;Name=sp|P0CU19|FEX1_SCHPO;Target=sp|P0CU19|FEX1_SCHPO 1 311 +;database=uniprot_sprot
+Transcript_19	LAST	translated_nucleotide_match	216	1148	1.300000e-287	+	.	ID=homology:5aec6504d0ec032dd6b15b8ad8132e85a5534e42;Name=YI7B_SCHPO;Target=YI7B_SCHPO 1 311 +;database=OrthoDB
 Transcript_19	transdecoder	CDS	216	1151	.	+	0	ID=cds.Transcript_19.p1;Parent=Transcript_19.p1
 Transcript_19	transdecoder	exon	1	1250	.	+	.	ID=Transcript_19.p1.exon1;Parent=Transcript_19.p1
 Transcript_19	transdecoder	five_prime_UTR	1	215	.	+	.	ID=Transcript_19.p1.utr5p1;Parent=Transcript_19.p1
-Transcript_19	transdecoder	gene	1	1250	.	+	.	ID=GENE.Transcript_19~~Transcript_19.p1;Name=ORF%20type%3Acomplete%20len%3A312%20%28%2B%29%2Cscore%3D207.66
-Transcript_19	transdecoder	mRNA	1	1250	.	+	.	ID=Transcript_19.p1;Parent=GENE.Transcript_19~~Transcript_19.p1;Name=ORF%20type%3Acomplete%20len%3A312%20%28%2B%29%2Cscore%3D207.66
+Transcript_19	transdecoder	gene	1	1250	.	+	.	ID=GENE.Transcript_19~~Transcript_19.p1;Name=ORF%20type%3Acomplete%20len%3A312%20%28%2B%29%2Cscore%3D203.47%2CCRCB%7CPF02537.11%7C2e-15%2CCRCB%7CPF02537.11%7C5e%2B03%2CCRCB%7CPF02537.11%7C9.1e-15
+Transcript_19	transdecoder	mRNA	1	1250	.	+	.	ID=Transcript_19.p1;Parent=GENE.Transcript_19~~Transcript_19.p1;Name=ORF%20type%3Acomplete%20len%3A312%20%28%2B%29%2Cscore%3D203.47%2CCRCB%7CPF02537.11%7C2e-15%2CCRCB%7CPF02537.11%7C5e%2B03%2CCRCB%7CPF02537.11%7C9.1e-15
 Transcript_19	transdecoder	three_prime_UTR	1152	1250	.	+	.	ID=Transcript_19.p1.utr3p1;Parent=Transcript_19.p1
-Transcript_1	Infernal	RNA_sequence_secondary_structure	230	263	2.600000e+00	+	.	ID=homology:cb4a1b84c56675c5474680ad573219658f1b7dae;Name=Yar_1;Target=Yar_1 9 44 +;Note=-;Dbxref="Rfam:RF02085";trunc=-;bitscore=9.3
-Transcript_1	Infernal	RNA_sequence_secondary_structure	253	275	4.200000e-02	-	.	ID=homology:fbc0e7d9faa12b595e98824862d41d88fdb5739e;Name=TtnuCD8;Target=TtnuCD8 16 38 +;Note=-;Dbxref="Rfam:RF02285";trunc=-;bitscore=16.0
-Transcript_1	Infernal	RNA_sequence_secondary_structure	703	755	7.800000e+00	+	.	ID=homology:54310cb8f37f1f0e3dba3b2f9966665492d61edc;Name=SNORD61;Target=SNORD61 1 72 +;Note=-;Dbxref="Rfam:RF00270";trunc=no;bitscore=17.9
-Transcript_1	LAST	translated_nucleotide_match	17	1209	2.300000e-80	+	.	ID=homology:45daed4d20de0f27b23be17c9b64ea1821f9d187;Name=sp|Q7Z5P9|MUC19_HUMAN;Target=sp|Q7Z5P9|MUC19_HUMAN 3633 4850 +;database=uniprot_sprot
-Transcript_1	LAST	translated_nucleotide_match	19	1064	4.400000e-91	+	.	ID=homology:11c90608759e2bcc503980445f7c4a44f8ac8e61;Name=Sakowv30018577m;Target=Sakowv30018577m 154 1188 +;database=OrthoDB
+Transcript_1	LAST	translated_nucleotide_match	375	1208	6.300000e-259	+	.	ID=homology:f9a69129e72cdce6ed51bf8c6d1425e20277146d;Name=sp|Q9HGP7|YM08_SCHPO;Target=sp|Q9HGP7|YM08_SCHPO 1 278 +;database=uniprot_sprot
 Transcript_1	transdecoder	CDS	375	1211	.	+	0	ID=cds.Transcript_1.p1;Parent=Transcript_1.p1
 Transcript_1	transdecoder	exon	1	1211	.	+	.	ID=Transcript_1.p1.exon1;Parent=Transcript_1.p1
 Transcript_1	transdecoder	five_prime_UTR	1	374	.	+	.	ID=Transcript_1.p1.utr5p1;Parent=Transcript_1.p1
-Transcript_1	transdecoder	gene	1	1211	.	+	.	ID=GENE.Transcript_1~~Transcript_1.p1;Name=ORF%20type%3Acomplete%20len%3A279%20%28%2B%29%2Cscore%3D223.78
-Transcript_1	transdecoder	mRNA	1	1211	.	+	.	ID=Transcript_1.p1;Parent=GENE.Transcript_1~~Transcript_1.p1;Name=ORF%20type%3Acomplete%20len%3A279%20%28%2B%29%2Cscore%3D223.78
-Transcript_2	Infernal	RNA_sequence_secondary_structure	312	345	5.600000e+00	+	.	ID=homology:0e604cd301c9329949cf8273c330c3230258c8e6;Name=SNORD47;Target=SNORD47 1 77 +;Note=-;Dbxref="Rfam:RF00281";trunc=no;bitscore=14.2
-Transcript_2	Infernal	RNA_sequence_secondary_structure	319	371	2.400000e+00	+	.	ID=homology:368eccd554c66fb9d3e70b0ad76ccb75fa0543b6;Name=SNORD61;Target=SNORD61 1 72 +;Note=-;Dbxref="Rfam:RF00270";trunc=no;bitscore=17.9
-Transcript_2	LAST	translated_nucleotide_match	2	356	1.600000e-32	+	.	ID=homology:0b15d648d999c827ee27aae4bb45dbc2888f1dd2;Name=FBpp0288585;Target=FBpp0288585 164 532 +;database=OrthoDB
-Transcript_2	LAST	translated_nucleotide_match	38	359	3.100000e-27	+	.	ID=homology:9f5c272af88caaf819ea6c85d4256f370bb82188;Name=sp|P0A691|PG46_MYCBO;Target=sp|P0A691|PG46_MYCBO 447 754 +;database=uniprot_sprot
+Transcript_1	transdecoder	gene	1	1211	.	+	.	ID=GENE.Transcript_1~~Transcript_1.p1;Name=ORF%20type%3Acomplete%20len%3A279%20%28%2B%29%2Cscore%3D220.14
+Transcript_1	transdecoder	mRNA	1	1211	.	+	.	ID=Transcript_1.p1;Parent=GENE.Transcript_1~~Transcript_1.p1;Name=ORF%20type%3Acomplete%20len%3A279%20%28%2B%29%2Cscore%3D220.14
+Transcript_2	LAST	translated_nucleotide_match	1	369	4.500000e-107	+	.	ID=homology:f669f55ebc15186593f857e567ea372456b08dc7;Name=sp|Q9P3E4|YLZ7_SCHPO;Target=sp|Q9P3E4|YLZ7_SCHPO 1 123 +;database=uniprot_sprot
 Transcript_2	transdecoder	CDS	1	372	.	+	0	ID=cds.Transcript_2.p1;Parent=Transcript_2.p1
 Transcript_2	transdecoder	exon	1	372	.	+	.	ID=Transcript_2.p1.exon1;Parent=Transcript_2.p1
-Transcript_2	transdecoder	gene	1	372	.	+	.	ID=GENE.Transcript_2~~Transcript_2.p1;Name=ORF%20type%3Acomplete%20len%3A124%20%28%2B%29%2Cscore%3D126.75
-Transcript_2	transdecoder	mRNA	1	372	.	+	.	ID=Transcript_2.p1;Parent=GENE.Transcript_2~~Transcript_2.p1;Name=ORF%20type%3Acomplete%20len%3A124%20%28%2B%29%2Cscore%3D126.75
+Transcript_2	transdecoder	gene	1	372	.	+	.	ID=GENE.Transcript_2~~Transcript_2.p1;Name=ORF%20type%3Acomplete%20len%3A124%20%28%2B%29%2Cscore%3D125.11
+Transcript_2	transdecoder	mRNA	1	372	.	+	.	ID=Transcript_2.p1;Parent=GENE.Transcript_2~~Transcript_2.p1;Name=ORF%20type%3Acomplete%20len%3A124%20%28%2B%29%2Cscore%3D125.11
 Transcript_3	HMMER	protein_hmm_match	10	117	1.000000e-05	.	.	ID=homology:f2e6ce3242344995450fb04748fb453e7cb29b78;Name=Helicase_C;Target=Helicase_C 70 105 +;Note=Helicase conserved C-terminal domain;accuracy=0.93;env_coords=1 117;Dbxref="Pfam-A:PF00271.27"
-Transcript_3	Infernal	RNA_sequence_secondary_structure	178	234	1.300000e+00	+	.	ID=homology:7a5e8c121f26d26e57d751aa1d2bc57b0a7d313f;Name=ceN69;Target=ceN69 1 107 +;Note=-;Dbxref="Rfam:RF01651";trunc=no;bitscore=17.4
-Transcript_3	Infernal	RNA_sequence_secondary_structure	295	406	4.700000e-01	-	.	ID=homology:35a98d472cd93ede735cf3c2d11c58485a2ced25;Name=mir-363;Target=mir-363 1 88 +;Note=-;Dbxref="Rfam:RF01898";trunc=no;bitscore=17.7
-Transcript_3	Infernal	RNA_sequence_secondary_structure	499	563	9.700000e+00	+	.	ID=homology:0193b3ee55704ff199d259448c72072dc6c39129;Name=mir-1662;Target=mir-1662 1 69 +;Note=-;Dbxref="Rfam:RF02097";trunc=no;bitscore=13.6
-Transcript_3	Infernal	RNA_sequence_secondary_structure	783	850	2.300000e+00	-	.	ID=homology:8d6e746b32aa9a7d90f73f1fcd3db794996c87ee;Name=BsrC;Target=BsrC 1 87 +;Note=-;Dbxref="Rfam:RF01410";trunc=no;bitscore=16.6
-Transcript_3	LAST	translated_nucleotide_match	1	890	1.100000e-67	+	.	ID=homology:f462f3bf8f04efe2486a346f5c73d70e1d85a7e8;Name=sp|O53553|PG54_MYCTU;Target=sp|O53553|PG54_MYCTU 375 1236 +;database=uniprot_sprot
-Transcript_3	LAST	translated_nucleotide_match	304	887	2.200000e-32	+	.	ID=homology:2b582326049085163ae2436e2d01b112f6612db5;Name=SPU_001545-tr;Target=SPU_001545-tr 436 1029 +;database=OrthoDB
+Transcript_3	LAST	translated_nucleotide_match	31	471	1.100000e-127	+	.	ID=homology:5661a84553dbadb6d6fe8a1e24a0d15bb54a41d7;Name=sp|G2TRN7|YM06_SCHPO;Target=sp|G2TRN7|YM06_SCHPO 1 147 +;database=uniprot_sprot
+Transcript_3	LAST	translated_nucleotide_match	31	471	1.200000e-126	+	.	ID=homology:3156c9fa8a721e2cd2c06a8dbcc3e5c442a49cf2;Name=YM06_SCHPO;Target=YM06_SCHPO 1 147 +;database=OrthoDB
 Transcript_3	transdecoder	CDS	1	474	.	+	0	ID=cds.Transcript_3.p1;Parent=Transcript_3.p1
 Transcript_3	transdecoder	exon	1	891	.	+	.	ID=Transcript_3.p1.exon1;Parent=Transcript_3.p1
-Transcript_3	transdecoder	gene	1	891	.	+	.	ID=GENE.Transcript_3~~Transcript_3.p1;Name=ORF%20type%3A5prime_partial%20len%3A158%20%28%2B%29%2Cscore%3D110.43
-Transcript_3	transdecoder	mRNA	1	891	.	+	.	ID=Transcript_3.p1;Parent=GENE.Transcript_3~~Transcript_3.p1;Name=ORF%20type%3A5prime_partial%20len%3A158%20%28%2B%29%2Cscore%3D110.43
+Transcript_3	transdecoder	gene	1	891	.	+	.	ID=GENE.Transcript_3~~Transcript_3.p1;Name=ORF%20type%3A5prime_partial%20len%3A158%20%28%2B%29%2Cscore%3D108.17%2CHelicase_C%7CPF00271.27%7C1e-05
+Transcript_3	transdecoder	mRNA	1	891	.	+	.	ID=Transcript_3.p1;Parent=GENE.Transcript_3~~Transcript_3.p1;Name=ORF%20type%3A5prime_partial%20len%3A158%20%28%2B%29%2Cscore%3D108.17%2CHelicase_C%7CPF00271.27%7C1e-05
 Transcript_3	transdecoder	three_prime_UTR	475	891	.	+	.	ID=Transcript_3.p1.utr3p1;Parent=Transcript_3.p1
 Transcript_4	HMMER	protein_hmm_match	267	695	2.600000e-88	.	.	ID=homology:e8cecdf750d5e1e8fa485c13c46977301023977c;Name=DUF999;Target=DUF999 1 143 +;Note=Protein of unknown function (DUF999);accuracy=0.99;env_coords=267 695;Dbxref="Pfam-A:PF06198.7"
-Transcript_4	Infernal	RNA_sequence_secondary_structure	1171	1258	4.300000e+00	-	.	ID=homology:ea8631352cca4eee573d339633a15740ba64bc78;Name=plasmodium_snoR27;Target=plasmodium_snoR27 1 143 +;Note=-;Dbxref="Rfam:RF01602";trunc=no;bitscore=19.6
-Transcript_4	Infernal	RNA_sequence_secondary_structure	189	291	9.600000e-02	+	.	ID=homology:b38d6af1cd572bf3c1d426010f51db6d95d8f7f0;Name=TUG1_1;Target=TUG1_1 20 123 +;Note=-;Dbxref="Rfam:RF01882";trunc=-;bitscore=14.5
-Transcript_4	Infernal	RNA_sequence_secondary_structure	524	594	1.000000e+00	-	.	ID=homology:714fdbeb101d1047360514d07a7dc07975aecf42;Name=mir-463;Target=mir-463 1 81 +;Note=-;Dbxref="Rfam:RF00934";trunc=no;bitscore=17.9
-Transcript_4	Infernal	RNA_sequence_secondary_structure	783	861	3.900000e+00	-	.	ID=homology:b497fb6d235f0c982f218a08351999194e69fcc3;Name=rspL;Target=rspL 1 88 +;Note=-;Dbxref="Rfam:RF01823";trunc=no;bitscore=18.3
-Transcript_4	Infernal	RNA_sequence_secondary_structure	998	1084	1.800000e-01	-	.	ID=homology:e66863330fbbd333bb61fffe00bdbeb39e9c0e73;Name=HOXA11-AS1_4;Target=HOXA11-AS1_4 112 199 +;Note=-;Dbxref="Rfam:RF02140";trunc=-;bitscore=13.1
-Transcript_4	LAST	translated_nucleotide_match	35	1613	7.400000e-90	+	.	ID=homology:fa1e6847898362739c2791095d74f0ed6e889445;Name=sp|Q7Z5P9|MUC19_HUMAN;Target=sp|Q7Z5P9|MUC19_HUMAN 5002 6615 +;database=uniprot_sprot
-Transcript_4	LAST	translated_nucleotide_match	53	1411	4.500000e-101	+	.	ID=homology:19267fc4f6273023440a30708078fb171827c452;Name=ENSGACP00000009089;Target=ENSGACP00000009089 91 1470 +;database=OrthoDB
+Transcript_4	LAST	translated_nucleotide_match	207	1070	2.300000e-251	+	.	ID=homology:c136cc2038d3f41481345f977b250eaf15cf0042;Name=sp|Q9HGP8|YM04_SCHPO;Target=sp|Q9HGP8|YM04_SCHPO 1 288 +;database=uniprot_sprot
+Transcript_4	LAST	translated_nucleotide_match	207	1070	2.600000e-250	+	.	ID=homology:7254d694c8ca70d4013d834d851a186482c65ea6;Name=YM04_SCHPO;Target=YM04_SCHPO 1 288 +;database=OrthoDB
 Transcript_4	transdecoder	CDS	207	1073	.	+	0	ID=cds.Transcript_4.p1;Parent=Transcript_4.p1
 Transcript_4	transdecoder	exon	1	1615	.	+	.	ID=Transcript_4.p1.exon1;Parent=Transcript_4.p1
 Transcript_4	transdecoder	five_prime_UTR	1	206	.	+	.	ID=Transcript_4.p1.utr5p1;Parent=Transcript_4.p1
-Transcript_4	transdecoder	gene	1	1615	.	+	.	ID=GENE.Transcript_4~~Transcript_4.p1;Name=ORF%20type%3Acomplete%20len%3A289%20%28%2B%29%2Cscore%3D289.58
-Transcript_4	transdecoder	mRNA	1	1615	.	+	.	ID=Transcript_4.p1;Parent=GENE.Transcript_4~~Transcript_4.p1;Name=ORF%20type%3Acomplete%20len%3A289%20%28%2B%29%2Cscore%3D289.58
+Transcript_4	transdecoder	gene	1	1615	.	+	.	ID=GENE.Transcript_4~~Transcript_4.p1;Name=ORF%20type%3Acomplete%20len%3A289%20%28%2B%29%2Cscore%3D286.81%2CDUF999%7CPF06198.7%7C2.6e-88
+Transcript_4	transdecoder	mRNA	1	1615	.	+	.	ID=Transcript_4.p1;Parent=GENE.Transcript_4~~Transcript_4.p1;Name=ORF%20type%3Acomplete%20len%3A289%20%28%2B%29%2Cscore%3D286.81%2CDUF999%7CPF06198.7%7C2.6e-88
 Transcript_4	transdecoder	three_prime_UTR	1074	1615	.	+	.	ID=Transcript_4.p1.utr3p1;Parent=Transcript_4.p1
-Transcript_5	Infernal	RNA_sequence_secondary_structure	243	296	9.000000e-01	+	.	ID=homology:685c1d4dae71473b5dbb5aa9c32c8826c8f7757d;Name=snoZ267;Target=snoZ267 1 73 +;Note=-;Dbxref="Rfam:RF00344";trunc=no;bitscore=17.3
-Transcript_5	Infernal	RNA_sequence_secondary_structure	392	465	3.200000e-01	-	.	ID=homology:7f5f199aebab60b6dc58c879481fe975017be6da;Name=P16;Target=P16 1 194 +;Note=-;Dbxref="Rfam:RF00628";trunc=no;bitscore=13.3
-Transcript_5	Infernal	RNA_sequence_secondary_structure	63	147	5.100000e-01	+	.	ID=homology:d9c88f0e0463bd7c5fa801c36840dbdfd39bab0a;Name=mir-146;Target=mir-146 1 90 +;Note=-;Dbxref="Rfam:RF00691";trunc=no;bitscore=16.4
-Transcript_5	LAST	translated_nucleotide_match	124	464	2.900000e-38	+	.	ID=homology:a41b0c8aa5158f8c3ba89d03b2c9b57299f25c20;Name=FBpp0254791;Target=FBpp0254791 174 503 +;database=OrthoDB
-Transcript_5	LAST	translated_nucleotide_match	134	465	1.900000e-39	+	.	ID=homology:e0f321fd4844673e97b6637d70e5e103355f84f8;Name=sp|Q6S6W0|GP2_EHV1V;Target=sp|Q6S6W0|GP2_EHV1V 12 338 +;database=uniprot_sprot
+Transcript_5	LAST	translated_nucleotide_match	77	463	7.100000e-120	+	.	ID=homology:591b1f4ca80338336d3482067ac863774e65ad76;Name=sp|Q9HGP9|YM03_SCHPO;Target=sp|Q9HGP9|YM03_SCHPO 1 129 +;database=uniprot_sprot
 Transcript_5	transdecoder	CDS	77	466	.	+	0	ID=cds.Transcript_5.p1;Parent=Transcript_5.p1
 Transcript_5	transdecoder	exon	1	466	.	+	.	ID=Transcript_5.p1.exon1;Parent=Transcript_5.p1
 Transcript_5	transdecoder	five_prime_UTR	1	76	.	+	.	ID=Transcript_5.p1.utr5p1;Parent=Transcript_5.p1
-Transcript_5	transdecoder	gene	1	466	.	+	.	ID=GENE.Transcript_5~~Transcript_5.p1;Name=ORF%20type%3Acomplete%20len%3A130%20%28%2B%29%2Cscore%3D71.53
-Transcript_5	transdecoder	mRNA	1	466	.	+	.	ID=Transcript_5.p1;Parent=GENE.Transcript_5~~Transcript_5.p1;Name=ORF%20type%3Acomplete%20len%3A130%20%28%2B%29%2Cscore%3D71.53
-Transcript_6	LAST	translated_nucleotide_match	144	411	1.600000e-24	+	.	ID=homology:763f2e0e1fece07b3c313f23717d9c9b38398be8;Name=sp|P0A687|WA22_MYCBO;Target=sp|P0A687|WA22_MYCBO 559 816 +;database=uniprot_sprot
-Transcript_6	LAST	translated_nucleotide_match	70	294	1.800000e-16	+	.	ID=homology:8bc30ad642be2d044af3a31ae1ca2cbf6597841a;Name=K1VSM7_TRIAC;Target=K1VSM7_TRIAC 9 216 +;database=OrthoDB
+Transcript_5	transdecoder	gene	1	466	.	+	.	ID=GENE.Transcript_5~~Transcript_5.p1;Name=ORF%20type%3Acomplete%20len%3A130%20%28%2B%29%2Cscore%3D68.44
+Transcript_5	transdecoder	mRNA	1	466	.	+	.	ID=Transcript_5.p1;Parent=GENE.Transcript_5~~Transcript_5.p1;Name=ORF%20type%3Acomplete%20len%3A130%20%28%2B%29%2Cscore%3D68.44
+Transcript_6	LAST	translated_nucleotide_match	1	408	1.500000e-122	+	.	ID=homology:27082dcd00c7131243c70c7ef69562e1775dee17;Name=sp|Q9HGQ0|YM02_SCHPO;Target=sp|Q9HGQ0|YM02_SCHPO 1 136 +;database=uniprot_sprot
 Transcript_6	transdecoder	CDS	1	411	.	+	0	ID=cds.Transcript_6.p1;Parent=Transcript_6.p1
 Transcript_6	transdecoder	exon	1	411	.	+	.	ID=Transcript_6.p1.exon1;Parent=Transcript_6.p1
-Transcript_6	transdecoder	gene	1	411	.	+	.	ID=GENE.Transcript_6~~Transcript_6.p1;Name=ORF%20type%3Acomplete%20len%3A137%20%28%2B%29%2Cscore%3D91.29
-Transcript_6	transdecoder	mRNA	1	411	.	+	.	ID=Transcript_6.p1;Parent=GENE.Transcript_6~~Transcript_6.p1;Name=ORF%20type%3Acomplete%20len%3A137%20%28%2B%29%2Cscore%3D91.29
+Transcript_6	transdecoder	gene	1	411	.	+	.	ID=GENE.Transcript_6~~Transcript_6.p1;Name=ORF%20type%3Acomplete%20len%3A137%20%28%2B%29%2Cscore%3D91.01
+Transcript_6	transdecoder	mRNA	1	411	.	+	.	ID=Transcript_6.p1;Parent=GENE.Transcript_6~~Transcript_6.p1;Name=ORF%20type%3Acomplete%20len%3A137%20%28%2B%29%2Cscore%3D91.01
 Transcript_7	HMMER	protein_hmm_match	61	489	1.900000e-91	.	.	ID=homology:d25b054c3b5ab02f21065c8fc02a60a22704a6a0;Name=DUF999;Target=DUF999 1 143 +;Note=Protein of unknown function (DUF999);accuracy=0.99;env_coords=61 489;Dbxref="Pfam-A:PF06198.7"
-Transcript_7	Infernal	RNA_sequence_secondary_structure	408	487	4.400000e+00	+	.	ID=homology:09225605e94ed0b10aea68a1c92f6148edcde846;Name=SCARNA7;Target=SCARNA7 1 330 +;Note=-;Dbxref="Rfam:RF01295";trunc=no;bitscore=9.1
-Transcript_7	Infernal	RNA_sequence_secondary_structure	610	638	2.200000e+00	-	.	ID=homology:732c95df9b39b03b2a4dfb762c4a975895bd9eba;Name=CRISPR-DR34;Target=CRISPR-DR34 1 36 +;Note=-;Dbxref="Rfam:RF01344";trunc=no;bitscore=16.8
-Transcript_7	Infernal	RNA_sequence_secondary_structure	767	851	2.500000e-01	-	.	ID=homology:14d48da2ec041e03df40fab71b3283f2796524c7;Name=HOXA11-AS1_4;Target=HOXA11-AS1_4 115 200 +;Note=-;Dbxref="Rfam:RF02140";trunc=-;bitscore=11.8
-Transcript_7	LAST	translated_nucleotide_match	16	861	8.700000e-61	+	.	ID=homology:8c4f89517d64ccc184cbf71a5a6d764583af3fa6;Name=S0EL43_GIBF5;Target=S0EL43_GIBF5 336 1194 +;database=OrthoDB
-Transcript_7	LAST	translated_nucleotide_match	350	853	3.400000e-65	+	.	ID=homology:123837c4a928eca39bcd1cd7733e14e1b4b220a4;Name=sp|P08399|PHXR5_MOUSE;Target=sp|P08399|PHXR5_MOUSE 58 589 +;database=uniprot_sprot
+Transcript_7	LAST	translated_nucleotide_match	1	840	1.000000e-254	+	.	ID=homology:3df6ed198b6b6702c88b69eeba541cf3d71dc3d1;Name=YLZ6_SCHPO;Target=YLZ6_SCHPO 1 280 +;database=OrthoDB
+Transcript_7	LAST	translated_nucleotide_match	1	840	4.600000e-257	+	.	ID=homology:5faa1489e8893b39ab7cc83a1ffdab228bd7bb69;Name=sp|P0CT98|YM01_SCHPO;Target=sp|P0CT98|YM01_SCHPO 1 280 +;database=uniprot_sprot
 Transcript_7	transdecoder	CDS	1	843	.	+	0	ID=cds.Transcript_7.p1;Parent=Transcript_7.p1
 Transcript_7	transdecoder	exon	1	862	.	+	.	ID=Transcript_7.p1.exon1;Parent=Transcript_7.p1
-Transcript_7	transdecoder	gene	1	862	.	+	.	ID=GENE.Transcript_7~~Transcript_7.p1;Name=ORF%20type%3Acomplete%20len%3A281%20%28%2B%29%2Cscore%3D283.29
-Transcript_7	transdecoder	mRNA	1	862	.	+	.	ID=Transcript_7.p1;Parent=GENE.Transcript_7~~Transcript_7.p1;Name=ORF%20type%3Acomplete%20len%3A281%20%28%2B%29%2Cscore%3D283.29
+Transcript_7	transdecoder	gene	1	862	.	+	.	ID=GENE.Transcript_7~~Transcript_7.p1;Name=ORF%20type%3Acomplete%20len%3A281%20%28%2B%29%2Cscore%3D279.01%2CDUF999%7CPF06198.7%7C1.9e-91
+Transcript_7	transdecoder	mRNA	1	862	.	+	.	ID=Transcript_7.p1;Parent=GENE.Transcript_7~~Transcript_7.p1;Name=ORF%20type%3Acomplete%20len%3A281%20%28%2B%29%2Cscore%3D279.01%2CDUF999%7CPF06198.7%7C1.9e-91
 Transcript_7	transdecoder	three_prime_UTR	844	862	.	+	.	ID=Transcript_7.p1.utr3p1;Parent=Transcript_7.p1
 Transcript_8	HMMER	protein_hmm_match	243	812	1.300000e-05	.	.	ID=homology:8f9994f768b0030cb59e412f79ffc24bb8c8783e;Name=Lung_7-TM_R;Target=Lung_7-TM_R 60 258 +;Note=Lung seven transmembrane receptor;accuracy=0.83;env_coords=78 851;Dbxref="Pfam-A:PF06814.9"
 Transcript_8	HMMER	protein_hmm_match	3	728	1.600000e-155	.	.	ID=homology:e1009822aa5e3568cced47ca612b2d96b9cebf0f;Name=Pombe_5TM;Target=Pombe_5TM 15 256 +;Note=Pombe specific 5TM protein;accuracy=1.0;env_coords=3 728;Dbxref="Pfam-A:PF09437.6"
-Transcript_8	Infernal	RNA_sequence_secondary_structure	1237	1283	2.000000e+00	-	.	ID=homology:1dacd1fa72e8dfc4c320be007fa47cb94bfc6b95;Name=STnc290;Target=STnc290 1 65 +;Note=-;Dbxref="Rfam:RF01403";trunc=no;bitscore=18.3
-Transcript_8	Infernal	RNA_sequence_secondary_structure	671	745	7.500000e+00	+	.	ID=homology:23be0c7ea7a24f2c30d2500fe08a5434b32eef0c;Name=UnaL2;Target=UnaL2 1 54 +;Note=-;Dbxref="Rfam:RF00436";trunc=no;bitscore=15.9
-Transcript_8	Infernal	RNA_sequence_secondary_structure	724	810	6.700000e+00	+	.	ID=homology:da23a58c028cf702079336c081d4478590036f3d;Name=snosnR48;Target=snosnR48 1 113 +;Note=-;Dbxref="Rfam:RF00471";trunc=no;bitscore=20.9
-Transcript_8	Infernal	RNA_sequence_secondary_structure	736	769	2.800000e-01	+	.	ID=homology:14180245270c74a534fb9ef029db3551d8b9a73e;Name=TtnuCD21;Target=TtnuCD21 27 60 +;Note=-;Dbxref="Rfam:RF02297";trunc=-;bitscore=13.4
-Transcript_8	Infernal	RNA_sequence_secondary_structure	924	980	7.500000e+00	+	.	ID=homology:4e2a89c8e15b84303380e951ffffb69e7f3a7345;Name=SNORD123;Target=SNORD123 1 70 +;Note=-;Dbxref="Rfam:RF01156";trunc=no;bitscore=15.4
-Transcript_8	LAST	translated_nucleotide_match	1	1299	2.300000e-83	+	.	ID=homology:f990663fa4cd4db51a1a9692fe3f31fe62fcbe63;Name=sp|Q7Z5P9|MUC19_HUMAN;Target=sp|Q7Z5P9|MUC19_HUMAN 5841 7156 +;database=uniprot_sprot
-Transcript_8	LAST	translated_nucleotide_match	2	1304	9.100000e-129	+	.	ID=homology:bf1794451e2f8d8c7e070e05262454bbe0facb1a;Name=ENSSTOP00000018442;Target=ENSSTOP00000018442 2423 3750 +;database=OrthoDB
-Transcript_8	transdecoder	CDS	123	953	.	+	0	ID=cds.Transcript_8.p1;Parent=Transcript_8.p1
+Transcript_8	LAST	translated_nucleotide_match	3	950	3.900000e-295	+	.	ID=homology:ad74f6c4daf54b5414b3214c0585d47c03826e37;Name=sp|P0CU15|YHEJ_SCHPO;Target=sp|P0CU15|YHEJ_SCHPO 29 344 +;database=uniprot_sprot
+Transcript_8	LAST	translated_nucleotide_match	3	950	4.300000e-294	+	.	ID=homology:ecdf46800989e6042dd2f1b6abd5c0dfd3a22b40;Name=YI71_SCHPO;Target=YI71_SCHPO 29 344 +;database=OrthoDB
+Transcript_8	transdecoder	CDS	3	953	.	+	0	ID=cds.Transcript_8.p1;Parent=Transcript_8.p1
 Transcript_8	transdecoder	exon	1	1306	.	+	.	ID=Transcript_8.p1.exon1;Parent=Transcript_8.p1
-Transcript_8	transdecoder	five_prime_UTR	1	122	.	+	.	ID=Transcript_8.p1.utr5p1;Parent=Transcript_8.p1
-Transcript_8	transdecoder	gene	1	1306	.	+	.	ID=GENE.Transcript_8~~Transcript_8.p1;Name=ORF%20type%3Acomplete%20len%3A317%20%28%2B%29%2Cscore%3D166.66
-Transcript_8	transdecoder	mRNA	1	1306	.	+	.	ID=Transcript_8.p1;Parent=GENE.Transcript_8~~Transcript_8.p1;Name=ORF%20type%3Acomplete%20len%3A317%20%28%2B%29%2Cscore%3D166.66
+Transcript_8	transdecoder	gene	1	1306	.	+	.	ID=GENE.Transcript_8~~Transcript_8.p1;Name=ORF%20type%3A5prime_partial%20len%3A317%20%28%2B%29%2Cscore%3D163.63%2CPombe_5TM%7CPF09437.6%7C1.6e-155%2CLung_7-TM_R%7CPF06814.9%7C1.3e-05
+Transcript_8	transdecoder	mRNA	1	1306	.	+	.	ID=Transcript_8.p1;Parent=GENE.Transcript_8~~Transcript_8.p1;Name=ORF%20type%3A5prime_partial%20len%3A317%20%28%2B%29%2Cscore%3D163.63%2CPombe_5TM%7CPF09437.6%7C1.6e-155%2CLung_7-TM_R%7CPF06814.9%7C1.3e-05
 Transcript_8	transdecoder	three_prime_UTR	954	1306	.	+	.	ID=Transcript_8.p1.utr3p1;Parent=Transcript_8.p1
-Transcript_9	Infernal	RNA_sequence_secondary_structure	619	711	7.400000e+00	+	.	ID=homology:d87665257cccc4f6ef05bbe876fa08162989aaa8;Name=snoZ122;Target=snoZ122 1 94 +;Note=-;Dbxref="Rfam:RF00343";trunc=no;bitscore=18.4
-Transcript_9	Infernal	RNA_sequence_secondary_structure	643	709	4.400000e+00	+	.	ID=homology:dc17b64dde0097f891f7f232cb87182b40d3325f;Name=SNORD45;Target=SNORD45 1 81 +;Note=-;Dbxref="Rfam:RF00279";trunc=no;bitscore=16.3
-Transcript_9	LAST	translated_nucleotide_match	18	736	6.500000e-50	+	.	ID=homology:844940be10a03035c27bf214b45930b51c4ff634;Name=sp|Q9P6S0|GSF2_SCHPO;Target=sp|Q9P6S0|GSF2_SCHPO 669 1384 +;database=uniprot_sprot
-Transcript_9	LAST	translated_nucleotide_match	2	744	7.000000e-65	+	.	ID=homology:974af72115694459026e9e623f5ed509f76d92d2;Name=C5DX72_ZYGRC;Target=C5DX72_ZYGRC 888 1655 +;database=OrthoDB
+Transcript_9	LAST	translated_nucleotide_match	159	557	5.900000e-113	+	.	ID=homology:884e00a6ff3529a63598f83a18de53bfdc658041;Name=sp|G2TRM1|YI7I_SCHPO;Target=sp|G2TRM1|YI7I_SCHPO 1 133 +;database=uniprot_sprot
+Transcript_9	LAST	translated_nucleotide_match	159	557	6.600000e-112	+	.	ID=homology:fd1a4f486e1312eed1d65778814c84803d674155;Name=YI7I_SCHPO;Target=YI7I_SCHPO 1 133 +;database=OrthoDB
 Transcript_9	transdecoder	CDS	159	560	.	+	0	ID=cds.Transcript_9.p1;Parent=Transcript_9.p1
 Transcript_9	transdecoder	exon	1	747	.	+	.	ID=Transcript_9.p1.exon1;Parent=Transcript_9.p1
 Transcript_9	transdecoder	five_prime_UTR	1	158	.	+	.	ID=Transcript_9.p1.utr5p1;Parent=Transcript_9.p1
-Transcript_9	transdecoder	gene	1	747	.	+	.	ID=GENE.Transcript_9~~Transcript_9.p1;Name=ORF%20type%3Acomplete%20len%3A134%20%28%2B%29%2Cscore%3D91.69
-Transcript_9	transdecoder	mRNA	1	747	.	+	.	ID=Transcript_9.p1;Parent=GENE.Transcript_9~~Transcript_9.p1;Name=ORF%20type%3Acomplete%20len%3A134%20%28%2B%29%2Cscore%3D91.69
+Transcript_9	transdecoder	gene	1	747	.	+	.	ID=GENE.Transcript_9~~Transcript_9.p1;Name=ORF%20type%3Acomplete%20len%3A134%20%28%2B%29%2Cscore%3D88.84
+Transcript_9	transdecoder	mRNA	1	747	.	+	.	ID=Transcript_9.p1;Parent=GENE.Transcript_9~~Transcript_9.p1;Name=ORF%20type%3Acomplete%20len%3A134%20%28%2B%29%2Cscore%3D88.84
 Transcript_9	transdecoder	three_prime_UTR	561	747	.	+	.	ID=Transcript_9.p1.utr3p1;Parent=Transcript_9.p1
