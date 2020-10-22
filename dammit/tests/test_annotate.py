@@ -33,7 +33,8 @@ class TestDammitAnnotate:
 
     @pytest.mark.long
     @pytest.mark.requires_databases
-    def test_annotate_default(self, tmpdir, datadir):
+    @pytest.mark.parametrize('n_threads', (1,4))
+    def test_annotate_default(self, tmpdir, datadir, n_threads):
         '''Run a basic annotation and verify the results.
         '''
 
@@ -42,7 +43,7 @@ class TestDammitAnnotate:
             exp_gff3 = datadir('pom.20.dammit.gff3')
             exp_fasta = datadir('pom.20.dammit.fasta')
 
-            args = ['run', 'annotate', transcripts]
+            args = ['run', '--n-threads', str(n_threads), 'annotate', transcripts]
             status, out, err = run(*args)
 
             outdir = 'pom.20.dammit'
@@ -53,38 +54,6 @@ class TestDammitAnnotate:
             print(gff3_fn, fasta_fn)
             assert compare_gff(gff3_fn, exp_gff3)
             assert open(fasta_fn).read() == open(exp_fasta).read()
-
-    @pytest.mark.long
-    @pytest.mark.requires_databases
-    def test_annotate_full(self, tmpdir, datadir):
-        '''Run a full annotation and verify the results.
-        '''
-
-        with tmpdir.as_cwd():
-            transcripts = datadir('pom.single.fa')
-            exp_gff3 = datadir('pom.single.fa.dammit.gff3.full')
-            exp_fasta = datadir('pom.single.fa.dammit.fasta.full')
-
-            args = ['annotate', transcripts, '--full']
-            status, out, err = run(args)
-
-            outdir = '{0}.dammit'.format(transcripts)
-            gff3_fn = os.path.join(outdir, 'pom.single.fa.dammit.gff3')
-            fasta_fn = os.path.join(outdir, 'pom.single.fa.dammit.fasta')
-
-            assert compare_gff(gff3_fn, exp_gff3)
-            assert open(fasta_fn).read() == open(exp_fasta).read()
-
-    @pytest.mark.long
-    @pytest.mark.requires_databases
-    def test_annotate_threaded(self, tmpdir, datadir):
-        '''Test the --n_threads argument.
-        '''
-
-        with tmpdir.as_cwd():
-            transcripts = datadir('pom.single.fa')
-            args = ['annotate', transcripts, '--n_threads', '2']
-            status, out, err = run(args)
 
     @pytest.mark.long
     @pytest.mark.requires_databases
