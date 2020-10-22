@@ -1,6 +1,8 @@
 import os
 from dammit.meta import __path__, __wrappers__
 
+GLOBAL_EVALUE = config['global_evalue']
+
 rule transdecoder_longorfs:
     message: "Run TransDecoder.LongOrfs, which fings the longest likely open reading frames."
     input:
@@ -23,14 +25,11 @@ rule hmmscan:
         profile = os.path.join(db_dir, 'Pfam-A.hmm.h3f'),
     output:
         # only one of these is required
-        domtblout  = os.path.join(results_dir,'{transcriptome}.x.Pfam-A.hmmscan-domtbl.txt'), # save parseable table of per-domain hits to file <f>
-        outfile    = os.path.join(results_dir,'{transcriptome}.x.Pfam-A.hmmscan-out.txt'), # Direct the main human-readable output to a file <f> instead of the default stdout.
+        domtblout  = os.path.join(results_dir,'{transcriptome}.x.Pfam-A.hmmscan-domtbl.txt') # save parseable table of per-domain hits to file <f>
     log:
         os.path.join(logs_dir, '{transcriptome}.x.Pfam-A.hmmscan.log')
     params:
-        evalue_threshold = config['hmmscan']['params'].get("evalue", 0.00001),
-        # if bitscore threshold provided, hmmscan will use that instead
-        #score_threshold=50,
+        evalue_threshold = GLOBAL_EVALUE if GLOBAL_EVALUE is not None else config['hmmscan']['params'].get("evalue", 0.00001),
         extra = config['hmmscan']['params'].get('extra', ''),
     threads: 4
     wrapper:
@@ -41,7 +40,7 @@ rule transdecoder_predict:
     input:
         fasta = os.path.join(results_dir, '{transcriptome}.fasta'),
         longorfs = os.path.join(results_dir, '{transcriptome}.transdecoder_dir/longest_orfs.pep'),
-        pfam = os.path.join(results_dir, '{transcriptome}.x.Pfam-A.hmmscan-domtbl.txt')
+        pfam_hits = os.path.join(results_dir, '{transcriptome}.x.Pfam-A.hmmscan-domtbl.txt')
     output:
         os.path.join(results_dir, '{transcriptome}.fasta.transdecoder.bed'),
         os.path.join(results_dir, '{transcriptome}.fasta.transdecoder.cds'),
@@ -77,6 +76,7 @@ rule lastal:
     output:
         maf = os.path.join(results_dir, '{transcriptome}.x.{database}.lastal.maf')
     params:
+        evalue_threshold = GLOBAL_EVALUE if GLOBAL_EVALUE is not None else config['lastal']['params'].get('evalue', 0.00001),
         frameshift_cost = config['lastal']['params'].get('frameshift_cost', 15),
         extra           = config['lastal']['params'].get('extra', ''),
     log:
@@ -93,7 +93,7 @@ rule shmlast_crbl:
         os.path.join(results_dir, '{transcriptome}.x.{database}.shmlast_crbl.csv')
     params:
         search_type="crbl",
-        evalue = config['shmlast']['params'].get('evalue', ""),
+        evalue = GLOBAL_EVALUE if GLOBAL_EVALUE is not None else config['shmlast']['params'].get('evalue', 0.00001),
         extra = config['shmlast']['params'].get('extra', ''),
     log:
         os.path.join(logs_dir, '{transcriptome}.x.{database}.shmlast.log')
@@ -110,6 +110,7 @@ rule cmscan:
     log:
         os.path.join(logs_dir, '{transcriptome}.x.{database}.cmscan.log')
     params:
+        evalue_threshold = GLOBAL_EVALUE if GLOBAL_EVALUE is not None else config['cmscan']['params'].get('evalue', 0.00001),
         extra = config['hmmsearch']['params'].get('extra', ''),
     threads: 4
     wrapper: f'file://{__wrappers__}/infernal/cmscan.wrapper.py'

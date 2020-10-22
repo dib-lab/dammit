@@ -30,7 +30,7 @@ rule infernal_cmscan:
         fasta   = TEST_TRANSCRIPT,
         profile = os.path.join(DATA_DIR,"test-covariance-model.cm.i1i")
     output:
-        tblout = os.path.join(DATA_DIR, "tr-infernal-tblout.txt"),
+        tblout = os.path.join(DATA_DIR, "tr-infernal-tblout.txt")
     log:
         "test-cmscan.log"
     params:

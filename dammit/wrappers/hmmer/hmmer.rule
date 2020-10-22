@@ -46,10 +46,7 @@ rule hmmscan_profile:
         profile="test-profile.hmm.h3f",
     output:
         # only one of these is required
-        tblout="hmmscan/test-prot-tbl.txt", # save parseable table of per-sequence hits to file <f>
-        domtblout="hmmscan/test-prot-domtbl.txt", # save parseable table of per-domain hits to file <f>
-        pfamtblout="hmmscan/test-prot-pfamtbl.txt", # save table of hits and domains to file, in Pfam format <f>
-        outfile="hmmscan/test-prot-out.txt", # Direct the main human-readable output to a file <f> instead of the default stdout.
+        domtblout="hmmscan/test-prot-domtbl.txt" # save parseable table of per-domain hits to file <f>
     log:
         "hmmscan.log"
     params:

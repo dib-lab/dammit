@@ -280,8 +280,7 @@ def test_hmmscan(snakemake_rule, tmpdir, datadir, n_threads):
         # check hmmscan
         assert os.path.isfile('hmmscan.log')
         ### not getting any hits in here; prior test on same data (in test_hmmer.py found 2 hits)
-        print(open('hmmscan/test-prot-tbl.txt').read())
-        print(open('hmmscan/test-prot-out.txt').read())
+        print(open('hmmscan/test-prot-domtbl.txt').read())
 
 
 def test_hmmpress_dryrun(snakemake_rule, tmpdir, datadir):

@@ -23,6 +23,8 @@ if outfile:
 tblout = snakemake.output.get("tblout", "")
 if tblout:
     out_cmd += " --tblout {} ".format(tblout)
+else:
+    assert False, "must specifiy tblout in outputs"    
 
 ## default params: enable evalue threshold. If bitscore thresh is provided, use that instead (both not allowed)
 
@@ -38,14 +40,14 @@ else:
 
 extra = snakemake.params.get("extra", "")
 
-log = snakemake.log_fmt_shell(stdout=True, stderr=True)
-
 if snakemake.threads == 1:
+    log = snakemake.log_fmt_shell(stdout=True, stderr=True)
     shell(
         "cmscan {out_cmd} {thresh_cmd} {extra} --cpu 1 {profile} {snakemake.input.fasta} {log}"
     )
 else:
+    log = snakemake.log_fmt_shell(stdout=False, stderr=True)
     shell(
         "ope parallel -j {snakemake.threads} {snakemake.input.fasta} "
-        "cmscan {out_cmd} {thresh_cmd} {extra} {profile} /dev/stdin {log}"
+        "cmscan --cpu 1 -o /dev/null --tblout /dev/stdout {thresh_cmd} {extra} {profile} /dev/stdin > {tblout} {log}"
     )
