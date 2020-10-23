@@ -30,12 +30,13 @@ def compare_gff(fn_a, fn_b):
 
 
 class TestDammitAnnotate:
+    '''Integration: dammit run'''
 
     @pytest.mark.long
     @pytest.mark.requires_databases
     @pytest.mark.parametrize('n_threads', (1,4))
     def test_annotate_default(self, tmpdir, datadir, n_threads):
-        '''Run a basic annotation and verify the results.
+        '''--n-threads [N] annotate [INPUT.fa]
         '''
 
         with tmpdir.as_cwd():
@@ -58,62 +59,27 @@ class TestDammitAnnotate:
     @pytest.mark.long
     @pytest.mark.requires_databases
     def test_annotate_evalue(self, tmpdir, datadir):
-        '''Test the --evalue argument and verify the results.
+        '''annotate --global-evalue [EVALUE] [INPUT.fa]
         '''
 
         with tmpdir.as_cwd():
-            transcripts = datadir('pom.single.fa')
-            exp_gff3 = datadir('pom.single.fa.dammit.gff3.evalue10')
-            exp_fasta = datadir('pom.single.fa.dammit.fasta.evalue10')
+            transcripts = datadir('pom.20.fa')
+            exp_gff3 = datadir('pom.20.dammit.evalue10.gff3')
+            exp_fasta = datadir('pom.20.dammit.evalue10.fasta')
 
-            args = ['annotate', transcripts, '--evalue', '10.0']
-            status, out, err = run(args)
+            args = ['run', 'annotate', transcripts, '--global-evalue', '10.0']
+            status, out, err = run(*args)
 
-            outdir = '{0}.dammit'.format(transcripts)
-            gff3_fn = os.path.join(outdir, 'pom.single.fa.dammit.gff3')
-            fasta_fn = os.path.join(outdir, 'pom.single.fa.dammit.fasta')
+            outdir = 'pom.20.dammit'
+            gff3_fn = os.path.join(outdir, 'pom.20.dammit.gff3')
+            fasta_fn = os.path.join(outdir, 'pom.20.dammit.fasta')
 
             assert compare_gff(gff3_fn, exp_gff3)
             assert open(fasta_fn).read() == open(exp_fasta).read()
   
 
-    def test_annotate_outdir(self, tmpdir, datadir):
-        '''Test that the --output-dir argument works.
-        '''
-
-        with tmpdir.as_cwd():
-            transcripts = datadir('pom.single.fa')
-            outdir = 'test_out'
-            args = ['annotate', '--quick', transcripts, '-o', outdir]
-            status, out, err = run(args)
-            fn = os.path.join(outdir, os.path.basename(transcripts))
-            assert os.path.isfile(fn)
-
-    def test_annotate_dbdir_fail(self, tmpdir, datadir):
-        '''Test annotation with a faulty database directory.
-        '''
-
-        with tmpdir.as_cwd():
-            transcripts = datadir('pom.single.fa')
-
-            args = ['annotate', transcripts, '--database-dir', '.']
-            status, out, err = run(args, fail_ok=True)
-            assert 'install databases to continue' in out
-            assert status == 2
-
-    def test_annotate_dbdir(self, tmpdir, datadir):
-        '''Test that --database-dir works.
-        '''
-
-        with tmpdir.as_cwd():
-            transcripts = datadir('pom.single.fa')
-
-            db_dir = os.environ['DAMMIT_DB_DIR']
-            args = ['annotate', '--quick', transcripts, '--database-dir', db_dir]
-            status, out, err = run(args)
-
     def test_annotate_user_databases(self, tmpdir, datadir):
-        '''Test that a user database works.
+        '''--pipeline quick annotate --user-database [PEP.fa] [INPUT.fa]
         '''
 
         with tmpdir.as_cwd():
@@ -136,7 +102,7 @@ class TestDammitAnnotate:
             assert open(fasta_fn).read() == open(exp_fasta).read()
 
     def test_annotate_multiple_user_databases(self, tmpdir, datadir):
-        '''Test that multiple user databases work.
+        '''--pipeline quick annotate --user-database [PEP1.fa] --user-database [PEP2.fa] [INPUT.fa]
         '''
 
         with tmpdir.as_cwd():
@@ -156,7 +122,7 @@ class TestDammitAnnotate:
             assert status == 0
 
     def test_annotate_name(self, tmpdir, datadir):
-        '''Test the --name argument.
+        '''--pipeline quick annotate --base-name [NAME] [INPUT.fa]
         '''
 
         with tmpdir.as_cwd():
@@ -175,26 +141,40 @@ class TestDammitAnnotate:
 
             assert status == 0
     
-    @pytest.mark.requires_databases
-    def test_annotate_no_rename(self, tmpdir, datadir):
-        '''Test the --no-rename argument.
-        '''
 
-        with tmpdir.as_cwd():
-            transcripts = datadir('pom.single.fa')
-            exp_gff3 = datadir('pom.single.fa.dammit.gff3.norename')
-            exp_fasta = datadir('pom.single.fa.dammit.fasta.norename')
 
-            args = ['annotate', transcripts, '--no-rename']
-            status, out, err = run(args)
-            assert status == 0
+def test_annotate_outdir(self, tmpdir, datadir):
+    '''dammit run annotate -o [OUTDIR]
+    '''
 
-            outdir = '{0}.dammit'.format(transcripts)
-            fn = os.path.join(outdir, os.path.basename(transcripts))
-            assert os.path.isfile(fn)
-            contents = open(fn).read()
-            assert 'SPAC212' in contents
+    with tmpdir.as_cwd():
+        transcripts = datadir('pom.20.fa')
+        outdir = 'test_out'
+        args = ['annotate', '--quick', transcripts, '-o', outdir]
+        status, out, err = run(args)
+        assert os.path.isfile(os.path.join(outdir, 'pom.20.fasta'))
 
-            gff3_fn = os.path.join(outdir, 'pom.single.fa.dammit.gff3')
-            assert compare_gff(gff3_fn, exp_gff3)
 
+def test_annotate_dbdir_fail(self, tmpdir, datadir):
+    '''Test annotation with a faulty database directory.
+    '''
+
+    with tmpdir.as_cwd():
+        transcripts = datadir('pom.single.fa')
+
+        args = ['annotate', transcripts, '--database-dir', '.']
+        status, out, err = run(args, fail_ok=True)
+        assert 'install databases to continue' in out
+        assert status == 2
+
+
+def test_annotate_dbdir(self, tmpdir, datadir):
+    '''Test that --database-dir works.
+    '''
+
+    with tmpdir.as_cwd():
+        transcripts = datadir('pom.single.fa')
+
+        db_dir = os.environ['DAMMIT_DB_DIR']
+        args = ['annotate', '--quick', transcripts, '--database-dir', db_dir]
+        status, out, err = run(args)
