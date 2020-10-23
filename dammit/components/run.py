@@ -12,6 +12,7 @@ import sys
 import yaml
 
 import click
+import psutil
 
 from ..config import (CONFIG, DEFAULT_CONFIG_DIR, CONDA_ENV_TEMPDIR,
                       WORKFLOW_CONFIG_TEMPDIR, DEFAULT_DATABASES_DIR,
@@ -42,7 +43,11 @@ from ..utils import ShortChoice, read_yaml, write_yaml, update_nested_dict
               help='BUSCO group(s) to use/install.')
 @click.option('--n-threads',
               type=int,
+              default=psutil.cpu_count(logical=False),
               help='Number of threads for overall workflow execution')
+@click.option('--max-threads-per-task',
+               type=int,
+               help='Max threads to use for a single step.')
 @click.option('--config-file',
               help='A YAML or JSON file providing values to override'\
                    ' built-in config. Advanced use only!')
@@ -79,6 +84,7 @@ def run_group(config,
               temp_dir,
               busco_group,
               n_threads,
+              max_threads_per_task,
               config_file,
               busco_config_file,
               pipeline):
@@ -103,6 +109,11 @@ def run_group(config,
         config.core['n_threads'] = 1
     elif n_threads:
         config.core['n_threads'] = n_threads
+    
+    if not max_threads_per_task:
+        config.core['max_threads_per_task'] = n_threads
+    else:
+        config.core['max_threads_per_task'] = max_threads_per_task
 
     if busco_config_file:
         config.core['busco']['configfile'] = busco_config_file

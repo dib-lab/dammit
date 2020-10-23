@@ -8,6 +8,7 @@ output_suffix:
   - .dammit.fasta
 basename: "PLACEHOLDER"
 global_evalue: null
+max_threads_per_task: 1
 
 ## last ##
 lastal:
