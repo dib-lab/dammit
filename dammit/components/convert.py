@@ -7,13 +7,13 @@
 import click
 import pandas as pd
 
-from ..fileio import EmptyFile
+from ope.io import EmptyFile
 
-from ..fileio.infernal import InfernalParser
-from ..fileio.hmmer import HMMerParser
-from ..fileio.gff3 import (GFF3Writer, maf_to_gff3, shmlast_to_gff3,
+from ope.io.infernal import InfernalParser
+from ope.io.hmmer import HMMerParser
+from ope.io.gff3 import (GFF3Writer, maf_to_gff3, shmlast_to_gff3,
                            hmmscan_to_gff3, cmscan_to_gff3)
-from ..fileio.maf import MafParser
+from ope.io.maf import MafParser
 from ..utils import touch
 
 

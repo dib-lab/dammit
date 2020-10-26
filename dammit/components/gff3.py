@@ -9,7 +9,7 @@ import subprocess
 
 import click
 
-from ..fileio.gff3 import GFF3Writer
+from ope.io.gff3 import GFF3Writer
 
 
 @click.command('merge-gff3')

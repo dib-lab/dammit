@@ -11,21 +11,17 @@ import pytest
 import traceback
 import sys
 
-from dammit.app import DammitApp
-from dammit.fileio import gff3
+from ope.io import gff3
 
-from utils import datadir, runscript
+from .utils import run
 
 PATH_BACKUP = os.environ['PATH']
 
-def run(args, **kwargs):
-    return runscript('dammit', args, **kwargs)
-
 
 def compare_gff(fn_a, fn_b):
-    df_a = gff3.GFF3Parser(fn_a).read().sort_values('ID')
+    df_a = gff3.GFF3Parser(fn_a).read().sort_values(['seqid', 'start', 'end', 'ID', 'Target'])
     df_a.reset_index(inplace=True, drop=True)
-    df_b = gff3.GFF3Parser(fn_b).read().sort_values('ID')
+    df_b = gff3.GFF3Parser(fn_b).read().sort_values(['seqid', 'start', 'end', 'ID', 'Target'])
     df_b.reset_index(inplace=True, drop=True)
     
     print('First DF:', df_a, '\n', '=' * 40)
@@ -34,24 +30,26 @@ def compare_gff(fn_a, fn_b):
 
 
 class TestDammitAnnotate:
+    '''Integration: dammit run'''
 
     @pytest.mark.long
     @pytest.mark.requires_databases
-    def test_annotate_basic(self, tmpdir, datadir):
-        '''Run a basic annotation and verify the results.
+    @pytest.mark.parametrize('n_threads', (1,4))
+    def test_annotate_default(self, tmpdir, datadir, n_threads):
+        '''--n-threads [N] annotate [INPUT.fa]
         '''
 
         with tmpdir.as_cwd():
-            transcripts = datadir('pom.single.fa')
-            exp_gff3 = datadir('pom.single.fa.dammit.gff3')
-            exp_fasta = datadir('pom.single.fa.dammit.fasta')
+            transcripts = datadir('pom.20.fa')
+            exp_gff3 = datadir('pom.20.dammit.gff3')
+            exp_fasta = datadir('pom.20.dammit.fasta')
 
-            args = ['annotate', transcripts]
-            status, out, err = run(args)
+            args = ['run', '--n-threads', str(n_threads), 'annotate', transcripts]
+            status, out, err = run(*args)
 
-            outdir = '{0}.dammit'.format(transcripts)
-            gff3_fn = os.path.join(outdir, 'pom.single.fa.dammit.gff3')
-            fasta_fn = os.path.join(outdir, 'pom.single.fa.dammit.fasta')
+            outdir = 'pom.20.dammit'
+            gff3_fn = os.path.join(outdir, 'pom.20.dammit.gff3')
+            fasta_fn = os.path.join(outdir, 'pom.20.dammit.fasta')
 
             print(os.listdir(outdir))
             print(gff3_fn, fasta_fn)
@@ -60,176 +58,120 @@ class TestDammitAnnotate:
 
     @pytest.mark.long
     @pytest.mark.requires_databases
-    def test_annotate_full(self, tmpdir, datadir):
-        '''Run a full annotation and verify the results.
-        '''
-
-        with tmpdir.as_cwd():
-            transcripts = datadir('pom.single.fa')
-            exp_gff3 = datadir('pom.single.fa.dammit.gff3.full')
-            exp_fasta = datadir('pom.single.fa.dammit.fasta.full')
-
-            args = ['annotate', transcripts, '--full']
-            status, out, err = run(args)
-
-            outdir = '{0}.dammit'.format(transcripts)
-            gff3_fn = os.path.join(outdir, 'pom.single.fa.dammit.gff3')
-            fasta_fn = os.path.join(outdir, 'pom.single.fa.dammit.fasta')
-
-            assert compare_gff(gff3_fn, exp_gff3)
-            assert open(fasta_fn).read() == open(exp_fasta).read()
-
-    @pytest.mark.long
-    @pytest.mark.requires_databases
-    def test_annotate_threaded(self, tmpdir, datadir):
-        '''Test the --n_threads argument.
-        '''
-
-        with tmpdir.as_cwd():
-            transcripts = datadir('pom.single.fa')
-            args = ['annotate', transcripts, '--n_threads', '2']
-            status, out, err = run(args)
-
-    @pytest.mark.long
-    @pytest.mark.requires_databases
     def test_annotate_evalue(self, tmpdir, datadir):
-        '''Test the --evalue argument and verify the results.
+        '''annotate --global-evalue [EVALUE] [INPUT.fa]
         '''
 
         with tmpdir.as_cwd():
-            transcripts = datadir('pom.single.fa')
-            exp_gff3 = datadir('pom.single.fa.dammit.gff3.evalue10')
-            exp_fasta = datadir('pom.single.fa.dammit.fasta.evalue10')
+            transcripts = datadir('pom.20.fa')
+            exp_gff3 = datadir('pom.20.dammit.evalue10.gff3')
+            exp_fasta = datadir('pom.20.dammit.evalue10.fasta')
 
-            args = ['annotate', transcripts, '--evalue', '10.0']
-            status, out, err = run(args)
+            args = ['run', 'annotate', transcripts, '--global-evalue', '10.0']
+            status, out, err = run(*args)
 
-            outdir = '{0}.dammit'.format(transcripts)
-            gff3_fn = os.path.join(outdir, 'pom.single.fa.dammit.gff3')
-            fasta_fn = os.path.join(outdir, 'pom.single.fa.dammit.fasta')
+            outdir = 'pom.20.dammit'
+            gff3_fn = os.path.join(outdir, 'pom.20.dammit.gff3')
+            fasta_fn = os.path.join(outdir, 'pom.20.dammit.fasta')
 
             assert compare_gff(gff3_fn, exp_gff3)
             assert open(fasta_fn).read() == open(exp_fasta).read()
   
-
-    def test_annotate_outdir(self, tmpdir, datadir):
-        '''Test that the --output-dir argument works.
+    @pytest.mark.parametrize('n_threads', (1,4))
+    def test_annotate_user_database(self, tmpdir, datadir, n_threads):
+        '''--pipeline quick annotate --user-database [PEP.fa] [INPUT.fa]
         '''
 
         with tmpdir.as_cwd():
-            transcripts = datadir('pom.single.fa')
-            outdir = 'test_out'
-            args = ['annotate', '--quick', transcripts, '-o', outdir]
-            status, out, err = run(args)
-            fn = os.path.join(outdir, os.path.basename(transcripts))
-            assert os.path.isfile(fn)
-
-    def test_annotate_dbdir_fail(self, tmpdir, datadir):
-        '''Test annotation with a faulty database directory.
-        '''
-
-        with tmpdir.as_cwd():
-            transcripts = datadir('pom.single.fa')
-
-            args = ['annotate', transcripts, '--database-dir', '.']
-            status, out, err = run(args, fail_ok=True)
-            assert 'install databases to continue' in out
-            assert status == 2
-
-    def test_annotate_dbdir(self, tmpdir, datadir):
-        '''Test that --database-dir works.
-        '''
-
-        with tmpdir.as_cwd():
-            transcripts = datadir('pom.single.fa')
-
-            db_dir = os.environ['DAMMIT_DB_DIR']
-            args = ['annotate', '--quick', transcripts, '--database-dir', db_dir]
-            status, out, err = run(args)
-
-    def test_annotate_user_databases(self, tmpdir, datadir):
-        '''Test that a user database works.
-        '''
-
-        with tmpdir.as_cwd():
-            transcripts = datadir('pom.single.fa')
+            transcripts = datadir('pom.20.fa')
             pep = datadir('pep.fa')
-            exp_gff3 = datadir('pom.single.fa.dammit.gff3.udb')
-            exp_fasta = datadir('pom.single.fa.dammit.fasta.udb')
+            exp_gff3 = datadir('pom.20.udb.dammit.gff3')
+            exp_fasta = datadir('pom.20.udb.dammit.fasta')
 
-            args = ['annotate', '--quick',
-                    transcripts, '--user-databases', pep,
-                    '--verbosity', '2']
-            status, out, err = run(args)
+            args = ['run', '--n-threads', str(n_threads), '--pipeline', 'quick', 'annotate',
+                    transcripts, '--user-database', pep]
+            status, out, err = run(*args)
 
-            outdir = '{0}.dammit'.format(transcripts)
-            gff3_fn = os.path.join(outdir, 'pom.single.fa.dammit.gff3')
-            fasta_fn = os.path.join(outdir, 'pom.single.fa.dammit.fasta')
+            outdir = 'pom.20.dammit'
+            gff3_fn = os.path.join(outdir, 'pom.20.dammit.gff3')
+            fasta_fn = os.path.join(outdir, 'pom.20.dammit.fasta')
 
             assert status == 0
             assert compare_gff(gff3_fn, exp_gff3)
             assert open(fasta_fn).read() == open(exp_fasta).read()
 
-    def test_annotate_multiple_user_databases(self, tmpdir, datadir):
-        '''Test that multiple user databases work.
-        '''
 
-        with tmpdir.as_cwd():
-            transcripts = datadir('pom.single.fa')
-            pep = datadir('pep.fa')
-            pep2 = datadir('odb_subset.fa')
-            exp_gff3 = datadir('pom.single.fa.dammit.gff3.udb')
-            exp_fasta = datadir('pom.single.fa.dammit.fasta.udb')
-
-            args = ['annotate', '--quick',
-                    transcripts, '--user-databases', pep, pep2,
-                    '--verbosity', '2']
-            status, out, err = run(args)
-
-            outdir = '{0}.dammit'.format(transcripts)
-
-            assert status == 0
+#    def test_annotate_multiple_user_databases(self, tmpdir, datadir):
+#        '''--pipeline quick annotate --user-database [PEP1.fa] --user-database [PEP2.fa] [INPUT.fa]
+#        '''
+#
+#        with tmpdir.as_cwd():
+#            transcripts = datadir('pom.single.fa')
+#            pep = datadir('pep.fa')
+#            pep2 = datadir('odb_subset.fa')
+#            exp_gff3 = datadir('pom.single.fa.dammit.gff3.udb')
+#            exp_fasta = datadir('pom.single.fa.dammit.fasta.udb')
+#
+#            args = ['annotate', '--quick',
+#                    transcripts, '--user-databases', pep, pep2,
+#                    '--verbosity', '2']
+#            status, out, err = run(args)
+#
+#            outdir = '{0}.dammit'.format(transcripts)
+#
+#            assert status == 0
 
     def test_annotate_name(self, tmpdir, datadir):
-        '''Test the --name argument.
+        '''--pipeline quick annotate --base-name [NAME] [INPUT.fa]
         '''
 
         with tmpdir.as_cwd():
-            transcripts = datadir('pom.single.fa')
+            transcripts = datadir('pom.20.fa')
 
-            args = ['annotate', '--quick',
-                    transcripts, '--name', 'Test']
+            args = ['--pipeline', 'quick', 'annotate',
+                    transcripts, '--base-name', 'Test']
             status, out, err = run(args)
+            assert status == 0
 
-            outdir = '{0}.dammit'.format(transcripts)
-            fn = os.path.join(outdir, os.path.basename(transcripts))
+            fn = os.path.join('pom.20.dammit', 'pom.20.fasta')
             assert os.path.isfile(fn)
 
             contents = open(fn).read()
             assert 'Test_0' in contents
 
-            assert status == 0
-    
-    @pytest.mark.requires_databases
-    def test_annotate_no_rename(self, tmpdir, datadir):
-        '''Test the --no-rename argument.
-        '''
 
-        with tmpdir.as_cwd():
-            transcripts = datadir('pom.single.fa')
-            exp_gff3 = datadir('pom.single.fa.dammit.gff3.norename')
-            exp_fasta = datadir('pom.single.fa.dammit.fasta.norename')
+def test_annotate_outdir(self, tmpdir, datadir):
+    '''dammit run annotate -o [OUTDIR]
+    '''
 
-            args = ['annotate', transcripts, '--no-rename']
-            status, out, err = run(args)
-            assert status == 0
+    with tmpdir.as_cwd():
+        transcripts = datadir('pom.20.fa')
+        outdir = 'test_out'
+        args = ['annotate', '--quick', transcripts, '-o', outdir]
+        status, out, err = run(args)
+        assert os.path.isfile(os.path.join(outdir, 'pom.20.fasta'))
 
-            outdir = '{0}.dammit'.format(transcripts)
-            fn = os.path.join(outdir, os.path.basename(transcripts))
-            assert os.path.isfile(fn)
-            contents = open(fn).read()
-            assert 'SPAC212' in contents
 
-            gff3_fn = os.path.join(outdir, 'pom.single.fa.dammit.gff3')
-            assert compare_gff(gff3_fn, exp_gff3)
+def test_annotate_dbdir_fail(self, tmpdir, datadir):
+    '''Test annotation with a faulty database directory.
+    '''
 
+    with tmpdir.as_cwd():
+        transcripts = datadir('pom.single.fa')
+
+        args = ['annotate', transcripts, '--database-dir', '.']
+        status, out, err = run(args, fail_ok=True)
+        assert 'install databases to continue' in out
+        assert status == 2
+
+
+def test_annotate_dbdir(self, tmpdir, datadir):
+    '''Test that --database-dir works.
+    '''
+
+    with tmpdir.as_cwd():
+        transcripts = datadir('pom.single.fa')
+
+        db_dir = os.environ['DAMMIT_DB_DIR']
+        args = ['annotate', '--quick', transcripts, '--database-dir', db_dir]
+        status, out, err = run(args)

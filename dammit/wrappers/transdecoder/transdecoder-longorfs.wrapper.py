@@ -21,7 +21,7 @@ output_dir = os.path.dirname(str(snakemake.output))
 
 # transdecoder fails if output already exists. No force option available
 # removing checkpoints enables snakemake to manage rerunning as necessary
-checkpoints_dir=os.path.join(output_dir, "__checkpoints_longorfs")
+checkpoints_dir = f"{output_dir}.__checkpoints_longorfs"
 
 shell("rm -rf {checkpoints_dir}")
 #shell("rm -rf {output_dir}")
@@ -33,4 +33,4 @@ if input_fasta.endswith("gz"):
 else:
     input_fa = input_fasta
 
-shell("TransDecoder.LongOrfs -t {input_fa} --output_dir {output_dir} {gtm_cmd} {log}")
+shell("TransDecoder.LongOrfs -t {input_fa} --output_dir {output_dir} {gtm_cmd} {extra} {log}")

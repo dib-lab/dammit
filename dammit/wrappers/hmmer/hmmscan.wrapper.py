@@ -19,22 +19,14 @@ outfile = snakemake.output.get("outfile", "")
 if outfile:
     out_cmd += " -o {} ".format(outfile)
 
-# save parseable table of per-sequence hits to file <f>
-tblout = snakemake.output.get("tblout", "")
-if tblout:
-    out_cmd += " --tblout {} ".format(tblout)
-
 # save parseable table of per-domain hits to file <f>
 domtblout = snakemake.output.get("domtblout", "")
 if domtblout:
     out_cmd += " --domtblout {} ".format(domtblout)
+else:
+    assert False, "must specificy domtblout in outputs"
 
-# save table of hits and domains to file, in Pfam format <f>
-pfamtblout = snakemake.output.get("pfamtblout", "")
-if pfamtblout:
-    out_cmd += " --pfamtblout {} ".format(pfamtblout)
-
-## default params: enable evalue threshold. If bitscore thresh is provided, use that instead (both not allowed)
+# default params: enable evalue threshold. If bitscore thresh is provided, use that instead (both not allowed)
 # report models >= this score threshold in output
 evalue_threshold = snakemake.params.get("evalue_threshold", 0.00001)
 score_threshold = snakemake.params.get("score_threshold", "")
@@ -47,9 +39,15 @@ else:
 # all other params should be entered in "extra" param
 extra = snakemake.params.get("extra", "")
 
-log = snakemake.log_fmt_shell(stdout=True, stderr=True)
-
-shell(
-    "hmmscan {out_cmd} {thresh_cmd} --cpu {snakemake.threads}"
-    " {extra} {profile} {snakemake.input.fasta} {log}"
-)
+if snakemake.threads == 1:
+    log = snakemake.log_fmt_shell(stdout=True, stderr=True)
+    shell(
+        "hmmscan {out_cmd} {thresh_cmd} --cpu {snakemake.threads}"
+        " {extra} {profile} {snakemake.input.fasta} {log}"
+    )
+else:
+    log = snakemake.log_fmt_shell(stdout=False, stderr=True)
+    shell(
+        "ope parallel -j {snakemake.threads} {snakemake.input.fasta} "
+        "hmmscan --cpu 1 -o /dev/null --domtblout /dev/stdout {thresh_cmd} {extra} {profile} /dev/stdin > {domtblout} {log}"
+    )

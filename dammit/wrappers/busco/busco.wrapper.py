@@ -13,45 +13,29 @@ log = snakemake.log_fmt_shell(stdout=True, stderr=True)
 extra = snakemake.params.get("extra", "")
 mode = snakemake.params.get("mode")
 assert mode is not None, "please input a run mode: genome, transcriptome or proteins"
+
 lineage = snakemake.params.get("lineage")
 auto_lineage = snakemake.params.get("auto_lineage") # prok, euk, all
-database_directory= snakemake.params.get("database_directory")
-config = snakemake.input.get("config", None)
+database_directory = snakemake.params.get("database_directory")
+config = snakemake.params.get("config", None)
 
-# separate output directory and output name from snakemake.output
-outdir = str(snakemake.output[0])
-out_path = ""
-if "/" in outdir:
-    out_path = os.path.dirname(outdir)
-    out_name = os.path.basename(outdir)
-else:
-    out_name = outdir
+out_path = snakemake.params.get("out_path", None)
+assert out_path is not None, "must specific out_path param for busco"
+out_name = snakemake.params.get("out_name", None)
+assert out_name is not None, "must specify an out_name param for busco"
+assert snakemake.output[0].startswith(out_path)
 
 # handle config file
 config_cmd = ""
-if config and any([out_path, database_directory]):
+if config and database_directory:
     configur = ConfigParser()
     config = configur.read(config)
     # set path for database downloads
     if database_directory:
-        configur.set("busco_run","download_path", os.path.abspath(out_path))
-    # set path for output files
-    if out_path:
-        configur.set("busco_run","out_path", os.path.abspath(out_path))
-    # using conda installs: everything should be avail in path
-    configur.set("tblastn","path", "")
-    configur.set("makeblastdb","path", "")
-    configur.set("augustus","path", "")
-    configur.set("etraining","path", "")
-    configur.set("gff2gbSmallDNA.pl","path", "")
-    configur.set("new_species.pl","path", "")
-    configur.set("optimize_augustus.pl","path", "")
-    configur.set("hmmsearch","path", "")
-    configur.set("sepp","path", "")
-    configur.set("prodigal","path", "")
+        configur.set("busco_run","download_path", database_directory)
 
-    #print configfile to output directory
-    configfile = os.path.join(out_path, ".wrapper.busco_config.ini")
+    # print configfile to output directory
+    configfile = os.path.join(out_path, "run.busco_config.ini")
     with open(configfile, "w") as outF:
         configur.write(outF)
     # cmd to point busco to this new configfile
@@ -71,15 +55,7 @@ else:   # doesn't matter if auto-lineage is all or left blank. default to auto i
 # note: --force allows snakemake to handle rewriting files as necessary
 # without needing to specify *all* busco outputs as snakemake outputs
 shell(
-    "busco --in {snakemake.input.fasta} --out {out_name} --force "
+    "busco --in {snakemake.input.fasta} --out_path {out_path} --out {out_name} --force "
     " --cpu {snakemake.threads} --mode {mode} {lineage_cmd} "
     " {config_cmd} {extra} {log}"
 )
-
-# if not using a config to specific output location, move output.
-# caveat: does not move output if user config incorrectly specifies out_path!
-if out_path and not config_cmd:
-    shell("cp -r {out_name} {out_path}")
-    shell("rm -rf {out_name}")
-
-# should we remove printed ini file?

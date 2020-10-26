@@ -30,7 +30,7 @@ if input_fasta.endswith("gz"):
 else:
     input_fa = input_fasta
 
-checkpoints_dir=os.path.join(output_dir, "__checkpoints")
+checkpoints_dir = f"{output_dir}.__checkpoints"
 
 # removing checkpoints enables snakemake to manage rerunning as necessary
 shell("rm -rf {checkpoints_dir}")

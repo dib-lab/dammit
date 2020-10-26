@@ -55,6 +55,7 @@ by {" and ".join(__authors__)}
 def main(ctx):
     logger = logging.getLogger('dammit.component')
     start_logging()
+    CONFIG.banner = banner
     ctx.obj = CONFIG
 
 

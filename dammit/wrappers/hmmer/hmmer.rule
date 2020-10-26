@@ -6,6 +6,8 @@ try:
 except KeyError:
     DATA_DIR = os.path.join(__path__, 'tests', 'test-data')
 
+TEST_PROTEIN = os.path.join(DATA_DIR, "test-protein-multi.fa")
+
 rule test_hmmer:
     input: "hmmscan/test-prot-tbl.txt", "hmmsearch/test-prot-tbl.txt"
 
@@ -39,15 +41,12 @@ rule hmmpress_profile:
 
 rule hmmscan_profile:
     input:
-        fasta=os.path.join(DATA_DIR,"test-protein.fa"),
+        fasta=TEST_PROTEIN,
         #fasta=os.path.join(DATA_DIR,"test-protein-multi.fa"),
         profile="test-profile.hmm.h3f",
     output:
         # only one of these is required
-        tblout="hmmscan/test-prot-tbl.txt", # save parseable table of per-sequence hits to file <f>
-        domtblout="hmmscan/test-prot-domtbl.txt", # save parseable table of per-domain hits to file <f>
-        pfamtblout="hmmscan/test-prot-pfamtbl.txt", # save table of hits and domains to file, in Pfam format <f>
-        outfile="hmmscan/test-prot-out.txt", # Direct the main human-readable output to a file <f> instead of the default stdout.
+        domtblout="hmmscan/test-prot-domtbl.txt" # save parseable table of per-domain hits to file <f>
     log:
         "hmmscan.log"
     params:
@@ -60,7 +59,7 @@ rule hmmscan_profile:
 
 rule hmmsearch_profile:
     input:
-        fasta=os.path.join(DATA_DIR,"test-protein.fa"),
+        fasta=TEST_PROTEIN,
         profile="test-profile.hmm.h3f",
     output:
         # only one of these is required

@@ -10,10 +10,7 @@ import logging
 import stat
 import pandas as pd
 
-from dammit import databases
-from dammit.meta import get_config
-
-from utils import datadir, runscript, logger
+from .utils import run, logger
 import pytest
 
 names = ['TransDecoder',
@@ -39,12 +36,8 @@ execs = ['hmmscan',
          'lastdb',
          'crb-blast']
 
-PATH_BACKUP = os.environ['PATH']
 
-def run(args, **kwargs):
-    return runscript('dammit', args, **kwargs)
-
-
+@pytest.mark.skip
 class TestDatabases():
     '''Tests for the dammit databases subcommand and the
     databases module. Assumes that DAMMIT_DB_DIR has been exported
@@ -126,24 +119,3 @@ class TestDatabases():
         '''
         args = ['databases', '--install', '--database-dir', str(tmpdir)]
         status, out, err = run(args)
-
-    @pytest.mark.requires_databases
-    def test_check_or_fail_succeed(self):
-        '''Check that check_or_fail succeeds properly.
-        '''
-        try:
-            databases.check_or_fail(self.handler)
-        except SystemExit:
-            assert False, 'Should not have exited'
-
-    def test_check_or_fail_fail(self, tmpdir):
-        config = self.config.copy()
-        config['database_dir'] = str(tmpdir)
-        
-        handler = databases.get_handler(config)
-        databases.build_default_pipeline(handler,
-                                         config,
-                                         self.databases,
-                                         with_uniref=False)
-        with pytest.raises(SystemExit):
-            databases.check_or_fail(handler)

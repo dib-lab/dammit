@@ -7,19 +7,22 @@ try:
 except KeyError:
     DATA_DIR = os.path.join(__path__, 'tests', 'test-data')
 
+TEST_TRANSCRIPT = os.path.join(DATA_DIR, 'pom.5.fa')
+TEST_TRANSCRIPT_DB = TEST_TRANSCRIPT + '.prj'
+
 rule test_last:
-    input: "test-tr-x-prot.maf", "test-transcript.maf"
+    input: "nucl_x_prot.maf", "nucl_x_nucl.maf"
 
 rule lastdb_transcript:
     input:
-        os.path.join(DATA_DIR, "test-transcript.fa")
+        TEST_TRANSCRIPT
     output:
-        "test-transcript.fa.prj",
+        TEST_TRANSCRIPT_DB
     params:
         protein_input = False,
         extra = ""
     log:
-        "test-transcript.log"
+        "lastdb_transcript.log"
     wrapper: f'file://{__wrappers__}/last/lastdb.wrapper.py'
 
 
@@ -32,31 +35,31 @@ rule lastdb_protein:
         protein_input = True,
         extra = ""
     log:
-        "test-protein.log"
+        "lastdb_protein.log"
     wrapper: f'file://{__wrappers__}/last/lastdb.wrapper.py'
 
 rule lastal_nucl_x_nucl:
     input:
-        data   = os.path.join(DATA_DIR, "test-transcript.fa"),
-        lastdb ="test-transcript.fa.prj"
+        data   = TEST_TRANSCRIPT,
+        lastdb = TEST_TRANSCRIPT_DB
     output:
-        maf = "test-transcript.maf"
+        maf = "nucl_x_nucl.maf"
     params:
         extra=""
     log:
         "lastal_nucl_x_nucl.log"
-    threads: 8
+    threads: 4
     wrapper: f'file://{__wrappers__}/last/lastal.wrapper.py'
 
 rule lastal_nucl_x_prot:
     input:
-        data   = os.path.join(DATA_DIR, "test-transcript.fa"),
-        lastdb ="test-protein.fa.prj"
+        data   = TEST_TRANSCRIPT,
+        lastdb = "test-protein.fa.prj"
     output:
-        maf = "test-tr-x-prot.maf"
+        maf = "nucl_x_prot.maf"
     params:
         extra=""
     log:
         "lastal_nucl_x_prot.log"
-    threads: 8
+    threads: 4
     wrapper: f'file://{__wrappers__}/last/lastal.wrapper.py'

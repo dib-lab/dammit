@@ -4,3 +4,4 @@ channels:
   - defaults
 dependencies:
   - hmmer=3.2.1
+  - ope>=0.6

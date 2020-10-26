@@ -1,7 +1,0 @@
-##gff-version 3.2.1
-Transcript_0	shmlast.LAST	conditional_reciprocal_best_LAST	1	1887	0.000000e+00	+	.	ID=homology:0;Name=SPAC212.11|tlh1|I|RecQ type DNA helicase;Target=SPAC212.11|tlh1|I|RecQ type DNA helicase 0 1887 +;database=pep.fa
-Transcript_0	transdecoder	CDS	1	5661	.	+	0	ID=cds.Gene.1::Transcript_0::g.1::m.1;Parent=Gene.1::Transcript_0::g.1::m.1
-Transcript_0	transdecoder	exon	1	5662	.	+	.	ID=Gene.1::Transcript_0::g.1::m.1.exon1;Parent=Gene.1::Transcript_0::g.1::m.1
-Transcript_0	transdecoder	gene	1	5662	.	+	.	ID=Gene.1::Transcript_0::g.1;Name=ORF%20type%3A3prime_partial%20len%3A1888%20%28%2B%29
-Transcript_0	transdecoder	mRNA	1	5662	.	+	.	ID=Gene.1::Transcript_0::g.1::m.1;Parent=Gene.1::Transcript_0::g.1;Name=ORF%20type%3A3prime_partial%20len%3A1888%20%28%2B%29
-Transcript_0	transdecoder	three_prime_UTR	5662	5662	.	+	.	ID=Gene.1::Transcript_0::g.1::m.1.utr3p1;Parent=Gene.1::Transcript_0::g.1::m.1
