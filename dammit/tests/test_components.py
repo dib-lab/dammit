@@ -187,7 +187,7 @@ class TestAnnotateFasta:
             run('annotate-fasta', renamed_fa, gff3, output_fa)
 
             sequence_header = list(ReadParser(output_fa))[0].name
-            assert sequence_header == 'Transcript_0 len=5662 CDS=0-5661 exon=0-5662 gene=0-5662 mRNA=0-5662 hmm_matches=DEAD:3603-4089,Helicase_C:4206-4548,Helicase_C:5217-5274 three_prime_UTR=5661-5662 homologies=TLH2_SCHPO:0-5661,sp|P0CT33|TLH1_SCHPO:0-5661'
+            assert sequence_header == 'Transcript_0 len=5662 CDS=0-5661 exon=0-5662 gene=0-5662 mRNA=0-5662 hmm_matches=DEAD:3603-4089,Helicase_C:4206-4548,Helicase_C:5217-5274 three_prime_UTR=5661-5662 homologies=TLH2_SCHPO:0-5661'
 
 
 class TestBestHits:
@@ -219,7 +219,8 @@ class TestMafToGFF3:
         assert row[0] == 'Transcript_0'
         assert row[3] == '1'
         assert row[4] == '5661'
-        assert 'TLH2_SCHPO 1 1887' in row[-1]
+        assert row[6] == '+'
+        assert 'Target=TLH2_SCHPO 1 1887' in row[-1]
         assert ';database=OrthoDB' in row[-1]
 
         return row
@@ -232,7 +233,10 @@ class TestMafToGFF3:
 
             run('maf-to-gff3', '--dbxref', 'OrthoDB', input_maf, output_gff3)
 
-            self.check_pom_gff3(output_gff3)
+            row = self.check_pom_gff3(output_gff3)
+            assert 'homology:58381196ee8824e0ae85ca41d72cabb7779270b5' in row[-1]
+            assert row[2] == 'translated_nucleotide_match'
+
 
     def test_csv_input(self, tmpdir, datadir):
         '''converts shmlast-style MAF CSV input to GFF3'''
@@ -242,7 +246,10 @@ class TestMafToGFF3:
 
             run('maf-to-gff3', '--dbxref', 'OrthoDB', input_csv, output_gff3)
 
-            self.check_pom_gff3(output_gff3)
+            row = self.check_pom_gff3(output_gff3)
+            assert 'homology:58381196ee8824e0ae85ca41d72cabb7779270b5' in row[-1]
+            assert row[2] == 'translated_nucleotide_match'
+
 
     def test_shmlast_input(self, tmpdir, datadir):
         '''works the same as shmlast-to-gff3'''
