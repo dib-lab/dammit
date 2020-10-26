@@ -33,4 +33,4 @@ if input_fasta.endswith("gz"):
 else:
     input_fa = input_fasta
 
-shell("TransDecoder.LongOrfs -t {input_fa} --output_dir {output_dir} {gtm_cmd} {log}")
+shell("TransDecoder.LongOrfs -t {input_fa} --output_dir {output_dir} {gtm_cmd} {extra} {log}")

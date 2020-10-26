@@ -5,7 +5,7 @@ from .utils import run, runscript
 
 def test_lastdb_transcript_dryrun(snakemake_rule, tmpdir, datadir):
     with tmpdir.as_cwd():
-        datadir('test-transcript.fa')
+        datadir('pom.5.fa')
         status, out, err = snakemake_rule('last/last.rule',
                                           target='lastdb_transcript',
                                           config={'DATA_DIR': str(tmpdir)},
@@ -17,14 +17,14 @@ def test_lastdb_transcript_dryrun(snakemake_rule, tmpdir, datadir):
 @pytest.mark.long
 def test_lastdb_transcript(snakemake_rule, tmpdir, datadir):
     with tmpdir.as_cwd():
-        datadir('test-transcript.fa')
+        datadir('pom.5.fa')
         status, out, err = snakemake_rule('last/last.rule',
                                           target='lastdb_transcript',
                                           config={'DATA_DIR': str(tmpdir)})
 
-        assert os.path.isfile('test-transcript.fa.prj')
-        assert os.path.isfile('test-transcript.log')
-        assert 'lastdb: done!' in open('test-transcript.log').read()
+        assert os.path.isfile('pom.5.fa.prj')
+        assert os.path.isfile('lastdb_transcript.log')
+        assert 'lastdb: done!' in open('lastdb_transcript.log').read()
 
 
 def test_lastdb_protein_dryrun(snakemake_rule, tmpdir, datadir):
@@ -47,13 +47,13 @@ def test_lastdb_protein(snakemake_rule, tmpdir, datadir):
                                            config={'DATA_DIR': str(tmpdir)})
 
         assert os.path.isfile('test-protein.fa.prj')
-        assert os.path.isfile('test-protein.log')
-        assert 'lastdb: done!' in open('test-protein.log').read()
+        assert os.path.isfile('lastdb_protein.log')
+        assert 'lastdb: done!' in open('lastdb_protein.log').read()
 
 
 def test_lastal_nucl_x_nucl_dryrun(snakemake_rule, tmpdir, datadir):
     with tmpdir.as_cwd():
-        datadir('test-transcript.fa')
+        datadir('pom.5.fa')
         status, out, err = snakemake_rule('last/last.rule', \
                                            target='lastal_nucl_x_nucl',
                                            config={'DATA_DIR': str(tmpdir)},
@@ -63,22 +63,27 @@ def test_lastal_nucl_x_nucl_dryrun(snakemake_rule, tmpdir, datadir):
 
 
 @pytest.mark.long
-def test_lastal_nucl_x_nucl(snakemake_rule, tmpdir, datadir):
+@pytest.mark.parametrize('n_threads', (1,2))
+def test_lastal_nucl_x_nucl(snakemake_rule, tmpdir, datadir, n_threads):
     with tmpdir.as_cwd():
-        datadir('test-transcript.fa')
+        datadir('pom.5.fa')
         status, out, err = snakemake_rule('last/last.rule',
                                            target='lastal_nucl_x_nucl',
-                                           config={'DATA_DIR': str(tmpdir)})
+                                           config={'DATA_DIR': str(tmpdir)},
+                                           n_threads=n_threads)
 
+        print('STDOUT:', out)
+        print('STDERR:', err)
+        assert status == 0
 
-        assert os.path.isfile('test-transcript.maf')
+        assert os.path.isfile('nucl_x_nucl.maf')
         assert os.path.isfile('lastal_nucl_x_nucl.log')
-        assert 'test-transcript.fa' in open('test-transcript.maf').read()
+        assert 'pom.5.fa' in open('nucl_x_nucl.maf').read()
 
 
 def test_lastal_nucl_x_prot_dryrun(snakemake_rule, tmpdir, datadir):
     with tmpdir.as_cwd():
-        datadir('test-transcript.fa')
+        datadir('pom.5.fa')
         datadir('test-protein.fa')
         status, out, err = snakemake_rule('last/last.rule',
                                            target='lastal_nucl_x_prot',
@@ -89,17 +94,24 @@ def test_lastal_nucl_x_prot_dryrun(snakemake_rule, tmpdir, datadir):
 
 
 @pytest.mark.long
-def test_lastal_nucl_x_prot(snakemake_rule, tmpdir, datadir):
+@pytest.mark.parametrize('n_threads', (1,2))
+def test_lastal_nucl_x_prot(snakemake_rule, tmpdir, datadir, n_threads):
     with tmpdir.as_cwd():
-        datadir('test-transcript.fa')
+        datadir('pom.5.fa')
         datadir('test-protein.fa')
         status, out, err = snakemake_rule('last/last.rule',
                                            target='lastal_nucl_x_prot',
-                                           config={'DATA_DIR': str(tmpdir)})
+                                           config={'DATA_DIR': str(tmpdir)},
+                                           n_threads=n_threads)
 
-        assert os.path.isfile('test-tr-x-prot.maf')
+        print('STDOUT:', out)
+        print('STDERR:', err)
+
+        assert status == 0
+
+        assert os.path.isfile('nucl_x_prot.maf')
         assert os.path.isfile('lastal_nucl_x_prot.log')
-        assert 'test-protein.fa' in open('test-tr-x-prot.maf').read()
+        assert 'test-protein.fa' in open('nucl_x_prot.maf').read()
 
 
 def test_transdecoder_longorfs_dryrun(snakemake_rule, tmpdir, datadir):
@@ -178,7 +190,7 @@ def test_infernal_cmpress(snakemake_rule, tmpdir, datadir):
 def test_infernal_cmscan_dryrun(snakemake_rule, tmpdir, datadir):
     with tmpdir.as_cwd():
         datadir('test-covariance-model.cm')
-        datadir('test-transcript.fa')
+        datadir('pom.5.fa')
         status, out, err = snakemake_rule('infernal/infernal.rule',
                                            target='infernal_cmscan',
                                            config={'DATA_DIR': str(tmpdir)},
@@ -188,18 +200,21 @@ def test_infernal_cmscan_dryrun(snakemake_rule, tmpdir, datadir):
 
 
 @pytest.mark.long
-def test_infernal_cmscan(snakemake_rule, tmpdir, datadir):
+@pytest.mark.parametrize('n_threads', (1,2))
+def test_infernal_cmscan(snakemake_rule, tmpdir, datadir, n_threads):
     with tmpdir.as_cwd():
         datadir('test-covariance-model.cm')
-        datadir('test-transcript.fa')
+        datadir('pom.5.fa')
         status, out, err = snakemake_rule('infernal/infernal.rule',
                                            target='infernal_cmscan',
+                                           n_threads=n_threads,
                                            config={'DATA_DIR': str(tmpdir)})
 
         print(out)
         assert os.path.isfile('tr-infernal-tblout.txt')
         assert os.path.isfile('test-cmscan.log')
         assert '[ok]' in open('test-cmscan.log').read()
+
 
 def test_busco_dryrun(snakemake_rule, tmpdir, datadir):
     with tmpdir.as_cwd():
@@ -235,7 +250,7 @@ def test_busco(snakemake_rule, tmpdir, datadir):
 
 def test_hmmscan_dryrun(snakemake_rule, tmpdir, datadir):
     with tmpdir.as_cwd():
-        datadir('test-protein.fa')
+        datadir('test-protein-multi.fa')
         #datadir('test-protein-multi.fa')
         datadir('test-profile.sto')
         status, out, err = snakemake_rule('hmmer/hmmer.rule',
@@ -245,23 +260,27 @@ def test_hmmscan_dryrun(snakemake_rule, tmpdir, datadir):
 
         assert status == 0
 
-def test_hmmscan(snakemake_rule, tmpdir, datadir):
+
+@pytest.mark.parametrize('n_threads', (1,4))
+def test_hmmscan(snakemake_rule, tmpdir, datadir, n_threads):
     with tmpdir.as_cwd():
-        datadir('test-protein.fa')
+        datadir('test-protein-multi.fa')
         datadir('test-profile.hmm')
         status, out, err = snakemake_rule('hmmer/hmmer.rule',
                                            target='hmmscan_profile',
-                                           config={'DATA_DIR': str(tmpdir)})
+                                           config={'DATA_DIR': str(tmpdir)},
+                                           n_threads=n_threads)
 
-
+        assert status == 0
+        print('STDOUT:', out)
+        print('STDERR:', err)
         # check hmmpress
         assert "Pressed and indexed 1 HMMs (1 names and 1 accessions)." in open('hmmpress.log').read()
         assert "Profiles (remainder) pressed into: test-profile.hmm.h3p" in open('hmmpress.log').read()
         # check hmmscan
         assert os.path.isfile('hmmscan.log')
         ### not getting any hits in here; prior test on same data (in test_hmmer.py found 2 hits)
-        print(open('hmmscan/test-prot-tbl.txt').read())
-        print(open('hmmscan/test-prot-out.txt').read())
+        print(open('hmmscan/test-prot-domtbl.txt').read())
 
 
 def test_hmmpress_dryrun(snakemake_rule, tmpdir, datadir):

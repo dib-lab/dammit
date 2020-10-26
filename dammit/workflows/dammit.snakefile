@@ -38,27 +38,3 @@ onerror:
 include: "databases/databases.snakefile"
 include: "annotate/annotate.snakefile"
 include: "file_conversions.snakefile"
-
-#subworkflow databases:
-#    workdir:
-#        "."
-#    snakefile:
-#        "databases/databases.snakefile"
-#    configfile: f"{__path__}/config.yml" 
-#        "databases.yml", 
-        #"config.yml"
-
-#subworkflow annotate:
-#    workdir:
-#        "."
-#    snakefile:
-#        "annotate/annotate.snakefile"
-#    configfile:
-#        "config.yml"
-
-#rule annotate:
-#    input:
-#        databases("test.txt")
-
-#rule databases:
-#    input: database_targs

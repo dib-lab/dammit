@@ -7,6 +7,8 @@ output_suffix:
   - .dammit.gff3
   - .dammit.fasta
 basename: "PLACEHOLDER"
+global_evalue: null
+max_threads_per_task: 1
 
 ## last ##
 lastal:
@@ -19,6 +21,7 @@ lastal:
     - uniref90
     - nr
   params:
+    evalue: 0.00001
     frameshift_cost: 15
     extra: ""
   
@@ -86,7 +89,8 @@ cmscan:
   databases:
     - Rfam
   params:
-    extra: ""
+    evalue: 0.00001
+    extra: "--nohmmonly"
 
 cmpress:
   output_suffix:

@@ -1,9 +1,7 @@
-include README.rst
+include README.md
 include setup.cfg
 include LICENSE
-include distribute_setup.py
 include dammit/VERSION
-include bin/dammit
 include dammit/config.yml
 include dammit/pipelines.yml
 include dammit/databases.yml

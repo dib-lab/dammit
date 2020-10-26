@@ -119,24 +119,3 @@ class TestDatabases():
         '''
         args = ['databases', '--install', '--database-dir', str(tmpdir)]
         status, out, err = run(args)
-
-    @pytest.mark.requires_databases
-    def test_check_or_fail_succeed(self):
-        '''Check that check_or_fail succeeds properly.
-        '''
-        try:
-            databases.check_or_fail(self.handler)
-        except SystemExit:
-            assert False, 'Should not have exited'
-
-    def test_check_or_fail_fail(self, tmpdir):
-        config = self.config.copy()
-        config['database_dir'] = str(tmpdir)
-        
-        handler = databases.get_handler(config)
-        databases.build_default_pipeline(handler,
-                                         config,
-                                         self.databases,
-                                         with_uniref=False)
-        with pytest.raises(SystemExit):
-            databases.check_or_fail(handler)

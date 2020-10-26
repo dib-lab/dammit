@@ -14,6 +14,7 @@ rule dammit_rename_transcriptome:
         names=os.path.join(results_dir, "{transcriptome}.namemap.csv")
     log:
         os.path.join(logs_dir, "{transcriptome}.rename.log")
+    threads: 1
     params:
         basename = config.get("basename", "Txome"),
     script: f'file://{__path__}/wrappers/dammit/rename-transcriptome.wrapper.py'
@@ -30,6 +31,7 @@ rule dammit_cmscan_to_gff:
         os.path.join(results_dir, "{transcriptome}.x.{database}.cmscan.gff3")
     log:
         os.path.join(logs_dir, "{transcriptome}.x.{database}.cmscan-to-gff3.log")
+    threads: 1
     shell:
         """
         dammit cmscan-to-gff3 --dbxref {wildcards.database} {input} {output} 2> {log}
@@ -47,6 +49,7 @@ rule dammit_hmmscan_to_gff:
         os.path.join(results_dir, "{transcriptome}.x.{database}.hmmscan.gff3")
     log:
         os.path.join(logs_dir, "{transcriptome}.x.{database}.hmmscan-to-gff3.log")
+    threads: 1
     shell:
         """
         dammit hmmscan-to-gff3 --dbxref {wildcards.database} {input} {output} 2> {log}
@@ -63,6 +66,7 @@ rule dammit_maf_best_hits:
         os.path.join(results_dir, "{transcriptome}.x.{database}.lastal.maf")
     output:
         os.path.join(results_dir, "{transcriptome}.x.{database}.lastal.best.csv")
+    threads: 1
     shell:
         """
         dammit best-hits {input} {output}
@@ -81,6 +85,7 @@ rule dammit_maf_to_gff:
         os.path.join(results_dir, "{transcriptome}.x.{database}.lastal.gff3")
     log:
         os.path.join(logs_dir, "{transcriptome}.x.{database}.lastal.maf-to-gff3.log")
+    threads: 1
     shell:
         """
         dammit maf-to-gff3 --dbxref {wildcards.database} {input} {output} 2> {log}
@@ -97,6 +102,7 @@ rule dammit_shmlast_to_gff:
         os.path.join(results_dir, "{transcriptome}.x.{database}.shmlast_crbl.gff3")
     log:
         os.path.join(logs_dir, "{transcriptome}.x.{database}.shmlast-to-gff3.log")
+    threads: 1
     shell:
         """
         dammit shmlast-to-gff3 --dbxref {wildcards.database} {input} {output} 2> {log}
@@ -112,6 +118,7 @@ rule dammit_merge_gff:
         os.path.join(results_dir, "{transcriptome}.dammit.gff3"),
     log:
         os.path.join(logs_dir, "{transcriptome}.merge_gffs.log")
+    threads: 1
     shell:
         """
         dammit merge-gff3 {input} {output} 2> {log}
@@ -129,6 +136,7 @@ rule dammit_annotate_fasta:
         os.path.join(results_dir, "{transcriptome}.dammit.fasta")
     log:
         os.path.join(logs_dir, "{transcriptome}.annotate_fasta.log")
+    threads: 1
     shell:
         """
         dammit annotate-fasta {input.fasta} {input.gff} {output} 2> {log}

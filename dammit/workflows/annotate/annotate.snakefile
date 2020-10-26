@@ -1,6 +1,9 @@
 import os
 from dammit.meta import __path__, __wrappers__
 
+GLOBAL_EVALUE = config['global_evalue']
+THREADS_PER_TASK = config['max_threads_per_task']
+
 rule transdecoder_longorfs:
     message: "Run TransDecoder.LongOrfs, which fings the longest likely open reading frames."
     input:
@@ -11,7 +14,7 @@ rule transdecoder_longorfs:
         os.path.join(logs_dir, '{transcriptome}.transdecoder-longorfs.log')
     params:
         extra = config['transdecoder_longorfs']['params'].get('extra', '-m 80 ')
-    threads: 4
+    threads: 1
     wrapper:
         f'file://{__wrappers__}/transdecoder/transdecoder-longorfs.wrapper.py'
 
@@ -23,16 +26,13 @@ rule hmmscan:
         profile = os.path.join(db_dir, 'Pfam-A.hmm.h3f'),
     output:
         # only one of these is required
-        domtblout  = os.path.join(results_dir,'{transcriptome}.x.Pfam-A.hmmscan-domtbl.txt'), # save parseable table of per-domain hits to file <f>
-        outfile    = os.path.join(results_dir,'{transcriptome}.x.Pfam-A.hmmscan-out.txt'), # Direct the main human-readable output to a file <f> instead of the default stdout.
+        domtblout  = os.path.join(results_dir,'{transcriptome}.x.Pfam-A.hmmscan-domtbl.txt') # save parseable table of per-domain hits to file <f>
     log:
         os.path.join(logs_dir, '{transcriptome}.x.Pfam-A.hmmscan.log')
     params:
-        evalue_threshold = config['hmmscan']['params'].get("evalue", 0.00001),
-        # if bitscore threshold provided, hmmscan will use that instead
-        #score_threshold=50,
+        evalue_threshold = GLOBAL_EVALUE if GLOBAL_EVALUE is not None else config['hmmscan']['params'].get("evalue", 0.00001),
         extra = config['hmmscan']['params'].get('extra', ''),
-    threads: 4
+    threads: THREADS_PER_TASK
     wrapper:
         f'file://{__wrappers__}/hmmer/hmmscan.wrapper.py'
 
@@ -41,7 +41,7 @@ rule transdecoder_predict:
     input:
         fasta = os.path.join(results_dir, '{transcriptome}.fasta'),
         longorfs = os.path.join(results_dir, '{transcriptome}.transdecoder_dir/longest_orfs.pep'),
-        pfam = os.path.join(results_dir, '{transcriptome}.x.Pfam-A.hmmscan-domtbl.txt')
+        pfam_hits = os.path.join(results_dir, '{transcriptome}.x.Pfam-A.hmmscan-domtbl.txt')
     output:
         os.path.join(results_dir, '{transcriptome}.fasta.transdecoder.bed'),
         os.path.join(results_dir, '{transcriptome}.fasta.transdecoder.cds'),
@@ -51,7 +51,7 @@ rule transdecoder_predict:
         os.path.join(logs_dir, '{transcriptome}.transdecoder-predict.log')
     params:
         extra= config['transdecoder_predict']['params'].get('extra', '')
-    threads: 4
+    threads: 1
     wrapper:
         f'file://{__wrappers__}/transdecoder/transdecoder-predict.wrapper.py'
 
@@ -64,6 +64,7 @@ rule hmmer_remap:
         os.path.join(results_dir, '{transcriptome}.x.{database}.remapped.csv')
     log:
         os.path.join(logs_dir, '{transcriptome}.x.{database}.hmmer_remap.log')
+    threads: 1
     shell:
         """
         dammit remap-hmmer-coords {input.tbl} {input.pep} {output} 2> {log}
@@ -77,11 +78,12 @@ rule lastal:
     output:
         maf = os.path.join(results_dir, '{transcriptome}.x.{database}.lastal.maf')
     params:
+        evalue_threshold = GLOBAL_EVALUE if GLOBAL_EVALUE is not None else config['lastal']['params'].get('evalue', 0.00001),
         frameshift_cost = config['lastal']['params'].get('frameshift_cost', 15),
         extra           = config['lastal']['params'].get('extra', ''),
     log:
         os.path.join(logs_dir, '{transcriptome}.x.{database}.lastal.log')
-    threads: 8
+    threads: THREADS_PER_TASK
     wrapper: f'file://{__wrappers__}/last/lastal.wrapper.py'
 
 
@@ -93,11 +95,11 @@ rule shmlast_crbl:
         os.path.join(results_dir, '{transcriptome}.x.{database}.shmlast_crbl.csv')
     params:
         search_type="crbl",
-        evalue = config['shmlast']['params'].get('evalue', ""),
+        evalue = GLOBAL_EVALUE if GLOBAL_EVALUE is not None else config['shmlast']['params'].get('evalue', 0.00001),
         extra = config['shmlast']['params'].get('extra', ''),
     log:
         os.path.join(logs_dir, '{transcriptome}.x.{database}.shmlast.log')
-    threads: 8
+    threads: THREADS_PER_TASK
     wrapper: f'file://{__wrappers__}/shmlast/shmlast.wrapper.py'
 
 
@@ -110,8 +112,9 @@ rule cmscan:
     log:
         os.path.join(logs_dir, '{transcriptome}.x.{database}.cmscan.log')
     params:
+        evalue_threshold = GLOBAL_EVALUE if GLOBAL_EVALUE is not None else config['cmscan']['params'].get('evalue', 0.00001),
         extra = config['hmmsearch']['params'].get('extra', ''),
-    threads: 4
+    threads: THREADS_PER_TASK
     wrapper: f'file://{__wrappers__}/infernal/cmscan.wrapper.py'
 
 
@@ -124,7 +127,7 @@ rule busco_transcripts:
         os.path.join(logs_dir, "{transcriptome}.x.{busco_db}.log")
     benchmark:
         os.path.join(logs_dir, "{transcriptome}.x.{busco_db}.benchmark")
-    threads: 8
+    threads: THREADS_PER_TASK
     params:
         out_name = '{busco_db}_outputs',
         out_path = lambda w: os.path.join(results_dir, f'{w.transcriptome}.busco'),
@@ -154,6 +157,7 @@ rule plot_busco_summaries:
         f'file://{__path__}/wrappers/busco/environment.yaml'
     params:
         summary_dir = lambda w: os.path.join(results_dir, f'{w.transcriptome}.busco', 'summary_data')
+    threads: 1
     shell:
         """
         mkdir -p {params.summary_dir}
