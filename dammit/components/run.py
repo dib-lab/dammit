@@ -27,11 +27,13 @@ from ..utils import ShortChoice, read_yaml, write_yaml, update_nested_dict
 @click.option('--database-dir',
               default=DEFAULT_DATABASES_DIR,
               envvar='DAMMIT_DB_DIR',
+              show_default=True,
               help='Directory to store databases. Existing'\
                     ' databases will not be overwritten.')
 @click.option('--temp-dir',
               default=DEFAULT_TEMP_DIR,
               envvar='DAMMIT_TEMP_DIR',
+              show_default=True,
               help='Directory to store dammit temporary files.'\
                    ' These will include the final workflow configs'\
                    ' for individual database runs as well as conda'\
@@ -44,6 +46,7 @@ from ..utils import ShortChoice, read_yaml, write_yaml, update_nested_dict
 @click.option('--n-threads',
               type=int,
               default=psutil.cpu_count(logical=False),
+              show_default=True,
               help='Number of threads for overall workflow execution')
 @click.option('--max-threads-per-task',
                type=int,
@@ -131,7 +134,9 @@ def run_group(config,
 @run_group.command('annotate')
 @click.pass_obj
 @click.argument('transcriptome')
-@click.option('-n', '--base-name', default='Transcript',
+@click.option('-n', '--base-name',
+              default='Transcript',
+              show_default=True,
               help='Base name to use for renaming the'\
                    ' input transcripts. The new names'\
                    ' will be of the form <name>_<X>.'\
