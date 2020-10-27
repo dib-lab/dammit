@@ -23,7 +23,7 @@ def compare_gff(fn_a, fn_b):
     df_a.reset_index(inplace=True, drop=True)
     df_b = gff3.GFF3Parser(fn_b).read().sort_values(['seqid', 'start', 'end', 'ID', 'Target'])
     df_b.reset_index(inplace=True, drop=True)
-    
+
     print('First DF:', df_a, '\n', '=' * 40)
     print('Second DF:', df_b, '\n', '=' * 40)
     return df_a.equals(df_b)
@@ -76,7 +76,7 @@ class TestDammitAnnotate:
 
             assert compare_gff(gff3_fn, exp_gff3)
             assert open(fasta_fn).read() == open(exp_fasta).read()
-  
+
     @pytest.mark.parametrize('n_threads', (1,4))
     def test_annotate_user_database(self, tmpdir, datadir, n_threads):
         '''--pipeline quick annotate --user-database [PEP.fa] [INPUT.fa]
@@ -100,26 +100,33 @@ class TestDammitAnnotate:
             assert compare_gff(gff3_fn, exp_gff3)
             assert open(fasta_fn).read() == open(exp_fasta).read()
 
+## run this on pom20! store the results somewhere and then compare using compare_gff3!
+    @pytest.mark.parametrize('n_threads', (1,4))
+    def test_annotate_multiple_user_databases(self, tmpdir, datadir, n_threads):
+        '''--pipeline quick annotate --user-database [PEP1.fa] --user-database [PEP2.fa] [INPUT.fa]
+        '''
 
-#    def test_annotate_multiple_user_databases(self, tmpdir, datadir):
-#        '''--pipeline quick annotate --user-database [PEP1.fa] --user-database [PEP2.fa] [INPUT.fa]
-#        '''
-#
-#        with tmpdir.as_cwd():
-#            transcripts = datadir('pom.single.fa')
-#            pep = datadir('pep.fa')
-#            pep2 = datadir('odb_subset.fa')
-#            exp_gff3 = datadir('pom.single.fa.dammit.gff3.udb')
-#            exp_fasta = datadir('pom.single.fa.dammit.fasta.udb')
-#
-#            args = ['annotate', '--quick',
-#                    transcripts, '--user-databases', pep, pep2,
-#                    '--verbosity', '2']
-#            status, out, err = run(args)
-#
-#            outdir = '{0}.dammit'.format(transcripts)
-#
-#            assert status == 0
+        with tmpdir.as_cwd():
+            transcripts = datadir('pom.20.fa')
+            pep = datadir('pep.fa')
+            pep2 = datadir('odb_subset.fa')
+            exp_gff3 = datadir('pom.20.udbs.dammit.gff3')
+            exp_fasta = datadir('pom.20.udbs.dammit.fasta')
+
+            args = ['run', '--n-threads', str(n_threads),
+                    '--pipeline', 'quick', 'annotate',
+                    '--user-database', pep,
+                    '--user-database', pep2,
+                    transcripts]
+            status, out, err = run(*args)
+
+            outdir = 'pom.20.dammit'
+            gff3_fn = os.path.join(outdir, 'pom.20.dammit.gff3')
+            fasta_fn = os.path.join(outdir, 'pom.20.dammit.fasta')
+
+            assert status == 0
+            assert compare_gff(gff3_fn, exp_gff3)
+            assert open(fasta_fn).read() == open(exp_fasta).read()
 
     def test_annotate_name(self, tmpdir, datadir):
         '''--pipeline quick annotate --base-name [NAME] [INPUT.fa]
@@ -128,9 +135,9 @@ class TestDammitAnnotate:
         with tmpdir.as_cwd():
             transcripts = datadir('pom.20.fa')
 
-            args = ['--pipeline', 'quick', 'annotate',
+            args = ['run', '--pipeline', 'quick', 'annotate',
                     transcripts, '--base-name', 'Test']
-            status, out, err = run(args)
+            status, out, err = run(*args)
             assert status == 0
 
             fn = os.path.join('pom.20.dammit', 'pom.20.fasta')
@@ -147,31 +154,37 @@ def test_annotate_outdir(self, tmpdir, datadir):
     with tmpdir.as_cwd():
         transcripts = datadir('pom.20.fa')
         outdir = 'test_out'
-        args = ['annotate', '--quick', transcripts, '-o', outdir]
-        status, out, err = run(args)
+        args = ['run', 'annotate', '--quick', transcripts, '-o', outdir]
+        status, out, err = run(*args)
         assert os.path.isfile(os.path.join(outdir, 'pom.20.fasta'))
 
 
-def test_annotate_dbdir_fail(self, tmpdir, datadir):
-    '''Test annotation with a faulty database directory.
-    '''
+# FIX: since annotate currently auto installs dbs if they're not found, this will not fail.
+# if change this, also remove --pipeline quick, as failure to find db's means nothing will be run
+#def test_annotate_dbdir_fail(tmpdir, datadir):
+#    '''Test annotation with a faulty database directory.
+#       dammit run --database-dir [DB_DIR] annotate [INPUT.fa]
+#    '''
+#
+#    with tmpdir.as_cwd():
+#        transcripts = datadir('pom.20.fa')
+#
+#        args = ['run', '--pipeline', 'quick', '--database-dir', '.', 'annotate', transcripts]
+#        status, out, err = run(*args, fail_ok=True)
+#        assert 'install databases to continue' in out
+#        assert status == 2
 
-    with tmpdir.as_cwd():
-        transcripts = datadir('pom.single.fa')
-
-        args = ['annotate', transcripts, '--database-dir', '.']
-        status, out, err = run(args, fail_ok=True)
-        assert 'install databases to continue' in out
-        assert status == 2
 
 
-def test_annotate_dbdir(self, tmpdir, datadir):
+# make sure DAMMIT_DB_DIR is set in your testing env
+# (export DAMMIT_DB_DIR=/path/to/databases)
+def test_annotate_dbdir(tmpdir, datadir):
     '''Test that --database-dir works.
     '''
 
     with tmpdir.as_cwd():
-        transcripts = datadir('pom.single.fa')
+        transcripts = datadir('pom.20.fa')
 
         db_dir = os.environ['DAMMIT_DB_DIR']
-        args = ['annotate', '--quick', transcripts, '--database-dir', db_dir]
-        status, out, err = run(args)
+        args = ['run', '--pipeline', 'quick', '--database-dir', db_dir, 'annotate', transcripts]
+        status, out, err = run(*args)
