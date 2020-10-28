@@ -64,7 +64,7 @@ def clean_tmp_cmd(temp_dir, envs, force):
               ' Using the clean function could put this system at risk. Remove the directory'
               ' manually or use --force to preoceed.', file=sys.stderr)
     else:
-        shutil.rmtree(temp_config_dir)
+        shutil.rmtree(temp_config_dir, ignore_errors=True)
         if envs:
             conda_env_dir = os.path.join(temp_dir, CONDA_ENV_TEMPDIR)
             print('Removing conda environments in', conda_env_dir, file=sys.stderr)
