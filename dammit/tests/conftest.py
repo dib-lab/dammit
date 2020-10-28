@@ -16,7 +16,7 @@ def pytest_itemcollected(item):
         pref = ''
     suf = node.__doc__.strip() if node.__doc__ else node.__name__
     if pref or suf:
-        item._nodeid = ' '.join((pref, suf))
+        item._nodeid = '{0}: {1} {2}'.format(item.name, pref, suf)
 
 
 @pytest.fixture(scope="session")
