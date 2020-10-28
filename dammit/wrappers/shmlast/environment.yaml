@@ -3,4 +3,4 @@ channels:
   - conda-forge
   - defaults
 dependencies:
-  - shmlast=1.4
+  - shmlast=1.6

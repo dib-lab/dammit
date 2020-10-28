@@ -5,7 +5,7 @@ shmlast>=1.4
 pytest>3
 pytest-cov>2.3
 click
-#ope
+ope>=0.8
 snakemake==5.20.1
 mkdocs
 pyyaml

@@ -4,4 +4,4 @@ channels:
   - defaults
 dependencies:
   - last=1021
-  - ope>=0.6
+  - ope>=0.8
