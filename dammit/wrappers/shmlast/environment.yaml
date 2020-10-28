@@ -4,3 +4,4 @@ channels:
   - defaults
 dependencies:
   - shmlast=1.6
+  - ope >=0.8
