@@ -38,7 +38,6 @@ class TestDammitAnnotate:
     def test_annotate_default(self, tmpdir, datadir, n_threads):
         '''--n-threads [N] annotate [INPUT.fa]
         '''
-
         with tmpdir.as_cwd():
             transcripts = datadir('pom.20.fa')
             exp_gff3 = datadir('pom.20.dammit.gff3')

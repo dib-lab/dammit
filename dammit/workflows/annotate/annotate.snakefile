@@ -84,7 +84,8 @@ rule lastal:
     log:
         os.path.join(logs_dir, '{transcriptome}.x.{database}.lastal.log')
     threads: THREADS_PER_TASK
-    wrapper: f'file://{__wrappers__}/last/lastal.wrapper.py'
+    wrapper: 
+        f'file://{__wrappers__}/last/lastal.wrapper.py'
 
 
 rule shmlast_crbl:
