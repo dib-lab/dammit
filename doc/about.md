@@ -35,6 +35,7 @@ Implicit to these motivations is some idea of what a good annotator
 -   Pfam-A
 -   Rfam
 -   OrthoDB
+-   Swiss-Prot
 -   BUSCO databases
 -   Uniref90
 -   User-supplied protein databases
@@ -74,8 +75,7 @@ can be found [here](https://github.com/cboursnell/crb-blast).
 
 ![CRBB](static/CRBB_decision.png)
 
-*from
-http://journals.plos.org/plosgenetics/article?id=10.1371/journal.pgen.1004365\#s5*
+*from [Deep Evolutionary Comparison of Gene Expression Identifies Parallel Recruitment of Trans-Factors in Two Independent Origins of C4 Photosynthesis](https://journals.plos.org/plosgenetics/article?id=10.1371/journal.pgen.1004365)*
 
 **shmlast** is a reimplementation of the Conditional Reciprocal Best Hits 
 algorithm for finding potential orthologs between a transcriptome and 
