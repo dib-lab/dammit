@@ -99,13 +99,13 @@ def run_group(config,
 
     if not n_threads or n_threads == 0:
         config.core['n_threads'] = psutil.cpu_count(logical=False)
-    elif n_threads:
+    else:
         config.core['n_threads'] = n_threads
     
     if not max_threads_per_task:
-        config.core['max_threads_per_task'] = n_threads
+        config.core['max_threads_per_task'] = config.core['n_threads']
     else:
-        config.core['max_threads_per_task'] = max_threads_per_task
+        config.core['max_threads_per_task'] = min(config.core['n_threads'], max_threads_per_task)
 
     if busco_config_file:
         config.core['busco']['configfile'] = busco_config_file
