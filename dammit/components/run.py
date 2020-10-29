@@ -84,13 +84,13 @@ def run_group(config,
     print(config.banner, file=sys.stderr)
 
     if database_dir:
-        config.core['database_dir'] = database_dir
+        config.core['database_dir'] = os.path.abspath(database_dir)
 
     if temp_dir:
-        config.core['temp_dir'] = temp_dir
+        config.core['temp_dir'] = os.path.abspath(temp_dir)
     
     if conda_dir:
-        config.core['conda_env_dir'] = conda_dir
+        config.core['conda_env_dir'] = os.path.abspath(conda_dir)
 
     create_dirs([config.core[k] for k in ['database_dir', 'temp_dir', 'conda_env_dir']])
 
@@ -114,8 +114,6 @@ def run_group(config,
 
     if pipeline:
         config.core['pipeline'] = pipeline
-
-    click.echo(database_dir)
 
 
 @run_group.command('annotate')
@@ -152,6 +150,8 @@ def annotate_cmd(config,
     HMMER against Pfam, Inferal against Rfam, and Conditional Reciprocal
     Best-hit Blast against user databases; and aggregates all results in
     a properly formatted GFF3 file.'''
+
+    config.core['command'] = 'annotate'
 
     # Strip the extension from the txome and use as the global prefix name
     if any([transcriptome.endswith(".fa"),
@@ -211,7 +211,9 @@ def annotate_cmd(config,
     try:
         subprocess.check_call(cmd)
     except subprocess.CalledProcessError as e:
-        print(f'Error in snakemake invocation: {e}', file=sys.stderr)
+        print(f'Error in snakemake invocation!', file=sys.stderr)
+        print('If the error is a MissingInputException, you probably need to install '
+              'the dammit databases. Run `dammit run databases --help` for more information.', file=sys.stderr)
         return e.returncode
 
 
@@ -219,10 +221,16 @@ def annotate_cmd(config,
 @click.pass_obj
 @click.option('--install', is_flag=True,
               help='Install missing databases. Downloads'
-                   ' and preps where necessary')
+                   ' and preps where necessary.')
 def databases_cmd(config, install):
-    ''' The database preparation pipeline.
+    ''' The database preparation pipeline. The database installation directory is set
+    after the `run` subcommand (invoke `dammit run --help` for more information). You
+    can also set the ${DAMMIT_DB_DIR} environment variable. For example:
+
+        dammit run --database-dir /path/to/database/dir databases --install
     '''
+    config.core['command'] = 'databases'
+
     workflow_file = os.path.join(__path__, 'workflows', 'dammit.snakefile')
     database_dir = config.core['database_dir']
 

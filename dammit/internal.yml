@@ -8,6 +8,8 @@ output_suffix:
   - .dammit.gff3
   - .dammit.fasta
 
+command: null
+
 ## last ##
 lastal:
   output_suffix: 

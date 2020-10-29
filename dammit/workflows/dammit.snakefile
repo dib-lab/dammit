@@ -34,7 +34,8 @@ onsuccess:
 onerror:
     print("Nope.\n")
 
-
-include: "databases/databases.snakefile"
-include: "annotate/annotate.snakefile"
-include: "file_conversions.snakefile"
+if config['command'] == 'databases':
+    include: "databases/databases.snakefile"
+else:
+    include: "annotate/annotate.snakefile"
+    include: "file_conversions.snakefile"
