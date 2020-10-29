@@ -1,19 +1,18 @@
 import os
 from dammit.meta import __path__, __wrappers__
-from dammit.config import CONFIG
+from dammit.config import DATABASES
 
-databases_d = CONFIG.databases
 THREADS_PER_TASK = config['max_threads_per_task']
 
 
 rule download_and_gunzip:
     output: os.path.join(config["database_dir"], '{database}.{file_type}')
     params:
-        url = lambda wildcards: databases_d[wildcards.database]['url'],
-        md5 = lambda wildcards: databases_d[wildcards.database].get('md5', False),
-        metalink = lambda wildcards: databases_d[wildcards.database].get('metalink', False),
-        fileformat = lambda wildcards: databases_d[wildcards.database].get('fileformat', False),
-        folder = lambda wildcards: databases_d[wildcards.database].get('folder', False)
+        url = lambda wildcards: DATABASES[wildcards.database]['url'],
+        md5 = lambda wildcards: DATABASES[wildcards.database].get('md5', False),
+        metalink = lambda wildcards: DATABASES[wildcards.database].get('metalink', False),
+        fileformat = lambda wildcards: DATABASES[wildcards.database].get('fileformat', False),
+        folder = lambda wildcards: DATABASES[wildcards.database].get('folder', False)
     log: os.path.join(config["database_dir"], '{database}.{file_type}.log')
     wildcard_constraints:
         file_type = "hmm|cm|fasta|txt|ini|done"
@@ -27,7 +26,7 @@ rule lastdb:
     output:
         os.path.join(config["database_dir"], "{database}.{file_type}.prj"),
     params:
-        protein_input =  lambda w: databases_d[w.database].get('db_type', False),
+        protein_input =  lambda w: DATABASES[w.database].get('db_type', False),
         extra = config["lastdb"]["params"].get('extra', " -w3 ")
     wildcard_constraints:
         file_type = "fasta|txt"
