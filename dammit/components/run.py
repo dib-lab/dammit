@@ -257,7 +257,7 @@ def databases_cmd(config, install):
 def generate_database_targets(pipeline_info, config):
     targets = []
     pipeline_databases = pipeline_info["databases"]
-    database_dir = config.core['db_dir']
+    database_dir = config.core['database_dir']
 
     for db in pipeline_databases:
         fn = config.databases[db]["filename"]

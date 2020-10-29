@@ -61,7 +61,7 @@ def datadir(tmpdir, request):
 
 @pytest.fixture
 def snakemake_rule(setup_test_environment):
-    conda_env_dir = os.path.join(setup_test_environment, CONDA_ENV_TEMPDIR)
+    conda_env_dir = os.path.join(setup_test_environment, 'envs')
 
     def run(rule_path, target=None, config=None, n_threads=1, extra_args = [], **kwargs):
         if '--config' in extra_args:

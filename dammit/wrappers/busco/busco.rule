@@ -10,17 +10,19 @@ except KeyError:
 
 rule run_busco:
     input:
-       fasta= os.path.join(DATA_DIR, "target.fa"),
-       config=os.path.join(DATA_DIR, "busco-config.ini"),
+       fasta= os.path.join(DATA_DIR, "target.fa")
     output:
-        "txome_busco/full_table_txome_busco.tsv",
+        "txome_busco/metazoa_outputs/run_metazoa/short_summary.txt",
     log:
         "test-busco.log"
     threads: 8
     params:
+        out_name = 'metazoa_outputs',
+        out_path = 'txome_busco',
         mode="transcriptome",
         lineage="metazoa",
         database_directory="./",
+        config = os.path.join(__path__, "busco.default.ini"),
         # optional parameters
         #lineage_path=os.path.join(DATA_DIR, "example-busco-lineage"),
         extra="" 

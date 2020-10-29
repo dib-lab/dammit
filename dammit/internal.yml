@@ -38,7 +38,7 @@ busco:
     - .busco/summary_figure.png
   databases:
     - busco
-  db_dir: busco2db
+  database_dir: busco2db
 
 ## hmmer ##
 hmmscan:

@@ -23,7 +23,7 @@ rule transdecoder_longorfs:
 rule hmmscan:
     input:
         fasta   = os.path.join(results_dir, '{transcriptome}.transdecoder_dir/longest_orfs.pep'),
-        profile = os.path.join(db_dir, 'Pfam-A.hmm.h3f'),
+        profile = os.path.join(database_dir, 'Pfam-A.hmm.h3f'),
     output:
         # only one of these is required
         domtblout  = os.path.join(results_dir,'{transcriptome}.x.Pfam-A.hmmscan-domtbl.txt') # save parseable table of per-domain hits to file <f>
@@ -74,7 +74,7 @@ rule hmmer_remap:
 rule lastal:
     input:
         data = os.path.join(results_dir, '{transcriptome}.fasta'),
-        lastdb = os.path.join(db_dir, '{database}.fasta.prj')
+        lastdb = os.path.join(database_dir, '{database}.fasta.prj')
     output:
         maf = os.path.join(results_dir, '{transcriptome}.x.{database}.lastal.maf')
     params:
@@ -107,7 +107,7 @@ rule shmlast_crbl:
 rule cmscan:
     input:
         fasta   = os.path.join(results_dir,'{transcriptome}.fasta'),
-        profile = os.path.join(db_dir,'{database}.cm.i1i')
+        profile = os.path.join(database_dir,'{database}.cm.i1i')
     output:
         tblout = os.path.join(results_dir,'{transcriptome}.x.{database}.cmscan-tblout.txt'),
     log:
@@ -135,7 +135,7 @@ rule busco_transcripts:
         config = config['busco']['configfile'],
         mode = "transcriptome",
         lineage = lambda w: w.busco_db,
-        database_directory = db_dir,
+        database_directory = database_dir,
         #auto_lineage='euk', # enabled in wrapper, but not using this bc it changes output dir structure
         extra = config['busco']['params'].get('extra', ''),
     wrapper: f'file://{__wrappers__}/busco/busco.wrapper.py'
