@@ -333,10 +333,10 @@ class TestConfigInfo:
 
         data = yaml.safe_load(out)
 
-        assert data['basename'] == 'PLACEHOLDER'
-        assert data['dammit_dir'] == 'PLACEHOLDER.dammit'
+        assert data['basename'] == 'Transcript'
+        assert data['output_dir'] == None
         assert data['dammit_dir_suffix'] == '.dammit'
-        assert data['input_transcriptome'] == 'PLACEHOLDER.fa'
+        assert data['input_transcriptome'] == None
 
     def test_show_default_databases(self, tmpdir):
         '''show-defaults databases produces reasonable yaml'''
@@ -363,7 +363,7 @@ class TestConfigInfo:
         status, out, err = run('config', 'show-directories')
         assert status == 0
 
-        for item in ['Databases:', 'Temp root:', 'Temp subdirs:']:
+        for item in ['Databases dir:', 'Temp dir:', 'Conda env dir:']:
             assert item in out
     
     def test_busco_groups(self):

@@ -11,6 +11,7 @@ import logging
 import traceback
 import shutil
 import stat
+import subprocess
 import sys
 import warnings as _warnings
 from pkg_resources import Requirement, resource_filename, ResolutionError

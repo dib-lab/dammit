@@ -1,119 +1,76 @@
-dammit_dir_suffix: .dammit
-dammit_dir: PLACEHOLDER.dammit
-logs_dir: logs
-input_transcriptome: "PLACEHOLDER.fa"
-transcriptome_name: "PLACEHOLDER"
-output_suffix:
-  - .dammit.gff3
-  - .dammit.fasta
-basename: "PLACEHOLDER"
+## dammit directories
+database_dir: $HOME/.local/share/dammit/databases
+temp_dir: $HOME/.local/share/dammit/temp
+conda_env_dir: $HOME/.local/share/dammit/envs
+
+# each program has a default evalue that is used if the global evalue isn't given
 global_evalue: null
+
+pipeline: default
+
+basename: Transcript
+
+# n_threads: total threads to pass to snakemake -j
+n_threads: 0
+# max threads to use on a single job
 max_threads_per_task: 1
+
+busco_groups: 
+  - metazoa_odb10
 
 ## last ##
 lastal:
-  output_suffix: 
-    - .x.__database__.lastal.maf
-    - .x.__database__.lastal.gff3
-  databases:
-    - uniprot_sprot
-    - OrthoDB
-    - uniref90
-    - nr
   params:
     evalue: 0.00001
     frameshift_cost: 15
     extra: ""
   
 lastdb: 
-  output_suffix: 
-    - .fasta.prj
   params:
    extra: " -w3 "
 
 ## shmlast ##
 shmlast:
-  output_suffix:
-    - .x.__userdatabase__.shmlast_crbl.csv
-    - .x.__userdatabase__.shmlast_crbl.gff3
-  databases:
-    - userdb
   params:
     evalue: 1e-5
     extra: ""
 
 ## busco ##
 busco:
-  output_suffix: 
-    - .busco/__buscolineage___outputs/run___buscolineage__/short_summary.txt
-    - .busco/summary_figure.png
-  databases:
-    - busco
-  db_dir: busco2db
   configfile: busco.default.ini
   params:
     extra: ""
 
 ## hmmer ##
 hmmscan:
-  output_suffix:
-    - .x.__database__.hmmscan-domtbl.txt
-    - .x.__database__.hmmscan.gff3
-  databases:
-    - Pfam-A
-  params:
-    evalue: 0.00001
-    extra: ""
-
-hmmsearch:
-  output_suffix:
-    - .x.__database__.hmmsearch-domtbl.txt
-    - .x.__database__.hmmsearch.gff3
-  databases:
-    - Pfam-A
   params:
     evalue: 0.00001
     extra: ""
 
 hmmpress:
-  output_suffix:
-    - .hmm.h3f
   params:
     extra: ""
 
 ## infernal ##
 cmscan:
-  output_suffix:
-    - .x.__database__.cmscan-tblout.txt
-    - .x.__database__.cmscan.gff3
-  databases:
-    - Rfam
   params:
     evalue: 0.00001
     extra: "--nohmmonly"
 
 cmpress:
-  output_suffix:
-    - .cm.i1i
   params:
     extra: ""
   
 ## transdecoder ##
 transdecoder_longorfs: 
-  output_suffix:
-    - .transdecoder_dir/longest_orfs.pep
   params:
     extra: "-m 80 "
 
 transdecoder_predict:
-  output_suffix:
-    - .fasta.transdecoder.gff3
   params:
     extra: ""
 
 # dammit utilities
 rename_transcriptome:
-  output_suffix:
-    - .fasta
   params:
     extra: ""
