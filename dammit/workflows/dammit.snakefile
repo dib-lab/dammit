@@ -7,13 +7,13 @@ import glob
 from dammit.meta import __path__
 
 
-results_dir = config["dammit_dir"]
+results_dir = config["output_dir"]
 logs = config.get("logs_dir", "logs")
 logs_dir = os.path.join(results_dir, logs)
 
 benchmarks = config.get("benchmark_dir", "benchmarks")
 benchmarks_dir = os.path.join(results_dir, benchmarks)
-db_dir = config['db_dir']
+database_dir = config['database_dir']
 
 wildcard_constraints:
     transcriptome = config['transcriptome_name'],
@@ -34,7 +34,8 @@ onsuccess:
 onerror:
     print("Nope.\n")
 
-
-include: "databases/databases.snakefile"
-include: "annotate/annotate.snakefile"
-include: "file_conversions.snakefile"
+if config['command'] == 'databases':
+    include: "databases/databases.snakefile"
+else:
+    include: "annotate/annotate.snakefile"
+    include: "file_conversions.snakefile"

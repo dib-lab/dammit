@@ -13,71 +13,58 @@ import yaml
 
 import click
 
-from ..config import (parse_config, DEFAULT_DATABASES_DIR, CONDA_ENV_TEMPDIR,
-                      DEFAULT_TEMP_DIR, TEMP_SUBDIRS, WORKFLOW_CONFIG_TEMPDIR)
+from ..config import USER_CONFIG
 
 
 @click.group(name='config')
-@click.pass_context
-def config_group(ctx):
+@click.pass_obj
+def config_group(config):
     ''' Show dammit configuration information.'''
-
-    core, databases, pipelines = parse_config()
-    ctx.obj = {'core': core, 'databases': databases, 'pipelines': pipelines}
+    pass
 
 
 @config_group.command('show-directories')
+@click.pass_obj
 @click.option('--database-dir',
-              default=DEFAULT_DATABASES_DIR,
               envvar='DAMMIT_DB_DIR',
               hidden=True)
 @click.option('--temp-dir',
-              default=DEFAULT_TEMP_DIR,
               envvar='DAMMIT_TEMP_DIR',
               hidden=True)
+@click.option('--conda-dir',
+              envvar='DAMMIT_CONDA_DIR',
+              help='Directory to store snakemake-created conda environments.')
 @click.option('--save', default='-', type=click.File('w'))
-def show_directories_cmd(database_dir, temp_dir, save):
+def show_directories_cmd(config, database_dir, temp_dir, conda_dir, save):
     '''List dammit directory locations.
     
     Locations come either from defaults or environment variables.'''
 
-    print('Databases:', database_dir, file=save)
-    print('Temp root:', temp_dir, file=save)
-    print('Temp subdirs:', *(os.path.join(temp_dir, child) for child in TEMP_SUBDIRS),
-          file=save)
+    if database_dir:
+        config.core['database_dir'] = database_dir
 
+    if temp_dir:
+        config.core['temp_dir'] = temp_dir
+    
+    if conda_dir:
+        config.core['conda_env_dir'] = conda_dir
 
-@config_group.command('clean-temp')
-@click.option('--temp-dir',
-              default=DEFAULT_TEMP_DIR,
-              envvar='DAMMIT_TEMP_DIR')
-@click.option('--envs', is_flag=True)
-@click.option('--force', is_flag=True)
-def clean_tmp_cmd(temp_dir, envs, force):
-    ''' Clear out shared dammit temp files.
-    '''
+    print('Databases dir:', config.core['database_dir'], file=save)
+    print('Temp dir:', config.core['temp_dir'], file=save)
+    print('Conda env dir:', config.core['conda_env_dir'], file=save)
 
-    temp_config_dir = os.path.join(temp_dir, WORKFLOW_CONFIG_TEMPDIR)
-    print('Cleaning old config files in', temp_config_dir, file=sys.stderr)
-    if not shutil.rmtree.avoids_symlink_attacks and not force:
-        print('WARNING: platform and implementation is not restistant to symlink attacks.'
-              ' Using the clean function could put this system at risk. Remove the directory'
-              ' manually or use --force to preoceed.', file=sys.stderr)
-    else:
-        shutil.rmtree(temp_config_dir)
-        if envs:
-            conda_env_dir = os.path.join(temp_dir, CONDA_ENV_TEMPDIR)
-            print('Removing conda environments in', conda_env_dir, file=sys.stderr)
-            shutil.rmtree(conda_env_dir)
 
 @config_group.command('show-default')
 @click.pass_obj
-@click.argument('config_file', type=click.Choice(['core', 'databases', 'pipelines']))
+@click.argument('config', type=click.Choice(['user', 'core', 'databases', 'pipelines']))
 @click.option('--save', default='-', type=click.File('w'))
-def show_default_cmd(defaults, config_file, save):
+def show_default_cmd(defaults, config, save):
     ''' Show the selected default configuration file.'''
 
-    save.write(yaml.dump(defaults.get(config_file)))
+    if config == 'user':
+        save.write(yaml.dump(USER_CONFIG))
+    else:
+        save.write(yaml.dump(getattr(defaults, config)))
 
 
 @config_group.command('busco-groups')
@@ -86,5 +73,4 @@ def show_default_cmd(defaults, config_file, save):
 def busco_groups_cmd(defaults, save):
     ''' Lists the available BUSCO group databases.'''
 
-    db = defaults['databases']
-    save.write(' '.join(db['busco']['lineages']))
+    save.write(' '.join(defaults.databases['busco']['lineages']))

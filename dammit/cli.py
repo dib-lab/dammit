@@ -4,20 +4,18 @@
 # This software may be modified and distributed under the terms
 # of the BSD license.  See the LICENSE file for details.
 
+from copy import deepcopy
 import logging
 import os
-import sys
-import yaml
 
 import click
-from click import get_current_context
 
 # TODO: put cloup on conda so we don't have to vendor it
 from dammit import cloup
 
 from dammit.log import start_logging
-from dammit.config import CONFIG
-from dammit.meta import __version__, __authors__, __description__, __year__
+from dammit.config import get_config_obj
+from dammit.meta import __version__, __authors__, __description__, __year__, __path__
 
 from dammit.components.convert import (maf_to_gff3_cmd,
                                        shmlast_to_gff3_cmd,
@@ -29,18 +27,14 @@ from dammit.components.fastx import (rename_fasta_cmd,
 from dammit.components.filter import maf_best_hits_cmd
 from dammit.components.gff3 import merge_gff3_cmd
 from dammit.components.hmmer import remap_hmmer_coords_cmd
-from dammit.components.run import run_group, annotate_cmd, databases_cmd
+from dammit.components.run import run_group
 from dammit.components.config import config_group
+
+banner_txt = open(os.path.join(__path__, 'banner.txt')).read().rstrip('\n')
 
 banner = f'''
 \b
-     _                           _ _   
-  __| | __ _ _ __ ___  _ __ ___ (_) |_ 
- / _` |/ _` | '_ ` _ \| '_ ` _ \| | __|
-| (_| | (_| | | | | | | | | | | | | |_ 
- \__,_|\__,_|_| |_| |_|_| |_| |_|_|\__|
-                                       
-\b
+{banner_txt}                                      
 {__description__}
 \b
 v{__version__}, {__year__}
@@ -52,9 +46,14 @@ by {" and ".join(__authors__)}
              align_sections=True)
 @click.version_option(version=__version__, message='%(version)s')
 @click.pass_context
-def main(ctx):
-    logger = logging.getLogger('dammit.component')
-    start_logging()
+@click.option('--config-file',
+              help='A YAML or JSON file providing values to override'\
+                   ' built-in config. Advanced use only!')
+def main(ctx, config_file):
+    #logger = logging.getLogger('dammit.component')
+    #start_logging()
+
+    CONFIG = get_config_obj(config_file)
     CONFIG.banner = banner
     ctx.obj = CONFIG
 

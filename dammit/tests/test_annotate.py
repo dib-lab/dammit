@@ -38,7 +38,6 @@ class TestDammitAnnotate:
     def test_annotate_default(self, tmpdir, datadir, n_threads):
         '''--n-threads [N] annotate [INPUT.fa]
         '''
-
         with tmpdir.as_cwd():
             transcripts = datadir('pom.20.fa')
             exp_gff3 = datadir('pom.20.dammit.gff3')
@@ -172,6 +171,6 @@ def test_annotate_dbdir(self, tmpdir, datadir):
     with tmpdir.as_cwd():
         transcripts = datadir('pom.single.fa')
 
-        db_dir = os.environ['DAMMIT_DB_DIR']
-        args = ['annotate', '--quick', transcripts, '--database-dir', db_dir]
+        database_dir = os.environ['DAMMIT_DB_DIR']
+        args = ['annotate', '--quick', transcripts, '--database-dir', database_dir]
         status, out, err = run(args)

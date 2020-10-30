@@ -11,7 +11,8 @@ dependencies:
   - pandas
   - pytest
   - click
-  - shmlast=1.4
+  - shmlast >=1.6
+  - ope >=0.8
   - khmer >=2.0
   # these are for dag printing
   #- graphviz

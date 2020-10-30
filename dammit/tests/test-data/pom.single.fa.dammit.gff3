@@ -1,0 +1,10 @@
+##gff-version 3.2.1
+Transcript_0	HMMER	protein_hmm_match	3604	4089	2.100000e-10	.	.	ID=homology:2;Name=DEAD;Target=DEAD 10 174 +;Note=DEAD/DEAH box helicase;accuracy=0.75;env_coords=3580 4092;Dbxref="Pfam:PF00270.25"
+Transcript_0	HMMER	protein_hmm_match	4207	4548	3.200000e-18	.	.	ID=homology:0;Name=Helicase_C;Target=Helicase_C 8 105 +;Note=Helicase conserved C-terminal domain;accuracy=0.87;env_coords=4186 4548;Dbxref="Pfam:PF00271.27"
+Transcript_0	HMMER	protein_hmm_match	5218	5274	1.100000e+04	.	.	ID=homology:1;Name=Helicase_C;Target=Helicase_C 16 34 +;Note=Helicase conserved C-terminal domain;accuracy=0.78;env_coords=5203 5307;Dbxref="Pfam:PF00271.27"
+Transcript_0	LAST	translated_nucleotide_match	1	5661	0.000000e+00	+	.	ID=homology:3;Name=TLH2_SCHPO;Target=TLH2_SCHPO 0 1887 +;database=OrthoDB
+Transcript_0	transdecoder	CDS	1	5661	.	+	0	ID=cds.Gene.1::Transcript_0::g.1::m.1;Parent=Gene.1::Transcript_0::g.1::m.1
+Transcript_0	transdecoder	exon	1	5662	.	+	.	ID=Gene.1::Transcript_0::g.1::m.1.exon1;Parent=Gene.1::Transcript_0::g.1::m.1
+Transcript_0	transdecoder	gene	1	5662	.	+	.	ID=Gene.1::Transcript_0::g.1;Name=ORF%20type%3A3prime_partial%20len%3A1888%20%28%2B%29
+Transcript_0	transdecoder	mRNA	1	5662	.	+	.	ID=Gene.1::Transcript_0::g.1::m.1;Parent=Gene.1::Transcript_0::g.1;Name=ORF%20type%3A3prime_partial%20len%3A1888%20%28%2B%29
+Transcript_0	transdecoder	three_prime_UTR	5662	5662	.	+	.	ID=Gene.1::Transcript_0::g.1::m.1.utr3p1;Parent=Gene.1::Transcript_0::g.1::m.1

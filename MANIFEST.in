@@ -5,7 +5,8 @@ include dammit/VERSION
 include dammit/config.yml
 include dammit/pipelines.yml
 include dammit/databases.yml
-recursive-include dammit *.json
+include dammit/internal.yml
+include dammit/busco.default.ini
+include dammit/banner.txt
 recursive-include dammit/wrappers wrapper.py *.wrapper.py *.yml *.yaml *.rule
 recursive-include dammit/workflows *.snakefile
-include dammit/busco.default.ini
