@@ -5,7 +5,10 @@ GLOBAL_EVALUE = config['global_evalue']
 THREADS_PER_TASK = config['max_threads_per_task']
 
 rule transdecoder_longorfs:
-    message: "Run TransDecoder.LongOrfs, which fings the longest likely open reading frames."
+    message: 
+        """
+        Run TransDecoder.LongOrfs, which finds the longest likely open reading frames.
+        """
     input:
         fasta = os.path.join(results_dir, '{transcriptome}.fasta')
     output:
@@ -21,6 +24,10 @@ rule transdecoder_longorfs:
 
 # probably want to switch to hmmsearch instead of hmmscan
 rule hmmscan:
+    message:
+        """
+        Run hmmscan against Pfam-A on the ORFs produced by TransDecoder.LongOrfs.
+        """
     input:
         fasta   = os.path.join(results_dir, '{transcriptome}.transdecoder_dir/longest_orfs.pep'),
         profile = os.path.join(database_dir, 'Pfam-A.hmm.h3f'),
@@ -38,6 +45,10 @@ rule hmmscan:
 
 
 rule transdecoder_predict:
+    message:
+        """
+        Run TransDecoder.Predict, using the ORFs and the Pfam-A domains, to predict transcript features.
+        """
     input:
         fasta = os.path.join(results_dir, '{transcriptome}.fasta'),
         longorfs = os.path.join(results_dir, '{transcriptome}.transdecoder_dir/longest_orfs.pep'),
@@ -57,6 +68,11 @@ rule transdecoder_predict:
 
 
 rule hmmer_remap:
+    message:
+        """
+        Remap the coordinates from the ORF-to-Pfam-A domain predictions back to their
+        locations on the input transcripts.
+        """
     input:
         tbl = os.path.join(results_dir,'{transcriptome}.x.Pfam-A.hmmscan-domtbl.txt'),
         pep = os.path.join(results_dir, '{transcriptome}.transdecoder_dir/longest_orfs.pep')
@@ -72,6 +88,10 @@ rule hmmer_remap:
 
 
 rule lastal:
+    message:
+        """
+        Find best-hits between the transcripts and the given protein database.
+        """
     input:
         data = os.path.join(results_dir, '{transcriptome}.fasta'),
         lastdb = os.path.join(database_dir, '{database}.fasta.prj')
@@ -89,6 +109,11 @@ rule lastal:
 
 
 rule shmlast_crbl:
+    message:
+        """
+        Find "conditional reciprocal best hits" between the transcriptome and the
+        user-provided protein databases. See the docs for details on this method.
+        """
     input:
         query = os.path.join(results_dir, '{transcriptome}.fasta'),
         database = lambda w: config["user_dbs"][w.database] # get full path from dictionary in configfile 
@@ -105,6 +130,11 @@ rule shmlast_crbl:
 
 
 rule cmscan:
+    message:
+        """
+        Use Infernal's cmscan to search for non-coding RNAs using the
+        Rfam secondary-structure covariance model database.
+        """
     input:
         fasta   = os.path.join(results_dir,'{transcriptome}.fasta'),
         profile = os.path.join(database_dir,'{database}.cm.i1i')
@@ -120,6 +150,11 @@ rule cmscan:
 
 
 rule busco_transcripts:
+    message:
+        """
+        Run BUSCO to assess the completeness of the transcriptome assembly
+        using a set of benchmarking single-copy orthologs.
+        """
     input:
         fasta = os.path.join(results_dir,'{transcriptome}.fasta')
     output:
@@ -151,6 +186,10 @@ def expand_busco_summaries(w):
 
 
 rule plot_busco_summaries:
+    message:
+        """
+        Plot the BUSCO results for the user-provided lineage databases.
+        """
     input: expand_busco_summaries
     output: os.path.join(results_dir, '{transcriptome}.busco', "summary_figure.png")
     log: os.path.join(logs_dir, "{transcriptome}.busco", "summary_figure.log")

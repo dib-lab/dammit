@@ -6,6 +6,10 @@ THREADS_PER_TASK = config['max_threads_per_task']
 
 
 rule download_and_gunzip:
+    message:
+        """
+        Download and decompress a remote file.
+        """
     output: os.path.join(config["database_dir"], '{database}.{file_type}')
     params:
         url = lambda wildcards: DATABASES[wildcards.database]['url'],
@@ -21,6 +25,10 @@ rule download_and_gunzip:
 
 
 rule lastdb:
+    message:
+        """
+        Prepare a protein FASTA for use as a database by the LAST aligner.
+        """
     input:
         os.path.join(config["database_dir"], "{database}.{file_type}")
     output:
@@ -37,6 +45,11 @@ rule lastdb:
 
 
 rule hmmpress:
+    message:
+        """
+        Prepare a collection of profile hidden markov models (Pfam-A)
+        for use by HMMER.
+        """
     input:
         os.path.join(config["database_dir"], "{database}.hmm")
     output:
@@ -53,6 +66,10 @@ rule hmmpress:
 
 
 rule infernal_cmpress:
+    message:
+        """
+        Prepare a collection of covariance models (Rfam) for use by Infernal.
+        """
     input:
         os.path.join(config["database_dir"], "{database}.cm")
     output:
