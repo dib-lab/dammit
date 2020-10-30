@@ -13,7 +13,7 @@ rule download_and_gunzip:
         metalink = lambda wildcards: DATABASES[wildcards.database].get('metalink', False),
         fileformat = lambda wildcards: DATABASES[wildcards.database].get('fileformat', False),
         folder = lambda wildcards: DATABASES[wildcards.database].get('folder', False)
-    log: os.path.join(config["database_dir"], '{database}.{file_type}.log')
+    log: os.path.join(logs_dir, '{database}.{file_type}.log')
     wildcard_constraints:
         file_type = "hmm|cm|fasta|txt|ini|done"
     threads: 1
@@ -31,9 +31,9 @@ rule lastdb:
     wildcard_constraints:
         file_type = "fasta|txt"
     log:
-        os.path.join(config["database_dir"], "{database}.{file_type}_lastdb.log")
+        os.path.join(results_dir, "{database}.{file_type}_lastdb.log")
     threads: THREADS_PER_TASK
-    wrapper: f"file:/{__wrappers__}/last/lastdb.wrapper.py"
+    wrapper: f"file://{__wrappers__}/last/lastdb.wrapper.py"
 
 
 rule hmmpress:
@@ -45,7 +45,7 @@ rule hmmpress:
         os.path.join(config["database_dir"], "{database}.hmm.h3m"),
         os.path.join(config["database_dir"], "{database}.hmm.h3p")
     log:
-        os.path.join(config["database_dir"], "{database}_hmmpress.log")
+        os.path.join(results_dir, "{database}_hmmpress.log")
     params:
         extra=config["hmmpress"]["params"].get("extra", ""),
     threads: 1
@@ -61,7 +61,7 @@ rule infernal_cmpress:
         os.path.join(config["database_dir"],"{database}.cm.i1m"),
         os.path.join(config["database_dir"],"{database}.cm.i1p")
     log:
-        os.path.join(config["database_dir"], "cmpress_{database}.log")
+        os.path.join(results_dir, "cmpress_{database}.log")
     params:
         extra=config["cmpress"]["params"].get("extra", ""),
     threads: 1
