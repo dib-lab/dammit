@@ -1,4 +1,13 @@
 '''
+    | |                         (_) |  
+  __| | __ _ _ __ ___  _ __ ___  _| |_ 
+ / _` |/ _` | '_ ` _ \| '_ ` _ \| | __|
+| (_| | (_| | | | | | | | | | | | | |_ 
+ \__,_|\__,_|_| |_| |_|_| |_| |_|_|\__|
+
+(c) Camille Scott 2015-2020, N. Tessa Pierce 2018-2020
+MIT License 
+
 This is the dammit Snakemake entry point. This workflow is meant to be
 executed through dammit, not as a standalone Snakefile; advanced users could do
 this, but they would need to provide their own config file and supply all the
