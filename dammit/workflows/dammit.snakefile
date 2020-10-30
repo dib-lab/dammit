@@ -1,4 +1,13 @@
-# main dammit annotate snakefile
+'''
+This is the dammit Snakemake entry point. This workflow is meant to be
+executed through dammit, not as a standalone Snakefile; advanced users could do
+this, but they would need to provide their own config file and supply all the
+metadata directories correctly.
+
+This workflow takes care of the databases installation and the annotation
+pipeline in separate Snakefiles. They are meant to be run independently.
+'''
+
 import os, sys
 import numpy as np
 import pandas as pd
