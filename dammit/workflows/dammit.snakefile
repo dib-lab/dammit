@@ -60,7 +60,6 @@ CLI bioinformatics in general, from installing multiple copies of
 the databases.
 '''
 if config['command'] == 'databases':
-    include: "databases/databases.snakefile"
+    include: "databases.snakefile"
 else:
-    include: "annotate/annotate.snakefile"
-    include: "file_conversions.snakefile"
+    include: "annotate.snakefile"
