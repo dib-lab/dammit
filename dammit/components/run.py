@@ -214,7 +214,7 @@ def annotate_cmd(config,
         print(f'Error in snakemake invocation!', file=sys.stderr)
         print('If the error is a MissingInputException, you probably need to install '
               'the dammit databases. Run `dammit run databases --help` for more information.', file=sys.stderr)
-        return e.returncode
+        sys.exit(e.returncode)
 
 
 @run_group.command('databases')
@@ -232,10 +232,14 @@ def databases_cmd(config, install):
     config.core['command'] = 'databases'
 
     workflow_file = os.path.join(__path__, 'workflows', 'dammit.snakefile')
-    database_dir = config.core['database_dir']
+    
+    output_dir = os.path.join(config.core['temp_dir'], 
+                               f'run.databases.{__time__}')
+    config.core['output_dir'] = output_dir
+    os.makedirs(output_dir, exist_ok=True)
 
-    workflow_config_file = os.path.join(config.core['temp_dir'],
-                                        f'databases.config.{__time__}.yml')
+    workflow_config_file = os.path.join(output_dir,
+                                        f'config.yml')
     print(f'Writing full run config to {workflow_config_file}', file=sys.stderr)
     write_yaml(config.core, workflow_config_file)
 
@@ -250,6 +254,8 @@ def databases_cmd(config, install):
     # better way to do this?
     if not install:
         cmd.append("--dry-run")
+        cmd.append("--detailed-summary")
+        #cmd.append("--list-target-rules")
 
     # finally, add targets
     cmd.extend(targets)
@@ -259,7 +265,10 @@ def databases_cmd(config, install):
         subprocess.check_call(cmd)
     except subprocess.CalledProcessError as e:
         print(f'Error in snakemake invocation: {e}', file=sys.stderr)
-        return e.returncode
+        sys.exit(e.returncode)
+    
+    if not install:
+        print('Use with `--install` to run database installation pipeline.')
 
 
 def generate_database_targets(pipeline_info, config):

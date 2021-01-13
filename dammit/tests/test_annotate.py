@@ -120,16 +120,16 @@ class TestDammitAnnotate:
 #
 #            assert status == 0
 
-    def test_annotate_name(self, tmpdir, datadir):
+    def test_annotate_basename(self, tmpdir, datadir):
         '''--pipeline quick annotate --base-name [NAME] [INPUT.fa]
         '''
 
         with tmpdir.as_cwd():
             transcripts = datadir('pom.20.fa')
 
-            args = ['--pipeline', 'quick', 'annotate',
+            args = ['run', '--pipeline', 'quick', 'annotate',
                     transcripts, '--base-name', 'Test']
-            status, out, err = run(args)
+            status, out, err = run(*args)
             assert status == 0
 
             fn = os.path.join('pom.20.dammit', 'pom.20.fasta')
@@ -139,38 +139,28 @@ class TestDammitAnnotate:
             assert 'Test_0' in contents
 
 
-def test_annotate_outdir(self, tmpdir, datadir):
-    '''dammit run annotate -o [OUTDIR]
-    '''
-
-    with tmpdir.as_cwd():
-        transcripts = datadir('pom.20.fa')
-        outdir = 'test_out'
-        args = ['annotate', '--quick', transcripts, '-o', outdir]
-        status, out, err = run(args)
-        assert os.path.isfile(os.path.join(outdir, 'pom.20.fasta'))
-
-
-def test_annotate_dbdir_fail(self, tmpdir, datadir):
+def test_annotate_dbdir_fail(tmpdir, datadir):
     '''Test annotation with a faulty database directory.
     '''
 
     with tmpdir.as_cwd():
-        transcripts = datadir('pom.single.fa')
+        transcripts = datadir('pom.20.fa')
 
-        args = ['annotate', transcripts, '--database-dir', '.']
-        status, out, err = run(args, fail_ok=True)
-        assert 'install databases to continue' in out
-        assert status == 2
+        args = ['run', '--database-dir', '.', 'annotate', transcripts]
+        status, out, err = run(*args, fail_ok=True)
+        print(status, out, err)
+        assert 'you probably need to install the dammit databases' in err
+        assert status == 1
 
 
-def test_annotate_dbdir(self, tmpdir, datadir):
+def test_annotate_dbdir(tmpdir, datadir):
     '''Test that --database-dir works.
     '''
 
     with tmpdir.as_cwd():
-        transcripts = datadir('pom.single.fa')
+        transcripts = datadir('pom.20.fa')
 
         database_dir = os.environ['DAMMIT_DB_DIR']
-        args = ['annotate', '--quick', transcripts, '--database-dir', database_dir]
-        status, out, err = run(args)
+        args = ['run', '--database-dir', database_dir, '--pipeline', 'quick', 'annotate',  transcripts]
+        status, out, err = run(*args)
+        assert status == 0

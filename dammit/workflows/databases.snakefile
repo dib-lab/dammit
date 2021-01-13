@@ -6,6 +6,10 @@ THREADS_PER_TASK = config['max_threads_per_task']
 
 
 rule download_and_gunzip:
+    message:
+        """
+        Download and decompress a remote file.
+        """
     output: os.path.join(config["database_dir"], '{database}.{file_type}')
     params:
         url = lambda wildcards: DATABASES[wildcards.database]['url'],
@@ -13,7 +17,7 @@ rule download_and_gunzip:
         metalink = lambda wildcards: DATABASES[wildcards.database].get('metalink', False),
         fileformat = lambda wildcards: DATABASES[wildcards.database].get('fileformat', False),
         folder = lambda wildcards: DATABASES[wildcards.database].get('folder', False)
-    log: os.path.join(config["database_dir"], '{database}.{file_type}.log')
+    log: os.path.join(logs_dir, '{database}.{file_type}.log')
     wildcard_constraints:
         file_type = "hmm|cm|fasta|txt|ini|done"
     threads: 1
@@ -21,6 +25,10 @@ rule download_and_gunzip:
 
 
 rule lastdb:
+    message:
+        """
+        Prepare a protein FASTA for use as a database by the LAST aligner.
+        """
     input:
         os.path.join(config["database_dir"], "{database}.{file_type}")
     output:
@@ -31,12 +39,17 @@ rule lastdb:
     wildcard_constraints:
         file_type = "fasta|txt"
     log:
-        os.path.join(config["database_dir"], "{database}.{file_type}_lastdb.log")
+        os.path.join(results_dir, "{database}.{file_type}_lastdb.log")
     threads: THREADS_PER_TASK
-    wrapper: f"file:/{__wrappers__}/last/lastdb.wrapper.py"
+    wrapper: f"file://{__wrappers__}/last/lastdb.wrapper.py"
 
 
 rule hmmpress:
+    message:
+        """
+        Prepare a collection of profile hidden markov models (Pfam-A)
+        for use by HMMER.
+        """
     input:
         os.path.join(config["database_dir"], "{database}.hmm")
     output:
@@ -45,7 +58,7 @@ rule hmmpress:
         os.path.join(config["database_dir"], "{database}.hmm.h3m"),
         os.path.join(config["database_dir"], "{database}.hmm.h3p")
     log:
-        os.path.join(config["database_dir"], "{database}_hmmpress.log")
+        os.path.join(results_dir, "{database}_hmmpress.log")
     params:
         extra=config["hmmpress"]["params"].get("extra", ""),
     threads: 1
@@ -53,6 +66,10 @@ rule hmmpress:
 
 
 rule infernal_cmpress:
+    message:
+        """
+        Prepare a collection of covariance models (Rfam) for use by Infernal.
+        """
     input:
         os.path.join(config["database_dir"], "{database}.cm")
     output:
@@ -61,7 +78,7 @@ rule infernal_cmpress:
         os.path.join(config["database_dir"],"{database}.cm.i1m"),
         os.path.join(config["database_dir"],"{database}.cm.i1p")
     log:
-        os.path.join(config["database_dir"], "cmpress_{database}.log")
+        os.path.join(results_dir, "cmpress_{database}.log")
     params:
         extra=config["cmpress"]["params"].get("extra", ""),
     threads: 1
