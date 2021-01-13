@@ -4,4 +4,4 @@ channels:
   - defaults
 dependencies:
   - infernal=1.1.2
-  - ope>=0.6
+  - ope>=0.8

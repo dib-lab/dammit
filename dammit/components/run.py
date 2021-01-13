@@ -14,43 +14,33 @@ import yaml
 import click
 import psutil
 
-from ..config import (CONFIG, DEFAULT_CONFIG_DIR, CONDA_ENV_TEMPDIR,
-                      WORKFLOW_CONFIG_TEMPDIR, DEFAULT_DATABASES_DIR,
-                      DEFAULT_TEMP_DIR, create_tempdirs)
+from ..config import DATABASES
 from ..meta import __path__, __time__
-from ..utils import ShortChoice, read_yaml, write_yaml, update_nested_dict
-
+from ..utils import ShortChoice, write_yaml, update_nested_dict, create_dirs
 
 
 @click.group('run')
 @click.pass_obj
 @click.option('--database-dir',
-              default=DEFAULT_DATABASES_DIR,
               envvar='DAMMIT_DB_DIR',
               help='Directory to store databases. Existing'\
                     ' databases will not be overwritten.')
+@click.option('--conda-dir',
+              envvar='DAMMIT_CONDA_DIR',
+              help='Directory to store snakemake-created conda environments.')
 @click.option('--temp-dir',
-              default=DEFAULT_TEMP_DIR,
               envvar='DAMMIT_TEMP_DIR',
-              help='Directory to store dammit temporary files.'\
-                   ' These will include the final workflow configs'\
-                   ' for individual database runs as well as conda'\
-                   ' environments for snakemake rules.')
+              help='Directory to store dammit temp files.')
 @click.option('--busco-group',
-              default=['metazoa_odb10'],
               multiple=True,
-              type=ShortChoice(list(CONFIG.databases['busco']['lineages']), case_sensitive=False),
+              type=ShortChoice(list(DATABASES['busco']['lineages']), case_sensitive=False),
               help='BUSCO group(s) to use/install.')
 @click.option('--n-threads',
               type=int,
-              default=psutil.cpu_count(logical=False),
               help='Number of threads for overall workflow execution')
 @click.option('--max-threads-per-task',
                type=int,
                help='Max threads to use for a single step.')
-@click.option('--config-file',
-              help='A YAML or JSON file providing values to override'\
-                   ' built-in config. Advanced use only!')
 @click.option('--busco-config-file',
               help='Path to an alternative BUSCO config'\
                    ' file; otherwise, BUSCO will attempt'\
@@ -81,11 +71,11 @@ from ..utils import ShortChoice, read_yaml, write_yaml, update_nested_dict
                   ' More info  at https://dib-lab.github.io/dammit.')
 def run_group(config,
               database_dir,
+              conda_dir,
               temp_dir,
               busco_group,
               n_threads,
               max_threads_per_task,
-              config_file,
               busco_config_file,
               pipeline):
     ''' Run the annotation pipeline or install databases.
@@ -93,45 +83,43 @@ def run_group(config,
 
     print(config.banner, file=sys.stderr)
 
-    if config_file:
-        user_config = read_yaml(config_file)
-        update_nested_dict(config.core, user_config)
+    if database_dir:
+        config.core['database_dir'] = os.path.abspath(database_dir)
 
-    config.core['db_dir'] = database_dir
-    os.makedirs(database_dir, exist_ok=True)
+    if temp_dir:
+        config.core['temp_dir'] = os.path.abspath(temp_dir)
+    
+    if conda_dir:
+        config.core['conda_env_dir'] = os.path.abspath(conda_dir)
 
-    config.core['temp_dir'] = temp_dir
-    create_tempdirs(temp_dir)
+    create_dirs([config.core[k] for k in ['database_dir', 'temp_dir', 'conda_env_dir']])
 
-    config.core['busco_groups'] = list(busco_group)
+    if busco_group:
+        config.core['busco_groups'] = list(busco_group)
 
-    if not n_threads and 'n_threads' not in config.core:
-        config.core['n_threads'] = 1
-    elif n_threads:
+    if not n_threads or n_threads == 0:
+        config.core['n_threads'] = psutil.cpu_count(logical=False)
+    else:
         config.core['n_threads'] = n_threads
     
     if not max_threads_per_task:
-        config.core['max_threads_per_task'] = n_threads
+        config.core['max_threads_per_task'] = config.core['n_threads']
     else:
-        config.core['max_threads_per_task'] = max_threads_per_task
+        config.core['max_threads_per_task'] = min(config.core['n_threads'], max_threads_per_task)
 
     if busco_config_file:
         config.core['busco']['configfile'] = busco_config_file
     else:
         config.core['busco']['configfile'] = os.path.join(__path__, config.core["busco"]["configfile"])
 
-    if not pipeline and 'pipeline' not in config.core:
-        config.core['pipeline'] = 'default'
     if pipeline:
         config.core['pipeline'] = pipeline
-
-    click.echo(database_dir)
 
 
 @run_group.command('annotate')
 @click.pass_obj
 @click.argument('transcriptome')
-@click.option('-n', '--base-name', default='Transcript',
+@click.option('-n', '--base-name',
               help='Base name to use for renaming the'\
                    ' input transcripts. The new names'\
                    ' will be of the form <name>_<X>.'\
@@ -139,11 +127,9 @@ def run_group(config,
                    ' ampersands, or other characters'\
                    ' with special meaning to BASH.')
 @click.option('-e', '--global-evalue',
-              default=None,
               type=float,
               help='global e-value cutoff for similarity searches.')
 @click.option('-o', '--output-dir',
-              default=None,
               help='Output directory. By default this will'\
                    ' be the name of the transcriptome file'\
                    ' with `.dammit` appended')
@@ -165,6 +151,8 @@ def annotate_cmd(config,
     Best-hit Blast against user databases; and aggregates all results in
     a properly formatted GFF3 file.'''
 
+    config.core['command'] = 'annotate'
+
     # Strip the extension from the txome and use as the global prefix name
     if any([transcriptome.endswith(".fa"),
             transcriptome.endswith(".fasta")]):
@@ -174,18 +162,20 @@ def annotate_cmd(config,
     config.core['transcriptome_name'] = transcriptome_name
 
     # if an output folder is not provided, use the default suffix
-    if output_dir is None:
+    if not output_dir:
         output_dir = os.path.abspath(transcriptome_name + config.core["dammit_dir_suffix"])
     else:
         output_dir = os.path.abspath(output_dir)
-    config.core['dammit_dir'] = output_dir
+    config.core['output_dir'] = output_dir
 
     # we want the absolute path to the input txome
     config.core['input_transcriptome'] = os.path.abspath(transcriptome)
-    config.core['basename'] = base_name
+
+    if base_name:
+        config.core['basename'] = base_name
     
     # the default global_evalue is null 
-    if global_evalue is not None:
+    if global_evalue:
         config.core['global_evalue'] = global_evalue
 
     config.core['user_dbs'] = wrangle_user_databases(user_database)
@@ -210,7 +200,8 @@ def annotate_cmd(config,
     cmd = ["snakemake", "-s", workflow_file,
            "--configfiles", workflow_config_file,
            "--directory", output_dir]
-    cmd.extend(snakemake_common_args(config.core['n_threads'], config.core['temp_dir']))
+    cmd.extend(snakemake_common_args(config.core['n_threads'],
+                                     config.core['conda_env_dir']))
     if dry_run:
         cmd.append('--dry-run')
 
@@ -220,24 +211,35 @@ def annotate_cmd(config,
     try:
         subprocess.check_call(cmd)
     except subprocess.CalledProcessError as e:
-        print(f'Error in snakemake invocation: {e}', file=sys.stderr)
-        return e.returncode
+        print(f'Error in snakemake invocation!', file=sys.stderr)
+        print('If the error is a MissingInputException, you probably need to install '
+              'the dammit databases. Run `dammit run databases --help` for more information.', file=sys.stderr)
+        sys.exit(e.returncode)
 
 
 @run_group.command('databases')
 @click.pass_obj
 @click.option('--install', is_flag=True,
               help='Install missing databases. Downloads'
-                   ' and preps where necessary')
+                   ' and preps where necessary.')
 def databases_cmd(config, install):
-    ''' The database preparation pipeline.
-    '''
-    workflow_file = os.path.join(__path__, 'workflows', 'dammit.snakefile')
-    database_dir = config.core['db_dir']
+    ''' The database preparation pipeline. The database installation directory is set
+    after the `run` subcommand (invoke `dammit run --help` for more information). You
+    can also set the ${DAMMIT_DB_DIR} environment variable. For example:
 
-    workflow_config_file = os.path.join(config.core['temp_dir'],
-                                        WORKFLOW_CONFIG_TEMPDIR,
-                                        f'databases.config.{__time__}.yml')
+        dammit run --database-dir /path/to/database/dir databases --install
+    '''
+    config.core['command'] = 'databases'
+
+    workflow_file = os.path.join(__path__, 'workflows', 'dammit.snakefile')
+    
+    output_dir = os.path.join(config.core['temp_dir'], 
+                               f'run.databases.{__time__}')
+    config.core['output_dir'] = output_dir
+    os.makedirs(output_dir, exist_ok=True)
+
+    workflow_config_file = os.path.join(output_dir,
+                                        f'config.yml')
     print(f'Writing full run config to {workflow_config_file}', file=sys.stderr)
     write_yaml(config.core, workflow_config_file)
 
@@ -246,11 +248,14 @@ def databases_cmd(config, install):
     cmd = ["snakemake", "-s", workflow_file, "--configfiles", workflow_config_file]
 
     targets = generate_database_targets(pipeline_config, config)
-    cmd.extend(snakemake_common_args(config.core['n_threads'], config.core['temp_dir']))
+    cmd.extend(snakemake_common_args(config.core['n_threads'],
+                                     config.core['conda_env_dir']))
 
     # better way to do this?
     if not install:
         cmd.append("--dry-run")
+        cmd.append("--detailed-summary")
+        #cmd.append("--list-target-rules")
 
     # finally, add targets
     cmd.extend(targets)
@@ -260,13 +265,16 @@ def databases_cmd(config, install):
         subprocess.check_call(cmd)
     except subprocess.CalledProcessError as e:
         print(f'Error in snakemake invocation: {e}', file=sys.stderr)
-        return e.returncode
+        sys.exit(e.returncode)
+    
+    if not install:
+        print('Use with `--install` to run database installation pipeline.')
 
 
 def generate_database_targets(pipeline_info, config):
     targets = []
     pipeline_databases = pipeline_info["databases"]
-    database_dir = config.core['db_dir']
+    database_dir = config.core['database_dir']
 
     for db in pipeline_databases:
         fn = config.databases[db]["filename"]
@@ -281,7 +289,7 @@ def generate_annotation_targets(pipeline_info, config):
     annotation_programs = pipeline_info["programs"]
     annotation_databases = pipeline_info.get("databases", [])
     transcriptome_name = config.core['transcriptome_name']
-    output_dir = config.core['dammit_dir']
+    output_dir = config.core['output_dir']
     user_dbs = config.core['user_dbs']
     busco_lineages = config.core['busco_groups']
 
@@ -310,9 +318,9 @@ def generate_annotation_targets(pipeline_info, config):
     return targets
 
 
-def snakemake_common_args(n_threads, temp_dir):
+def snakemake_common_args(n_threads, conda_env_dir):
     args = ["-p", "--nolock", "--conda-frontend", "mamba",
-            "--use-conda", "--conda-prefix", os.path.join(temp_dir, CONDA_ENV_TEMPDIR),
+            "--use-conda", "--conda-prefix", conda_env_dir,
             "--rerun-incomplete", "-k", "--cores", str(n_threads)]
     return args
 

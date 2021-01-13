@@ -38,7 +38,6 @@ class TestDammitAnnotate:
     def test_annotate_default(self, tmpdir, datadir, n_threads):
         '''--n-threads [N] annotate [INPUT.fa]
         '''
-
         with tmpdir.as_cwd():
             transcripts = datadir('pom.20.fa')
             exp_gff3 = datadir('pom.20.dammit.gff3')
@@ -100,7 +99,7 @@ class TestDammitAnnotate:
             assert compare_gff(gff3_fn, exp_gff3)
             assert open(fasta_fn).read() == open(exp_fasta).read()
 
-## run this on pom20! store the results somewhere and then compare using compare_gff3!
+    ## run this on pom20! store the results somewhere and then compare using compare_gff3!
     @pytest.mark.parametrize('n_threads', (1,4))
     def test_annotate_multiple_user_databases(self, tmpdir, datadir, n_threads):
         '''--pipeline quick annotate --user-database [PEP1.fa] --user-database [PEP2.fa] [INPUT.fa]
@@ -128,7 +127,7 @@ class TestDammitAnnotate:
             assert compare_gff(gff3_fn, exp_gff3)
             assert open(fasta_fn).read() == open(exp_fasta).read()
 
-    def test_annotate_name(self, tmpdir, datadir):
+    def test_annotate_basename(self, tmpdir, datadir):
         '''--pipeline quick annotate --base-name [NAME] [INPUT.fa]
         '''
 
@@ -146,45 +145,48 @@ class TestDammitAnnotate:
             contents = open(fn).read()
             assert 'Test_0' in contents
 
+"""
+    def test_annotate_outdir(self, tmpdir, datadir):
+        '''
+        Test output directory option
+        '''
 
-def test_annotate_outdir(self, tmpdir, datadir):
-    '''dammit run annotate -o [OUTDIR]
-    '''
+        with tmpdir.as_cwd():
+            transcripts = datadir('pom.20.fa')
 
-    with tmpdir.as_cwd():
-        transcripts = datadir('pom.20.fa')
-        outdir = 'test_out'
-        args = ['run', 'annotate', '--quick', transcripts, '-o', outdir]
-        status, out, err = run(*args)
-        assert os.path.isfile(os.path.join(outdir, 'pom.20.fasta'))
-
-
-# FIX: since annotate currently auto installs dbs if they're not found, this will not fail.
-# if change this, also remove --pipeline quick, as failure to find db's means nothing will be run
-#def test_annotate_dbdir_fail(tmpdir, datadir):
-#    '''Test annotation with a faulty database directory.
-#       dammit run --database-dir [DB_DIR] annotate [INPUT.fa]
-#    '''
-#
-#    with tmpdir.as_cwd():
-#        transcripts = datadir('pom.20.fa')
-#
-#        args = ['run', '--pipeline', 'quick', '--database-dir', '.', 'annotate', transcripts]
-#        status, out, err = run(*args, fail_ok=True)
-#        assert 'install databases to continue' in out
-#        assert status == 2
-
+            outdir = 'test_out'
+            args = ['run', 'annotate', '--quick', transcripts, '-o', outdir]
+            status, out, err = run(*args)
+            assert os.path.isfile(os.path.join(outdir, 'pom.20.fasta'))
 
 
 # make sure DAMMIT_DB_DIR is set in your testing env
 # (export DAMMIT_DB_DIR=/path/to/databases)
-def test_annotate_dbdir(tmpdir, datadir):
-    '''Test that --database-dir works.
-    '''
+    def test_annotate_dbdir_fail(tmpdir, datadir):
+        '''Test annotation with a faulty database directory.
+           dammit run --database-dir [DB_DIR] annotate [INPUT.fa]
+        '''
 
-    with tmpdir.as_cwd():
-        transcripts = datadir('pom.20.fa')
+        with tmpdir.as_cwd():
+            transcripts = datadir('pom.20.fa')
 
-        db_dir = os.environ['DAMMIT_DB_DIR']
-        args = ['run', '--pipeline', 'quick', '--database-dir', db_dir, 'annotate', transcripts]
-        status, out, err = run(*args)
+            args = ['run', '--database-dir', '.', 'annotate', transcripts]
+            status, out, err = run(*args, fail_ok=True)
+            print(status, out, err)
+            assert 'you probably need to install the dammit databases' in err
+
+            #assert 'install databases to continue' in out
+            assert status == 1
+
+
+    def test_annotate_dbdir(tmpdir, datadir):
+        '''Test that --database-dir works.
+        '''
+
+        with tmpdir.as_cwd():
+            transcripts = datadir('pom.20.fa')
+            database_dir = os.environ['DAMMIT_DB_DIR']
+            args = ['run', '--database-dir', database_dir, '--pipeline', 'quick', 'annotate',  transcripts]
+            status, out, err = run(*args)
+            assert status == 0
+"""

@@ -3,5 +3,5 @@ pandas>=1.0
 khmer>=2.0
 shmlast>=1.2
 click
-ope
+ope>=0.8
 snakemake==5.20.1

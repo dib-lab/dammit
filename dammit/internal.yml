@@ -1,0 +1,81 @@
+output_dir: null
+input_transcriptome: null
+transcriptome_name: null
+
+dammit_dir_suffix: .dammit
+logs_dir: logs
+output_suffix:
+  - .dammit.gff3
+  - .dammit.fasta
+
+command: null
+
+## last ##
+lastal:
+  output_suffix: 
+    - .x.__database__.lastal.maf
+    - .x.__database__.lastal.gff3
+  databases:
+    - uniprot_sprot
+    - OrthoDB
+    - uniref90
+    - nr
+  
+lastdb: 
+  output_suffix: 
+    - .fasta.prj
+
+## shmlast ##
+shmlast:
+  output_suffix:
+    - .x.__userdatabase__.shmlast_crbl.csv
+    - .x.__userdatabase__.shmlast_crbl.gff3
+  databases:
+    - userdb
+
+## busco ##
+busco:
+  output_suffix: 
+    - .busco/__buscolineage___outputs/run___buscolineage__/short_summary.txt
+    - .busco/summary_figure.png
+  databases:
+    - busco
+  database_dir: busco2db
+
+## hmmer ##
+hmmscan:
+  output_suffix:
+    - .x.__database__.hmmscan-domtbl.txt
+    - .x.__database__.hmmscan.gff3
+  databases:
+    - Pfam-A
+
+hmmpress:
+  output_suffix:
+    - .hmm.h3f
+
+## infernal ##
+cmscan:
+  output_suffix:
+    - .x.__database__.cmscan-tblout.txt
+    - .x.__database__.cmscan.gff3
+  databases:
+    - Rfam
+
+cmpress:
+  output_suffix:
+    - .cm.i1i
+  
+## transdecoder ##
+transdecoder_longorfs: 
+  output_suffix:
+    - .transdecoder_dir/longest_orfs.pep
+
+transdecoder_predict:
+  output_suffix:
+    - .fasta.transdecoder.gff3
+
+# dammit utilities
+rename_transcriptome:
+  output_suffix:
+    - .fasta

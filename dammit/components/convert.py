@@ -11,9 +11,10 @@ from ope.io import EmptyFile
 
 from ope.io.infernal import InfernalParser
 from ope.io.hmmer import HMMerParser
-from ope.io.gff3 import (GFF3Writer, maf_to_gff3, shmlast_to_gff3,
-                           hmmscan_to_gff3, cmscan_to_gff3)
+from ope.io.gff3 import GFF3Writer
 from ope.io.maf import MafParser
+
+from ..convert import CMScan_to_GFF3, HMMScan_to_GFF3, MAF_to_GFF3, Shmlast_to_GFF3
 from ..utils import touch
 
 
@@ -42,7 +43,7 @@ def maf_to_gff3_cmd(input_filename, output_filename, dbxref):
         it = MafParser(input_filename)
 
     writer = GFF3Writer(filename=output_filename,
-                        converter=maf_to_gff3,
+                        converter=MAF_to_GFF3,
                         database=dbxref)
     try:
         for group in it:
@@ -68,7 +69,7 @@ def shmlast_to_gff3_cmd(input_filename, output_filename, dbxref):
     '''
 
     it = pd.read_csv(input_filename, chunksize=10000)
-    writer = GFF3Writer(output_filename, converter=shmlast_to_gff3,
+    writer = GFF3Writer(output_filename, converter=Shmlast_to_GFF3,
                         database=dbxref)
 
     try:
@@ -105,7 +106,7 @@ def hmmscan_to_gff3_cmd(input_filename, output_filename, dbxref):
         it = HMMerParser(input_filename)
 
     writer = GFF3Writer(output_filename,
-                        converter=hmmscan_to_gff3,
+                        converter=HMMScan_to_GFF3,
                         database=dbxref)
     try:
         for group in it:
@@ -130,7 +131,7 @@ def cmscan_to_gff3_cmd(input_filename, output_filename, dbxref):
         database (str): Tag to use in the GFF3 `Dbxref` field.
     '''
 
-    writer = GFF3Writer(output_filename, converter=cmscan_to_gff3,
+    writer = GFF3Writer(output_filename, converter=CMScan_to_GFF3,
                         database=dbxref)
     try:
         for group in InfernalParser(input_filename):

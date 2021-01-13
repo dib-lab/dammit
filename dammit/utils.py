@@ -4,12 +4,10 @@
 # This software may be modified and distributed under the terms
 # of the BSD license.  See the LICENSE file for details.
 
-from functools import wraps
 import os
-import stat
 import sys
 import yaml
-import collections
+import collections.abc
 
 import click
 
@@ -28,14 +26,19 @@ def update_nested_dict(d, other):
     # Note that this only keeps keys that already exist in other
     # https://code.i-harness.com/en/q/3154af
     for k, v in other.items():
-        if isinstance(v, collections.Mapping):
+        if isinstance(v, collections.abc.Mapping):
             d_v = d.get(k)
-            if isinstance(d_v, collections.Mapping):
+            if isinstance(d_v, collections.abc.Mapping):
                 update_nested_dict(d_v, v)
             else:
                 d[k] = v.copy()
         else:
             d[k] = v
+
+
+def create_dirs(dirs):
+    for d in dirs:
+        os.makedirs(d, exist_ok=True)
 
 
 def touch(filename):
@@ -53,7 +56,9 @@ def read_yaml(filename):
         try:
             yamlD = yaml.safe_load(stream) #, Loader=yaml.FullLoader)
         except yaml.YAMLError as exc:
-            print(exc)
+            print(exc, file=sys.stderr)
+            print(f'ERROR parsing YAML from {filename}, exiting.', file=sys.stderr)
+            sys.exit(1)
     return yamlD
 
 

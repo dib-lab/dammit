@@ -25,6 +25,9 @@ doc: FORCE
 		sphinx-apidoc  -o doc/ dammit/ -f
 		cd doc; make clean html
 
+banner:
+		toilet --gay -f big dammit! > dammit/banner.txt
+
 gh-pages: doc
 		touch doc/_build/html/.nojekyll
 		git add doc/
