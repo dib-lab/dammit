@@ -1,0 +1,122 @@
+##gff-version 3.2.1
+Transcript_0	shmlast.LAST	conditional_reciprocal_best_LAST	1	1887	0.000000e+00	+	.	ID=homology:94a770b951c0d15c4b3d0d2b57d07c3851565147;Name=SPAC212.11|tlh1|I|RecQ type DNA helicase;Target=SPAC212.11|tlh1|I|RecQ type DNA helicase 1 1887 +;database=pep.fa
+Transcript_0	transdecoder	CDS	1	5661	.	+	0	ID=cds.Transcript_0.p1;Parent=Transcript_0.p1
+Transcript_0	transdecoder	exon	1	5662	.	+	.	ID=Transcript_0.p1.exon1;Parent=Transcript_0.p1
+Transcript_0	transdecoder	gene	1	5662	.	+	.	ID=GENE.Transcript_0~~Transcript_0.p1;Name=ORF%20type%3A3prime_partial%20len%3A1888%20%28%2B%29%2Cscore%3D464.77%2CHelicase_C%7CPF00271.27%7C3.2e-18%2CHelicase_C%7CPF00271.27%7C1.1e%2B04%2CDEAD%7CPF00270.25%7C2.1e-10
+Transcript_0	transdecoder	mRNA	1	5662	.	+	.	ID=Transcript_0.p1;Parent=GENE.Transcript_0~~Transcript_0.p1;Name=ORF%20type%3A3prime_partial%20len%3A1888%20%28%2B%29%2Cscore%3D464.77%2CHelicase_C%7CPF00271.27%7C3.2e-18%2CHelicase_C%7CPF00271.27%7C1.1e%2B04%2CDEAD%7CPF00270.25%7C2.1e-10
+Transcript_10	shmlast.LAST	conditional_reciprocal_best_LAST	66	211	3.300000e-103	+	.	ID=homology:5bddc141f52e14a4e285ddcb7c87aea1cbd54ce4;Name=SPAC977.02|SPAC977.02|I|S. pombe specific 5Tm protein family;Target=SPAC977.02|SPAC977.02|I|S. pombe specific 5Tm protein family 1 146 +;database=pep.fa
+Transcript_10	transdecoder	CDS	197	637	.	+	0	ID=cds.Transcript_10.p1;Parent=Transcript_10.p1
+Transcript_10	transdecoder	exon	1	979	.	+	.	ID=Transcript_10.p1.exon1;Parent=Transcript_10.p1
+Transcript_10	transdecoder	five_prime_UTR	1	196	.	+	.	ID=Transcript_10.p1.utr5p1;Parent=Transcript_10.p1
+Transcript_10	transdecoder	gene	1	979	.	+	.	ID=GENE.Transcript_10~~Transcript_10.p1;Name=ORF%20type%3Acomplete%20len%3A147%20%28%2B%29%2Cscore%3D82.86%2CPombe_5TM%7CPF09437.6%7C1.3e-10%2CPombe_5TM%7CPF09437.6%7C5.1e-26
+Transcript_10	transdecoder	mRNA	1	979	.	+	.	ID=Transcript_10.p1;Parent=GENE.Transcript_10~~Transcript_10.p1;Name=ORF%20type%3Acomplete%20len%3A147%20%28%2B%29%2Cscore%3D82.86%2CPombe_5TM%7CPF09437.6%7C1.3e-10%2CPombe_5TM%7CPF09437.6%7C5.1e-26
+Transcript_10	transdecoder	three_prime_UTR	638	979	.	+	.	ID=Transcript_10.p1.utr3p1;Parent=Transcript_10.p1
+Transcript_11	shmlast.LAST	conditional_reciprocal_best_LAST	1	145	4.300000e-109	+	.	ID=homology:a69c6cd647c5cc147e84d4553dbeab70cff38442;Name=SPAC977.03|SPAC977.03|I|methyltransferase (predicted);Target=SPAC977.03|SPAC977.03|I|methyltransferase (predicted) 1 145 +;database=pep.fa
+Transcript_11	transdecoder	CDS	1	438	.	+	0	ID=cds.Transcript_11.p1;Parent=Transcript_11.p1
+Transcript_11	transdecoder	exon	1	438	.	+	.	ID=Transcript_11.p1.exon1;Parent=Transcript_11.p1
+Transcript_11	transdecoder	gene	1	438	.	+	.	ID=GENE.Transcript_11~~Transcript_11.p1;Name=ORF%20type%3Acomplete%20len%3A146%20%28%2B%29%2Cscore%3D85.63%2CMethyltransf_23%7CPF13489.2%7C1.4e-11%2CMethyltransf_31%7CPF13847.2%7C6.1e-10%2CMethyltransf_11%7CPF08241.8%7C7.9e-10%2CMethyltransf_12%7CPF08242.8%7C1.8e-09%2CMethyltransf_18%7CPF12847.3%7C5.4e-09%2CMethyltransf_25%7CPF13649.2%7C8.6e-09%2CTPMT%7CPF05724.7%7C7.5e-06
+Transcript_11	transdecoder	mRNA	1	438	.	+	.	ID=Transcript_11.p1;Parent=GENE.Transcript_11~~Transcript_11.p1;Name=ORF%20type%3Acomplete%20len%3A146%20%28%2B%29%2Cscore%3D85.63%2CMethyltransf_23%7CPF13489.2%7C1.4e-11%2CMethyltransf_31%7CPF13847.2%7C6.1e-10%2CMethyltransf_11%7CPF08241.8%7C7.9e-10%2CMethyltransf_12%7CPF08242.8%7C1.8e-09%2CMethyltransf_18%7CPF12847.3%7C5.4e-09%2CMethyltransf_25%7CPF13649.2%7C8.6e-09%2CTPMT%7CPF05724.7%7C7.5e-06
+Transcript_12	shmlast.LAST	conditional_reciprocal_best_LAST	18	172	1.200000e-116	+	.	ID=homology:c435df18cff450cb65b1c8a55bc27e28a97c9f50;Name=SPAC977.04|SPAC977.04|I|truncated C terminal region of membrane transporter;Target=SPAC977.04|SPAC977.04|I|truncated C terminal region of membrane transporter 1 155 +;database=pep.fa
+Transcript_12	transdecoder	CDS	1	519	.	+	0	ID=cds.Transcript_12.p1;Parent=Transcript_12.p1
+Transcript_12	transdecoder	exon	1	681	.	+	.	ID=Transcript_12.p1.exon1;Parent=Transcript_12.p1
+Transcript_12	transdecoder	gene	1	681	.	+	.	ID=GENE.Transcript_12~~Transcript_12.p1;Name=ORF%20type%3A5prime_partial%20len%3A173%20%28%2B%29%2Cscore%3D104.11
+Transcript_12	transdecoder	mRNA	1	681	.	+	.	ID=Transcript_12.p1;Parent=GENE.Transcript_12~~Transcript_12.p1;Name=ORF%20type%3A5prime_partial%20len%3A173%20%28%2B%29%2Cscore%3D104.11
+Transcript_12	transdecoder	three_prime_UTR	520	681	.	+	.	ID=Transcript_12.p1.utr3p1;Parent=Transcript_12.p1
+Transcript_13	shmlast.LAST	conditional_reciprocal_best_LAST	1	204	2.700000e-155	+	.	ID=homology:3c4185a4986c931924c0b92956b14295ccf302f1;Name=SPAC977.05c|SPAC977.05c|I|conserved fungal family;Target=SPAC977.05c|SPAC977.05c|I|conserved fungal family 1 204 +;database=pep.fa
+Transcript_13	transdecoder	CDS	1	615	.	+	0	ID=cds.Transcript_13.p1;Parent=Transcript_13.p1
+Transcript_13	transdecoder	exon	1	615	.	+	.	ID=Transcript_13.p1.exon1;Parent=Transcript_13.p1
+Transcript_13	transdecoder	gene	1	615	.	+	.	ID=GENE.Transcript_13~~Transcript_13.p1;Name=ORF%20type%3Acomplete%20len%3A205%20%28%2B%29%2Cscore%3D126.49%2CVel1p%7CPF10339.5%7C6.7e-107
+Transcript_13	transdecoder	mRNA	1	615	.	+	.	ID=Transcript_13.p1;Parent=GENE.Transcript_13~~Transcript_13.p1;Name=ORF%20type%3Acomplete%20len%3A205%20%28%2B%29%2Cscore%3D126.49%2CVel1p%7CPF10339.5%7C6.7e-107
+Transcript_14	shmlast.LAST	conditional_reciprocal_best_LAST	6	194	2.900000e-143	+	.	ID=homology:bbbbb2217ab55d406588836a15266f0f6ec3bcd4;Name=SPAC977.06|SPAC977.06|I|S. pombe specific DUF999 family protein 3;Target=SPAC977.06|SPAC977.06|I|S. pombe specific DUF999 family protein 3 1 189 +;database=pep.fa
+Transcript_14	transdecoder	CDS	1	585	.	+	0	ID=cds.Transcript_14.p1;Parent=Transcript_14.p1
+Transcript_14	transdecoder	exon	1	607	.	+	.	ID=Transcript_14.p1.exon1;Parent=Transcript_14.p1
+Transcript_14	transdecoder	gene	1	607	.	+	.	ID=GENE.Transcript_14~~Transcript_14.p1;Name=ORF%20type%3A5prime_partial%20len%3A195%20%28%2B%29%2Cscore%3D142.29%2CDUF999%7CPF06198.7%7C6e-78%2CDUF999%7CPF06198.7%7C1.1e%2B04
+Transcript_14	transdecoder	mRNA	1	607	.	+	.	ID=Transcript_14.p1;Parent=GENE.Transcript_14~~Transcript_14.p1;Name=ORF%20type%3A5prime_partial%20len%3A195%20%28%2B%29%2Cscore%3D142.29%2CDUF999%7CPF06198.7%7C6e-78%2CDUF999%7CPF06198.7%7C1.1e%2B04
+Transcript_14	transdecoder	three_prime_UTR	586	607	.	+	.	ID=Transcript_14.p1.utr3p1;Parent=Transcript_14.p1
+Transcript_15	shmlast.LAST	conditional_reciprocal_best_LAST	1	416	1.976263e-323	+	.	ID=homology:3f9fd792943afae5b71c19f6a6348e97e0f632b2;Name=SPAC977.07c|pfl6|I|cell surface glycoprotein, adhesion molecule (predicted);Target=SPAC977.07c|pfl6|I|cell surface glycoprotein, adhesion molecule (predicted) 1 416 +;database=pep.fa
+Transcript_15	transdecoder	CDS	1	1251	.	+	0	ID=cds.Transcript_15.p1;Parent=Transcript_15.p1
+Transcript_15	transdecoder	exon	1	1251	.	+	.	ID=Transcript_15.p1.exon1;Parent=Transcript_15.p1
+Transcript_15	transdecoder	gene	1	1251	.	+	.	ID=GENE.Transcript_15~~Transcript_15.p1;Name=ORF%20type%3Acomplete%20len%3A417%20%28%2B%29%2Cscore%3D268.06%2CPA14_2%7CPF10528.5%7C4.7e%2B03%2CPA14_2%7CPF10528.5%7C6e%2B03%2CPA14_2%7CPF10528.5%7C1.2e-49
+Transcript_15	transdecoder	mRNA	1	1251	.	+	.	ID=Transcript_15.p1;Parent=GENE.Transcript_15~~Transcript_15.p1;Name=ORF%20type%3Acomplete%20len%3A417%20%28%2B%29%2Cscore%3D268.06%2CPA14_2%7CPF10528.5%7C4.7e%2B03%2CPA14_2%7CPF10528.5%7C6e%2B03%2CPA14_2%7CPF10528.5%7C1.2e-49
+Transcript_16	shmlast.LAST	conditional_reciprocal_best_LAST	21	256	6.300000e-174	+	.	ID=homology:669a1dd29f2b40aa7db12d129b95ccef21219987;Name=SPAC977.08|SPAC977.08|I|short chain dehydrogenase (predicted);Target=SPAC977.08|SPAC977.08|I|short chain dehydrogenase (predicted) 1 236 +;database=pep.fa
+Transcript_16	transdecoder	CDS	61	771	.	+	0	ID=cds.Transcript_16.p1;Parent=Transcript_16.p1
+Transcript_16	transdecoder	exon	1	825	.	+	.	ID=Transcript_16.p1.exon1;Parent=Transcript_16.p1
+Transcript_16	transdecoder	five_prime_UTR	1	60	.	+	.	ID=Transcript_16.p1.utr5p1;Parent=Transcript_16.p1
+Transcript_16	transdecoder	gene	1	825	.	+	.	ID=GENE.Transcript_16~~Transcript_16.p1;Name=ORF%20type%3Acomplete%20len%3A237%20%28%2B%29%2Cscore%3D135.27%2Cadh_short%7CPF00106.21%7C9.1e-36%2Cadh_short_C2%7CPF13561.2%7C2e-12
+Transcript_16	transdecoder	mRNA	1	825	.	+	.	ID=Transcript_16.p1;Parent=GENE.Transcript_16~~Transcript_16.p1;Name=ORF%20type%3Acomplete%20len%3A237%20%28%2B%29%2Cscore%3D135.27%2Cadh_short%7CPF00106.21%7C9.1e-36%2Cadh_short_C2%7CPF13561.2%7C2e-12
+Transcript_16	transdecoder	three_prime_UTR	772	825	.	+	.	ID=Transcript_16.p1.utr3p1;Parent=Transcript_16.p1
+Transcript_17	shmlast.LAST	conditional_reciprocal_best_LAST	80	752	0.000000e+00	+	.	ID=homology:02b94f4c02b2a78881d6e3cdddea00d4f99be7db;Name=SPAC977.09c|SPAC977.09c|I|phospholipase (predicted);Target=SPAC977.09c|SPAC977.09c|I|phospholipase (predicted) 1 673 +;database=pep.fa
+Transcript_17	transdecoder	CDS	240	2261	.	+	0	ID=cds.Transcript_17.p1;Parent=Transcript_17.p1
+Transcript_17	transdecoder	exon	1	2461	.	+	.	ID=Transcript_17.p1.exon1;Parent=Transcript_17.p1
+Transcript_17	transdecoder	five_prime_UTR	1	239	.	+	.	ID=Transcript_17.p1.utr5p1;Parent=Transcript_17.p1
+Transcript_17	transdecoder	gene	1	2461	.	+	.	ID=GENE.Transcript_17~~Transcript_17.p1;Name=ORF%20type%3Acomplete%20len%3A674%20%28%2B%29%2Cscore%3D453.37%2CPLA2_B%7CPF01735.14%7C7.1e-204
+Transcript_17	transdecoder	mRNA	1	2461	.	+	.	ID=Transcript_17.p1;Parent=GENE.Transcript_17~~Transcript_17.p1;Name=ORF%20type%3Acomplete%20len%3A674%20%28%2B%29%2Cscore%3D453.37%2CPLA2_B%7CPF01735.14%7C7.1e-204
+Transcript_17	transdecoder	three_prime_UTR	2262	2461	.	+	.	ID=Transcript_17.p1.utr3p1;Parent=Transcript_17.p1
+Transcript_18	shmlast.LAST	conditional_reciprocal_best_LAST	391	858	0.000000e+00	+	.	ID=homology:e135e2e2099cb1a8d9495f2345471292a4e72722;Name=SPAC977.10|sod2|I|plasma membrane sodium ion/proton antiporter Sod2;Target=SPAC977.10|sod2|I|plasma membrane sodium ion/proton antiporter Sod2 1 468 +;database=pep.fa
+Transcript_18	transdecoder	CDS	947	2578	.	+	0	ID=cds.Transcript_18.p1;Parent=Transcript_18.p1
+Transcript_18	transdecoder	exon	1	2836	.	+	.	ID=Transcript_18.p1.exon1;Parent=Transcript_18.p1
+Transcript_18	transdecoder	five_prime_UTR	1	946	.	+	.	ID=Transcript_18.p1.utr5p1;Parent=Transcript_18.p1
+Transcript_18	transdecoder	gene	1	2836	.	+	.	ID=GENE.Transcript_18~~Transcript_18.p1;Name=ORF%20type%3Acomplete%20len%3A544%20%28%2B%29%2Cscore%3D299.04%2CNa_H_Exchanger%7CPF00999.17%7C2.6e-76
+Transcript_18	transdecoder	mRNA	1	2836	.	+	.	ID=Transcript_18.p1;Parent=GENE.Transcript_18~~Transcript_18.p1;Name=ORF%20type%3Acomplete%20len%3A544%20%28%2B%29%2Cscore%3D299.04%2CNa_H_Exchanger%7CPF00999.17%7C2.6e-76
+Transcript_18	transdecoder	three_prime_UTR	2579	2836	.	+	.	ID=Transcript_18.p1.utr3p1;Parent=Transcript_18.p1
+Transcript_19	shmlast.LAST	conditional_reciprocal_best_LAST	72	382	5.700000e-237	+	.	ID=homology:c7170753b69543028628218cfc2957aaca46be84;Name=SPAC977.11|SPAC977.11|I|CRCB domain protein;Target=SPAC977.11|SPAC977.11|I|CRCB domain protein 1 311 +;database=pep.fa
+Transcript_19	transdecoder	CDS	216	1151	.	+	0	ID=cds.Transcript_19.p1;Parent=Transcript_19.p1
+Transcript_19	transdecoder	exon	1	1250	.	+	.	ID=Transcript_19.p1.exon1;Parent=Transcript_19.p1
+Transcript_19	transdecoder	five_prime_UTR	1	215	.	+	.	ID=Transcript_19.p1.utr5p1;Parent=Transcript_19.p1
+Transcript_19	transdecoder	gene	1	1250	.	+	.	ID=GENE.Transcript_19~~Transcript_19.p1;Name=ORF%20type%3Acomplete%20len%3A312%20%28%2B%29%2Cscore%3D203.47%2CCRCB%7CPF02537.11%7C2e-15%2CCRCB%7CPF02537.11%7C5e%2B03%2CCRCB%7CPF02537.11%7C9.1e-15
+Transcript_19	transdecoder	mRNA	1	1250	.	+	.	ID=Transcript_19.p1;Parent=GENE.Transcript_19~~Transcript_19.p1;Name=ORF%20type%3Acomplete%20len%3A312%20%28%2B%29%2Cscore%3D203.47%2CCRCB%7CPF02537.11%7C2e-15%2CCRCB%7CPF02537.11%7C5e%2B03%2CCRCB%7CPF02537.11%7C9.1e-15
+Transcript_19	transdecoder	three_prime_UTR	1152	1250	.	+	.	ID=Transcript_19.p1.utr3p1;Parent=Transcript_19.p1
+Transcript_1	shmlast.LAST	conditional_reciprocal_best_LAST	125	402	3.000000e-216	+	.	ID=homology:89e3c799b148e94ed8dca8df7bfd9b8c4b2de625;Name=SPAC212.08c|SPAC212.08c|I|S. pombe specific GPI anchored protein family 1;Target=SPAC212.08c|SPAC212.08c|I|S. pombe specific GPI anchored protein family 1 1 278 +;database=pep.fa
+Transcript_1	transdecoder	CDS	375	1211	.	+	0	ID=cds.Transcript_1.p1;Parent=Transcript_1.p1
+Transcript_1	transdecoder	exon	1	1211	.	+	.	ID=Transcript_1.p1.exon1;Parent=Transcript_1.p1
+Transcript_1	transdecoder	five_prime_UTR	1	374	.	+	.	ID=Transcript_1.p1.utr5p1;Parent=Transcript_1.p1
+Transcript_1	transdecoder	gene	1	1211	.	+	.	ID=GENE.Transcript_1~~Transcript_1.p1;Name=ORF%20type%3Acomplete%20len%3A279%20%28%2B%29%2Cscore%3D220.14
+Transcript_1	transdecoder	mRNA	1	1211	.	+	.	ID=Transcript_1.p1;Parent=GENE.Transcript_1~~Transcript_1.p1;Name=ORF%20type%3Acomplete%20len%3A279%20%28%2B%29%2Cscore%3D220.14
+Transcript_2	shmlast.LAST	conditional_reciprocal_best_LAST	1	123	7.000000e-90	+	.	ID=homology:962be10307d04a237970c81641eb8f829cd0955e;Name=SPAC212.12|SPAC212.12|I|S. pombe specific GPI anchored protein family 1;Target=SPAC212.12|SPAC212.12|I|S. pombe specific GPI anchored protein family 1 1 123 +;database=pep.fa
+Transcript_2	transdecoder	CDS	1	372	.	+	0	ID=cds.Transcript_2.p1;Parent=Transcript_2.p1
+Transcript_2	transdecoder	exon	1	372	.	+	.	ID=Transcript_2.p1.exon1;Parent=Transcript_2.p1
+Transcript_2	transdecoder	gene	1	372	.	+	.	ID=GENE.Transcript_2~~Transcript_2.p1;Name=ORF%20type%3Acomplete%20len%3A124%20%28%2B%29%2Cscore%3D125.11
+Transcript_2	transdecoder	mRNA	1	372	.	+	.	ID=Transcript_2.p1;Parent=GENE.Transcript_2~~Transcript_2.p1;Name=ORF%20type%3Acomplete%20len%3A124%20%28%2B%29%2Cscore%3D125.11
+Transcript_3	shmlast.LAST	conditional_reciprocal_best_LAST	11	157	4.900000e-106	+	.	ID=homology:90a3fa8c08141359b39bce4833db5842fde36a7d;Name=SPAC212.06c|SPAC212.06c|I|DNA helicase in rearranged telomeric region, truncated;Target=SPAC212.06c|SPAC212.06c|I|DNA helicase in rearranged telomeric region, truncated 1 147 +;database=pep.fa
+Transcript_3	transdecoder	CDS	1	474	.	+	0	ID=cds.Transcript_3.p1;Parent=Transcript_3.p1
+Transcript_3	transdecoder	exon	1	891	.	+	.	ID=Transcript_3.p1.exon1;Parent=Transcript_3.p1
+Transcript_3	transdecoder	gene	1	891	.	+	.	ID=GENE.Transcript_3~~Transcript_3.p1;Name=ORF%20type%3A5prime_partial%20len%3A158%20%28%2B%29%2Cscore%3D108.17%2CHelicase_C%7CPF00271.27%7C1e-05
+Transcript_3	transdecoder	mRNA	1	891	.	+	.	ID=Transcript_3.p1;Parent=GENE.Transcript_3~~Transcript_3.p1;Name=ORF%20type%3A5prime_partial%20len%3A158%20%28%2B%29%2Cscore%3D108.17%2CHelicase_C%7CPF00271.27%7C1e-05
+Transcript_3	transdecoder	three_prime_UTR	475	891	.	+	.	ID=Transcript_3.p1.utr3p1;Parent=Transcript_3.p1
+Transcript_4	shmlast.LAST	conditional_reciprocal_best_LAST	69	356	8.700000e-207	+	.	ID=homology:245ebc80e8bb87a88ca8462b3ede0ac3ea3d7978;Name=SPAC212.04c|SPAC212.04c|I|S. pombe specific DUF999 family protein 1;Target=SPAC212.04c|SPAC212.04c|I|S. pombe specific DUF999 family protein 1 1 288 +;database=pep.fa
+Transcript_4	transdecoder	CDS	207	1073	.	+	0	ID=cds.Transcript_4.p1;Parent=Transcript_4.p1
+Transcript_4	transdecoder	exon	1	1615	.	+	.	ID=Transcript_4.p1.exon1;Parent=Transcript_4.p1
+Transcript_4	transdecoder	five_prime_UTR	1	206	.	+	.	ID=Transcript_4.p1.utr5p1;Parent=Transcript_4.p1
+Transcript_4	transdecoder	gene	1	1615	.	+	.	ID=GENE.Transcript_4~~Transcript_4.p1;Name=ORF%20type%3Acomplete%20len%3A289%20%28%2B%29%2Cscore%3D286.81%2CDUF999%7CPF06198.7%7C2.6e-88
+Transcript_4	transdecoder	mRNA	1	1615	.	+	.	ID=Transcript_4.p1;Parent=GENE.Transcript_4~~Transcript_4.p1;Name=ORF%20type%3Acomplete%20len%3A289%20%28%2B%29%2Cscore%3D286.81%2CDUF999%7CPF06198.7%7C2.6e-88
+Transcript_4	transdecoder	three_prime_UTR	1074	1615	.	+	.	ID=Transcript_4.p1.utr3p1;Parent=Transcript_4.p1
+Transcript_5	shmlast.LAST	conditional_reciprocal_best_LAST	26	154	1.200000e-100	+	.	ID=homology:02257bb29738d9df3cd8a6b10606b67a92664d3b;Name=SPAC212.03|SPAC212.03|I|hypothetical protein;Target=SPAC212.03|SPAC212.03|I|hypothetical protein 1 129 +;database=pep.fa
+Transcript_5	transdecoder	CDS	77	466	.	+	0	ID=cds.Transcript_5.p1;Parent=Transcript_5.p1
+Transcript_5	transdecoder	exon	1	466	.	+	.	ID=Transcript_5.p1.exon1;Parent=Transcript_5.p1
+Transcript_5	transdecoder	five_prime_UTR	1	76	.	+	.	ID=Transcript_5.p1.utr5p1;Parent=Transcript_5.p1
+Transcript_5	transdecoder	gene	1	466	.	+	.	ID=GENE.Transcript_5~~Transcript_5.p1;Name=ORF%20type%3Acomplete%20len%3A130%20%28%2B%29%2Cscore%3D68.44
+Transcript_5	transdecoder	mRNA	1	466	.	+	.	ID=Transcript_5.p1;Parent=GENE.Transcript_5~~Transcript_5.p1;Name=ORF%20type%3Acomplete%20len%3A130%20%28%2B%29%2Cscore%3D68.44
+Transcript_6	shmlast.LAST	conditional_reciprocal_best_LAST	1	136	9.400000e-103	+	.	ID=homology:aa2030cc9fa44f795e7308c594832186506cc04f;Name=SPAC212.02|SPAC212.02|I|Schizosaccharomyces pombe specific protein;Target=SPAC212.02|SPAC212.02|I|Schizosaccharomyces pombe specific protein 1 136 +;database=pep.fa
+Transcript_6	transdecoder	CDS	1	411	.	+	0	ID=cds.Transcript_6.p1;Parent=Transcript_6.p1
+Transcript_6	transdecoder	exon	1	411	.	+	.	ID=Transcript_6.p1.exon1;Parent=Transcript_6.p1
+Transcript_6	transdecoder	gene	1	411	.	+	.	ID=GENE.Transcript_6~~Transcript_6.p1;Name=ORF%20type%3Acomplete%20len%3A137%20%28%2B%29%2Cscore%3D91.01
+Transcript_6	transdecoder	mRNA	1	411	.	+	.	ID=Transcript_6.p1;Parent=GENE.Transcript_6~~Transcript_6.p1;Name=ORF%20type%3Acomplete%20len%3A137%20%28%2B%29%2Cscore%3D91.01
+Transcript_7	shmlast.LAST	conditional_reciprocal_best_LAST	1	280	8.400000e-209	+	.	ID=homology:c6aff8c4d38d12fb8cbc360f91d42eb384e58ebd;Name=SPAC212.01c|SPAC212.01c|I|S. pombe specific DUF999 family protein 2;Target=SPAC212.01c|SPAC212.01c|I|S. pombe specific DUF999 family protein 2 1 280 +;database=pep.fa
+Transcript_7	transdecoder	CDS	1	843	.	+	0	ID=cds.Transcript_7.p1;Parent=Transcript_7.p1
+Transcript_7	transdecoder	exon	1	862	.	+	.	ID=Transcript_7.p1.exon1;Parent=Transcript_7.p1
+Transcript_7	transdecoder	gene	1	862	.	+	.	ID=GENE.Transcript_7~~Transcript_7.p1;Name=ORF%20type%3Acomplete%20len%3A281%20%28%2B%29%2Cscore%3D279.01%2CDUF999%7CPF06198.7%7C1.9e-91
+Transcript_7	transdecoder	mRNA	1	862	.	+	.	ID=Transcript_7.p1;Parent=GENE.Transcript_7~~Transcript_7.p1;Name=ORF%20type%3Acomplete%20len%3A281%20%28%2B%29%2Cscore%3D279.01%2CDUF999%7CPF06198.7%7C1.9e-91
+Transcript_7	transdecoder	three_prime_UTR	844	862	.	+	.	ID=Transcript_7.p1.utr3p1;Parent=Transcript_7.p1
+Transcript_8	shmlast.LAST	conditional_reciprocal_best_LAST	1	316	8.700000e-241	+	.	ID=homology:4b1595941d7f979b3c480239a7fb19274ab1fcda;Name=SPAC977.01|SPAC977.01|I|S. pombe specific 5Tm protein family;Target=SPAC977.01|SPAC977.01|I|S. pombe specific 5Tm protein family 1 316 +;database=pep.fa
+Transcript_8	transdecoder	CDS	3	953	.	+	0	ID=cds.Transcript_8.p1;Parent=Transcript_8.p1
+Transcript_8	transdecoder	exon	1	1306	.	+	.	ID=Transcript_8.p1.exon1;Parent=Transcript_8.p1
+Transcript_8	transdecoder	gene	1	1306	.	+	.	ID=GENE.Transcript_8~~Transcript_8.p1;Name=ORF%20type%3A5prime_partial%20len%3A317%20%28%2B%29%2Cscore%3D163.63%2CPombe_5TM%7CPF09437.6%7C1.6e-155%2CLung_7-TM_R%7CPF06814.9%7C1.3e-05
+Transcript_8	transdecoder	mRNA	1	1306	.	+	.	ID=Transcript_8.p1;Parent=GENE.Transcript_8~~Transcript_8.p1;Name=ORF%20type%3A5prime_partial%20len%3A317%20%28%2B%29%2Cscore%3D163.63%2CPombe_5TM%7CPF09437.6%7C1.6e-155%2CLung_7-TM_R%7CPF06814.9%7C1.3e-05
+Transcript_8	transdecoder	three_prime_UTR	954	1306	.	+	.	ID=Transcript_8.p1.utr3p1;Parent=Transcript_8.p1
+Transcript_9	shmlast.LAST	conditional_reciprocal_best_LAST	53	185	4.400000e-95	+	.	ID=homology:e26c123afd68729a1a3c67041d92510505a2fd93;Name=SPAC977.18|SPAC977.18|I|conserved fungal protein;Target=SPAC977.18|SPAC977.18|I|conserved fungal protein 1 133 +;database=pep.fa
+Transcript_9	transdecoder	CDS	159	560	.	+	0	ID=cds.Transcript_9.p1;Parent=Transcript_9.p1
+Transcript_9	transdecoder	exon	1	747	.	+	.	ID=Transcript_9.p1.exon1;Parent=Transcript_9.p1
+Transcript_9	transdecoder	five_prime_UTR	1	158	.	+	.	ID=Transcript_9.p1.utr5p1;Parent=Transcript_9.p1
+Transcript_9	transdecoder	gene	1	747	.	+	.	ID=GENE.Transcript_9~~Transcript_9.p1;Name=ORF%20type%3Acomplete%20len%3A134%20%28%2B%29%2Cscore%3D88.84
+Transcript_9	transdecoder	mRNA	1	747	.	+	.	ID=Transcript_9.p1;Parent=GENE.Transcript_9~~Transcript_9.p1;Name=ORF%20type%3Acomplete%20len%3A134%20%28%2B%29%2Cscore%3D88.84
+Transcript_9	transdecoder	three_prime_UTR	561	747	.	+	.	ID=Transcript_9.p1.utr3p1;Parent=Transcript_9.p1

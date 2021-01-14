@@ -99,7 +99,6 @@ class TestDammitAnnotate:
             assert compare_gff(gff3_fn, exp_gff3)
             assert open(fasta_fn).read() == open(exp_fasta).read()
 
-    ## run this on pom20! store the results somewhere and then compare using compare_gff3!
     @pytest.mark.parametrize('n_threads', (1,4))
     def test_annotate_multiple_user_databases(self, tmpdir, datadir, n_threads):
         '''--pipeline quick annotate --user-database [PEP1.fa] --user-database [PEP2.fa] [INPUT.fa]
@@ -145,7 +144,6 @@ class TestDammitAnnotate:
             contents = open(fn).read()
             assert 'Test_0' in contents
 
-"""
     def test_annotate_outdir(self, tmpdir, datadir):
         '''
         Test output directory option
@@ -188,5 +186,13 @@ class TestDammitAnnotate:
             database_dir = os.environ['DAMMIT_DB_DIR']
             args = ['run', '--database-dir', database_dir, '--pipeline', 'quick', 'annotate',  transcripts]
             status, out, err = run(*args)
+
+            outdir = 'pom.20.dammit'
+            gff3_fn = os.path.join(outdir, 'pom.20.dammit.gff3')
+            fasta_fn = os.path.join(outdir, 'pom.20.dammit.fasta')
+
             assert status == 0
-"""
+            assert compare_gff(gff3_fn, exp_gff3)
+            assert open(fasta_fn).read() == open(exp_fasta).read()
+
+
