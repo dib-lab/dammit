@@ -36,6 +36,7 @@ from ..utils import ShortChoice, write_yaml, update_nested_dict, create_dirs
               type=ShortChoice(list(DATABASES['busco']['lineages']), case_sensitive=False),
               help='BUSCO group(s) to use/install.')
 @click.option('--n-threads',
+              envvar='DAMMIT_N_THREADS',
               type=int,
               help='Number of threads for overall workflow execution')
 @click.option('--max-threads-per-task',
