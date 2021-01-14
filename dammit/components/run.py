@@ -277,7 +277,10 @@ def generate_database_targets(pipeline_info, config):
     database_dir = config.core['database_dir']
 
     for db in pipeline_databases:
-        fn = config.databases[db]["filename"]
+        try:
+            fn = config.databases[db]["filename"]
+        except:
+            pass
         out_suffixes = config.databases[db]["output_suffix"]
         targets += [fn + suffix for suffix in out_suffixes]
     targets = [os.path.join(database_dir, targ) for targ in targets]
