@@ -4,6 +4,25 @@ from dammit.meta import __path__, __wrappers__
 GLOBAL_EVALUE = config['global_evalue']
 THREADS_PER_TASK = config['max_threads_per_task']
 
+
+rule dammit_rename_transcriptome:
+    message:
+        """
+        Reformat and rename FASTA headers for compatibility. 
+        """
+    input:
+        config["input_transcriptome"],
+    output:
+        fasta=os.path.join(results_dir, "{transcriptome}.fasta"),
+        names=os.path.join(results_dir, "{transcriptome}.namemap.csv")
+    log:
+        os.path.join(logs_dir, "{transcriptome}.rename.log")
+    threads: 1
+    params:
+        basename = config.get("basename", "Txome"),
+    script: f'file://{__path__}/wrappers/dammit/rename-transcriptome.wrapper.py'
+
+
 rule transdecoder_longorfs:
     message: 
         """
@@ -205,24 +224,6 @@ rule plot_busco_summaries:
         generate_plot.py --working_directory {params.summary_dir} 2> {log}
         cp {params.summary_dir}/busco_figure.png {output}
         """
-
-
-rule dammit_rename_transcriptome:
-    message:
-        """
-        Reformat and rename FASTA headers for compatibility. 
-        """
-    input:
-        config["input_transcriptome"],
-    output:
-        fasta=os.path.join(results_dir, "{transcriptome}.fasta"),
-        names=os.path.join(results_dir, "{transcriptome}.namemap.csv")
-    log:
-        os.path.join(logs_dir, "{transcriptome}.rename.log")
-    threads: 1
-    params:
-        basename = config.get("basename", "Txome"),
-    script: f'file://{__path__}/wrappers/dammit/rename-transcriptome.wrapper.py'
 
 
 rule dammit_cmscan_to_gff:
