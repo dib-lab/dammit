@@ -15,8 +15,6 @@ from ope.io import gff3
 
 from .utils import run
 
-PATH_BACKUP = os.environ['PATH']
-
 
 def compare_gff(fn_a, fn_b):
     df_a = gff3.GFF3Parser(fn_a).read().sort_values(['seqid', 'start', 'end', 'ID', 'Target'])
