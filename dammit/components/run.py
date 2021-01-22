@@ -14,6 +14,12 @@ import yaml
 import click
 import psutil
 
+from rich import print as richprint
+from rich.console import RenderGroup
+from rich.padding import Padding
+from rich.panel import Panel as RichPanel
+from rich.tree import Tree as RichTree
+
 from ..config import DATABASES
 from ..meta import __path__, __time__
 from ..utils import ShortChoice, write_yaml, update_nested_dict, create_dirs
@@ -36,6 +42,7 @@ from ..utils import ShortChoice, write_yaml, update_nested_dict, create_dirs
               type=ShortChoice(list(DATABASES['busco']['lineages']), case_sensitive=False),
               help='BUSCO group(s) to use/install.')
 @click.option('--n-threads',
+              envvar='DAMMIT_N_THREADS',
               type=int,
               help='Number of threads for overall workflow execution')
 @click.option('--max-threads-per-task',
@@ -82,6 +89,8 @@ def run_group(config,
     '''
 
     print(config.banner, file=sys.stderr)
+    config.gui.param_tree = RichTree('📔 Configuration')
+
 
     if database_dir:
         config.core['database_dir'] = os.path.abspath(database_dir)
@@ -114,6 +123,19 @@ def run_group(config,
 
     if pipeline:
         config.core['pipeline'] = pipeline
+
+    config.gui.core_params = config.gui.param_tree.add(
+        RenderGroup(
+            '🌐 Global params',
+            RichPanel(f"{'Pipeline:'.ljust(25)} {config.core['pipeline']}\n"
+                      f"{'BUSCO groups:'.ljust(25)} {', '.join(config.core['busco_groups'])}\n"
+                      f"{'Databases:'.ljust(25)} {config.core['database_dir']}\n"
+                      f"{'Conda Environments:'.ljust(25)} {config.core['conda_env_dir']}\n"
+                      f"{'Threads (total):'.ljust(25)} {config.core['n_threads']}\n"
+                      f"{'Threads (per-task):'.ljust(25)} {config.core['max_threads_per_task']}",
+                      expand=True),
+        )
+    )
 
 
 @run_group.command('annotate')
@@ -193,7 +215,6 @@ def annotate_cmd(config,
 
     # config file for *this run*. gets put in the dammit output directory
     workflow_config_file = os.path.join(output_dir, 'run.config.yml')
-    print(f'Writing full run config to {workflow_config_file}', file=sys.stderr)
     write_yaml(config.core, workflow_config_file)
 
     # Build snakemake command
@@ -207,7 +228,28 @@ def annotate_cmd(config,
 
     cmd.extend(targets)
 
-    print("Command: " + " ".join(cmd), file=sys.stderr)
+    config.gui.annot_params = config.gui.param_tree.add(
+        RenderGroup(
+            '🖊️ Annotation params',
+            RichPanel(f"{'Input:'.ljust(25)} {config.core['input_transcriptome']}\n"
+                      f"{'Output:'.ljust(25)} {config.core['output_dir']}\n"
+                      f"{'E-value Cutoff (global):'.ljust(25)} {config.core['global_evalue']}\n"
+                      f"{'User databases:'.ljust(25)} {', '.join(config.core['user_dbs'])}\n"
+                      f"{'Run config:'.ljust(25)} {workflow_config_file}",
+                      expand=True),
+        )
+    )
+
+    config.gui.snakemake_cnd = config.gui.param_tree.add(
+        RenderGroup(
+            '🐍 Snakemake Invocation',
+            RichPanel(" ".join(cmd))
+        )
+    )
+    richprint(config.gui.param_tree)
+
+    richprint('\n▶️  Beginning workflow execution...\n')
+
     try:
         subprocess.check_call(cmd)
     except subprocess.CalledProcessError as e:
@@ -240,7 +282,6 @@ def databases_cmd(config, install):
 
     workflow_config_file = os.path.join(output_dir,
                                         f'config.yml')
-    print(f'Writing full run config to {workflow_config_file}', file=sys.stderr)
     write_yaml(config.core, workflow_config_file)
 
     pipeline_config = config.pipelines['pipelines'][config.core['pipeline']]
@@ -259,7 +300,27 @@ def databases_cmd(config, install):
 
     # finally, add targets
     cmd.extend(targets)
-    print("Command: " + " ".join(cmd), file=sys.stderr)
+
+    config.gui.annot_params = config.gui.param_tree.add(
+        RenderGroup(
+            '🗄️ Database params',
+            RichPanel( f"{'Run config:'.ljust(25)} {workflow_config_file}",
+                      expand=True),
+        )
+    )
+
+    config.gui.snakemake_cnd = config.gui.param_tree.add(
+        RenderGroup(
+            '🐍 Snakemake Invocation',
+            RichPanel(" ".join(cmd))
+        )
+    )
+    richprint(config.gui.param_tree)
+
+    if install:
+        richprint('\n▶️  Beginning workflow execution...\n')
+    else:
+        richprint('\n❔ Database status (use with `--install` to run database installation pipeline):\n')
 
     try:
         subprocess.check_call(cmd)
@@ -267,9 +328,6 @@ def databases_cmd(config, install):
         print(f'Error in snakemake invocation: {e}', file=sys.stderr)
         sys.exit(e.returncode)
     
-    if not install:
-        print('Use with `--install` to run database installation pipeline.')
-
 
 def generate_database_targets(pipeline_info, config):
     targets = []
@@ -277,7 +335,10 @@ def generate_database_targets(pipeline_info, config):
     database_dir = config.core['database_dir']
 
     for db in pipeline_databases:
-        fn = config.databases[db]["filename"]
+        try:
+            fn = config.databases[db]["filename"]
+        except:
+            continue
         out_suffixes = config.databases[db]["output_suffix"]
         targets += [fn + suffix for suffix in out_suffixes]
     targets = [os.path.join(database_dir, targ) for targ in targets]

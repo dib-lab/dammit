@@ -16,6 +16,7 @@ from dammit import cloup
 from dammit.log import start_logging
 from dammit.config import get_config_obj
 from dammit.meta import __version__, __authors__, __description__, __year__, __path__
+from dammit.utils import Namespace
 
 from dammit.components.convert import (maf_to_gff3_cmd,
                                        shmlast_to_gff3_cmd,
@@ -55,6 +56,7 @@ def main(ctx, config_file):
 
     CONFIG = get_config_obj(config_file)
     CONFIG.banner = banner
+    CONFIG.gui = Namespace()
     ctx.obj = CONFIG
 
 
@@ -63,15 +65,18 @@ main.section('Primary annotation and configuration commands',
     config_group
 )
 
+
 main.section('FASTA munging commands',
     rename_fasta_cmd,
     transcriptome_stats_cmd,
     annotate_fasta_cmd
 )
 
+
 main.section('Filtering commands',
     maf_best_hits_cmd
 )
+
 
 main.section('Conversion commands',
     maf_to_gff3_cmd,
@@ -79,6 +84,7 @@ main.section('Conversion commands',
     hmmscan_to_gff3_cmd,
     cmscan_to_gff3_cmd
 )
+
 
 main.section('Transformation commands',
     merge_gff3_cmd,
