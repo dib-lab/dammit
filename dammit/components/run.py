@@ -282,7 +282,6 @@ def databases_cmd(config, install):
 
     workflow_config_file = os.path.join(output_dir,
                                         f'config.yml')
-    print(f'Writing full run config to {workflow_config_file}', file=sys.stderr)
     write_yaml(config.core, workflow_config_file)
 
     pipeline_config = config.pipelines['pipelines'][config.core['pipeline']]
@@ -339,7 +338,7 @@ def generate_database_targets(pipeline_info, config):
         try:
             fn = config.databases[db]["filename"]
         except:
-            pass
+            continue
         out_suffixes = config.databases[db]["output_suffix"]
         targets += [fn + suffix for suffix in out_suffixes]
     targets = [os.path.join(database_dir, targ) for targ in targets]
