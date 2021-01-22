@@ -54,18 +54,12 @@ wildcard_constraints:
     database = "(?!x\.).+"
 
 
-onstart:
-    print("------------------------------")
-    print("Just annotate it, dammit!") 
-    print("------------------------------")
-
-
 onsuccess:
-    print("\n--- Workflow executed successfully! ---\n")
+    print("\n🟢 Workflow completed!")
 
 
 onerror:
-    print("Nope.\n")
+    print("\n🔴 Workflow encountered an error.")
 
 
 '''

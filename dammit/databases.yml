@@ -79,7 +79,6 @@ busco:
   url: https://gitlab.com/ezlab/busco/-/raw/4.0.6/config/config.ini
   access: download
   fileformat: uncompressed
-  filename: busco.ini
   output_suffix:
     - ""
   # to update lineage list:

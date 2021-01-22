@@ -51,6 +51,10 @@ def touch(filename):
     open(filename, 'a').close()
 
 
+class Namespace:
+    pass
+
+
 def read_yaml(filename):
     with open(filename, 'r') as stream:
         try:

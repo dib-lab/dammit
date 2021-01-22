@@ -1,5 +1,6 @@
 import os
 import shutil
+import sys
 
 from dammit.utils import create_dirs
 from dammit.meta import __wrappers__
@@ -29,9 +30,13 @@ def monkeysession(request):
 
 @pytest.fixture(scope='session', autouse=True)
 def setup_test_environment(monkeysession, tmpdir_factory):
-    testing_temp_base_dir = tmpdir_factory.mktemp('dammit-testing-temp-base')
+    testing_temp_base_dir = os.getenv('DAMMIT_TESTING_TEMP_BASE_DIR')
+    if testing_temp_base_dir is None:
+        testing_temp_base_dir = tmpdir_factory.mktemp('dammit-testing-temp-base')
+    print('Testing temp base directory:', testing_temp_base_dir, file=sys.stderr)
     testing_temp_temp_dir = os.path.join(testing_temp_base_dir, 'temp')
     testing_conda_dir     = os.path.join(testing_temp_base_dir, 'envs')
+
     create_dirs([testing_temp_temp_dir, testing_conda_dir])
     monkeysession.setenv('DAMMIT_TEMP_DIR', str(testing_temp_temp_dir))
     monkeysession.setenv('DAMMIT_CONDA_DIR', str(testing_conda_dir))
