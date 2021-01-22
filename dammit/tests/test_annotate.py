@@ -127,7 +127,7 @@ class TestDammitAnnotate:
             assert open(fasta_fn).read() == open(exp_fasta).read()
 
     def test_annotate_basename(self, tmpdir, datadir):
-        '''--pipeline quick annotate --base-name [NAME] [INPUT.fa]
+        '''Test annotate --base_name
         '''
 
         with tmpdir.as_cwd():
@@ -153,14 +153,14 @@ class TestDammitAnnotate:
             transcripts = datadir('pom.20.fa')
 
             outdir = 'test_out'
-            args = ['run', 'annotate', '--quick', transcripts, '-o', outdir]
+            args = ['run', '--pipeline', 'quick', 'annotate',
+                    transcripts, '--output-dir', outdir]
             status, out, err = run(*args)
             assert os.path.isfile(os.path.join(outdir, 'pom.20.fasta'))
 
-
-# make sure DAMMIT_DB_DIR is set in your testing env
-# (export DAMMIT_DB_DIR=/path/to/databases)
-    def test_annotate_dbdir_fail(tmpdir, datadir):
+    # make sure DAMMIT_DB_DIR is set in your testing env
+    # (export DAMMIT_DB_DIR=/path/to/databases)
+    def test_annotate_dbdir_fail(self, tmpdir, datadir):
         '''Test annotation with a faulty database directory.
            dammit run --database-dir [DB_DIR] annotate [INPUT.fa]
         '''
@@ -168,22 +168,24 @@ class TestDammitAnnotate:
         with tmpdir.as_cwd():
             transcripts = datadir('pom.20.fa')
 
-            args = ['run', '--database-dir', '.', 'annotate', transcripts]
+            args = ['run', '--pipeline', 'quick', '--database-dir', '.', 'annotate', transcripts]
             status, out, err = run(*args, fail_ok=True)
             print(status, out, err)
-            assert 'you probably need to install the dammit databases' in err
 
-            #assert 'install databases to continue' in out
+            assert 'you probably need to install the dammit databases' in err
             assert status == 1
 
 
-    def test_annotate_dbdir(tmpdir, datadir):
+    def test_annotate_dbdir(self, tmpdir, datadir):
         '''Test that --database-dir works.
         '''
 
         with tmpdir.as_cwd():
             transcripts = datadir('pom.20.fa')
             database_dir = os.environ['DAMMIT_DB_DIR']
+            exp_gff3 = datadir('pom.20.udb.dammit.gff3')
+            exp_fasta = datadir('pom.20.udb.dammit.fasta')
+
             args = ['run', '--database-dir', database_dir, '--pipeline', 'quick', 'annotate',  transcripts]
             status, out, err = run(*args)
 
@@ -194,5 +196,28 @@ class TestDammitAnnotate:
             assert status == 0
             assert compare_gff(gff3_fn, exp_gff3)
             assert open(fasta_fn).read() == open(exp_fasta).read()
+
+
+    def test_temp_dir(self, tmpdir, datadir):
+        '''Test that --temp-dir works.
+        '''
+
+        with tmpdir.as_cwd():
+            transcripts = datadir('pom.20.fa')
+            exp_gff3 = datadir('pom.20.udb.dammit.gff3')
+            exp_fasta = datadir('pom.20.udb.dammit.fasta')
+            database_dir = os.environ['DAMMIT_DB_DIR']
+            dammit_temp_dir = "."
+            args = ['run', '--temp-dir', dammit_temp_dir, '--pipeline', 'quick', 'annotate',  transcripts]
+            status, out, err = run(*args)
+
+            outdir = 'pom.20.dammit'
+            gff3_fn = os.path.join(outdir, 'pom.20.dammit.gff3')
+            fasta_fn = os.path.join(outdir, 'pom.20.dammit.fasta')
+
+            assert status == 0
+          #  assert "" in dammit_temp_dir
+           # assert compare_gff(gff3_fn, exp_gff3)
+           # assert open(fasta_fn).read() == open(exp_fasta).read()
 
 
