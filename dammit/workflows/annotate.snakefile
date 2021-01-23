@@ -23,6 +23,25 @@ rule dammit_rename_transcriptome:
     script: f'file://{__path__}/wrappers/dammit/rename-transcriptome.wrapper.py'
 
 
+rule dammit_transcriptome_stats:
+    message:
+        """
+        Calculate some basic stats and metrics on the input transcriptome.
+        """
+    input:
+        fasta = os.path.join(results_dir, '{transcriptome}.fasta')
+    output:
+        stats_fn = os.path.join(results_dir, '{transcriptome}.stats.json'),
+        per_transcript_fn = os.path.join(results_dir, '{transcriptome}.per-transcript-stats.csv')
+    log:
+        os.path.join(logs_dir, '{transcriptome}.stats.log')
+    threads: 1
+    shell:
+        """
+        dammit transcriptome-stats {input.fasta} {output.stats_fn} {output.per_transcript_fn}
+        """
+
+
 rule transdecoder_longorfs:
     message: 
         """

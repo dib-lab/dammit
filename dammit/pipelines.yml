@@ -6,6 +6,7 @@ pipelines:
       - transdecoder_longorfs
       - transdecoder_predict
       - shmlast
+      - transcriptome_stats
     databases:
       - busco
   default:

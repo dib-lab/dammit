@@ -94,7 +94,7 @@ def rename_fasta_cmd(fasta_fn,
     rename_fasta(fasta_fn, output_fn, names_fn, basename, split_regex)
 
 
-def transcriptome_stats(transcriptome_fn, output_fn, k):
+def transcriptome_stats(transcriptome_fn, output_fn, per_contig_fn, k):
     '''Run basic metrics on a transcriptome.
     \f
 
@@ -137,7 +137,7 @@ def transcriptome_stats(transcriptome_fn, output_fn, k):
             # just assume gc content is .5 as a prior i suppose
             gc_len += contig_n_ambiguous // 2
 
-        S = pd.Series(lens, index=names)
+        S = pd.Series(lens, index=names, name='length')
         try:
             S.sort_values()
         except AttributeError:
@@ -188,18 +188,21 @@ def transcriptome_stats(transcriptome_fn, output_fn, k):
 
     with open(output_fn, 'r') as fp:
         print(fp.read())
+    
+    lens.to_csv(per_contig_fn)
 
 
 @click.command('transcriptome-stats')
 @click.argument('transcriptome_fn')
 @click.argument('output_fn')
+@click.argument('per_contig_output_fn')
 @click.option('-K', default=25, type=int, 
               help='k-mer size for k-mer analysis.')
-def transcriptome_stats_cmd(transcriptome_fn, output_fn, k):
+def transcriptome_stats_cmd(transcriptome_fn, output_fn, per_contig_output_fn, k):
     ''' Run basic metrics on a transcriptome
     '''
 
-    transcriptome_stats(transcriptome_fn, output_fn, k)
+    transcriptome_stats(transcriptome_fn, output_fn, per_contig_output_fn, k)
 
 
 def generate_sequence_name(original_name, sequence, annotation_df):

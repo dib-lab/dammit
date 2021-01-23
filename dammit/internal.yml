@@ -79,3 +79,8 @@ transdecoder_predict:
 rename_transcriptome:
   output_suffix:
     - .fasta
+
+transcriptome_stats:
+  output_suffix:
+    - .stats.json
+    - .per-transcript-stats.csv
