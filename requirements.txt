@@ -5,3 +5,4 @@ shmlast>=1.2
 click
 ope>=0.8
 snakemake==5.20.1
+rich
