@@ -9,6 +9,7 @@ dependencies:
   - matplotlib-base
   - mamba
   - pyyaml
+  - curl
   - yaml
   - pandas
   - pytest
