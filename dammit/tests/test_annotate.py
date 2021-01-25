@@ -202,20 +202,79 @@ class TestDammitAnnotate:
 
         with tmpdir.as_cwd():
             transcripts = datadir('pom.20.fa')
-            exp_gff3 = datadir('pom.20.udb.dammit.gff3')
-            exp_fasta = datadir('pom.20.udb.dammit.fasta')
-            database_dir = os.environ['DAMMIT_DB_DIR']
             dammit_temp_dir = "."
             args = ['run', '--temp-dir', dammit_temp_dir, '--pipeline', 'quick', 'annotate',  transcripts]
             status, out, err = run(*args)
 
             outdir = 'pom.20.dammit'
-            gff3_fn = os.path.join(outdir, 'pom.20.dammit.gff3')
-            fasta_fn = os.path.join(outdir, 'pom.20.dammit.fasta')
 
             assert status == 0
-          #  assert "" in dammit_temp_dir
-           # assert compare_gff(gff3_fn, exp_gff3)
-           # assert open(fasta_fn).read() == open(exp_fasta).read()
+            tempd_contents = os.listdir(dammit_temp_dir)
+            assert "pom.20.fa" in tempd_contents
+            assert "pom.20.dammit" in tempd_contents
+
+
+    def test_busco_group(self, tmpdir, datadir):
+        '''Test that --busco-group works.
+        '''
+
+        with tmpdir.as_cwd():
+            transcripts = datadir('pom.20.fa')
+            dammit_temp_dir = "."
+            args = ['run', '--busco-group', 'bacteria_odb10', '--pipeline', 'quick', 'annotate',  transcripts]
+            status, out, err = run(*args)
+            outdir = 'pom.20.dammit'
+
+            assert status == 0
+            assert os.path.isfile(os.path.join(outdir, "pom.20.busco/bacteria_odb10_outputs/run_bacteria_odb10/short_summary.txt"))
+
+    def test_max_threads_per_task(self, tmpdir, datadir):
+        '''Test that --max_threads_per_task works.
+        '''
+
+        with tmpdir.as_cwd():
+            transcripts = datadir('pom.20.fa')
+            args = ['run', '--max-threads-per-task', 1, '--pipeline', 'quick', 'annotate',  transcripts]
+            status, out, err = run(*args)
+            outdir = 'pom.20.dammit'
+
+            print(status, out, err)
+
+            assert status == 0
+            assert "Threads (per-task):       1" in out
+
+## do we not enable this anymore?
+    #def test_config_file(self, tmpdir, datadir):
+    #    '''Test that --config-file works.
+    #    '''
+#
+ #       with tmpdir.as_cwd():
+ #           transcripts = datadir('pom.20.fa')
+ #           conf = datadir('test-conf.yml')
+ #           args = ['run', '--config-file', conf, 'annotate',  transcripts]
+ #           status, out, err = run(*args)
+ #           outdir = 'pom.20.dammit'
+#
+#            print(status, out, err)
+#
+#            assert status == 0
+
+
+    def test_busco_config_file(self, tmpdir, datadir):
+        '''Test that --busco-config-file works.
+        '''
+
+        with tmpdir.as_cwd():
+            transcripts = datadir('pom.20.fa')
+            conf = datadir('test-busco-conf.ini')
+            args = ['run', '--busco-config-file', conf, 'annotate',  transcripts]
+            status, out, err = run(*args)
+            outdir = 'pom.20.dammit'
+
+            print(status, out, err)
+            assert status == 0
+
+
+
 
 
