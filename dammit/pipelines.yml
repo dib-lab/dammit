@@ -19,7 +19,7 @@ pipelines:
       - cmscan
       - lastal
       - shmlast
-      - transcriptome_stat
+      - transcriptome_stats
     databases:
       - Pfam-A
       - Rfam
@@ -36,7 +36,7 @@ pipelines:
       - cmscan
       - lastal
       - shmlast
-      - transcriptome_stat
+      - transcriptome_stats
     databases:
       - Pfam-A
       - Rfam
@@ -54,7 +54,7 @@ pipelines:
       - cmscan
       - lastal
       - shmlast
-      - transcriptome_stat
+      - transcriptome_stats
     databases:
       - Pfam-A
       - Rfam
