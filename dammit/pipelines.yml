@@ -4,11 +4,13 @@ pipelines:
       - rename_transcriptome
       - busco
       - transdecoder_longorfs
+      - hmmscan
       - transdecoder_predict
       - shmlast
       - transcriptome_stats
     databases:
       - busco
+      - Pfam-A
   default:
     programs:
       - rename_transcriptome
