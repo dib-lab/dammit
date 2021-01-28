@@ -1,0 +1,56 @@
+name: Tests
+
+on:
+  push:
+    branches: [latest]
+  pull_request:
+    branches: [latest]
+  schedule:
+    - cron: "0 0 * * 0" # weekly
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-18.04, macos-latest]
+        py: [3.7, 3.8, 3.9]
+    defaults:
+      run:
+        shell: bash -l {0}
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: cache conda
+        uses: actions/cache@v1
+        env:
+          CACHE_NUMBER: 0
+        with:
+          path: ~/conda_pkgs_dir
+          key:
+            ${{ runner.os }}-conda-${{ env.CACHE_NUMBER }}-${{
+            hashFiles('environment.yml') }}
+
+      - name: setup conda
+        uses: conda-incubator/setup-miniconda@v2
+        with:
+          auto-update-conda: true
+          python-version: ${{ matrix.py }}
+          mamba-version: "*"
+          channels: conda-forge,bioconda,defaults
+          activate-environment: dammit-env
+          environment-file: environment.yml
+          auto-activate-base: false
+          use-only-tar-bz2: true
+
+      - name: setup databases
+        env:
+          DAMMIT_DB_DIR: '$HOME/dammitdb'
+        run: |
+          dammit run --pipeline quick databases --install
+
+      - name: run pytest
+        run: |
+          py.test -m "not long and not huge and not requires_databases"
