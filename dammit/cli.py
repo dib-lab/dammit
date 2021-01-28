@@ -5,7 +5,6 @@
 # of the BSD license.  See the LICENSE file for details.
 
 from copy import deepcopy
-import logging
 import os
 
 import click
@@ -13,7 +12,6 @@ import click
 # TODO: put cloup on conda so we don't have to vendor it
 from dammit import cloup
 
-from dammit.log import start_logging
 from dammit.config import get_config_obj
 from dammit.meta import __version__, __authors__, __description__, __year__, __path__
 from dammit.utils import Namespace
@@ -51,9 +49,6 @@ by {" and ".join(__authors__)}
               help='A YAML or JSON file providing values to override'\
                    ' built-in config. Advanced use only!')
 def main(ctx, config_file):
-    #logger = logging.getLogger('dammit.component')
-    #start_logging()
-
     CONFIG = get_config_obj(config_file)
     CONFIG.banner = banner
     CONFIG.gui = Namespace()

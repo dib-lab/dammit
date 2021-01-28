@@ -5,11 +5,7 @@
 # of the BSD license.  See the LICENSE file for details.
 
 import os
-import stat
-import pandas as pd
 import pytest
-import traceback
-import sys
 
 from ope.io import gff3
 
