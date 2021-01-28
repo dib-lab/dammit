@@ -4,23 +4,13 @@
 # This software may be modified and distributed under the terms
 # of the BSD license.  See the LICENSE file for details.
 
-from distutils import dir_util
 import os
 from io import StringIO
-import logging
 import traceback
-import shutil
 import stat
 import subprocess
 import sys
-import warnings as _warnings
-from pkg_resources import Requirement, resource_filename, ResolutionError
-from tempfile import mkdtemp
 
-from dammit import log
-
-log.start_logging(test=True)
-logger = logging.getLogger('Tests')
 
 '''
 BATCH EFFECTS -- The Notorious A.T.G.
@@ -41,12 +31,6 @@ BATCH EFFECTS
 (*batch effects*)
 
 '''
-
-
-try:
-    from StringIO import StringIO
-except ImportError:
-    from io import StringIO
 
 
 def touch(filename):
