@@ -112,8 +112,9 @@ class TestTranscriptomeStats:
         with tmpdir.as_cwd():
             transcript = datadir('test-transcript.fa')
             output_fn = str(tmpdir.join('test'))
+            lens_fn = str(tmpdir.join('lens'))
 
-            status, out, err = run('transcriptome-stats', transcript, output_fn)
+            status, out, err = run('transcriptome-stats', transcript, output_fn, lens_fn)
 
             with open(output_fn) as fp:
                 results = json.load(fp)
@@ -134,8 +135,9 @@ class TestTranscriptomeStats:
         with tmpdir.as_cwd():
             transcript = datadir('test-transcript.fa')
             output_fn = str(tmpdir.join('test'))
+            lens_fn = str(tmpdir.join('lens'))
 
-            status, out, err = run('transcriptome-stats', '-K', '27', transcript, output_fn)
+            status, out, err = run('transcriptome-stats', '-K', '27', transcript, output_fn, lens_fn)
 
             with open(output_fn) as fp:
                 results = json.load(fp)
@@ -149,8 +151,9 @@ class TestTranscriptomeStats:
         with tmpdir.as_cwd():
             transcript = datadir('non-actg-transcripts.fa')
             output_fn = str(tmpdir.join('test'))
+            lens_fn = str(tmpdir.join('lens'))
 
-            status, out, err = run('transcriptome-stats', transcript, output_fn)
+            status, out, err = run('transcriptome-stats', transcript, output_fn, lens_fn)
             
             assert status == -1
             assert 'Offending' in err
@@ -160,8 +163,9 @@ class TestTranscriptomeStats:
         with tmpdir.as_cwd():
             transcript = datadir('test-transcript-N.fa')
             output_fn = str(tmpdir.join('test'))
+            lens_fn = str(tmpdir.join('lens'))
 
-            status, out, err = run('transcriptome-stats', transcript, output_fn)
+            status, out, err = run('transcriptome-stats', transcript, output_fn, lens_fn)
             
             with open(output_fn) as fp:
                 results = json.load(fp)
