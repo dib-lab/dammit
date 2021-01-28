@@ -72,7 +72,7 @@ class TestDammitAnnotate:
   
     @pytest.mark.parametrize('n_threads', (1,4))
     def test_annotate_user_database(self, tmpdir, datadir, n_threads):
-        '''--pipeline quick annotate --user-database [PEP.fa] [INPUT.fa]
+        '''--n-threads [N] --pipeline quick annotate --user-database [PEP.fa] [INPUT.fa]
         '''
 
         with tmpdir.as_cwd():

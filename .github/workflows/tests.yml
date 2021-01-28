@@ -1,0 +1,76 @@
+name: Tests
+
+on:
+  push:
+    branches: [latest, master, v2_staging]
+  pull_request:
+    branches: [latest, master, v2_staging]
+  schedule:
+    - cron: "0 0 * * 0" # weekly
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-18.04]
+        py: [3.7, 3.8]
+    defaults:
+      run:
+        shell: bash -l {0}
+    env: 
+      DAMMIT_DB_DIR: /home/runner/databases
+      DAMMIT_CONDA_DIR: /home/runner/snakemake-envs-${{ matrix.os }}
+      DAMMIT_TESTING_TEMP_BASE_DIR: /home/runner/snakemake-envs-${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: cache conda
+        uses: actions/cache@v1
+        env:
+          CACHE_NUMBER: 0
+        with:
+          path: ~/conda_pkgs_dir
+          key:
+            ${{ runner.os }}-conda-${{ env.CACHE_NUMBER }}-${{
+            hashFiles('environment.yml') }}
+
+      - name: setup conda
+        uses: conda-incubator/setup-miniconda@v2
+        with:
+          auto-update-conda: true
+          python-version: ${{ matrix.py }}
+          mamba-version: "*"
+          channels: conda-forge,bioconda,defaults
+          activate-environment: dammit-env
+          environment-file: environment.yml
+          auto-activate-base: false
+          use-only-tar-bz2: true
+      
+      - name: cache databases
+        uses: actions/cache@v2
+        with:
+          path: |
+            /home/runner/databases/Pfam-A.hmm
+            /home/runner/databases/Pfam-A.hmm.h3f
+            /home/runner/databases/Pfam-A.hmm.h3i
+            /home/runner/databases/Pfam-A.hmm.h3m
+            /home/runner/databases/Pfam-A.hmm.h3p
+          key: databases-${{ hashFiles('dammit/databases.yml') }}
+
+      - name: setup databases
+        run: |
+          dammit run --pipeline quick databases --install
+      
+      - name: cache snakemake-conda
+        uses: actions/cache@v2
+        with:
+          path: |
+            /home/runner/snakemake-envs-${{ matrix.os }}
+          key: ${{ matrix.os }}-snakemake-envs
+
+      - name: run pytest
+        run: |
+          py.test -s -m "not long and not huge and not requires_databases"
