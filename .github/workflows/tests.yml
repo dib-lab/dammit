@@ -2,9 +2,9 @@ name: Tests
 
 on:
   push:
-    branches: [latest]
+    branches: [latest, master, v2_staging]
   pull_request:
-    branches: [latest]
+    branches: [latest, master, v2_staging]
   schedule:
     - cron: "0 0 * * 0" # weekly
 
