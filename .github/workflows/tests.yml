@@ -19,7 +19,8 @@ jobs:
       run:
         shell: bash -l {0}
     env: 
-      DAMMIT_DB_DIR: /home/runner/dammitdb
+      DAMMIT_DB_DIR: /home/runner/databases
+      DAMMIT_CONDA_DIR: /home/runner/snakemake-envs-${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
         with:
@@ -50,6 +51,13 @@ jobs:
       - name: setup databases
         run: |
           dammit run --pipeline quick databases --install
+      
+      - name: cache snakemake-conda
+        uses: actions/cache@v2
+        with:
+          path: |
+            /home/runner/snakemake-envs-${{ matrix.os }}
+          key: ${{ matrix.os }}-snakemake-envs
 
       - name: run pytest
         run: |
