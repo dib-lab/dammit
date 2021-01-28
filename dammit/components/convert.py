@@ -18,6 +18,42 @@ from ..convert import CMScan_to_GFF3, HMMScan_to_GFF3, MAF_to_GFF3, Shmlast_to_G
 from ..utils import touch
 
 
+@click.command(name='busco-to-gff3')
+@click.argument('busco_table_filename')
+@click.argument('transcript_lengths_filename')
+@click.argument('output_filename')
+def busco_to_gff3_cmd(busco_table_filename, transcript_lengths_filename, output_filename):
+    '''Convert a BUSCO full_table.tsv to GFF3.
+
+    Because BUSCO does not output exact coordinates in transcriptome
+    mode, the features are set to cover the entire target transcript.
+    If the BUSCO outputs are updated to include the exact coordinates in the
+    future, this will be changed.
+    \f
+
+    Args:
+        busco_table_filename (str): The input full_table.tsv.
+        transcript_lengths_filename (str): A CSV file contained the lengths of all transcripts.
+        output_filename (str): Destination for GFF3 output.
+    '''
+
+    busco_df = pd.read_csv(busco_table_filename, delimiter='\t',
+                           names=['BUSCO_id', 'Status', 'Sequence', 'Score', 'Length'],
+                           error_bad_lines=False,
+                           comment='#')
+    lens_df  = pd.read_csv(transcript_lengths_filename,
+                           names=['ID', 'Length'],
+                           header=0)
+
+    print(busco_df)
+    print(lens_df.head())
+
+    merged_df = pd.merge(busco_df, lens_df, left_on='Sequence', right_on='ID')
+    print(merged_df)
+
+
+
+
 @click.command(name='maf-to-gff3')
 @click.argument('input_filename')
 @click.argument('output_filename')
