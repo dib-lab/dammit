@@ -19,7 +19,7 @@ jobs:
       run:
         shell: bash -l {0}
     env: 
-      DAMMIT_DB_DIR: ~/dammitdb
+      DAMMIT_DB_DIR: /home/runner/dammitdb
     steps:
       - uses: actions/checkout@v2
         with:
