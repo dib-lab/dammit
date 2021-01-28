@@ -46,8 +46,6 @@ jobs:
           use-only-tar-bz2: true
 
       - name: setup databases
-        env:
-          DAMMIT_DB_DIR: '$HOME/dammitdb'
         run: |
           dammit run --pipeline quick databases --install
 
