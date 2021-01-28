@@ -1,10 +1,9 @@
-name: dammit
+name: dammit-env
 channels:
   - conda-forge
   - bioconda
   - defaults
 dependencies:
-  - python >=3.6
   - snakemake-minimal =5.20.1
   - matplotlib-base
   - mamba
