@@ -18,6 +18,8 @@ jobs:
     defaults:
       run:
         shell: bash -l {0}
+    env: 
+      DAMMIT_DB_DIR: ~/dammitdb
     steps:
       - uses: actions/checkout@v2
         with:
