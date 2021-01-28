@@ -14,7 +14,7 @@ from ope.io.hmmer import HMMerParser
 from ope.io.gff3 import GFF3Writer
 from ope.io.maf import MafParser
 
-from ..convert import CMScan_to_GFF3, HMMScan_to_GFF3, MAF_to_GFF3, Shmlast_to_GFF3
+from ..convert import BUSCO_to_GFF3, CMScan_to_GFF3, HMMScan_to_GFF3, MAF_to_GFF3, Shmlast_to_GFF3
 from ..utils import touch
 
 
@@ -38,18 +38,22 @@ def busco_to_gff3_cmd(busco_table_filename, transcript_lengths_filename, output_
     '''
 
     busco_df = pd.read_csv(busco_table_filename, delimiter='\t',
-                           names=['BUSCO_id', 'Status', 'Sequence', 'Score', 'Length'],
+                           names=['BUSCO_id', 'Status', 'Sequence', 'Score', 'Length_busco'],
                            error_bad_lines=False,
                            comment='#')
     lens_df  = pd.read_csv(transcript_lengths_filename,
-                           names=['ID', 'Length'],
+                           names=['ID', 'Length_tx'],
                            header=0)
 
-    print(busco_df)
-    print(lens_df.head())
-
     merged_df = pd.merge(busco_df, lens_df, left_on='Sequence', right_on='ID')
-    print(merged_df)
+
+    writer = GFF3Writer(filename=output_filename,
+                        converter=BUSCO_to_GFF3)
+    
+    try:
+        writer.write(merged_df)
+    except EmptyFile:
+        touch(output_filename)
 
 
 

@@ -199,10 +199,10 @@ class BUSCO_to_GFF3(GFF3Converter):
         return [self.ftype] * len(self.from_df)
     
     def start(self):
-        return [1] * len(self.from_df)
+        return [0] * len(self.from_df)
     
     def end(self):
-        return self.from_df['Length']
+        return self.from_df['Length_tx']
     
     def score(self):
         return self.from_df['Score']
@@ -217,6 +217,9 @@ class BUSCO_to_GFF3(GFF3Converter):
         return 'busco:' + IDs
     
     def attr_from_row(self, row):
-        attrs = {}
+        attrs = {'Name': '{0}'.format(row.BUSCO_id),
+                 'length': '{0}'.format(row.Length_busco),
+                 'status': '{0}'.format(row.Status)} 
+        
 
         return attrs
