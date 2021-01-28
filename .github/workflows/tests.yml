@@ -47,6 +47,17 @@ jobs:
           environment-file: environment.yml
           auto-activate-base: false
           use-only-tar-bz2: true
+      
+      - name: cache databases
+        uses: actions/cache@v2
+        with:
+          path: |
+            /home/runner/databases/Pfam-A.hmm
+            /home/runner/databases/Pfam-A.hmm.h3f
+            /home/runner/databases/Pfam-A.hmm.h3i
+            /home/runner/databases/Pfam-A.hmm.h3m
+            /home/runner/databases/Pfam-A.hmm.h3p
+          key: databases-${{ hashFiles('dammit/databases.yml') }}
 
       - name: setup databases
         run: |
@@ -61,4 +72,4 @@ jobs:
 
       - name: run pytest
         run: |
-          py.test -m "not long and not huge and not requires_databases"
+          py.test -s -m "not long and not huge and not requires_databases"
