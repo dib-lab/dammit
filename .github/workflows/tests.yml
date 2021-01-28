@@ -21,6 +21,7 @@ jobs:
     env: 
       DAMMIT_DB_DIR: /home/runner/databases
       DAMMIT_CONDA_DIR: /home/runner/snakemake-envs-${{ matrix.os }}
+      DAMMIT_TESTING_TEMP_BASE_DIR: /home/runner/snakemake-envs-${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
         with:
