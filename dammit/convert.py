@@ -181,3 +181,44 @@ class CMScan_to_GFF3(GFF3Converter):
             attrs['Note'] = '{0}'.format(row.description)
             
         return attrs
+
+
+class BUSCO_to_GFF3(GFF3Converter):
+
+    def __init__(self, busco_df, tag='BUSCO', database=''):
+        super().__init__(busco_df, tag=tag, database=database,
+                         ftype='BUSCO_ortholog')
+    
+    def seqid(self):
+        return self.from_df['ID']
+    
+    def source(self):
+        return [self.tag] * len(self.from_df)
+    
+    def feature_type(self):
+        return [self.ftype] * len(self.from_df)
+    
+    def start(self):
+        return [0] * len(self.from_df)
+    
+    def end(self):
+        return self.from_df['Length_tx']
+    
+    def score(self):
+        return self.from_df['Score']
+    
+    def strand(self):
+        return ['.'] * len(self.from_df)
+    
+    def phase(self):
+        return ['.'] * len(self.from_df)
+    
+    def ID_attr(self, IDs):
+        return 'busco:' + IDs
+    
+    def attr_from_row(self, row):
+        attrs = {'Name': '{0}'.format(row.BUSCO_id),
+                 'length': '{0}'.format(int(row.Length_busco)),
+                 'status': '{0}'.format(row.Status)} 
+        
+        return attrs

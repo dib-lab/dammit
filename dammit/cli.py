@@ -19,7 +19,8 @@ from dammit.utils import Namespace
 from dammit.components.convert import (maf_to_gff3_cmd,
                                        shmlast_to_gff3_cmd,
                                        hmmscan_to_gff3_cmd,
-                                       cmscan_to_gff3_cmd)
+                                       cmscan_to_gff3_cmd,
+                                       busco_to_gff3_cmd)
 from dammit.components.fastx import (rename_fasta_cmd,
                                      transcriptome_stats_cmd,
                                      annotate_fasta_cmd)
@@ -77,7 +78,8 @@ main.section('Conversion commands',
     maf_to_gff3_cmd,
     shmlast_to_gff3_cmd,
     hmmscan_to_gff3_cmd,
-    cmscan_to_gff3_cmd
+    cmscan_to_gff3_cmd,
+    busco_to_gff3_cmd
 )
 
 

@@ -38,6 +38,7 @@ busco:
   output_suffix: 
     - .busco/__buscolineage___outputs/run___buscolineage__/short_summary.txt
     - .busco/summary_figure.png
+    - .x.busco.__buscolineage__.gff3
   databases:
     - busco
   database_dir: busco2db

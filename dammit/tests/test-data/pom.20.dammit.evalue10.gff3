@@ -1,4 +1,5 @@
 ##gff-version 3.2.1
+Transcript_0	BUSCO	BUSCO_ortholog	1	5662	8.400000e+01	.	.	ID=busco:c175e99ae828326adaedd0e8e20181c562f2cc2a;Name=367596at33208a;length=154;status=Fragmented
 Transcript_0	HMMER	protein_hmm_match	1111	1203	1.300000e-01	.	.	ID=homology:2e076a6066924c018fa7552f30288daacba4faf2;Name=Poxvirus_B22R_N;Target=Poxvirus_B22R_N 33 63 +;accuracy=0.8;env_coords=1045 1227;Dbxref="Pfam-A:PF13169.2";Note=Poxvirus B22R protein N-terminal
 Transcript_0	HMMER	protein_hmm_match	2428	2499	3.900000e+03	.	.	ID=homology:38be140169ffd2aafe12780115712f5f5c3f9265;Name=Poxvirus_B22R_N;Target=Poxvirus_B22R_N 53 77 +;accuracy=0.78;env_coords=2407 2514;Dbxref="Pfam-A:PF13169.2";Note=Poxvirus B22R protein N-terminal
 Transcript_0	HMMER	protein_hmm_match	3604	4089	2.100000e-10	.	.	ID=homology:84650fc4aa4df19d561278cef53cd46b3c22f7a4;Name=DEAD;Target=DEAD 10 174 +;accuracy=0.75;env_coords=3580 4092;Dbxref="Pfam-A:PF00270.25";Note=DEAD/DEAH box helicase
