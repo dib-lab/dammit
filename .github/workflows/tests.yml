@@ -19,9 +19,9 @@ jobs:
       run:
         shell: bash -l {0}
     env: 
-      DAMMIT_DB_DIR: /home/runner/databases
-      DAMMIT_CONDA_DIR: /home/runner/snakemake-envs-${{ matrix.os }}
-      DAMMIT_TESTING_TEMP_BASE_DIR: /home/runner/snakemake-envs-${{ matrix.os }}
+      DAMMIT_DB_DIR: ${{ github.workspace }}/data/databases
+      DAMMIT_CONDA_DIR: ${{ github.workspace }}/data/snakemake-envs-${{ matrix.os }}
+      DAMMIT_TESTING_TEMP_BASE_DIR: ${{ github.workspace }}/data/snakemake-envs-${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
         with:
@@ -53,11 +53,11 @@ jobs:
         uses: actions/cache@v2
         with:
           path: |
-            /home/runner/databases/Pfam-A.hmm
-            /home/runner/databases/Pfam-A.hmm.h3f
-            /home/runner/databases/Pfam-A.hmm.h3i
-            /home/runner/databases/Pfam-A.hmm.h3m
-            /home/runner/databases/Pfam-A.hmm.h3p
+            ${{ env.DAMMIT_DB_DIR }}/Pfam-A.hmm
+            ${{ env.DAMMIT_DB_DIR }}/Pfam-A.hmm.h3f
+            ${{ env.DAMMIT_DB_DIR }}/Pfam-A.hmm.h3i
+            ${{ env.DAMMIT_DB_DIR }}/Pfam-A.hmm.h3m
+            ${{ env.DAMMIT_DB_DIR }}/Pfam-A.hmm.h3p
           key: databases-${{ hashFiles('dammit/databases.yml') }}
 
       - name: setup databases
@@ -68,7 +68,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: |
-            /home/runner/snakemake-envs-${{ matrix.os }}
+            ${{ env.DAMMIT_CONDA_DIR }}
           key: ${{ matrix.os }}-snakemake-envs
 
       - name: run pytest
