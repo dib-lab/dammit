@@ -3,6 +3,8 @@ __copyright__ = "Copyright 2019, Camille Scott"
 __email__ = "cswel@ucdavis.edu"
 __license__ = "MIT"
 
+import sys
+
 from snakemake.shell import shell
 log = snakemake.log_fmt_shell(stdout=False, stderr=True)
 
@@ -34,8 +36,11 @@ else:
     raise ValueError('Valid filetypes are "gz", "tar.gz", and "uncompressed"')
 
 if snakemake.params.get('md5'):
-    cmd.append('&& python -c "assert \'`md5sum {output} | '
-                'awk \'{{print $1}}\'`\' == \'{snakemake.params.md5}\', '
+    if sys.platform == 'darwin':
+        md5cmd = "md5 {output} | awk '{{print $4}}'"
+    else:
+        md5cmd = "md5sum {output} | awk '{{print $1}}'"
+    cmd.append('&& python -c "assert \'`' + md5cmd + '`\' == \'{snakemake.params.md5}\', '
                 '\'MD5sum does not match\'"')
 
 cmd.append("{log}")
