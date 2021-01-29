@@ -19,9 +19,9 @@ jobs:
       run:
         shell: bash -l {0}
     env: 
-      DAMMIT_DB_DIR: ${{ env.HOME }}/databases
-      DAMMIT_CONDA_DIR: ${{ env.HOME }}/snakemake-envs-${{ matrix.os }}
-      DAMMIT_TESTING_TEMP_BASE_DIR: ${{ env.HOME }}/snakemake-envs-${{ matrix.os }}
+      DAMMIT_DB_DIR: ${{ runner.temp }}/databases
+      DAMMIT_CONDA_DIR: ${{ runner.temp }}/snakemake-envs-${{ matrix.os }}
+      DAMMIT_TESTING_TEMP_BASE_DIR: ${{ runner.temp }}/snakemake-envs-${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
         with:
@@ -68,7 +68,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: |
-            ~/snakemake-envs-${{ matrix.os }}
+            ${{ env.DAMMIT_CONDA_DIR }}
           key: ${{ matrix.os }}-snakemake-envs
 
       - name: run pytest
