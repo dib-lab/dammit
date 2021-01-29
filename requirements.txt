@@ -1,7 +1,8 @@
 setuptools
 pandas>=1.0
 khmer>=2.0
-shmlast>=1.2
+shmlast>=1.6
 click
 ope>=0.8
 snakemake==5.20.1
+rich

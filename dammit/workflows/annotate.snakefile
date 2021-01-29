@@ -23,6 +23,25 @@ rule dammit_rename_transcriptome:
     script: f'file://{__path__}/wrappers/dammit/rename-transcriptome.wrapper.py'
 
 
+rule dammit_transcriptome_stats:
+    message:
+        """
+        Calculate some basic stats and metrics on the input transcriptome.
+        """
+    input:
+        fasta = os.path.join(results_dir, '{transcriptome}.fasta')
+    output:
+        stats_fn = os.path.join(results_dir, '{transcriptome}.stats.json'),
+        per_transcript_fn = os.path.join(results_dir, '{transcriptome}.per-transcript-stats.csv')
+    log:
+        os.path.join(logs_dir, '{transcriptome}.stats.log')
+    threads: 1
+    shell:
+        """
+        dammit transcriptome-stats {input.fasta} {output.stats_fn} {output.per_transcript_fn}
+        """
+
+
 rule transdecoder_longorfs:
     message: 
         """
@@ -177,7 +196,8 @@ rule busco_transcripts:
     input:
         fasta = os.path.join(results_dir,'{transcriptome}.fasta')
     output:
-        os.path.join(results_dir, '{transcriptome}.busco', '{busco_db}_outputs', 'run_{busco_db}', 'short_summary.txt')
+        os.path.join(results_dir, '{transcriptome}.busco', '{busco_db}_outputs', 'run_{busco_db}', 'short_summary.txt'),
+        os.path.join(results_dir, '{transcriptome}.busco', '{busco_db}_outputs', 'run_{busco_db}', 'full_table.tsv')
     log:
         os.path.join(logs_dir, "{transcriptome}.x.{busco_db}.log")
     benchmark:
@@ -198,8 +218,8 @@ rule busco_transcripts:
 localrules: plot_busco_summaries
 
 
-def expand_busco_summaries(w):
-    return expand(os.path.join(results_dir, '{transcriptome}.busco', '{busco_db}_outputs', "run_{busco_db}", "short_summary.txt"), 
+def expand_busco_files(w, basename='short_summary.txt'):
+    return expand(os.path.join(results_dir, '{transcriptome}.busco', '{busco_db}_outputs', "run_{busco_db}", basename), 
                          busco_db = config["busco_groups"],
                          transcriptome = w.transcriptome)
 
@@ -209,7 +229,7 @@ rule plot_busco_summaries:
         """
         Plot the BUSCO results for the user-provided lineage databases.
         """
-    input: expand_busco_summaries
+    input: expand_busco_files
     output: os.path.join(results_dir, '{transcriptome}.busco', "summary_figure.png")
     log: os.path.join(logs_dir, "{transcriptome}.busco", "summary_figure.log")
     conda:
@@ -223,6 +243,25 @@ rule plot_busco_summaries:
         cp {wildcards.transcriptome}.busco/*_outputs/short_summary.*.txt {params.summary_dir}
         generate_plot.py --working_directory {params.summary_dir} 2> {log}
         cp {params.summary_dir}/busco_figure.png {output}
+        """
+
+
+rule dammit_busco_to_gff:
+    message:
+        """
+        Convert BUSCO results to a GFF3 representation.
+        """
+    input: 
+        busco_fn = os.path.join(results_dir, '{transcriptome}.busco', '{busco_db}_outputs', 'run_{busco_db}', 'full_table.tsv'),
+        lens_fn = os.path.join(results_dir, '{transcriptome}.per-transcript-stats.csv')
+    output:
+        os.path.join(results_dir, '{transcriptome}.x.busco.{busco_db}.gff3')
+    log:
+        os.path.join(logs_dir, '{transcriptome}.{busco_db}.busco-to-gff3.log')
+    threads: 1
+    shell:
+        """
+        dammit busco-to-gff3 {input.busco_fn} {input.lens_fn} {output}
         """
 
 

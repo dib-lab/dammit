@@ -1,12 +1,14 @@
+name: dammit-env
 channels:
   - conda-forge
   - bioconda
   - defaults
 dependencies:
-  - python >=3.6
-  - snakemake =5.20.1
+  - snakemake-minimal =5.20.1
+  - matplotlib-base
   - mamba
   - pyyaml
+  - curl
   - yaml
   - pandas
   - pytest
@@ -14,6 +16,10 @@ dependencies:
   - shmlast >=1.6
   - ope >=0.8
   - khmer >=2.0
+  - rich
+  - pip
+  - pip:
+    - .
   # these are for dag printing
   #- graphviz
   #- networkx

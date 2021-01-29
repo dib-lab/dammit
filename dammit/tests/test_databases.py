@@ -6,11 +6,8 @@
 
 import os
 from os import path
-import logging
-import stat
-import pandas as pd
 
-from .utils import run, logger
+from .utils import run
 import pytest
 
 names = ['TransDecoder',
@@ -43,26 +40,6 @@ class TestDatabases():
     databases module. Assumes that DAMMIT_DB_DIR has been exported
     and a full install has already been performed.
     '''
-
-    def setup_method(self):
-        self.logger = logging.getLogger('tests.test_databases.TestDatabases')
-        class Args(object):
-            pass
-        self.args = Args()
-        self.args.database_dir = databases.default_database_dir(self.logger)
-        self.args.verbosity = 2
-        self.args.full = False
-        self.args.n_threads = 1
-        self.args.busco_group = 'metazoa'
-
-        self.config, self.databases = get_config()
-        self.config.update(vars(self.args))
-        self.handler = databases.get_handler(self.config)
-        databases.build_default_pipeline(self.handler,
-                                         self.config,
-                                         self.databases,
-                                         with_uniref=False)
-
 
     def test_default_database_dir_noenv(self):
         saved_env = os.environ.get('DAMMIT_DB_DIR', None)

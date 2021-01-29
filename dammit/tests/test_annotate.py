@@ -5,11 +5,7 @@
 # of the BSD license.  See the LICENSE file for details.
 
 import os
-import stat
-import pandas as pd
 import pytest
-import traceback
-import sys
 
 from ope.io import gff3
 
@@ -33,7 +29,7 @@ class TestDammitAnnotate:
     @pytest.mark.long
     @pytest.mark.requires_databases
     @pytest.mark.parametrize('n_threads', (1,4))
-    def test_annotate_default(self, tmpdir, datadir, n_threads):
+    def test_default(self, tmpdir, datadir, n_threads):
         '''--n-threads [N] annotate [INPUT.fa]
         '''
         with tmpdir.as_cwd():
@@ -55,7 +51,7 @@ class TestDammitAnnotate:
 
     @pytest.mark.long
     @pytest.mark.requires_databases
-    def test_annotate_evalue(self, tmpdir, datadir):
+    def test_evalue(self, tmpdir, datadir):
         '''annotate --global-evalue [EVALUE] [INPUT.fa]
         '''
 
@@ -75,8 +71,8 @@ class TestDammitAnnotate:
             assert open(fasta_fn).read() == open(exp_fasta).read()
 
     @pytest.mark.parametrize('n_threads', (1,4))
-    def test_annotate_user_database(self, tmpdir, datadir, n_threads):
-        '''--pipeline quick annotate --user-database [PEP.fa] [INPUT.fa]
+    def test_user_database(self, tmpdir, datadir, n_threads):
+        '''--n-threads [N] --pipeline quick annotate --user-database [PEP.fa] [INPUT.fa]
         '''
 
         with tmpdir.as_cwd():
@@ -125,7 +121,7 @@ class TestDammitAnnotate:
             assert open(fasta_fn).read() == open(exp_fasta).read()
 
     def test_annotate_basename(self, tmpdir, datadir):
-        '''Test annotate --base_name
+        '''Test annotate --pipeline quick annotate --base-name [NAME] [INPUT.fa]
         '''
 
         with tmpdir.as_cwd():
@@ -141,6 +137,27 @@ class TestDammitAnnotate:
 
             contents = open(fn).read()
             assert 'Test_0' in contents
+
+    def test_multiple_busco_groups(self, tmpdir, datadir):
+        '''--pipeline quick --busco-group bacteria_odb10 --busco-group saccharomycetes_odb10
+        '''
+
+        with tmpdir.as_cwd():
+            transcripts = datadir('pom.256.fa')
+            exp_gff3 = datadir('pom.256.dammit.busco-multi.gff3')
+
+            args = ['run', '--pipeline', 'quick',
+                    '--busco-group', 'bacteria_odb10',
+                    '--busco-group', 'saccharomycetes_odb10',
+                    'annotate', transcripts]
+            status, out, err = run(*args)
+            assert status == 0
+
+            gff3_fn = os.path.join('pom.256.dammit', 'pom.256.dammit.gff3')
+
+            assert compare_gff(gff3_fn, exp_gff3)
+
+
 
     def test_annotate_outdir(self, tmpdir, datadir):
         '''
