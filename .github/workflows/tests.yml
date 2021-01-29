@@ -19,9 +19,9 @@ jobs:
       run:
         shell: bash -l {0}
     env: 
-      DAMMIT_DB_DIR: ${{ runner.temp }}/databases
-      DAMMIT_CONDA_DIR: ${{ runner.temp }}/snakemake-envs-${{ matrix.os }}
-      DAMMIT_TESTING_TEMP_BASE_DIR: ${{ runner.temp }}/snakemake-envs-${{ matrix.os }}
+      DAMMIT_DB_DIR: ${{ github.workspace }}/data/databases
+      DAMMIT_CONDA_DIR: ${{ github.workspace }}/data/snakemake-envs-${{ matrix.os }}
+      DAMMIT_TESTING_TEMP_BASE_DIR: ${{ github.workspace }}/data/snakemake-envs-${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
         with:
