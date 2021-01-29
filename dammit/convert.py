@@ -218,7 +218,7 @@ class BUSCO_to_GFF3(GFF3Converter):
     
     def attr_from_row(self, row):
         attrs = {'Name': '{0}'.format(row.BUSCO_id),
-                 'length': '{0}'.format(row.Length_busco),
+                 'length': '{0}'.format(int(row.Length_busco)),
                  'status': '{0}'.format(row.Status)} 
         
 
