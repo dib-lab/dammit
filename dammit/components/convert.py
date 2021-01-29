@@ -45,6 +45,9 @@ def busco_to_gff3_cmd(busco_table_filename, transcript_lengths_filename, output_
                            names=['ID', 'Length_tx'],
                            header=0)
 
+    if busco_df.Sequence.isna().all():
+        touch(output_filename)
+        return
     merged_df = pd.merge(busco_df, lens_df, left_on='Sequence', right_on='ID')
 
     writer = GFF3Writer(filename=output_filename,

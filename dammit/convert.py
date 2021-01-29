@@ -221,5 +221,4 @@ class BUSCO_to_GFF3(GFF3Converter):
                  'length': '{0}'.format(int(row.Length_busco)),
                  'status': '{0}'.format(row.Status)} 
         
-
         return attrs
