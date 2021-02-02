@@ -32,6 +32,7 @@ class TestSnakemakeExtraArgs:
             args = ['dammit', 'run', 
                     '--busco-group', 'bacteria_odb10',
                     '--busco-group', 'saccharomycetes_odb10',
+                    '--pipeline', 'quick',
                     'annotate', transcripts, '--dag']
             status, out, err = run_shell_cmd(' '.join(args))
             
