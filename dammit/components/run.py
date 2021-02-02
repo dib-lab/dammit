@@ -9,7 +9,6 @@
 import os
 import subprocess
 import sys
-import yaml
 
 import click
 import psutil
@@ -138,7 +137,9 @@ def run_group(config,
     )
 
 
-@run_group.command('annotate')
+@run_group.command('annotate', context_settings=dict(
+    ignore_unknown_options=True
+))
 @click.pass_obj
 @click.argument('transcriptome')
 @click.option('-n', '--base-name',
@@ -160,13 +161,15 @@ def run_group(config,
               help='Optional additional protein databases. '\
                    ' These will be searched with CRB-blast.')
 @click.option('--dry-run', is_flag=True)
+@click.argument('extra_snakemake_args', nargs=-1, type=click.UNPROCESSED)
 def annotate_cmd(config,
                  transcriptome,
                  base_name,
                  global_evalue,
                  output_dir,
                  user_database,
-                 dry_run):
+                 dry_run,
+                 extra_snakemake_args):
     ''' The main annotation pipeline. Calculates assembly stats;
     runs BUSCO; runs LAST against OrthoDB (and optionally uniref90),
     HMMER against Pfam, Inferal against Rfam, and Conditional Reciprocal
@@ -226,6 +229,7 @@ def annotate_cmd(config,
     if dry_run:
         cmd.append('--dry-run')
 
+    cmd.extend(list(extra_snakemake_args))
     cmd.extend(targets)
 
     config.gui.annot_params = config.gui.param_tree.add(
@@ -235,20 +239,21 @@ def annotate_cmd(config,
                       f"{'Output:'.ljust(25)} {config.core['output_dir']}\n"
                       f"{'E-value Cutoff (global):'.ljust(25)} {config.core['global_evalue']}\n"
                       f"{'User databases:'.ljust(25)} {', '.join(config.core['user_dbs'])}\n"
-                      f"{'Run config:'.ljust(25)} {workflow_config_file}",
+                      f"{'Run config:'.ljust(25)} {workflow_config_file}\n"
+                      f"{'Extra Snakemake args:'.ljust(25)} {extra_snakemake_args}",
                       expand=True),
         )
     )
 
-    config.gui.snakemake_cnd = config.gui.param_tree.add(
+    config.gui.snakemake_cmd = config.gui.param_tree.add(
         RenderGroup(
             '🐍 Snakemake Invocation',
             RichPanel(" ".join(cmd))
         )
     )
-    richprint(config.gui.param_tree)
+    richprint(config.gui.param_tree, file=sys.stderr)
 
-    richprint('\n▶️  Beginning workflow execution...\n')
+    richprint('\n▶️  Beginning workflow execution...\n', file=sys.stderr)
 
     try:
         subprocess.check_call(cmd)
@@ -259,12 +264,15 @@ def annotate_cmd(config,
         sys.exit(e.returncode)
 
 
-@run_group.command('databases')
+@run_group.command('databases', context_settings=dict(
+    ignore_unknown_options=True
+))
 @click.pass_obj
 @click.option('--install', is_flag=True,
               help='Install missing databases. Downloads'
                    ' and preps where necessary.')
-def databases_cmd(config, install):
+@click.argument('extra_snakemake_args', nargs=-1, type=click.UNPROCESSED)
+def databases_cmd(config, install, extra_snakemake_args):
     ''' The database preparation pipeline. The database installation directory is set
     after the `run` subcommand (invoke `dammit run --help` for more information). You
     can also set the ${DAMMIT_DB_DIR} environment variable. For example:
@@ -291,6 +299,7 @@ def databases_cmd(config, install):
     targets = generate_database_targets(pipeline_config, config)
     cmd.extend(snakemake_common_args(config.core['n_threads'],
                                      config.core['conda_env_dir']))
+    cmd.extend(list(extra_snakemake_args))
 
     # better way to do this?
     if not install:
@@ -304,23 +313,25 @@ def databases_cmd(config, install):
     config.gui.annot_params = config.gui.param_tree.add(
         RenderGroup(
             '🗄️ Database params',
-            RichPanel( f"{'Run config:'.ljust(25)} {workflow_config_file}",
+            RichPanel(f"{'Run config:'.ljust(25)} {workflow_config_file}\n"
+                      f"{'Extra Snakemake args:'.ljust(25)} {extra_snakemake_args}",
                       expand=True),
         )
     )
 
-    config.gui.snakemake_cnd = config.gui.param_tree.add(
+    config.gui.snakemake_cmd = config.gui.param_tree.add(
         RenderGroup(
             '🐍 Snakemake Invocation',
             RichPanel(" ".join(cmd))
         )
     )
-    richprint(config.gui.param_tree)
+    richprint(config.gui.param_tree, file=sys.stderr)
 
     if install:
-        richprint('\n▶️  Beginning workflow execution...\n')
+        richprint('\n▶️  Beginning workflow execution...\n', file=sys.stderr)
     else:
-        richprint('\n❔ Database status (use with `--install` to run database installation pipeline):\n')
+        richprint('\n❔ Database status (use with `--install` to run database installation pipeline):\n',
+                  file=sys.stderr)
 
     try:
         subprocess.check_call(cmd)

@@ -153,7 +153,6 @@ def run_shell_cmd(cmd, fail_ok=False, in_directory=None):
     if in_directory:
         os.chdir(in_directory)
 
-    print('running: ', cmd)
     try:
         p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE,
                              stderr=subprocess.PIPE)
