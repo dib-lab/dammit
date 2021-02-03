@@ -47,7 +47,7 @@ def rename_fasta(fasta_fn,
 
     if split_regex is None:
         counter = count()
-        header_func = lambda name: '{0}_{1}'.format(basename, next(counter))
+        header_func = lambda _: '{0}_{1}'.format(basename, next(counter))
     else:
         def header_func(header):
             results = re.search(split_regex, header).groupdict()
@@ -80,7 +80,11 @@ def rename_fasta_cmd(fasta_fn,
                      names_fn,
                      basename,
                      split_regex):
-    ''' Copy a FASTA file and rename the headers.
+    ''' Copy a FASTA file and rename the headers. If --split-regex is used,
+    it should be provided in Python `re` format and contain a named field keyed
+    as `name` that extracts the desired string. For example, providing 
+    (?P<name>^[a-zA-Z0-9]+) will match from the beginning of the sequence header
+    up to the first non-alphanumeric symbol.
     '''
 
     allowed = r'[a-zA-Z0-9_\-:|\.]+'
@@ -209,7 +213,7 @@ def generate_sequence_name(original_name, sequence, annotation_df):
     pass
 
 
-def generate_sequence_summary(original_name, sequence, annotation_df):
+def generate_sequence_summary(seqid, sequence, annotation_df):
     '''Given a FASTA sequence's original name, the sequence itself,
     and a DataFrame with its corresponding GFF3 annotations, generate
     a summary line of the annotations in key=value format.
@@ -251,12 +255,12 @@ def generate_sequence_summary(original_name, sequence, annotation_df):
                             for _, row in fgroup.iterrows()])
             annots.append('{0}={1}'.format(feature_type, collapsed))
 
-    desc = '{0} {1}'.format(original_name, ' '.join(annots))
+    desc = '{0} {1}'.format(seqid, ' '.join(annots))
 
     return desc
 
 
-def annotate_fasta(transcriptome_fn, gff3_fn, output_fn):
+def annotate_fasta(transcriptome_fn, gff3_fn, output_fn, name_map=None):
     '''Annotate the headers in a FASTA file with its corresponding GFF3 file
     and place the resulting FASTA file in output_fn.
     \f
@@ -265,13 +269,22 @@ def annotate_fasta(transcriptome_fn, gff3_fn, output_fn):
         transcriptome_fn (str): Path to the FASTA file.
         gff3_fn (str): Path to the GFF3 annotations.
         output_fn (str): Path to store the resulting annotated FASTA.
+        name_map (str): Path to CSV file with original-renamed transcripts.
     '''
+
+    if name_map is not None:
+        name_map = pd.read_csv(name_map)
 
     annotations = GFF3Parser(gff3_fn).read()
     with open(output_fn, 'w') as fp:
         for n, record in enumerate(ReadParser(transcriptome_fn)):
-            df = annotations.query('seqid == "{0}"'.format(record.name))
-            desc = generate_sequence_summary(record.name, record.sequence,
+            seqid_query = 'seqid == "{0}"'.format(record.name)
+            df = annotations.query(seqid_query)
+
+            renamed_query = 'renamed == "{0}"'.format(record.name)
+            seqid = record.name if name_map is None else name_map.query(renamed_query).original[0]
+
+            desc = generate_sequence_summary(seqid, record.sequence,
                                              df)
             fp.write('>{0}\n{1}\n'.format(desc.strip(), record.sequence))
 
@@ -280,8 +293,12 @@ def annotate_fasta(transcriptome_fn, gff3_fn, output_fn):
 @click.argument('transcriptome_fn')
 @click.argument('gff3_fn')
 @click.argument('output_fn')
-def annotate_fasta_cmd(transcriptome_fn, gff3_fn, output_fn):
+@click.option('--name-map',
+               help='CSV file with mapping of original names to renamed trascripts. '\
+                    'If provided, transcripts will be mapped back to their original names. '\
+                    'Must contain the columns "original" and "renamed".')
+def annotate_fasta_cmd(transcriptome_fn, gff3_fn, output_fn, name_map):
     '''Annotate a FASTA file from a GFF3 file.
     '''
 
-    annotate_fasta(transcriptome_fn, gff3_fn, output_fn)
+    annotate_fasta(transcriptome_fn, gff3_fn, output_fn, name_map=name_map)
