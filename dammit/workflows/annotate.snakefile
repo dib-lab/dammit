@@ -375,14 +375,17 @@ rule dammit_annotate_fasta:
         Annotate the headers of a FASTA file with a summary of each sequence.
         """
     input:
-        fasta=rules.dammit_rename_transcriptome.output.fasta,
-        gff=rules.dammit_merge_gff.output
+        fasta = rules.dammit_rename_transcriptome.output.fasta,
+        gff   = rules.dammit_merge_gff.output,
+        names = rules.dammit_rename_transcriptome.output.names
     output:
         os.path.join(results_dir, "{transcriptome}.dammit.fasta")
     log:
         os.path.join(logs_dir, "{transcriptome}.annotate_fasta.log")
+    params:
+        name_map = '' if config['rename'] else '--name-map ' + rules.dammit_rename_transcriptome.output.names
     threads: 1
     shell:
         """
-        dammit annotate-fasta {input.fasta} {input.gff} {output} 2> {log}
+        dammit annotate-fasta {params.name_map} {input.fasta} {input.gff} {output} 2> {log}
         """

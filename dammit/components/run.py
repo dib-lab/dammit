@@ -149,6 +149,12 @@ def run_group(config,
                    ' It should not have spaces, pipes,'\
                    ' ampersands, or other characters'\
                    ' with special meaning to BASH.')
+@click.option('--rename/--no-rename', default=None,
+               help='If --no-rename, original transcript names are preserved'\
+                    ' in the final annotated FASTA. --base-name is'\
+                    ' still used in intermediate files. If --rename (the default '\
+                    ' behavior), the renamed transcript names are used in the final '\
+                    ' annotated FASTA.')
 @click.option('-e', '--global-evalue',
               type=float,
               help='global e-value cutoff for similarity searches.')
@@ -165,6 +171,7 @@ def run_group(config,
 def annotate_cmd(config,
                  transcriptome,
                  base_name,
+                 rename,
                  global_evalue,
                  output_dir,
                  user_database,
@@ -198,6 +205,9 @@ def annotate_cmd(config,
 
     if base_name:
         config.core['basename'] = base_name
+    
+    if rename is not None:
+        config.core['rename'] = rename
     
     # the default global_evalue is null 
     if global_evalue:

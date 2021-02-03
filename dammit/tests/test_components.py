@@ -210,8 +210,6 @@ class TestAnnotateFasta:
             assert sequence_header == expected_header
 
 
-
-
 class TestBestHits:
     '''dammit best-hits'''
 
