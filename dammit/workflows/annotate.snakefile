@@ -19,7 +19,8 @@ rule dammit_rename_transcriptome:
         os.path.join(logs_dir, "{transcriptome}.rename.log")
     threads: 1
     params:
-        basename = config.get("basename", "Txome"),
+        basename = config.get("basename", None),
+        split_regex = config.get("regex_rename", None)
     script: f'file://{__path__}/wrappers/dammit/rename-transcriptome.wrapper.py'
 
 

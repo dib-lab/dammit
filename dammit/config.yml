@@ -10,6 +10,7 @@ pipeline: default
 
 basename: Transcript
 rename: true
+regex_rename: null
 
 # n_threads: total threads to pass to snakemake -j
 n_threads: 0
