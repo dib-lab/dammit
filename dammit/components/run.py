@@ -154,8 +154,8 @@ def run_group(config,
               help='Rename transcripts using a regex pattern. The regex should follow '
                    ' Python `re` format and contain a named field keyed'\
                    ' as `name` that extracts the desired string. For example, providing'\
-                   ' (?P<name>^[a-zA-Z0-9]+) will match from the beginning of the sequence header'\
-                   ' up to the first non-alphanumeric symbol.'\
+                   ' "(?P<name>^[a-zA-Z0-9\.]+)" will match from the beginning of the sequence header'\
+                   ' up to the first symbol that is not alphanumeric or a period.'\
                    ' Supersedes --base-name.')
 @click.option('--rename/--no-rename', default=None,
                help='If --no-rename, original transcript names are preserved'\
@@ -188,7 +188,7 @@ def annotate_cmd(config,
                  extra_snakemake_args):
     ''' The main annotation pipeline. Calculates assembly stats;
     runs BUSCO; runs LAST against OrthoDB (and optionally uniref90),
-    HMMER against Pfam, Inferal against Rfam, and Conditional Reciprocal
+    HMMER against Pfam, Infernal against Rfam, and Conditional Reciprocal
     Best-hit Blast against user databases; and aggregates all results in
     a properly formatted GFF3 file.'''
 
