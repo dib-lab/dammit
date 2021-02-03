@@ -282,7 +282,7 @@ def annotate_fasta(transcriptome_fn, gff3_fn, output_fn, name_map=None):
             df = annotations.query(seqid_query)
 
             renamed_query = 'renamed == "{0}"'.format(record.name)
-            seqid = record.name if name_map is None else name_map.query(renamed_query).original[0]
+            seqid = record.name if name_map is None else name_map.query(renamed_query).original.iloc[0]
 
             desc = generate_sequence_summary(seqid, record.sequence,
                                              df)
