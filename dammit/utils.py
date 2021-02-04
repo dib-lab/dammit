@@ -10,6 +10,9 @@ import yaml
 import collections.abc
 
 import click
+import numpy as np
+from ope.io.base import ChunkParser
+import pandas as pd
 
 
 class ShortChoice(click.Choice):
@@ -69,3 +72,42 @@ def read_yaml(filename):
 def write_yaml(yamlD, paramsfile):
     with open(paramsfile, 'w') as params:
         yaml.dump(yamlD, stream=params, indent=2, default_flow_style=False)
+
+
+class BUSCOTableParser(ChunkParser):
+    
+    columns = [('BUSCO_id', str),
+               ('Status', str),
+               ('Sequence', str),
+               ('Score', float),
+               ('Length', int),
+               ('Start', int),
+               ('End', int)]
+    
+    def __init__(self, filename, **kwargs):
+        super(BUSCOTableParser, self).__init__(filename, **kwargs)
+    
+    def __iter__(self):
+        with open(self.filename) as fp:
+            header = fp.readline()
+        self.busco_version = header.partition(':')[-1].strip()
+
+        df = pd.read_table(self.filename,
+                           names=[k for k,_ in self.columns[:-2]],
+                           delimiter='\t',
+                           comment='#',
+                           error_bad_lines=False)
+        
+        if self.busco_version == '5.0.0':
+            seq_df = df.Sequence.str.partition(':')
+            coords_df = seq_df[2].str.partition('-')
+            df['Sequence'] = seq_df[0]
+            df['Start'] = pd.to_numeric(coords_df[0])
+            df['End'] = pd.to_numeric(coords_df[2])
+        else:
+            df['Start'] = np.nan
+            df['End'] = np.nan
+        
+        setattr(df, 'busco_version', self.busco_version)
+
+        yield df.convert_dtypes()
