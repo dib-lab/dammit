@@ -49,8 +49,12 @@ by {" and ".join(__authors__)}
 @click.option('--config-file',
               help='A YAML or JSON file providing values to override'\
                    ' built-in config. Advanced use only!')
-def main(ctx, config_file):
+@click.option('-v', '--verbose', count=True)
+def main(ctx, config_file, verbose):
     CONFIG = get_config_obj(config_file)
+    if verbose:
+        CONFIG.core['verbosity'] = verbose
+
     CONFIG.banner = banner
     CONFIG.gui = Namespace()
     ctx.obj = CONFIG

@@ -183,7 +183,7 @@ def annotate_cmd(config,
             transcriptome.endswith(".fasta")]):
         transcriptome_name = os.path.basename(transcriptome).rsplit(".fa")[0]
     else:
-        raise ValueError('input transcriptome file must end with ".fa" or ".fasta"')
+        raise ValueError(f'input transcriptome file must end with ".fa" or ".fasta (got {transcriptome}"')
     config.core['transcriptome_name'] = transcriptome_name
 
     # if an output folder is not provided, use the default suffix
@@ -225,7 +225,8 @@ def annotate_cmd(config,
            "--configfiles", workflow_config_file,
            "--directory", output_dir]
     cmd.extend(snakemake_common_args(config.core['n_threads'],
-                                     config.core['conda_env_dir']))
+                                     config.core['conda_env_dir'],
+                                     config.core['verbosity']))
     if dry_run:
         cmd.append('--dry-run')
 
@@ -390,10 +391,16 @@ def generate_annotation_targets(pipeline_info, config):
     return targets
 
 
-def snakemake_common_args(n_threads, conda_env_dir):
+def snakemake_common_args(n_threads, conda_env_dir, verbosity=0):
     args = ["-p", "--nolock", "--conda-frontend", "mamba",
             "--use-conda", "--conda-prefix", conda_env_dir,
             "--rerun-incomplete", "-k", "--cores", str(n_threads)]
+    if verbosity > 0:
+        args.append('--reason')
+    if verbosity > 1:
+        args.append('--verbose')
+    if verbosity > 2:
+        args.append('--debug-dag')
     return args
 
 
