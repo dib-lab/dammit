@@ -39,6 +39,7 @@ shmlast:
 busco:
   configfile: busco.default.ini
   params:
+    evalue: 1e-3
     extra: ""
 
 ## hmmer ##

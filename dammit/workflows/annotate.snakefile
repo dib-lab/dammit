@@ -210,6 +210,7 @@ rule busco_transcripts:
         mode = "transcriptome",
         lineage = lambda w: w.busco_db,
         database_directory = database_dir,
+        evalue = GLOBAL_EVALUE if GLOBAL_EVALUE is not None else config['busco']['params'].get('evalue', 0.001),
         #auto_lineage='euk', # enabled in wrapper, but not using this bc it changes output dir structure
         extra = config['busco']['params'].get('extra', ''),
     wrapper: f'file://{__wrappers__}/busco/busco.wrapper.py'
