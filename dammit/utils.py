@@ -98,7 +98,7 @@ class BUSCOTableParser(ChunkParser):
                            comment='#',
                            error_bad_lines=False)
         
-        if self.busco_version == '5.0.0':
+        if self.busco_version == '5.0.0' and not df.Sequence.isna().all():
             seq_df = df.Sequence.str.partition(':')
             coords_df = seq_df[2].str.partition('-')
             df['Sequence'] = seq_df[0]
