@@ -1,4 +1,5 @@
 import os
+import psutil
 import pytest
 from .utils import run, runscript
 
@@ -213,7 +214,7 @@ def test_infernal_cmscan(snakemake_rule, tmpdir, datadir, n_threads):
         print(out)
         assert os.path.isfile('tr-infernal-tblout.txt')
         assert os.path.isfile('test-cmscan.log')
-        assert '[ok]' in open('test-cmscan.log').read()
+        assert '[ok]' in open('tr-infernal-tblout.txt').read()
 
 
 def test_busco_dryrun(snakemake_rule, tmpdir, datadir):
@@ -231,18 +232,20 @@ def test_busco_dryrun(snakemake_rule, tmpdir, datadir):
 @pytest.mark.long
 def test_busco(snakemake_rule, tmpdir, datadir):
     with tmpdir.as_cwd():
-        datadir('target.fa')
+        datadir('pom.256.fa')
         datadir('busco-config.ini')
+        run('rename-fasta', 'pom.256.fa', 'target.fa', 'names.csv')
         status, out, err = snakemake_rule('busco/busco.rule',
                                            target='run_busco',
+                                           n_threads=psutil.cpu_count(logical=False),
                                            config={'DATA_DIR': str(tmpdir)})
 
         print(out)
         #assert os.path.isfile('txome_busco/full_table_txome_busco.tsv')
         assert os.path.isfile('test-busco.log')
         print(open('test-busco.log').read())
-        assert 'Results from dataset metazoa_odb10' in open('test-busco.log').read()
-        assert "C:0.1%[S:0.1%,D:0.0%],F:0.0%,M:99.9%,n:954" in open('test-busco.log').read()
+        assert 'Results from dataset fungi_odb10' in open('test-busco.log').read()
+        assert "C:4.3%[S:3.6%,D:0.7%],F:0.0%,M:95.7%,n:758" in open('test-busco.log').read()
         assert 'BUSCO analysis done.' in open('test-busco.log').read()
 
 

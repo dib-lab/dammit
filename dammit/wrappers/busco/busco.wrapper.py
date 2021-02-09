@@ -29,7 +29,7 @@ assert snakemake.output[0].startswith(out_path)
 
 # handle config file
 config_cmd = ""
-if config and database_directory:
+if config:
     configur = ConfigParser()
     config = configur.read(config)
     # set path for database downloads
@@ -61,5 +61,5 @@ evalue_cmd = '--evalue ' + str(evalue) if evalue is not None else ''
 shell(
     "busco --in {snakemake.input.fasta} --out_path {out_path} --out {out_name} --force "
     " --cpu {snakemake.threads} {evalue_cmd} --mode {mode} {lineage_cmd} "
-    " {config_cmd} {extra} {log}"
+    " --download_path {database_directory} {config_cmd} {extra} {log}"
 )
