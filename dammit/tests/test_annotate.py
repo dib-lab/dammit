@@ -163,7 +163,7 @@ def test_annotate_dbdir_fail(tmpdir, datadir):
 
         args = ['run', '--database-dir', '.', 'annotate', transcripts]
         status, out, err = run(*args, fail_ok=True)
-        print(status, out, err)
+        
         assert 'you probably need to install the dammit databases' in err
         assert status == 1
 
@@ -176,6 +176,6 @@ def test_annotate_dbdir(tmpdir, datadir):
         transcripts = datadir('pom.20.fa')
 
         database_dir = os.environ['DAMMIT_DB_DIR']
-        args = ['run', '--database-dir', database_dir, '--pipeline', 'quick', 'annotate',  transcripts]
+        args = ['run', '--busco-group', 'saccharomycetes_odb10', '--database-dir', database_dir, '--pipeline', 'quick', 'annotate',  transcripts]
         status, out, err = run(*args)
         assert status == 0
