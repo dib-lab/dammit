@@ -73,4 +73,4 @@ jobs:
 
       - name: run pytest
         run: |
-          py.test -s -m "not long and not huge and not requires_databases"
+          py.test -m "not long and not huge and not requires_databases"
