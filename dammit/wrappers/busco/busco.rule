@@ -12,15 +12,15 @@ rule run_busco:
     input:
        fasta= os.path.join(DATA_DIR, "target.fa")
     output:
-        "txome_busco/metazoa_outputs/run_metazoa/short_summary.txt",
+        "txome_busco/fungi_outputs/run_fungi_odb10/short_summary.txt",
     log:
         "test-busco.log"
     threads: 8
     params:
-        out_name = 'metazoa_outputs',
+        out_name = 'fungi_outputs',
         out_path = 'txome_busco',
         mode="transcriptome",
-        lineage="metazoa",
+        lineage="fungi_odb10",
         database_directory="./",
         config = os.path.join(__path__, "busco.default.ini"),
         # optional parameters

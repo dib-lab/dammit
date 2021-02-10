@@ -384,7 +384,7 @@ def generate_annotation_targets(pipeline_info, config):
     targets = [os.path.join(output_dir, transcriptome_name + suffix) for suffix in output_suffixes]
 
     gff_files = [x for x in targets if x.endswith(".gff3")]
-    config.core["gff_files"] = gff_files
+    config.core["gff_files"] = list(set(gff_files))
     targets+=[os.path.join(output_dir, transcriptome_name + suffix) for suffix in config.core["output_suffix"]]
 
     return targets
