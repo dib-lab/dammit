@@ -8,8 +8,14 @@ import os
 import pytest
 
 from ope.io import gff3
+import pandas as pd
 
 from .utils import run
+
+pd.set_option('display.max_rows', None)
+pd.set_option('display.max_columns', None)
+pd.set_option('display.width', None)
+pd.set_option('display.max_colwidth', -1)
 
 
 def compare_gff(fn_a, fn_b):
