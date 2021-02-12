@@ -17,6 +17,8 @@ n_threads: 0
 # max threads to use on a single job
 max_threads_per_task: 1
 
+verbosity: 0
+
 busco_groups: 
   - metazoa_odb10
 
@@ -41,6 +43,7 @@ shmlast:
 busco:
   configfile: busco.default.ini
   params:
+    evalue: 1e-3
     extra: ""
 
 ## hmmer ##
