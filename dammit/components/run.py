@@ -148,7 +148,21 @@ def run_group(config,
                    ' will be of the form <name>_<X>.'\
                    ' It should not have spaces, pipes,'\
                    ' ampersands, or other characters'\
-                   ' with special meaning to BASH.')
+                   ' with special meaning to BASH.'\
+                   ' Superseded by --regex-rename.')
+@click.option('--regex-rename',
+              help='Rename transcripts using a regex pattern. The regex should follow '
+                   ' Python `re` format and contain a named field keyed'\
+                   ' as `name` that extracts the desired string. For example, providing'\
+                   ' "(?P<name>^[a-zA-Z0-9\.]+)" will match from the beginning of the sequence header'\
+                   ' up to the first symbol that is not alphanumeric or a period.'\
+                   ' Supersedes --base-name.')
+@click.option('--rename/--no-rename', default=None,
+               help='If --no-rename, original transcript names are preserved'\
+                    ' in the final annotated FASTA. --base-name is'\
+                    ' still used in intermediate files. If --rename (the default '\
+                    ' behavior), the renamed transcript names are used in the final '\
+                    ' annotated FASTA.')
 @click.option('-e', '--global-evalue',
               type=float,
               help='global e-value cutoff for similarity searches.')
@@ -165,6 +179,8 @@ def run_group(config,
 def annotate_cmd(config,
                  transcriptome,
                  base_name,
+                 regex_rename,
+                 rename,
                  global_evalue,
                  output_dir,
                  user_database,
@@ -172,7 +188,7 @@ def annotate_cmd(config,
                  extra_snakemake_args):
     ''' The main annotation pipeline. Calculates assembly stats;
     runs BUSCO; runs LAST against OrthoDB (and optionally uniref90),
-    HMMER against Pfam, Inferal against Rfam, and Conditional Reciprocal
+    HMMER against Pfam, Infernal against Rfam, and Conditional Reciprocal
     Best-hit Blast against user databases; and aggregates all results in
     a properly formatted GFF3 file.'''
 
@@ -198,6 +214,12 @@ def annotate_cmd(config,
 
     if base_name:
         config.core['basename'] = base_name
+    
+    if regex_rename:
+        config.core['regex_rename'] = regex_rename
+    
+    if rename is not None:
+        config.core['rename'] = rename
     
     # the default global_evalue is null 
     if global_evalue:
