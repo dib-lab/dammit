@@ -12,16 +12,15 @@ import pandas as pd
 
 from .utils import run
 
-pd.set_option('display.max_rows', None)
 pd.set_option('display.max_columns', None)
 pd.set_option('display.width', None)
-pd.set_option('display.max_colwidth', -1)
+pd.set_option('display.max_colwidth', None)
 
 
 def compare_gff(fn_a, fn_b):
-    df_a = gff3.GFF3Parser(fn_a).read().sort_values(['seqid', 'start', 'end', 'ID', 'Target'])
+    df_a = gff3.GFF3Parser(fn_a).read().sort_values(['seqid', 'start', 'end', 'ID', 'Target']).sort_index(axis=1)
     df_a.reset_index(inplace=True, drop=True)
-    df_b = gff3.GFF3Parser(fn_b).read().sort_values(['seqid', 'start', 'end', 'ID', 'Target'])
+    df_b = gff3.GFF3Parser(fn_b).read().sort_values(['seqid', 'start', 'end', 'ID', 'Target']).sort_index(axis=1)
     df_b.reset_index(inplace=True, drop=True)
     
     print('First DF:', df_a, '\n', '=' * 40)

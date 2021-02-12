@@ -13,6 +13,7 @@ import pandas as pd
 
 from .utils import run, runscript
 
+
 class TestRenameFasta:
     '''dammit rename-fasta'''
 
@@ -38,7 +39,6 @@ class TestRenameFasta:
 
             assert original_records[0].sequence == renamed_records[0].sequence
             assert renamed_records[0].name == 'Transcript_0'
-
 
     def test_basename(self, tmpdir, datadir):
         '''--basename Test should produce Test_0'''
@@ -82,7 +82,6 @@ class TestRenameFasta:
 
             renamed_records = list(ReadParser(renamed_fn))
             assert renamed_records[0].name == 'SPAC212'
-
 
     def test_conflicting(self, tmpdir, datadir):
         '''--split-refex (?P<name>^[a-zA-Z0-9]+) should override --basename Test'''
@@ -256,7 +255,6 @@ class TestMafToGFF3:
             row = self.check_pom_gff3(output_gff3)
             assert 'homology:58381196ee8824e0ae85ca41d72cabb7779270b5' in row[-1]
             assert row[2] == 'translated_nucleotide_match'
-
 
     def test_csv_input(self, tmpdir, datadir):
         '''converts shmlast-style MAF CSV input to GFF3'''
