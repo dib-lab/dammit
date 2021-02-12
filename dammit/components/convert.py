@@ -15,7 +15,7 @@ from ope.io.gff3 import GFF3Writer
 from ope.io.maf import MafParser
 
 from ..convert import BUSCO_to_GFF3, CMScan_to_GFF3, HMMScan_to_GFF3, MAF_to_GFF3, Shmlast_to_GFF3
-from ..utils import touch
+from ..utils import touch, BUSCOTableParser
 
 
 @click.command(name='busco-to-gff3')
@@ -37,10 +37,8 @@ def busco_to_gff3_cmd(busco_table_filename, transcript_lengths_filename, output_
         output_filename (str): Destination for GFF3 output.
     '''
 
-    busco_df = pd.read_csv(busco_table_filename, delimiter='\t',
-                           names=['BUSCO_id', 'Status', 'Sequence', 'Score', 'Length_busco'],
-                           error_bad_lines=False,
-                           comment='#')
+    busco_parser = BUSCOTableParser(busco_table_filename)
+    busco_df = busco_parser.read()
     lens_df  = pd.read_csv(transcript_lengths_filename,
                            names=['ID', 'Length_tx'],
                            header=0)
@@ -51,7 +49,8 @@ def busco_to_gff3_cmd(busco_table_filename, transcript_lengths_filename, output_
     merged_df = pd.merge(busco_df, lens_df, left_on='Sequence', right_on='ID')
 
     writer = GFF3Writer(filename=output_filename,
-                        converter=BUSCO_to_GFF3)
+                        converter=BUSCO_to_GFF3,
+                        busco_version=busco_parser.busco_version)
     
     try:
         writer.write(merged_df)

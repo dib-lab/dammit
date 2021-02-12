@@ -185,7 +185,8 @@ class CMScan_to_GFF3(GFF3Converter):
 
 class BUSCO_to_GFF3(GFF3Converter):
 
-    def __init__(self, busco_df, tag='BUSCO', database=''):
+    def __init__(self, busco_df, tag='BUSCO', database='', busco_version='4.1.1'):
+        self.busco_version = busco_version
         super().__init__(busco_df, tag=tag, database=database,
                          ftype='BUSCO_ortholog')
     
@@ -199,9 +200,15 @@ class BUSCO_to_GFF3(GFF3Converter):
         return [self.ftype] * len(self.from_df)
     
     def start(self):
+        if self.busco_version == '5.0.0':
+            return self.from_df['Start']
+
         return [0] * len(self.from_df)
     
     def end(self):
+        if self.busco_version == '5.0.0':
+            return self.from_df['End']
+
         return self.from_df['Length_tx']
     
     def score(self):
@@ -218,7 +225,7 @@ class BUSCO_to_GFF3(GFF3Converter):
     
     def attr_from_row(self, row):
         attrs = {'Name': '{0}'.format(row.BUSCO_id),
-                 'length': '{0}'.format(int(row.Length_busco)),
+                 'length': '{0}'.format(int(row.Length)),
                  'status': '{0}'.format(row.Status)} 
         
         return attrs

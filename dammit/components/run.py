@@ -9,7 +9,6 @@
 import os
 import subprocess
 import sys
-import yaml
 
 import click
 import psutil
@@ -138,7 +137,9 @@ def run_group(config,
     )
 
 
-@run_group.command('annotate')
+@run_group.command('annotate', context_settings=dict(
+    ignore_unknown_options=True
+))
 @click.pass_obj
 @click.argument('transcriptome')
 @click.option('-n', '--base-name',
@@ -147,7 +148,21 @@ def run_group(config,
                    ' will be of the form <name>_<X>.'\
                    ' It should not have spaces, pipes,'\
                    ' ampersands, or other characters'\
-                   ' with special meaning to BASH.')
+                   ' with special meaning to BASH.'\
+                   ' Superseded by --regex-rename.')
+@click.option('--regex-rename',
+              help='Rename transcripts using a regex pattern. The regex should follow '
+                   ' Python `re` format and contain a named field keyed'\
+                   ' as `name` that extracts the desired string. For example, providing'\
+                   ' "(?P<name>^[a-zA-Z0-9\.]+)" will match from the beginning of the sequence header'\
+                   ' up to the first symbol that is not alphanumeric or a period.'\
+                   ' Supersedes --base-name.')
+@click.option('--rename/--no-rename', default=None,
+               help='If --no-rename, original transcript names are preserved'\
+                    ' in the final annotated FASTA. --base-name is'\
+                    ' still used in intermediate files. If --rename (the default '\
+                    ' behavior), the renamed transcript names are used in the final '\
+                    ' annotated FASTA.')
 @click.option('-e', '--global-evalue',
               type=float,
               help='global e-value cutoff for similarity searches.')
@@ -160,16 +175,20 @@ def run_group(config,
               help='Optional additional protein databases. '\
                    ' These will be searched with CRB-blast.')
 @click.option('--dry-run', is_flag=True)
+@click.argument('extra_snakemake_args', nargs=-1, type=click.UNPROCESSED)
 def annotate_cmd(config,
                  transcriptome,
                  base_name,
+                 regex_rename,
+                 rename,
                  global_evalue,
                  output_dir,
                  user_database,
-                 dry_run):
+                 dry_run,
+                 extra_snakemake_args):
     ''' The main annotation pipeline. Calculates assembly stats;
     runs BUSCO; runs LAST against OrthoDB (and optionally uniref90),
-    HMMER against Pfam, Inferal against Rfam, and Conditional Reciprocal
+    HMMER against Pfam, Infernal against Rfam, and Conditional Reciprocal
     Best-hit Blast against user databases; and aggregates all results in
     a properly formatted GFF3 file.'''
 
@@ -180,7 +199,7 @@ def annotate_cmd(config,
             transcriptome.endswith(".fasta")]):
         transcriptome_name = os.path.basename(transcriptome).rsplit(".fa")[0]
     else:
-        raise ValueError('input transcriptome file must end with ".fa" or ".fasta"')
+        raise ValueError(f'input transcriptome file must end with ".fa" or ".fasta (got {transcriptome}"')
     config.core['transcriptome_name'] = transcriptome_name
 
     # if an output folder is not provided, use the default suffix
@@ -195,6 +214,12 @@ def annotate_cmd(config,
 
     if base_name:
         config.core['basename'] = base_name
+    
+    if regex_rename:
+        config.core['regex_rename'] = regex_rename
+    
+    if rename is not None:
+        config.core['rename'] = rename
     
     # the default global_evalue is null 
     if global_evalue:
@@ -222,10 +247,12 @@ def annotate_cmd(config,
            "--configfiles", workflow_config_file,
            "--directory", output_dir]
     cmd.extend(snakemake_common_args(config.core['n_threads'],
-                                     config.core['conda_env_dir']))
+                                     config.core['conda_env_dir'],
+                                     config.core['verbosity']))
     if dry_run:
         cmd.append('--dry-run')
 
+    cmd.extend(list(extra_snakemake_args))
     cmd.extend(targets)
 
     config.gui.annot_params = config.gui.param_tree.add(
@@ -235,20 +262,21 @@ def annotate_cmd(config,
                       f"{'Output:'.ljust(25)} {config.core['output_dir']}\n"
                       f"{'E-value Cutoff (global):'.ljust(25)} {config.core['global_evalue']}\n"
                       f"{'User databases:'.ljust(25)} {', '.join(config.core['user_dbs'])}\n"
-                      f"{'Run config:'.ljust(25)} {workflow_config_file}",
+                      f"{'Run config:'.ljust(25)} {workflow_config_file}\n"
+                      f"{'Extra Snakemake args:'.ljust(25)} {extra_snakemake_args}",
                       expand=True),
         )
     )
 
-    config.gui.snakemake_cnd = config.gui.param_tree.add(
+    config.gui.snakemake_cmd = config.gui.param_tree.add(
         RenderGroup(
             '🐍 Snakemake Invocation',
             RichPanel(" ".join(cmd))
         )
     )
-    richprint(config.gui.param_tree)
+    richprint(config.gui.param_tree, file=sys.stderr)
 
-    richprint('\n▶️  Beginning workflow execution...\n')
+    richprint('\n▶️  Beginning workflow execution...\n', file=sys.stderr)
 
     try:
         subprocess.check_call(cmd)
@@ -259,12 +287,15 @@ def annotate_cmd(config,
         sys.exit(e.returncode)
 
 
-@run_group.command('databases')
+@run_group.command('databases', context_settings=dict(
+    ignore_unknown_options=True
+))
 @click.pass_obj
 @click.option('--install', is_flag=True,
               help='Install missing databases. Downloads'
                    ' and preps where necessary.')
-def databases_cmd(config, install):
+@click.argument('extra_snakemake_args', nargs=-1, type=click.UNPROCESSED)
+def databases_cmd(config, install, extra_snakemake_args):
     ''' The database preparation pipeline. The database installation directory is set
     after the `run` subcommand (invoke `dammit run --help` for more information). You
     can also set the ${DAMMIT_DB_DIR} environment variable. For example:
@@ -291,6 +322,7 @@ def databases_cmd(config, install):
     targets = generate_database_targets(pipeline_config, config)
     cmd.extend(snakemake_common_args(config.core['n_threads'],
                                      config.core['conda_env_dir']))
+    cmd.extend(list(extra_snakemake_args))
 
     # better way to do this?
     if not install:
@@ -304,23 +336,25 @@ def databases_cmd(config, install):
     config.gui.annot_params = config.gui.param_tree.add(
         RenderGroup(
             '🗄️ Database params',
-            RichPanel( f"{'Run config:'.ljust(25)} {workflow_config_file}",
+            RichPanel(f"{'Run config:'.ljust(25)} {workflow_config_file}\n"
+                      f"{'Extra Snakemake args:'.ljust(25)} {extra_snakemake_args}",
                       expand=True),
         )
     )
 
-    config.gui.snakemake_cnd = config.gui.param_tree.add(
+    config.gui.snakemake_cmd = config.gui.param_tree.add(
         RenderGroup(
             '🐍 Snakemake Invocation',
             RichPanel(" ".join(cmd))
         )
     )
-    richprint(config.gui.param_tree)
+    richprint(config.gui.param_tree, file=sys.stderr)
 
     if install:
-        richprint('\n▶️  Beginning workflow execution...\n')
+        richprint('\n▶️  Beginning workflow execution...\n', file=sys.stderr)
     else:
-        richprint('\n❔ Database status (use with `--install` to run database installation pipeline):\n')
+        richprint('\n❔ Database status (use with `--install` to run database installation pipeline):\n',
+                  file=sys.stderr)
 
     try:
         subprocess.check_call(cmd)
@@ -373,16 +407,22 @@ def generate_annotation_targets(pipeline_info, config):
     targets = [os.path.join(output_dir, transcriptome_name + suffix) for suffix in output_suffixes]
 
     gff_files = [x for x in targets if x.endswith(".gff3")]
-    config.core["gff_files"] = gff_files
+    config.core["gff_files"] = list(set(gff_files))
     targets+=[os.path.join(output_dir, transcriptome_name + suffix) for suffix in config.core["output_suffix"]]
 
     return targets
 
 
-def snakemake_common_args(n_threads, conda_env_dir):
+def snakemake_common_args(n_threads, conda_env_dir, verbosity=0):
     args = ["-p", "--nolock", "--conda-frontend", "mamba",
             "--use-conda", "--conda-prefix", conda_env_dir,
             "--rerun-incomplete", "-k", "--cores", str(n_threads)]
+    if verbosity > 0:
+        args.append('--reason')
+    if verbosity > 1:
+        args.append('--verbose')
+    if verbosity > 2:
+        args.append('--debug-dag')
     return args
 
 

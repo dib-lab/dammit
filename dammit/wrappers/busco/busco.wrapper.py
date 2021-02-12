@@ -14,10 +14,12 @@ extra = snakemake.params.get("extra", "")
 mode = snakemake.params.get("mode")
 assert mode is not None, "please input a run mode: genome, transcriptome or proteins"
 
+evalue = snakemake.params.get('evalue', None)
 lineage = snakemake.params.get("lineage")
 auto_lineage = snakemake.params.get("auto_lineage") # prok, euk, all
 database_directory = snakemake.params.get("database_directory")
 config = snakemake.params.get("config", None)
+
 
 out_path = snakemake.params.get("out_path", None)
 assert out_path is not None, "must specific out_path param for busco"
@@ -27,7 +29,7 @@ assert snakemake.output[0].startswith(out_path)
 
 # handle config file
 config_cmd = ""
-if config and database_directory:
+if config:
     configur = ConfigParser()
     config = configur.read(config)
     # set path for database downloads
@@ -52,10 +54,12 @@ elif auto_lineage is not None:
 else:   # doesn't matter if auto-lineage is all or left blank. default to auto if nothing else is provided
     lineage_cmd = " --auto-lineage "
 
+evalue_cmd = '--evalue ' + str(evalue) if evalue is not None else ''
+
 # note: --force allows snakemake to handle rewriting files as necessary
 # without needing to specify *all* busco outputs as snakemake outputs
 shell(
     "busco --in {snakemake.input.fasta} --out_path {out_path} --out {out_name} --force "
-    " --cpu {snakemake.threads} --mode {mode} {lineage_cmd} "
-    " {config_cmd} {extra} {log}"
+    " --cpu {snakemake.threads} {evalue_cmd} --mode {mode} {lineage_cmd} "
+    " --download_path {database_directory} {config_cmd} {extra} {log}"
 )
