@@ -1,0 +1,213 @@
+##gff-version 3.2.1
+SPAC13A11.06	transdecoder	CDS	243	1958	.	+	0	ID=cds.SPAC13A11.06.p1;Parent=SPAC13A11.06.p1
+SPAC13A11.06	transdecoder	exon	1	2141	.	+	.	ID=SPAC13A11.06.p1.exon1;Parent=SPAC13A11.06.p1
+SPAC13A11.06	transdecoder	five_prime_UTR	1	242	.	+	.	ID=SPAC13A11.06.p1.utr5p1;Parent=SPAC13A11.06.p1
+SPAC13A11.06	transdecoder	gene	1	2141	.	+	.	ID=GENE.SPAC13A11.06~~SPAC13A11.06.p1;Name=ORF%20type%3Acomplete%20len%3A572%20%28%2B%29%2Cscore%3D269.50%2CTPP_enzyme_N%7CPF02776.14%7C4.9e-34%2CTPP_enzyme_M%7CPF00205.18%7C6.3e%2B03%2CTPP_enzyme_M%7CPF00205.18%7C4.8e-28%2CTPP_enzyme_C%7CPF02775.17%7C8.1e%2B02%2CTPP_enzyme_C%7CPF02775.17%7C8.8e-15
+SPAC13A11.06	transdecoder	mRNA	1	2141	.	+	.	ID=SPAC13A11.06.p1;Parent=GENE.SPAC13A11.06~~SPAC13A11.06.p1;Name=ORF%20type%3Acomplete%20len%3A572%20%28%2B%29%2Cscore%3D269.50%2CTPP_enzyme_N%7CPF02776.14%7C4.9e-34%2CTPP_enzyme_M%7CPF00205.18%7C6.3e%2B03%2CTPP_enzyme_M%7CPF00205.18%7C4.8e-28%2CTPP_enzyme_C%7CPF02775.17%7C8.1e%2B02%2CTPP_enzyme_C%7CPF02775.17%7C8.8e-15
+SPAC13A11.06	transdecoder	three_prime_UTR	1959	2141	.	+	.	ID=SPAC13A11.06.p1.utr3p1;Parent=SPAC13A11.06.p1
+SPAC13A11	HMMER	protein_hmm_match	1455	1787	8.800000e-15	.	.	ID=homology:938a8bc5663dff86b8dddc9196431b3e6ac0c131;Name=TPP_enzyme_C;Target=TPP_enzyme_C 15 120 +;accuracy=0.73;env_coords=1416 1880;Dbxref="Pfam-A:PF02775.17";Note=Thiamine pyrophosphate enzyme, C-terminal TPP binding domain
+SPAC13A11	HMMER	protein_hmm_match	261	773	4.900000e-34	.	.	ID=homology:9436925220961765330ed60296f6b60badb5ef25;Name=TPP_enzyme_N;Target=TPP_enzyme_N 3 166 +;accuracy=0.94;env_coords=255 788;Dbxref="Pfam-A:PF02776.14";Note=Thiamine pyrophosphate enzyme, N-terminal TPP binding domain
+SPAC13A11	HMMER	protein_hmm_match	630	746	8.100000e+02	.	.	ID=homology:3b28e527e241ab11f1ad5f50ddaf0e61afc5c48e;Name=TPP_enzyme_C;Target=TPP_enzyme_C 112 151 +;accuracy=0.62;env_coords=540 752;Dbxref="Pfam-A:PF02775.17";Note=Thiamine pyrophosphate enzyme, C-terminal TPP binding domain
+SPAC13A11	HMMER	protein_hmm_match	633	740	6.300000e+03	.	.	ID=homology:9114514f9e096e5068ca31231f5d9184f1352a4c;Name=TPP_enzyme_M;Target=TPP_enzyme_M 7 42 +;accuracy=0.6;env_coords=624 815;Dbxref="Pfam-A:PF00205.18";Note=Thiamine pyrophosphate enzyme, central domain
+SPAC13A11	HMMER	protein_hmm_match	852	1244	4.800000e-28	.	.	ID=homology:95453d8de47440d3b28b7affbfe8c48d16cfb991;Name=TPP_enzyme_M;Target=TPP_enzyme_M 1 131 +;accuracy=0.9;env_coords=852 1262;Dbxref="Pfam-A:PF00205.18";Note=Thiamine pyrophosphate enzyme, central domain
+SPAC1D4.01	transdecoder	CDS	1449	1769	.	-	0	ID=cds.SPAC1D4.01.p3;Parent=SPAC1D4.01.p3
+SPAC1D4.01	transdecoder	CDS	1	771	.	+	0	ID=cds.SPAC1D4.01.p1;Parent=SPAC1D4.01.p1
+SPAC1D4.01	transdecoder	CDS	995	1345	.	-	0	ID=cds.SPAC1D4.01.p2;Parent=SPAC1D4.01.p2
+SPAC1D4.01	transdecoder	exon	1	1876	.	+	.	ID=SPAC1D4.01.p1.exon1;Parent=SPAC1D4.01.p1
+SPAC1D4.01	transdecoder	exon	1	1876	.	-	.	ID=SPAC1D4.01.p2.exon1;Parent=SPAC1D4.01.p2
+SPAC1D4.01	transdecoder	exon	1	1876	.	-	.	ID=SPAC1D4.01.p3.exon1;Parent=SPAC1D4.01.p3
+SPAC1D4.01	transdecoder	five_prime_UTR	1346	1876	.	-	.	ID=SPAC1D4.01.p2.utr5p1;Parent=SPAC1D4.01.p2
+SPAC1D4.01	transdecoder	five_prime_UTR	1770	1876	.	-	.	ID=SPAC1D4.01.p3.utr5p1;Parent=SPAC1D4.01.p3
+SPAC1D4.01	transdecoder	gene	1	1876	.	+	.	ID=GENE.SPAC1D4.01~~SPAC1D4.01.p1;Name=ORF%20type%3A5prime_partial%20len%3A257%20%28%2B%29%2Cscore%3D121.42%2CHep_59%7CPF07052.7%7C3.5e%2B02%2CHep_59%7CPF07052.7%7C3.3e-10%2CHep_59%7CPF07052.7%7C9.8e%2B02
+SPAC1D4.01	transdecoder	gene	1	1876	.	-	.	ID=GENE.SPAC1D4.01~~SPAC1D4.01.p2;Name=ORF%20type%3Acomplete%20len%3A117%20%28-%29%2Cscore%3D66.67
+SPAC1D4.01	transdecoder	gene	1	1876	.	-	.	ID=GENE.SPAC1D4.01~~SPAC1D4.01.p3;Name=ORF%20type%3Acomplete%20len%3A107%20%28-%29%2Cscore%3D40.74%2CGRASP55_65%7CPF04495.10%7C2.9e-17
+SPAC1D4.01	transdecoder	mRNA	1	1876	.	+	.	ID=SPAC1D4.01.p1;Parent=GENE.SPAC1D4.01~~SPAC1D4.01.p1;Name=ORF%20type%3A5prime_partial%20len%3A257%20%28%2B%29%2Cscore%3D121.42%2CHep_59%7CPF07052.7%7C3.5e%2B02%2CHep_59%7CPF07052.7%7C3.3e-10%2CHep_59%7CPF07052.7%7C9.8e%2B02
+SPAC1D4.01	transdecoder	mRNA	1	1876	.	-	.	ID=SPAC1D4.01.p2;Parent=GENE.SPAC1D4.01~~SPAC1D4.01.p2;Name=ORF%20type%3Acomplete%20len%3A117%20%28-%29%2Cscore%3D66.67
+SPAC1D4.01	transdecoder	mRNA	1	1876	.	-	.	ID=SPAC1D4.01.p3;Parent=GENE.SPAC1D4.01~~SPAC1D4.01.p3;Name=ORF%20type%3Acomplete%20len%3A107%20%28-%29%2Cscore%3D40.74%2CGRASP55_65%7CPF04495.10%7C2.9e-17
+SPAC1D4.01	transdecoder	three_prime_UTR	1	1448	.	-	.	ID=SPAC1D4.01.p3.utr3p1;Parent=SPAC1D4.01.p3
+SPAC1D4.01	transdecoder	three_prime_UTR	1	994	.	-	.	ID=SPAC1D4.01.p2.utr3p1;Parent=SPAC1D4.01.p2
+SPAC1D4.01	transdecoder	three_prime_UTR	772	1876	.	+	.	ID=SPAC1D4.01.p1.utr3p1;Parent=SPAC1D4.01.p1
+SPAC1D4	HMMER	protein_hmm_match	1452	1634	2.900000e-17	.	.	ID=homology:7f8979b1adcda28987dc46a77eb95b0042057654;Name=GRASP55_65;Target=GRASP55_65 31 91 +;accuracy=0.89;env_coords=1449 1727;Dbxref="Pfam-A:PF04495.10";Note=GRASP55/65 PDZ-like domain
+SPAC1D4	HMMER	protein_hmm_match	208	285	3.500000e+02	.	.	ID=homology:af1601cb75754cc36269bdff1a1e3fd25e2648e8;Name=Hep_59;Target=Hep_59 24 82 +;accuracy=0.5;env_coords=88 315;Dbxref="Pfam-A:PF07052.7";Note=Hepatocellular carcinoma-associated antigen 59
+SPAC1D4	HMMER	protein_hmm_match	316	606	3.300000e-10	.	.	ID=homology:ad3e50d7b8e450dde13c5764e5d146ea7904cb5f;Name=Hep_59;Target=Hep_59 1 102 +;accuracy=0.68;env_coords=316 618;Dbxref="Pfam-A:PF07052.7";Note=Hepatocellular carcinoma-associated antigen 59
+SPAC1D4	HMMER	protein_hmm_match	655	687	9.800000e+02	.	.	ID=homology:58a4da771cff508a6c962a4910a34c44731b0ba2;Name=Hep_59;Target=Hep_59 11 21 +;accuracy=0.37;env_coords=571 729;Dbxref="Pfam-A:PF07052.7";Note=Hepatocellular carcinoma-associated antigen 59
+SPAC1F3.01	BUSCO	BUSCO_ortholog	57	2374	456.5	.	.	ID=busco:2f00f0bcd549a33a49c434c19519ec20eed97ccc;Name=6427at4891;length=481;status=Complete
+SPAC1F3.01	transdecoder	CDS	45	2378	.	+	0	ID=cds.SPAC1F3.01.p1;Parent=SPAC1F3.01.p1
+SPAC1F3.01	transdecoder	exon	1	2439	.	+	.	ID=SPAC1F3.01.p1.exon1;Parent=SPAC1F3.01.p1
+SPAC1F3.01	transdecoder	five_prime_UTR	1	44	.	+	.	ID=SPAC1F3.01.p1.utr5p1;Parent=SPAC1F3.01.p1
+SPAC1F3.01	transdecoder	gene	1	2439	.	+	.	ID=GENE.SPAC1F3.01~~SPAC1F3.01.p1;Name=ORF%20type%3Acomplete%20len%3A778%20%28%2B%29%2Cscore%3D359.02%2CDNA_pol_A_exo1%7CPF01612.16%7C1.6e%2B03%2CDNA_pol_A_exo1%7CPF01612.16%7C2e-54%2CDNA_pol_A_exo1%7CPF01612.16%7C5.7e%2B03%2CPMC2NT%7CPF08066.8%7C5.2e-18%2CHRDC%7CPF00570.19%7C1.7e-13
+SPAC1F3.01	transdecoder	mRNA	1	2439	.	+	.	ID=SPAC1F3.01.p1;Parent=GENE.SPAC1F3.01~~SPAC1F3.01.p1;Name=ORF%20type%3Acomplete%20len%3A778%20%28%2B%29%2Cscore%3D359.02%2CDNA_pol_A_exo1%7CPF01612.16%7C1.6e%2B03%2CDNA_pol_A_exo1%7CPF01612.16%7C2e-54%2CDNA_pol_A_exo1%7CPF01612.16%7C5.7e%2B03%2CPMC2NT%7CPF08066.8%7C5.2e-18%2CHRDC%7CPF00570.19%7C1.7e-13
+SPAC1F3.01	transdecoder	three_prime_UTR	2379	2439	.	+	.	ID=SPAC1F3.01.p1.utr3p1;Parent=SPAC1F3.01.p1
+SPAC1F3.02c	BUSCO	BUSCO_ortholog	1365	3808	479.8	.	.	ID=busco:dbd42cc41dffc5f13ae1a5059ab5be8f4545b30d;Name=1979at4891;length=341;status=Complete
+SPAC1F3.02c	transdecoder	CDS	477	3827	.	+	0	ID=cds.SPAC1F3.02c.p1;Parent=SPAC1F3.02c.p1
+SPAC1F3.02c	transdecoder	exon	1	3956	.	+	.	ID=SPAC1F3.02c.p1.exon1;Parent=SPAC1F3.02c.p1
+SPAC1F3.02c	transdecoder	five_prime_UTR	1	476	.	+	.	ID=SPAC1F3.02c.p1.utr5p1;Parent=SPAC1F3.02c.p1
+SPAC1F3.02c	transdecoder	gene	1	3956	.	+	.	ID=GENE.SPAC1F3.02c~~SPAC1F3.02c.p1;Name=ORF%20type%3Acomplete%20len%3A1117%20%28%2B%29%2Cscore%3D521.04%2CPkinase%7CPF00069.21%7C5.5e-67%2CPkinase_Tyr%7CPF07714.13%7C2.3e-42
+SPAC1F3.02c	transdecoder	mRNA	1	3956	.	+	.	ID=SPAC1F3.02c.p1;Parent=GENE.SPAC1F3.02c~~SPAC1F3.02c.p1;Name=ORF%20type%3Acomplete%20len%3A1117%20%28%2B%29%2Cscore%3D521.04%2CPkinase%7CPF00069.21%7C5.5e-67%2CPkinase_Tyr%7CPF07714.13%7C2.3e-42
+SPAC1F3.02c	transdecoder	three_prime_UTR	3828	3956	.	+	.	ID=SPAC1F3.02c.p1.utr3p1;Parent=SPAC1F3.02c.p1
+SPAC1F3.03	BUSCO	BUSCO_ortholog	3455	4273	250.0	.	.	ID=busco:9f9bce7b86d5234691efffbe55b42924b9fe7427;Name=23784at4891;length=163;status=Duplicated
+SPAC1F3.03	transdecoder	CDS	2	3043	.	+	0	ID=cds.SPAC1F3.03.p1;Parent=SPAC1F3.03.p1
+SPAC1F3.03	transdecoder	CDS	3236	3682	.	-	0	ID=cds.SPAC1F3.03.p2;Parent=SPAC1F3.03.p2
+SPAC1F3.03	transdecoder	exon	1	4750	.	+	.	ID=SPAC1F3.03.p1.exon1;Parent=SPAC1F3.03.p1
+SPAC1F3.03	transdecoder	exon	1	4750	.	-	.	ID=SPAC1F3.03.p2.exon1;Parent=SPAC1F3.03.p2
+SPAC1F3.03	transdecoder	five_prime_UTR	3683	4750	.	-	.	ID=SPAC1F3.03.p2.utr5p1;Parent=SPAC1F3.03.p2
+SPAC1F3.03	transdecoder	gene	1	4750	.	+	.	ID=GENE.SPAC1F3.03~~SPAC1F3.03.p1;Name=ORF%20type%3A5prime_partial%20len%3A1014%20%28%2B%29%2Cscore%3D458.23%2CLgl_C%7CPF08596.6%7C8.4e-109
+SPAC1F3.03	transdecoder	gene	1	4750	.	-	.	ID=GENE.SPAC1F3.03~~SPAC1F3.03.p2;Name=ORF%20type%3Acomplete%20len%3A149%20%28-%29%2Cscore%3D69.62%2CDUF367%7CPF04034.9%7C1.2e-13
+SPAC1F3.03	transdecoder	mRNA	1	4750	.	+	.	ID=SPAC1F3.03.p1;Parent=GENE.SPAC1F3.03~~SPAC1F3.03.p1;Name=ORF%20type%3A5prime_partial%20len%3A1014%20%28%2B%29%2Cscore%3D458.23%2CLgl_C%7CPF08596.6%7C8.4e-109
+SPAC1F3.03	transdecoder	mRNA	1	4750	.	-	.	ID=SPAC1F3.03.p2;Parent=GENE.SPAC1F3.03~~SPAC1F3.03.p2;Name=ORF%20type%3Acomplete%20len%3A149%20%28-%29%2Cscore%3D69.62%2CDUF367%7CPF04034.9%7C1.2e-13
+SPAC1F3.03	transdecoder	three_prime_UTR	1	3235	.	-	.	ID=SPAC1F3.03.p2.utr3p1;Parent=SPAC1F3.03.p2
+SPAC1F3.03	transdecoder	three_prime_UTR	3044	4750	.	+	.	ID=SPAC1F3.03.p1.utr3p1;Parent=SPAC1F3.03.p1
+SPAC1F3.04c	BUSCO	BUSCO_ortholog	41	723	250.0	.	.	ID=busco:cb6e47a212371bacb82a5b119cb28ea1b7137dcb;Name=23784at4891;length=163;status=Duplicated
+SPAC1F3.04c	transdecoder	CDS	77	943	.	+	0	ID=cds.SPAC1F3.04c.p1;Parent=SPAC1F3.04c.p1
+SPAC1F3.04c	transdecoder	exon	1	1078	.	+	.	ID=SPAC1F3.04c.p1.exon1;Parent=SPAC1F3.04c.p1
+SPAC1F3.04c	transdecoder	five_prime_UTR	1	76	.	+	.	ID=SPAC1F3.04c.p1.utr5p1;Parent=SPAC1F3.04c.p1
+SPAC1F3.04c	transdecoder	gene	1	1078	.	+	.	ID=GENE.SPAC1F3.04c~~SPAC1F3.04c.p1;Name=ORF%20type%3Acomplete%20len%3A289%20%28%2B%29%2Cscore%3D133.35%2CDUF367%7CPF04034.9%7C1.7e-50%2CRLI%7CPF04068.11%7C1.1e-12
+SPAC1F3.04c	transdecoder	mRNA	1	1078	.	+	.	ID=SPAC1F3.04c.p1;Parent=GENE.SPAC1F3.04c~~SPAC1F3.04c.p1;Name=ORF%20type%3Acomplete%20len%3A289%20%28%2B%29%2Cscore%3D133.35%2CDUF367%7CPF04034.9%7C1.7e-50%2CRLI%7CPF04068.11%7C1.1e-12
+SPAC1F3.04c	transdecoder	three_prime_UTR	944	1078	.	+	.	ID=SPAC1F3.04c.p1.utr3p1;Parent=SPAC1F3.04c.p1
+SPAC1F3.05	transdecoder	CDS	182	1714	.	+	0	ID=cds.SPAC1F3.05.p1;Parent=SPAC1F3.05.p1
+SPAC1F3.05	transdecoder	exon	1	2035	.	+	.	ID=SPAC1F3.05.p1.exon1;Parent=SPAC1F3.05.p1
+SPAC1F3.05	transdecoder	five_prime_UTR	1	181	.	+	.	ID=SPAC1F3.05.p1.utr5p1;Parent=SPAC1F3.05.p1
+SPAC1F3.05	transdecoder	gene	1	2035	.	+	.	ID=GENE.SPAC1F3.05~~SPAC1F3.05.p1;Name=ORF%20type%3Acomplete%20len%3A511%20%28%2B%29%2Cscore%3D242.08%2CVHS%7CPF00790.15%7C2.4e-49%2CAlpha_adaptinC2%7CPF02883.16%7C7.6e%2B03%2CAlpha_adaptinC2%7CPF02883.16%7C3.8e-14
+SPAC1F3.05	transdecoder	mRNA	1	2035	.	+	.	ID=SPAC1F3.05.p1;Parent=GENE.SPAC1F3.05~~SPAC1F3.05.p1;Name=ORF%20type%3Acomplete%20len%3A511%20%28%2B%29%2Cscore%3D242.08%2CVHS%7CPF00790.15%7C2.4e-49%2CAlpha_adaptinC2%7CPF02883.16%7C7.6e%2B03%2CAlpha_adaptinC2%7CPF02883.16%7C3.8e-14
+SPAC1F3.05	transdecoder	three_prime_UTR	1715	2035	.	+	.	ID=SPAC1F3.05.p1.utr3p1;Parent=SPAC1F3.05.p1
+SPAC1F3.06c	transdecoder	CDS	3	5972	.	+	0	ID=cds.SPAC1F3.06c.p1;Parent=SPAC1F3.06c.p1
+SPAC1F3.06c	transdecoder	exon	1	6229	.	+	.	ID=SPAC1F3.06c.p1.exon1;Parent=SPAC1F3.06c.p1
+SPAC1F3.06c	transdecoder	gene	1	6229	.	+	.	ID=GENE.SPAC1F3.06c~~SPAC1F3.06c.p1;Name=ORF%20type%3A5prime_partial%20len%3A1990%20%28%2B%29%2Cscore%3D255.50
+SPAC1F3.06c	transdecoder	mRNA	1	6229	.	+	.	ID=SPAC1F3.06c.p1;Parent=GENE.SPAC1F3.06c~~SPAC1F3.06c.p1;Name=ORF%20type%3A5prime_partial%20len%3A1990%20%28%2B%29%2Cscore%3D255.50
+SPAC1F3.06c	transdecoder	three_prime_UTR	5973	6229	.	+	.	ID=SPAC1F3.06c.p1.utr3p1;Parent=SPAC1F3.06c.p1
+SPAC1F3.07c	transdecoder	CDS	262	1473	.	+	0	ID=cds.SPAC1F3.07c.p1;Parent=SPAC1F3.07c.p1
+SPAC1F3.07c	transdecoder	exon	1	1518	.	+	.	ID=SPAC1F3.07c.p1.exon1;Parent=SPAC1F3.07c.p1
+SPAC1F3.07c	transdecoder	five_prime_UTR	1	261	.	+	.	ID=SPAC1F3.07c.p1.utr5p1;Parent=SPAC1F3.07c.p1
+SPAC1F3.07c	transdecoder	gene	1	1518	.	+	.	ID=GENE.SPAC1F3.07c~~SPAC1F3.07c.p1;Name=ORF%20type%3Acomplete%20len%3A404%20%28%2B%29%2Cscore%3D190.13
+SPAC1F3.07c	transdecoder	mRNA	1	1518	.	+	.	ID=SPAC1F3.07c.p1;Parent=GENE.SPAC1F3.07c~~SPAC1F3.07c.p1;Name=ORF%20type%3Acomplete%20len%3A404%20%28%2B%29%2Cscore%3D190.13
+SPAC1F3.07c	transdecoder	three_prime_UTR	1474	1518	.	+	.	ID=SPAC1F3.07c.p1.utr3p1;Parent=SPAC1F3.07c.p1
+SPAC1F3.08c	transdecoder	CDS	1	327	.	+	0	ID=cds.SPAC1F3.08c.p1;Parent=SPAC1F3.08c.p1
+SPAC1F3.08c	transdecoder	exon	1	327	.	+	.	ID=SPAC1F3.08c.p1.exon1;Parent=SPAC1F3.08c.p1
+SPAC1F3.08c	transdecoder	gene	1	327	.	+	.	ID=GENE.SPAC1F3.08c~~SPAC1F3.08c.p1;Name=ORF%20type%3Acomplete%20len%3A109%20%28%2B%29%2Cscore%3D31.04
+SPAC1F3.08c	transdecoder	mRNA	1	327	.	+	.	ID=SPAC1F3.08c.p1;Parent=GENE.SPAC1F3.08c~~SPAC1F3.08c.p1;Name=ORF%20type%3Acomplete%20len%3A109%20%28%2B%29%2Cscore%3D31.04
+SPAC1F3.09	transdecoder	CDS	1286	2971	.	+	0	ID=cds.SPAC1F3.09.p1;Parent=SPAC1F3.09.p1
+SPAC1F3.09	transdecoder	exon	1	2971	.	+	.	ID=SPAC1F3.09.p1.exon1;Parent=SPAC1F3.09.p1
+SPAC1F3.09	transdecoder	five_prime_UTR	1	1285	.	+	.	ID=SPAC1F3.09.p1.utr5p1;Parent=SPAC1F3.09.p1
+SPAC1F3.09	transdecoder	gene	1	2971	.	+	.	ID=GENE.SPAC1F3.09~~SPAC1F3.09.p1;Name=ORF%20type%3Acomplete%20len%3A562%20%28%2B%29%2Cscore%3D261.47%2CCwfJ_C_1%7CPF04677.11%7C1e-45%2CCwfJ_C_2%7CPF04676.10%7C3.3e-15
+SPAC1F3.09	transdecoder	mRNA	1	2971	.	+	.	ID=SPAC1F3.09.p1;Parent=GENE.SPAC1F3.09~~SPAC1F3.09.p1;Name=ORF%20type%3Acomplete%20len%3A562%20%28%2B%29%2Cscore%3D261.47%2CCwfJ_C_1%7CPF04677.11%7C1e-45%2CCwfJ_C_2%7CPF04676.10%7C3.3e-15
+SPAC1F3.10c	BUSCO	BUSCO_ortholog	228	2377	453.7	.	.	ID=busco:dc3ff209829972c24042f04b08e08a5ca9aee2d2;Name=5324at4891;length=552;status=Complete
+SPAC1F3.10c	transdecoder	CDS	120	2408	.	+	0	ID=cds.SPAC1F3.10c.p1;Parent=SPAC1F3.10c.p1
+SPAC1F3.10c	transdecoder	CDS	2472	3098	.	-	0	ID=cds.SPAC1F3.10c.p3;Parent=SPAC1F3.10c.p3
+SPAC1F3.10c	transdecoder	CDS	3211	4020	.	-	0	ID=cds.SPAC1F3.10c.p2;Parent=SPAC1F3.10c.p2
+SPAC1F3.10c	transdecoder	exon	1	4533	.	+	.	ID=SPAC1F3.10c.p1.exon1;Parent=SPAC1F3.10c.p1
+SPAC1F3.10c	transdecoder	exon	1	4533	.	-	.	ID=SPAC1F3.10c.p2.exon1;Parent=SPAC1F3.10c.p2
+SPAC1F3.10c	transdecoder	exon	1	4533	.	-	.	ID=SPAC1F3.10c.p3.exon1;Parent=SPAC1F3.10c.p3
+SPAC1F3.10c	transdecoder	five_prime_UTR	1	119	.	+	.	ID=SPAC1F3.10c.p1.utr5p1;Parent=SPAC1F3.10c.p1
+SPAC1F3.10c	transdecoder	five_prime_UTR	3099	4533	.	-	.	ID=SPAC1F3.10c.p3.utr5p1;Parent=SPAC1F3.10c.p3
+SPAC1F3.10c	transdecoder	five_prime_UTR	4021	4533	.	-	.	ID=SPAC1F3.10c.p2.utr5p1;Parent=SPAC1F3.10c.p2
+SPAC1F3.10c	transdecoder	gene	1	4533	.	+	.	ID=GENE.SPAC1F3.10c~~SPAC1F3.10c.p1;Name=ORF%20type%3Acomplete%20len%3A763%20%28%2B%29%2Cscore%3D329.09%2CPeptidase_M3%7CPF01432.16%7C2.8e-153
+SPAC1F3.10c	transdecoder	gene	1	4533	.	-	.	ID=GENE.SPAC1F3.10c~~SPAC1F3.10c.p2;Name=ORF%20type%3Acomplete%20len%3A270%20%28-%29%2Cscore%3D125.18
+SPAC1F3.10c	transdecoder	gene	1	4533	.	-	.	ID=GENE.SPAC1F3.10c~~SPAC1F3.10c.p3;Name=ORF%20type%3Acomplete%20len%3A209%20%28-%29%2Cscore%3D88.03%2CCwfJ_C_1%7CPF04677.11%7C2.1e-28%2CCwfJ_C_1%7CPF04677.11%7C2.9e%2B03%2CCwfJ_C_2%7CPF04676.10%7C5.4e-16
+SPAC1F3.10c	transdecoder	mRNA	1	4533	.	+	.	ID=SPAC1F3.10c.p1;Parent=GENE.SPAC1F3.10c~~SPAC1F3.10c.p1;Name=ORF%20type%3Acomplete%20len%3A763%20%28%2B%29%2Cscore%3D329.09%2CPeptidase_M3%7CPF01432.16%7C2.8e-153
+SPAC1F3.10c	transdecoder	mRNA	1	4533	.	-	.	ID=SPAC1F3.10c.p2;Parent=GENE.SPAC1F3.10c~~SPAC1F3.10c.p2;Name=ORF%20type%3Acomplete%20len%3A270%20%28-%29%2Cscore%3D125.18
+SPAC1F3.10c	transdecoder	mRNA	1	4533	.	-	.	ID=SPAC1F3.10c.p3;Parent=GENE.SPAC1F3.10c~~SPAC1F3.10c.p3;Name=ORF%20type%3Acomplete%20len%3A209%20%28-%29%2Cscore%3D88.03%2CCwfJ_C_1%7CPF04677.11%7C2.1e-28%2CCwfJ_C_1%7CPF04677.11%7C2.9e%2B03%2CCwfJ_C_2%7CPF04676.10%7C5.4e-16
+SPAC1F3.10c	transdecoder	three_prime_UTR	1	2471	.	-	.	ID=SPAC1F3.10c.p3.utr3p1;Parent=SPAC1F3.10c.p3
+SPAC1F3.10c	transdecoder	three_prime_UTR	1	3210	.	-	.	ID=SPAC1F3.10c.p2.utr3p1;Parent=SPAC1F3.10c.p2
+SPAC1F3.10c	transdecoder	three_prime_UTR	2409	4533	.	+	.	ID=SPAC1F3.10c.p1.utr3p1;Parent=SPAC1F3.10c.p1
+SPAC1F3	HMMER	protein_hmm_match	1241	1294	7.600000e+03	.	.	ID=homology:0f584e0111dc61b3e7f52db612b104d8ab5e3763;Name=Alpha_adaptinC2;Target=Alpha_adaptinC2 48 65 +;accuracy=0.59;env_coords=1229 1354;Dbxref="Pfam-A:PF02883.16";Note=Adaptin C-terminal domain
+SPAC1F3	HMMER	protein_hmm_match	1370	1681	3.800000e-14	.	.	ID=homology:76537f0a8b7ee4cac451932cf009e1fdc887afdf;Name=Alpha_adaptinC2;Target=Alpha_adaptinC2 4 100 +;accuracy=0.9;env_coords=1361 1708;Dbxref="Pfam-A:PF02883.16";Note=Adaptin C-terminal domain
+SPAC1F3	HMMER	protein_hmm_match	1380	1580	1.700000e-13	.	.	ID=homology:ebdabace6154db8d9647fd3e2dba41108c89b384;Name=HRDC;Target=HRDC 2 68 +;accuracy=0.96;env_coords=1377 1580;Dbxref="Pfam-A:PF00570.19";Note=HRDC domain
+SPAC1F3	HMMER	protein_hmm_match	158	259	1.100000e-12	.	.	ID=homology:8a24c521c0e7fac1234873faf73b36beab5f5775;Name=RLI;Target=RLI 2 35 +;accuracy=0.97;env_coords=155 259;Dbxref="Pfam-A:PF04068.11";Note=Possible Fer4-like domain in RNase L inhibitor, RLI
+SPAC1F3	HMMER	protein_hmm_match	1604	2725	8.400000e-109	.	.	ID=homology:72d3644db3257fe6e82cce74d9598f7e0777cf01;Name=Lgl_C;Target=Lgl_C 3 393 +;accuracy=0.98;env_coords=1598 2725;Dbxref="Pfam-A:PF08596.6";Note=Lethal giant larvae(Lgl) like, C-terminal
+SPAC1F3	HMMER	protein_hmm_match	1647	1745	5.700000e+03	.	.	ID=homology:136427de287940566640b4c7f63d623c1bbbd8b7;Name=DNA_pol_A_exo1;Target=DNA_pol_A_exo1 18 52 +;accuracy=0.58;env_coords=1614 1793;Dbxref="Pfam-A:PF01612.16";Note=3'-5' exonuclease
+SPAC1F3	HMMER	protein_hmm_match	188	619	2.400000e-49	.	.	ID=homology:9df21ba89c756201ebe172347040bac6f72367d7;Name=VHS;Target=VHS 3 141 +;accuracy=0.98;env_coords=182 619;Dbxref="Pfam-A:PF00790.15";Note=VHS domain
+SPAC1F3	HMMER	protein_hmm_match	2291	2692	1.000000e-45	.	.	ID=homology:952d13628f96283483319457bf464a2b3e571858;Name=CwfJ_C_1;Target=CwfJ_C_1 3 121 +;accuracy=0.98;env_coords=2285 2695;Dbxref="Pfam-A:PF04677.11";Note=Protein similar to CwfJ C-terminus 1
+SPAC1F3	HMMER	protein_hmm_match	2523	2819	2.100000e-28	.	.	ID=homology:f7c2fce8fd14fc3d2cd9430c3ebf33ffb89225a4;Name=CwfJ_C_1;Target=CwfJ_C_1 38 121 +;accuracy=0.96;env_coords=2505 2822;Dbxref="Pfam-A:PF04677.11";Note=Protein similar to CwfJ C-terminus 1
+SPAC1F3	HMMER	protein_hmm_match	269	649	1.700000e-50	.	.	ID=homology:62e47f9f007f559c06d51bcfc8134fe7c7dfb804;Name=DUF367;Target=DUF367 1 127 +;accuracy=0.99;env_coords=269 649;Dbxref="Pfam-A:PF04034.9";Note=Domain of unknown function (DUF367)
+SPAC1F3	HMMER	protein_hmm_match	2732	2968	3.300000e-15	.	.	ID=homology:492fdc8a34f2e2b9ff72bcaae4f1f75abf538d9f;Name=CwfJ_C_2;Target=CwfJ_C_2 18 98 +;accuracy=0.88;env_coords=2693 2968;Dbxref="Pfam-A:PF04676.10";Note=Protein similar to CwfJ C-terminus 2
+SPAC1F3	HMMER	protein_hmm_match	2859	3095	5.400000e-16	.	.	ID=homology:b809934389dac8626e6ff756df859d3259ef2443;Name=CwfJ_C_2;Target=CwfJ_C_2 18 98 +;accuracy=0.88;env_coords=2814 3095;Dbxref="Pfam-A:PF04676.10";Note=Protein similar to CwfJ C-terminus 2
+SPAC1F3	HMMER	protein_hmm_match	2955	3758	5.500000e-67	.	.	ID=homology:b62c2456739747791275cd61b1bd74af41292101;Name=Pkinase;Target=Pkinase 3 262 +;accuracy=0.9;env_coords=2949 3758;Dbxref="Pfam-A:PF00069.21";Note=Protein kinase domain
+SPAC1F3	HMMER	protein_hmm_match	2958	3746	2.300000e-42	.	.	ID=homology:c4f795932ca3800ed168e8ab7b6997dfcee2c63f;Name=Pkinase_Tyr;Target=Pkinase_Tyr 4 258 +;accuracy=0.84;env_coords=2952 3749;Dbxref="Pfam-A:PF07714.13";Note=Protein tyrosine kinase
+SPAC1F3	HMMER	protein_hmm_match	3018	3077	2.900000e+03	.	.	ID=homology:cf7c044ab91c9cafe7fd602f586911661ccf7e15;Name=CwfJ_C_1;Target=CwfJ_C_1 59 78 +;accuracy=0.78;env_coords=3012 3083;Dbxref="Pfam-A:PF04677.11";Note=Protein similar to CwfJ C-terminus 1
+SPAC1F3	HMMER	protein_hmm_match	3236	3388	1.200000e-13	.	.	ID=homology:102f6bb1cb966d88546d1975aa19471440fa6276;Name=DUF367;Target=DUF367 77 127 +;accuracy=0.98;env_coords=3236 3388;Dbxref="Pfam-A:PF04034.9";Note=Domain of unknown function (DUF367)
+SPAC1F3	HMMER	protein_hmm_match	699	1199	2.000000e-54	.	.	ID=homology:3dbbeb0b5ff7afa33844e670294ad9bb9dd485f0;Name=DNA_pol_A_exo1;Target=DNA_pol_A_exo1 2 174 +;accuracy=0.99;env_coords=696 1202;Dbxref="Pfam-A:PF01612.16";Note=3'-5' exonuclease
+SPAC1F3	HMMER	protein_hmm_match	78	338	5.200000e-18	.	.	ID=homology:4f00076c0c322ece9782945a21c61459acdfd5be;Name=PMC2NT;Target=PMC2NT 2 92 +;accuracy=0.95;env_coords=75 338;Dbxref="Pfam-A:PF08066.8";Note=PMC2NT (NUC016) domain
+SPAC1F3	HMMER	protein_hmm_match	84	164	1.600000e+03	.	.	ID=homology:e00a9ea6aa116ac8bce4d0ef40a8c1304299285c;Name=DNA_pol_A_exo1;Target=DNA_pol_A_exo1 11 34 +;accuracy=0.76;env_coords=66 212;Dbxref="Pfam-A:PF01612.16";Note=3'-5' exonuclease
+SPAC1F3	HMMER	protein_hmm_match	939	2366	2.800000e-153	.	.	ID=homology:1fbbf86e957b2a0ffc374cc4523a7e7a0e0d0b1f;Name=Peptidase_M3;Target=Peptidase_M3 2 457 +;accuracy=0.97;env_coords=936 2369;Dbxref="Pfam-A:PF01432.16";Note=Peptidase family M3
+SPAC3H8.02	transdecoder	CDS	383	1717	.	+	0	ID=cds.SPAC3H8.02.p1;Parent=SPAC3H8.02.p1
+SPAC3H8.02	transdecoder	exon	1	2209	.	+	.	ID=SPAC3H8.02.p1.exon1;Parent=SPAC3H8.02.p1
+SPAC3H8.02	transdecoder	five_prime_UTR	1	382	.	+	.	ID=SPAC3H8.02.p1.utr5p1;Parent=SPAC3H8.02.p1
+SPAC3H8.02	transdecoder	gene	1	2209	.	+	.	ID=GENE.SPAC3H8.02~~SPAC3H8.02.p1;Name=ORF%20type%3Acomplete%20len%3A445%20%28%2B%29%2Cscore%3D227.45%2CCRAL_TRIO%7CPF00650.16%7C1.8e%2B02%2CCRAL_TRIO%7CPF00650.16%7C7.5e-46%2CCRAL_TRIO_N%7CPF03765.11%7C9.9e%2B03%2CCRAL_TRIO_N%7CPF03765.11%7C3.4e-10%2CCRAL_TRIO_N%7CPF03765.11%7C1.6e%2B04%2CCRAL_TRIO_2%7CPF13716.2%7C1.7e-09
+SPAC3H8.02	transdecoder	mRNA	1	2209	.	+	.	ID=SPAC3H8.02.p1;Parent=GENE.SPAC3H8.02~~SPAC3H8.02.p1;Name=ORF%20type%3Acomplete%20len%3A445%20%28%2B%29%2Cscore%3D227.45%2CCRAL_TRIO%7CPF00650.16%7C1.8e%2B02%2CCRAL_TRIO%7CPF00650.16%7C7.5e-46%2CCRAL_TRIO_N%7CPF03765.11%7C9.9e%2B03%2CCRAL_TRIO_N%7CPF03765.11%7C3.4e-10%2CCRAL_TRIO_N%7CPF03765.11%7C1.6e%2B04%2CCRAL_TRIO_2%7CPF13716.2%7C1.7e-09
+SPAC3H8.02	transdecoder	three_prime_UTR	1718	2209	.	+	.	ID=SPAC3H8.02.p1.utr3p1;Parent=SPAC3H8.02.p1
+SPAC3H8.03	transdecoder	CDS	377	694	.	+	0	ID=cds.SPAC3H8.03.p1;Parent=SPAC3H8.03.p1
+SPAC3H8.03	transdecoder	exon	1	1291	.	+	.	ID=SPAC3H8.03.p1.exon1;Parent=SPAC3H8.03.p1
+SPAC3H8.03	transdecoder	five_prime_UTR	1	376	.	+	.	ID=SPAC3H8.03.p1.utr5p1;Parent=SPAC3H8.03.p1
+SPAC3H8.03	transdecoder	gene	1	1291	.	+	.	ID=GENE.SPAC3H8.03~~SPAC3H8.03.p1;Name=ORF%20type%3Acomplete%20len%3A106%20%28%2B%29%2Cscore%3D49.61%2CImg2%7CPF05046.10%7C5.5e-26
+SPAC3H8.03	transdecoder	mRNA	1	1291	.	+	.	ID=SPAC3H8.03.p1;Parent=GENE.SPAC3H8.03~~SPAC3H8.03.p1;Name=ORF%20type%3Acomplete%20len%3A106%20%28%2B%29%2Cscore%3D49.61%2CImg2%7CPF05046.10%7C5.5e-26
+SPAC3H8.03	transdecoder	three_prime_UTR	695	1291	.	+	.	ID=SPAC3H8.03.p1.utr3p1;Parent=SPAC3H8.03.p1
+SPAC3H8.04	transdecoder	CDS	518	1534	.	+	0	ID=cds.SPAC3H8.04.p1;Parent=SPAC3H8.04.p1
+SPAC3H8.04	transdecoder	exon	1	1681	.	+	.	ID=SPAC3H8.04.p1.exon1;Parent=SPAC3H8.04.p1
+SPAC3H8.04	transdecoder	five_prime_UTR	1	517	.	+	.	ID=SPAC3H8.04.p1.utr5p1;Parent=SPAC3H8.04.p1
+SPAC3H8.04	transdecoder	gene	1	1681	.	+	.	ID=GENE.SPAC3H8.04~~SPAC3H8.04.p1;Name=ORF%20type%3Acomplete%20len%3A339%20%28%2B%29%2Cscore%3D133.40%2CDUF4210%7CPF13915.2%7C1.2e-21%2CDUF4210%7CPF13915.2%7C1.6e%2B04%2CChromosome_seg%7CPF13889.2%7C3.3e%2B02%2CChromosome_seg%7CPF13889.2%7C9.3e-05
+SPAC3H8.04	transdecoder	mRNA	1	1681	.	+	.	ID=SPAC3H8.04.p1;Parent=GENE.SPAC3H8.04~~SPAC3H8.04.p1;Name=ORF%20type%3Acomplete%20len%3A339%20%28%2B%29%2Cscore%3D133.40%2CDUF4210%7CPF13915.2%7C1.2e-21%2CDUF4210%7CPF13915.2%7C1.6e%2B04%2CChromosome_seg%7CPF13889.2%7C3.3e%2B02%2CChromosome_seg%7CPF13889.2%7C9.3e-05
+SPAC3H8.04	transdecoder	three_prime_UTR	1535	1681	.	+	.	ID=SPAC3H8.04.p1.utr3p1;Parent=SPAC3H8.04.p1
+SPAC3H8.05c	transdecoder	CDS	310	3531	.	+	0	ID=cds.SPAC3H8.05c.p1;Parent=SPAC3H8.05c.p1
+SPAC3H8.05c	transdecoder	exon	1	3607	.	+	.	ID=SPAC3H8.05c.p1.exon1;Parent=SPAC3H8.05c.p1
+SPAC3H8.05c	transdecoder	five_prime_UTR	1	309	.	+	.	ID=SPAC3H8.05c.p1.utr5p1;Parent=SPAC3H8.05c.p1
+SPAC3H8.05c	transdecoder	gene	1	3607	.	+	.	ID=GENE.SPAC3H8.05c~~SPAC3H8.05c.p1;Name=ORF%20type%3Acomplete%20len%3A1074%20%28%2B%29%2Cscore%3D410.74%2CMMS1_N%7CPF10433.5%7C9.6e-45%2CMMS1_N%7CPF10433.5%7C1.2e%2B03%2CCPSF_A%7CPF03178.11%7C1.6e-17
+SPAC3H8.05c	transdecoder	mRNA	1	3607	.	+	.	ID=SPAC3H8.05c.p1;Parent=GENE.SPAC3H8.05c~~SPAC3H8.05c.p1;Name=ORF%20type%3Acomplete%20len%3A1074%20%28%2B%29%2Cscore%3D410.74%2CMMS1_N%7CPF10433.5%7C9.6e-45%2CMMS1_N%7CPF10433.5%7C1.2e%2B03%2CCPSF_A%7CPF03178.11%7C1.6e-17
+SPAC3H8.05c	transdecoder	three_prime_UTR	3532	3607	.	+	.	ID=SPAC3H8.05c.p1.utr3p1;Parent=SPAC3H8.05c.p1
+SPAC3H8.06	transdecoder	CDS	444	1712	.	+	0	ID=cds.SPAC3H8.06.p1;Parent=SPAC3H8.06.p1
+SPAC3H8.06	transdecoder	exon	1	2333	.	+	.	ID=SPAC3H8.06.p1.exon1;Parent=SPAC3H8.06.p1
+SPAC3H8.06	transdecoder	five_prime_UTR	1	443	.	+	.	ID=SPAC3H8.06.p1.utr5p1;Parent=SPAC3H8.06.p1
+SPAC3H8.06	transdecoder	gene	1	2333	.	+	.	ID=GENE.SPAC3H8.06~~SPAC3H8.06.p1;Name=ORF%20type%3Acomplete%20len%3A423%20%28%2B%29%2Cscore%3D222.07%2CPAP2_3%7CPF14378.2%7C2.8e-08%2CPAP2%7CPF01569.17%7C1.3e%2B03%2CPAP2%7CPF01569.17%7C2.7e%2B03%2CPAP2%7CPF01569.17%7C2.1e-08
+SPAC3H8.06	transdecoder	mRNA	1	2333	.	+	.	ID=SPAC3H8.06.p1;Parent=GENE.SPAC3H8.06~~SPAC3H8.06.p1;Name=ORF%20type%3Acomplete%20len%3A423%20%28%2B%29%2Cscore%3D222.07%2CPAP2_3%7CPF14378.2%7C2.8e-08%2CPAP2%7CPF01569.17%7C1.3e%2B03%2CPAP2%7CPF01569.17%7C2.7e%2B03%2CPAP2%7CPF01569.17%7C2.1e-08
+SPAC3H8.06	transdecoder	three_prime_UTR	1713	2333	.	+	.	ID=SPAC3H8.06.p1.utr3p1;Parent=SPAC3H8.06.p1
+SPAC3H8.07c	BUSCO	BUSCO_ortholog	262	758	118.3	.	.	ID=busco:5076738bc8350f839c84eb02f07d3899c2a001d8;Name=33875at4891;length=122;status=Complete
+SPAC3H8.07c	transdecoder	CDS	265	774	.	+	0	ID=cds.SPAC3H8.07c.p1;Parent=SPAC3H8.07c.p1
+SPAC3H8.07c	transdecoder	exon	1	831	.	+	.	ID=SPAC3H8.07c.p1.exon1;Parent=SPAC3H8.07c.p1
+SPAC3H8.07c	transdecoder	five_prime_UTR	1	264	.	+	.	ID=SPAC3H8.07c.p1.utr5p1;Parent=SPAC3H8.07c.p1
+SPAC3H8.07c	transdecoder	gene	1	831	.	+	.	ID=GENE.SPAC3H8.07c~~SPAC3H8.07c.p1;Name=ORF%20type%3Acomplete%20len%3A170%20%28%2B%29%2Cscore%3D79.50%2CPrefoldin%7CPF02996.13%7C1.9e%2B03%2CPrefoldin%7CPF02996.13%7C8e-34
+SPAC3H8.07c	transdecoder	mRNA	1	831	.	+	.	ID=SPAC3H8.07c.p1;Parent=GENE.SPAC3H8.07c~~SPAC3H8.07c.p1;Name=ORF%20type%3Acomplete%20len%3A170%20%28%2B%29%2Cscore%3D79.50%2CPrefoldin%7CPF02996.13%7C1.9e%2B03%2CPrefoldin%7CPF02996.13%7C8e-34
+SPAC3H8.07c	transdecoder	three_prime_UTR	775	831	.	+	.	ID=SPAC3H8.07c.p1.utr3p1;Parent=SPAC3H8.07c.p1
+SPAC3H8.08c	transdecoder	CDS	243	1934	.	+	0	ID=cds.SPAC3H8.08c.p1;Parent=SPAC3H8.08c.p1
+SPAC3H8.08c	transdecoder	exon	1	2146	.	+	.	ID=SPAC3H8.08c.p1.exon1;Parent=SPAC3H8.08c.p1
+SPAC3H8.08c	transdecoder	five_prime_UTR	1	242	.	+	.	ID=SPAC3H8.08c.p1.utr5p1;Parent=SPAC3H8.08c.p1
+SPAC3H8.08c	transdecoder	gene	1	2146	.	+	.	ID=GENE.SPAC3H8.08c~~SPAC3H8.08c.p1;Name=ORF%20type%3Acomplete%20len%3A564%20%28%2B%29%2Cscore%3D237.95%2CZn_clus%7CPF00172.14%7C2.8e-09%2CZn_clus%7CPF00172.14%7C3.5e%2B03%2CZn_clus%7CPF00172.14%7C3.7e%2B03
+SPAC3H8.08c	transdecoder	mRNA	1	2146	.	+	.	ID=SPAC3H8.08c.p1;Parent=GENE.SPAC3H8.08c~~SPAC3H8.08c.p1;Name=ORF%20type%3Acomplete%20len%3A564%20%28%2B%29%2Cscore%3D237.95%2CZn_clus%7CPF00172.14%7C2.8e-09%2CZn_clus%7CPF00172.14%7C3.5e%2B03%2CZn_clus%7CPF00172.14%7C3.7e%2B03
+SPAC3H8.08c	transdecoder	three_prime_UTR	1935	2146	.	+	.	ID=SPAC3H8.08c.p1.utr3p1;Parent=SPAC3H8.08c.p1
+SPAC3H8.09c	transdecoder	CDS	894	3110	.	+	0	ID=cds.SPAC3H8.09c.p1;Parent=SPAC3H8.09c.p1
+SPAC3H8.09c	transdecoder	exon	1	3294	.	+	.	ID=SPAC3H8.09c.p1.exon1;Parent=SPAC3H8.09c.p1
+SPAC3H8.09c	transdecoder	five_prime_UTR	1	893	.	+	.	ID=SPAC3H8.09c.p1.utr5p1;Parent=SPAC3H8.09c.p1
+SPAC3H8.09c	transdecoder	gene	1	3294	.	+	.	ID=GENE.SPAC3H8.09c~~SPAC3H8.09c.p1;Name=ORF%20type%3Acomplete%20len%3A739%20%28%2B%29%2Cscore%3D320.56%2CRRM_1%7CPF00076.18%7C1.4e-07%2CRRM_1%7CPF00076.18%7C3.1e%2B03%2CRRM_5%7CPF13893.2%7C2.9e-06
+SPAC3H8.09c	transdecoder	mRNA	1	3294	.	+	.	ID=SPAC3H8.09c.p1;Parent=GENE.SPAC3H8.09c~~SPAC3H8.09c.p1;Name=ORF%20type%3Acomplete%20len%3A739%20%28%2B%29%2Cscore%3D320.56%2CRRM_1%7CPF00076.18%7C1.4e-07%2CRRM_1%7CPF00076.18%7C3.1e%2B03%2CRRM_5%7CPF13893.2%7C2.9e-06
+SPAC3H8.09c	transdecoder	three_prime_UTR	3111	3294	.	+	.	ID=SPAC3H8.09c.p1.utr3p1;Parent=SPAC3H8.09c.p1
+SPAC3H8.10	transdecoder	CDS	1	960	.	+	0	ID=cds.SPAC3H8.10.p1;Parent=SPAC3H8.10.p1
+SPAC3H8.10	transdecoder	exon	1	1504	.	+	.	ID=SPAC3H8.10.p1.exon1;Parent=SPAC3H8.10.p1
+SPAC3H8.10	transdecoder	gene	1	1504	.	+	.	ID=GENE.SPAC3H8.10~~SPAC3H8.10.p1;Name=ORF%20type%3A5prime_partial%20len%3A320%20%28%2B%29%2Cscore%3D147.90%2CCRAL_TRIO%7CPF00650.16%7C1.5e-38%2CCRAL_TRIO_N%7CPF03765.11%7C4.3e-08
+SPAC3H8.10	transdecoder	mRNA	1	1504	.	+	.	ID=SPAC3H8.10.p1;Parent=GENE.SPAC3H8.10~~SPAC3H8.10.p1;Name=ORF%20type%3A5prime_partial%20len%3A320%20%28%2B%29%2Cscore%3D147.90%2CCRAL_TRIO%7CPF00650.16%7C1.5e-38%2CCRAL_TRIO_N%7CPF03765.11%7C4.3e-08
+SPAC3H8.10	transdecoder	three_prime_UTR	961	1504	.	+	.	ID=SPAC3H8.10.p1.utr3p1;Parent=SPAC3H8.10.p1
+SPAC3H8	HMMER	protein_hmm_match	1137	1163	3.500000e+03	.	.	ID=homology:22aeb58eac143f178c26b61c0882cdc1a98a1572;Name=Zn_clus;Target=Zn_clus 23 31 +;accuracy=0.8;env_coords=1131 1178;Dbxref="Pfam-A:PF00172.14";Note=Fungal Zn(2)-Cys(6) binuclear cluster domain
+SPAC3H8	HMMER	protein_hmm_match	1167	1391	2.100000e-08	.	.	ID=homology:2fbe26b62f88071903bda8a8feaa2630b6b9c8b7;Name=PAP2;Target=PAP2 49 130 +;accuracy=0.86;env_coords=1047 1403;Dbxref="Pfam-A:PF01569.17";Note=PAP2 superfamily
+SPAC3H8	HMMER	protein_hmm_match	1265	1330	1.600000e+04	.	.	ID=homology:df7af7116a1177537b907b85290c01884db4b08f;Name=DUF4210;Target=DUF4210 24 45 +;accuracy=0.7;env_coords=1250 1336;Dbxref="Pfam-A:PF13915.2";Note=Domain of unknown function (DUF4210)
+SPAC3H8	HMMER	protein_hmm_match	1376	1468	9.300000e-05	.	.	ID=homology:bb417ebe3f5e6a378e28d509d2a5ed35a9163cd8;Name=Chromosome_seg;Target=Chromosome_seg 2 32 +;accuracy=0.92;env_coords=1373 1510;Dbxref="Pfam-A:PF13889.2";Note=Chromosome segregation during meiosis
+SPAC3H8	HMMER	protein_hmm_match	1551	1565	3.700000e+03	.	.	ID=homology:f2f6bcdb7737f6d4df2f399edb8a1f1efad89cc3;Name=Zn_clus;Target=Zn_clus 2 6 +;accuracy=0.59;env_coords=1548 1574;Dbxref="Pfam-A:PF00172.14";Note=Fungal Zn(2)-Cys(6) binuclear cluster domain
+SPAC3H8	HMMER	protein_hmm_match	1580	1597	1.600000e+04	.	.	ID=homology:92aa5565dcf59504c1aebe12f696ce9c8b7560bb;Name=CRAL_TRIO_N;Target=CRAL_TRIO_N 39 44 +;accuracy=0.92;env_coords=1580 1597;Dbxref="Pfam-A:PF03765.11";Note=CRAL/TRIO, N-terminal domain
+SPAC3H8	HMMER	protein_hmm_match	1986	2177	1.400000e-07	.	.	ID=homology:377c1b3147c6226349113d126608ffe544338728;Name=RRM_1;Target=RRM_1 1 70 +;accuracy=0.91;env_coords=1986 2177;Dbxref="Pfam-A:PF00076.18";Note=RNA recognition motif. (a.k.a. RRM, RBD, or RNP domain)
+SPAC3H8	HMMER	protein_hmm_match	2031	2189	2.900000e-06	.	.	ID=homology:ed3cbd231faf496479c4783647b3e5b5ff6a7144;Name=RRM_5;Target=RRM_5 1 56 +;accuracy=0.97;env_coords=2031 2189;Dbxref="Pfam-A:PF13893.2";Note=RNA recognition motif. (a.k.a. RRM, RBD, or RNP domain)
+SPAC3H8	HMMER	protein_hmm_match	2271	2303	3.100000e+03	.	.	ID=homology:bd09c36ca7654c324aec9765778f59ab10da42c0;Name=RRM_1;Target=RRM_1 2 12 +;accuracy=0.82;env_coords=2271 2309;Dbxref="Pfam-A:PF00076.18";Note=RNA recognition motif. (a.k.a. RRM, RBD, or RNP domain)
+SPAC3H8	HMMER	protein_hmm_match	238	315	4.300000e-08	.	.	ID=homology:27368b15ae98f4fcf4e74a1021c3beffd08ebed3;Name=CRAL_TRIO_N;Target=CRAL_TRIO_N 31 56 +;accuracy=0.74;env_coords=163 318;Dbxref="Pfam-A:PF03765.11";Note=CRAL/TRIO, N-terminal domain
+SPAC3H8	HMMER	protein_hmm_match	2743	3480	1.600000e-17	.	.	ID=homology:828339e0335d99c3f7fbf1ef48f0d729d2448c46;Name=CPSF_A;Target=CPSF_A 20 267 +;accuracy=0.85;env_coords=2719 3513;Dbxref="Pfam-A:PF03178.11";Note=CPSF A subunit region
+SPAC3H8	HMMER	protein_hmm_match	2854	3009	1.200000e+03	.	.	ID=homology:9ebfd4c36054f172aefe8e38c0cecfe506a1fa05;Name=MMS1_N;Target=MMS1_N 8 56 +;accuracy=0.52;env_coords=2848 3027;Dbxref="Pfam-A:PF10433.5";Note=Mono-functional DNA-alkylating methyl methanesulfonate N-term
+SPAC3H8	HMMER	protein_hmm_match	291	389	2.800000e-09	.	.	ID=homology:a3164bc909dad4c13e57934958b17f23258c3938;Name=Zn_clus;Target=Zn_clus 1 34 +;accuracy=0.9;env_coords=291 404;Dbxref="Pfam-A:PF00172.14";Note=Fungal Zn(2)-Cys(6) binuclear cluster domain
+SPAC3H8	HMMER	protein_hmm_match	328	372	1.900000e+03	.	.	ID=homology:0b7d24a82195cf5c0f6cad4241d922953ffd92fe;Name=Prefoldin;Target=Prefoldin 86 100 +;accuracy=0.54;env_coords=313 378;Dbxref="Pfam-A:PF02996.13";Note=Prefoldin subunit
+SPAC3H8	HMMER	protein_hmm_match	379	738	8.000000e-34	.	.	ID=homology:10ce9e7dd876c0099189f4f9d021452c09f7b57a;Name=Prefoldin;Target=Prefoldin 1 119 +;accuracy=0.99;env_coords=379 741;Dbxref="Pfam-A:PF02996.13";Note=Prefoldin subunit
+SPAC3H8	HMMER	protein_hmm_match	391	885	1.500000e-38	.	.	ID=homology:a1d8b1513baccc6172a675cbfd126a903446dbfd;Name=CRAL_TRIO;Target=CRAL_TRIO 3 159 +;accuracy=0.94;env_coords=385 885;Dbxref="Pfam-A:PF00650.16";Note=CRAL/TRIO domain
+SPAC3H8	HMMER	protein_hmm_match	443	691	5.500000e-26	.	.	ID=homology:632c1700999093ada04c12806f250f262f42d891;Name=Img2;Target=Img2 1 80 +;accuracy=0.96;env_coords=443 691;Dbxref="Pfam-A:PF05046.10";Note=Mitochondrial large subunit ribosomal protein (Img2)
+SPAC3H8	HMMER	protein_hmm_match	512	541	9.900000e+03	.	.	ID=homology:549613854fc786e7d30763fb0727441e7edf8ba4;Name=CRAL_TRIO_N;Target=CRAL_TRIO_N 5 14 +;accuracy=0.7;env_coords=509 601;Dbxref="Pfam-A:PF03765.11";Note=CRAL/TRIO, N-terminal domain
+SPAC3H8	HMMER	protein_hmm_match	547	1872	9.600000e-45	.	.	ID=homology:3a0168dd356f79f7272f9ed7090964387597f162;Name=MMS1_N;Target=MMS1_N 3 437 +;accuracy=0.8;env_coords=544 2007;Dbxref="Pfam-A:PF10433.5";Note=Mono-functional DNA-alkylating methyl methanesulfonate N-term
+SPAC3H8	HMMER	protein_hmm_match	569	604	3.300000e+02	.	.	ID=homology:cee1ec899689f3beb0bb31a8ad61aae2b9654e0e;Name=Chromosome_seg;Target=Chromosome_seg 20 31 +;accuracy=0.83;env_coords=545 664;Dbxref="Pfam-A:PF13889.2";Note=Chromosome segregation during meiosis
+SPAC3H8	HMMER	protein_hmm_match	657	749	1.300000e+03	.	.	ID=homology:122bb665a25d7ab377593e110e35a580551ca6db;Name=PAP2;Target=PAP2 64 98 +;accuracy=0.54;env_coords=651 773;Dbxref="Pfam-A:PF01569.17";Note=PAP2 superfamily
+SPAC3H8	HMMER	protein_hmm_match	686	820	3.400000e-10	.	.	ID=homology:958752b8f187f8edaa552594a1a32913b09c598c;Name=CRAL_TRIO_N;Target=CRAL_TRIO_N 9 56 +;accuracy=0.78;env_coords=638 823;Dbxref="Pfam-A:PF03765.11";Note=CRAL/TRIO, N-terminal domain
+SPAC3H8	HMMER	protein_hmm_match	689	823	1.800000e+02	.	.	ID=homology:33751fcf2a2f8bf57bb0c19058f93fff8a896355;Name=CRAL_TRIO;Target=CRAL_TRIO 12 56 +;accuracy=0.83;env_coords=665 880;Dbxref="Pfam-A:PF00650.16";Note=CRAL/TRIO domain
+SPAC3H8	HMMER	protein_hmm_match	738	956	2.700000e+03	.	.	ID=homology:6a3eb5b39e7374de6d0fccbedba931923ed12861;Name=PAP2;Target=PAP2 12 91 +;accuracy=0.52;env_coords=705 1025;Dbxref="Pfam-A:PF01569.17";Note=PAP2 superfamily
+SPAC3H8	HMMER	protein_hmm_match	870	1373	2.800000e-08	.	.	ID=homology:3ab0ad0164f117923d7c9e2fcd15c39a9acfb8c6;Name=PAP2_3;Target=PAP2_3 28 189 +;accuracy=0.75;env_coords=828 1379;Dbxref="Pfam-A:PF14378.2";Note=PAP2 superfamily
+SPAC3H8	HMMER	protein_hmm_match	917	1354	7.500000e-46	.	.	ID=homology:7d7584bf50ddc4912f377af38ca0c49b149ea79d;Name=CRAL_TRIO;Target=CRAL_TRIO 5 158 +;accuracy=0.96;env_coords=908 1357;Dbxref="Pfam-A:PF00650.16";Note=CRAL/TRIO domain
+SPAC3H8	HMMER	protein_hmm_match	932	1132	1.200000e-21	.	.	ID=homology:7e9d1f21095e11821c096b6a1c2be9b28b0980a5;Name=DUF4210;Target=DUF4210 1 68 +;accuracy=0.97;env_coords=932 1132;Dbxref="Pfam-A:PF13915.2";Note=Domain of unknown function (DUF4210)
+SPAC3H8	HMMER	protein_hmm_match	959	1354	1.700000e-09	.	.	ID=homology:98d877756d81e3472e80134f8535015ee546d362;Name=CRAL_TRIO_2;Target=CRAL_TRIO_2 2 131 +;accuracy=0.91;env_coords=956 1387;Dbxref="Pfam-A:PF13716.2";Note=Divergent CRAL/TRIO domain
