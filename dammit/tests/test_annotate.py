@@ -98,8 +98,8 @@ class TestDammitAnnotate:
             fasta_fn = os.path.join(outdir, 'pom.20.dammit.fasta')
 
             assert status == 0
-            #assert compare_gff(gff3_fn, exp_gff3)
-            #assert open(fasta_fn).read() == open(exp_fasta).read()
+            assert compare_gff(gff3_fn, exp_gff3)
+            assert open(fasta_fn).read() == open(exp_fasta).read()
 
     @pytest.mark.parametrize('n_threads', (1,4))
     def test_annotate_multiple_user_databases(self, tmpdir, datadir, n_threads):
@@ -114,6 +114,7 @@ class TestDammitAnnotate:
             exp_fasta = datadir('pom.20.udbs.dammit.fasta')
 
             args = ['run', '--n-threads', str(n_threads),
+                    '--busco-group', 'saccharomycetes_odb10',
                     '--pipeline', 'quick', 'annotate',
                     '--user-database', pep,
                     '--user-database', pep2,
@@ -147,7 +148,7 @@ class TestDammitAnnotate:
             assert 'Test_0' in contents
 
     def test_multiple_busco_groups(self, tmpdir, datadir):
-        '''--pipeline quick --busco-group bacteria_odb10 --busco-group saccharomycetes_odb10
+        '''--pipeline quick --busco-group saccharomycetes_odb10 --busco-group saccharomycetes_odb10
         '''
 
         with tmpdir.as_cwd():
@@ -225,7 +226,7 @@ class TestDammitAnnotate:
             transcripts = datadir('pom.20.fa')
             database_dir = os.environ['DAMMIT_DB_DIR']
 
-            args = ['run', '--pipeline', 'quick', '--database-dir', database_dir, 'annotate', '--dry-run', transcripts]
+            args = ['run', '--busco-group', 'saccharomycetes_odb10', '--pipeline', 'quick', '--database-dir', database_dir, 'annotate', '--dry-run', transcripts]
             status, out, err = run(*args)
 
             assert status == 0
@@ -250,12 +251,12 @@ class TestDammitAnnotate:
 
         with tmpdir.as_cwd():
             transcripts = datadir('pom.20.fa')
-            args = ['run', '--max-threads-per-task', 1, '--pipeline', 'quick', 'annotate',  '--dry-run', transcripts]
+            args = ['run', '--max-threads-per-task', 1, '--busco-group', 'saccharomycetes_odb10', '--pipeline', 'quick', 'annotate',  '--dry-run', transcripts]
             status, out, err = run(*args)
             outdir = 'pom.20.dammit'
 
             assert status == 0
-            assert "Threads (per-task):       1" in out
+            assert "Threads (per-task):       1" in err
 
 
     def test_config_file(self, tmpdir, datadir):
@@ -265,19 +266,17 @@ class TestDammitAnnotate:
         with tmpdir.as_cwd():
             transcripts = datadir('pom.20.fa')
             conf = datadir('test-conf.yml')
-            args = ['--config-file', conf, 'run', 'annotate', '--dry-run', transcripts]
+            args = ['--config-file', conf, 'run', '--busco-group', 'saccharomycetes_odb10', 'annotate', '--dry-run', transcripts]
             status, out, err = run(*args)
             outdir = 'pom.20.dammit'
 
-            print(status, out, err)
-
             assert status == 0
-            assert "BUSCO groups:             bacteria_odb10" in out
-            assert "E-value Cutoff (global):  1.0" in out
-            assert "Pipeline:                 quick" in out
+            assert "BUSCO groups:             saccharomycetes_odb10" in err
+            assert "E-value Cutoff (global):  1.0" in err
+            assert "Pipeline:                 quick" in err
             # these two are failing
-    #        assert "Threads (per-task):       1" in out
-    #        assert "Threads (total):          2" in out
+    #        assert "Threads (per-task):       1" in err
+    #        assert "Threads (total):          2" in err
 
 
     def test_busco_config_file(self, tmpdir, datadir):
@@ -287,9 +286,8 @@ class TestDammitAnnotate:
         with tmpdir.as_cwd():
             transcripts = datadir('pom.20.fa')
             busco_conf = os.path.join(__path__, 'busco.default.ini')
-            args = ['run', '--busco-config-file', busco_conf, 'annotate', '--dry-run', transcripts]
+            args = ['run', '--busco-config-file', busco_conf, '--busco-group', 'saccharomycetes_odb10', 'annotate', '--dry-run', transcripts]
             status, out, err = run(*args)
             outdir = 'pom.20.dammit'
 
-            print(status, out, err)
             assert status == 0
