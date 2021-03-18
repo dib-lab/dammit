@@ -239,7 +239,7 @@ class TestDammitAnnotate:
 
         with tmpdir.as_cwd():
             dammit_temp_dir = "TEMP"
-            args = ['run', '--temp-dir', dammit_temp_dir, 'databases']
+            args = ['run', '--pipeline', 'quick', '--temp-dir', dammit_temp_dir, 'databases']
             status, out, err = run(*args)
 
             assert status == 0
@@ -267,7 +267,7 @@ class TestDammitAnnotate:
         with tmpdir.as_cwd():
             transcripts = datadir('pom.20.fa')
             conf = datadir('test-conf.yml')
-            args = ['--config-file', conf, 'run', '--busco-group', 'saccharomycetes_odb10', 'annotate', '--dry-run', transcripts]
+            args = ['--config-file', conf, 'run', '--busco-group', 'saccharomycetes_odb10', '--pipeline', 'quick', 'annotate', '--dry-run', transcripts]
             status, out, err = run(*args)
             outdir = 'pom.20.dammit'
 
@@ -287,7 +287,7 @@ class TestDammitAnnotate:
         with tmpdir.as_cwd():
             transcripts = datadir('pom.20.fa')
             busco_conf = os.path.join(__path__, 'busco.default.ini')
-            args = ['run', '--busco-config-file', busco_conf, '--busco-group', 'saccharomycetes_odb10', 'annotate', '--dry-run', transcripts]
+            args = ['run', '--busco-config-file', busco_conf, '--busco-group', 'saccharomycetes_odb10', '--pipeline', 'quick', 'annotate', '--dry-run', transcripts]
             status, out, err = run(*args)
             outdir = 'pom.20.dammit'
 
