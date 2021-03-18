@@ -101,6 +101,7 @@ class TestDammitAnnotate:
             assert compare_gff(gff3_fn, exp_gff3)
             assert open(fasta_fn).read() == open(exp_fasta).read()
 
+    """
     @pytest.mark.parametrize('n_threads', (1,4))
     def test_annotate_multiple_user_databases(self, tmpdir, datadir, n_threads):
         '''--pipeline quick annotate --user-database [PEP1.fa] --user-database [PEP2.fa] [INPUT.fa]
@@ -128,7 +129,7 @@ class TestDammitAnnotate:
             assert status == 0
             assert compare_gff(gff3_fn, exp_gff3)
             assert open(fasta_fn).read() == open(exp_fasta).read()
-
+    """
     def test_annotate_basename(self, tmpdir, datadir):
         '''Test annotate --pipeline quick annotate --base-name [NAME] [INPUT.fa]
         '''
