@@ -1,10 +1,11 @@
-# Quickstart: prepare databases and test annotation
+# Quickstart Tutorial
 
 Once you have dammit [installed](install.md), you'll need to download
 and prepare databases before you can annotate a transcriptome. This
 quickstart takes you through database preparation (with `dammit run databases`).
 These will take a while to prepare, but are the same databases you'll need
-for most annotation runs. Finally, we run annotation using a very small sample dataset.
+for most annotation runs. Once those are in place, we'll run an annotation 
+using a small sample dataset.
 
 ## Check and prepare databases
 
@@ -12,6 +13,16 @@ Here, we'll install the main databases, as well as the
 `eukaryota` BUSCO database for our test yeast dataset (below). This could
 take a while, so consider walking away and getting yourself a cup of
 coffee.
+
+By default, dammit downloads databases into your home directory,
+following the XDG specification: `$HOME/.local/share/dammit/databases`.
+
+
+!!! note
+
+    If you're on an HPC or other system with limited space in your home directory, 
+    or if you've already downloaded some databases and you'd like to use them with dammit, 
+    see the [Database Usage](database-usage.md) section to specify a custom location.
 
 If you installed dammit into a virtual environment, be sure to
 activate it first:
@@ -21,21 +32,15 @@ conda activate dammit
 
 Now install databases:
 ```
-dammit run databases --install --busco-group eukaryota
+dammit run databases --install
 ```
-
-By default, dammit downloads databases to your home directory: `$HOME/.dammit/databases`
-
-> If you're on an HPC or other system with limited space in your home directory, 
-> or if you've already downloaded some databases and you'd like to use them with dammit, 
-> see the [Database Usage](database-usage.md) section to specify a custom location.
 
 While the initial download takes a while, once it's done, you won't need
 to do it again. `dammit` keeps track of the database state and won't
 repeat work it's already completed, even if you accidentally rerun with
 the `--install` flag.
 
-## Download test data for annotation
+## Download Annotation Test Data
 
 First let's download some test data. We'll start small and use a
 *Schizosaccharomyces pombe* transcriptome. Make a working directory and
@@ -65,18 +70,26 @@ specify a non-default BUSCO group (eukaryota). You can replace the argument to
 order to speed it up.:
 
 ```
-dammit run annotate cdna_nointrons_utrs.fa --user-databases pep.fa --busco-group eukaryota --n_threads 1
+dammit run --n_threads 1 annotate cdna_nointrons_utrs.fa --user-databases pep.fa --busco-group eukaryota
 ```
 
 This will take a bit, so go get another cup of coffee...
 
-## TODO, run sample data and copy output ls below! fix txt, this is from elvers docs.
+!!! note
 
-**consider using https://angus.readthedocs.io/en/2019/dammit_annotation.html#annotation-with-dammit**
+    By default, `--n-threads` will correspond to the number of physical cores on the given CPU. In
+    many HPC environments, you'll need to explicitly set `--n-threads` to the number of cores
+    you've asked the scheduler for.
 
-## dammit output
+    Also! `--n-threads` comes *after* `run` but *before* `annotate`, because its shared with the
+    `databases` command.
 
-After a successful run, you'll have a new directory called `BASENAME.fasta.dammit`. If you look inside, you'll see a lot of files. For example, for a transcriptome with basename `trinity.nema`, the folder `trinity.nema.fasta.dammit` should contain the following files:
+For more information and options on the `annotate` command, see [annotate usage](annotate.md).
+
+## Annotation Output
+
+After a successful run, you'll have a new directory called `[BASENAME].dammit` in this case, `cdna_nointrons_utrs.dammit`. 
+If you look inside, you'll see a lot of files. 
 
 ```
 ls trinity.nema.fasta.dammit/
