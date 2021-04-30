@@ -40,7 +40,7 @@ nav:
   - 'Home': 'index.md'
   - 'About dammit': 'about.md'
   - 'Installation': 'install.md'
-  - 'Quickstart: prepare databases and test annotation': quickstart.md
+  - 'Quickstart Tutorial': quickstart.md
   - 'Understanding output':
     - 'Use and parse results': 'dammit-results.md'
   - 'Details and Configuration':
@@ -60,3 +60,9 @@ nav:
     
   - 'For developers':
     - 'Notes for developers': 'dev_notes.md'
+
+markdown_extensions:
+    - toc:
+        permalink: 
+    - admonition
+    - def_list
