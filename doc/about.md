@@ -24,7 +24,6 @@ Implicit to these motivations is some idea of what a good annotator
 5.  It should be relatively fast
 6.  It should try to be correct, insofar as any computational approach
     can be "correct"
-7.  It should give the user some measure of confidence for its results.
 
 ## The Obligatory Flowchart
 
@@ -47,7 +46,7 @@ to map to user-supplied protein databases (details below).
 To see more about the included databases, 
 see the [About Databases](database-about.md) section.
 
-## External Software Used
+## Software Used
 
 The specific set of software and databases used can be modified by specifying different [pipelines](pipelines.md).
 The full set of software than can be run is:
@@ -83,11 +82,6 @@ a species-specific protein database. It uses the LAST aligner and the
 pydata stack to achieve much better performance while staying in the 
 Python ecosystem. 
 
-For CRBL (shmlast), instead of fitting a linear model, we train a model.
-
--   SVM
--   Naive bayes
-
 One limitation is that LAST has no equivalent to `tblastn`. So, we find
 the RBHs using the TransDecoder ORFs, and then use the model on the
 translated transcriptome versus database hits. 
@@ -97,12 +91,19 @@ translated transcriptome versus database hits.
 
 ## The Dammit Software
 
-Under the hood, dammit uses the snakemake workflow management system
-to manage database downloads and run the external annotation software.
-As each of these programs produces output in a different format, one
-of dammit's most important additions is a set of file conversion
-utilites that properly combine the outputs of those individual tools
-into a single annotation set, output both as gff3 and fasta. Each of these
-conversion utilities can now also be run independently from the main dammit 
-workflow. For details, see the [components](dammit-components.md) section.
+dammit is built on the [Snakemake](https://snakemake.readthedocs.io/en/stable/)
+workflow management system. This means that the dammit pipeline enjoys all the features of any
+Snakemake workflow: reproducibility, ability to resume, cluster support, and per-task environment
+management. Each step in dammit's pipeline(s) is implemented as a Snakemake
+[wrapper](https://snakemake.readthedocs.io/en/stable/snakefiles/modularization.html#wrappers);
+when dammit is executed, it generates the targets for the pipeline being run as specified in its
+pipelines file and passes them along to the Snakemake executable. The dammit frontend simplifies
+the interface for the user and constrains the inputs and options to ensure the pipeline
+will always run correctly.
+
+One of the essential, and most annoying, parts of annotation is the conversion and collation
+of information from many different file formats. Dammit includes a suite of minimal command
+line utilities implementing a number of these things, including converting several formats
+to GFF3, merging GFF3 files, and filtering alignment results for best hits. More details on
+these utilities can be found in the [components](dammit-components.md) section.
 
