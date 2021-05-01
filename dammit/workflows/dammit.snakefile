@@ -41,7 +41,6 @@ results_dir = config["output_dir"]
 logs = config.get("logs_dir", "logs")
 logs_dir = os.path.join(results_dir, logs)
 
-# Benchmarks aren't run for now, but we could easily turn them on
 benchmarks = config.get("benchmark_dir", "benchmarks")
 benchmarks_dir = os.path.join(results_dir, benchmarks)
 
