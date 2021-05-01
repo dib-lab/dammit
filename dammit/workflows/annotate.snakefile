@@ -17,6 +17,8 @@ rule dammit_rename_transcriptome:
         names=os.path.join(results_dir, "{transcriptome}.namemap.csv")
     log:
         os.path.join(logs_dir, "{transcriptome}.rename.log")
+    benchmark:
+        os.path.join(benchmarks_dir, "{transcriptome}.rename.benchmark")
     threads: 1
     params:
         basename = config.get("basename", None),
@@ -36,6 +38,8 @@ rule dammit_transcriptome_stats:
         per_transcript_fn = os.path.join(results_dir, '{transcriptome}.per-transcript-stats.csv')
     log:
         os.path.join(logs_dir, '{transcriptome}.stats.log')
+    benchmark:
+        os.path.join(benchmarks_dir, '{transcriptome}.stats.benchmark')
     threads: 1
     shell:
         """
@@ -54,6 +58,8 @@ rule transdecoder_longorfs:
         os.path.join(results_dir, '{transcriptome}.transdecoder_dir/longest_orfs.pep')
     log:
         os.path.join(logs_dir, '{transcriptome}.transdecoder-longorfs.log')
+    benchmark:
+        os.path.join(benchmarks_dir, '{transcriptome}.transdecoder-longorfs.benchmark')
     params:
         extra = config['transdecoder_longorfs']['params'].get('extra', '-m 80 ')
     threads: 1
@@ -75,6 +81,8 @@ rule hmmscan:
         domtblout  = os.path.join(results_dir,'{transcriptome}.x.Pfam-A.hmmscan-domtbl.txt') # save parseable table of per-domain hits to file <f>
     log:
         os.path.join(logs_dir, '{transcriptome}.x.Pfam-A.hmmscan.log')
+    benchmark:
+        os.path.join(benchmarks_dir, '{transcriptome}.x.Pfam-A.hmmscan.benchmark')
     params:
         evalue_threshold = GLOBAL_EVALUE if GLOBAL_EVALUE is not None else config['hmmscan']['params'].get("evalue", 0.00001),
         extra = config['hmmscan']['params'].get('extra', ''),
@@ -99,6 +107,8 @@ rule transdecoder_predict:
         os.path.join(results_dir, '{transcriptome}.fasta.transdecoder.gff3')
     log:
         os.path.join(logs_dir, '{transcriptome}.transdecoder-predict.log')
+    benchmark:
+        os.path.join(benchmarks_dir, '{transcriptome}.transdecoder-predict.benchmark')
     params:
         extra= config['transdecoder_predict']['params'].get('extra', '')
     threads: 1
@@ -119,6 +129,8 @@ rule hmmer_remap:
         os.path.join(results_dir, '{transcriptome}.x.{database}.remapped.csv')
     log:
         os.path.join(logs_dir, '{transcriptome}.x.{database}.hmmer_remap.log')
+    benchmark:
+        os.path.join(benchmarks_dir, '{transcriptome}.x.{database}.hmmer_remap.benchmark')
     threads: 1
     shell:
         """
@@ -142,6 +154,8 @@ rule lastal:
         extra           = config['lastal']['params'].get('extra', ''),
     log:
         os.path.join(logs_dir, '{transcriptome}.x.{database}.lastal.log')
+    benchmark:
+        os.path.join(benchmarks_dir, '{transcriptome}.x.{database}.lastal.benchmark')
     threads: THREADS_PER_TASK
     wrapper: 
         f'file://{__wrappers__}/last/lastal.wrapper.py'
@@ -164,6 +178,8 @@ rule shmlast_crbl:
         extra = config['shmlast']['params'].get('extra', ''),
     log:
         os.path.join(logs_dir, '{transcriptome}.x.{database}.shmlast.log')
+    benchmark:
+        os.path.join(benchmarks_dir, '{transcriptome}.x.{database}.shmlast.benchmark')
     threads: THREADS_PER_TASK
     wrapper: f'file://{__wrappers__}/shmlast/shmlast.wrapper.py'
 
@@ -181,6 +197,8 @@ rule cmscan:
         tblout = os.path.join(results_dir,'{transcriptome}.x.{database}.cmscan-tblout.txt'),
     log:
         os.path.join(logs_dir, '{transcriptome}.x.{database}.cmscan.log')
+    benchmark:
+        os.path.join(benchmarks_dir, '{transcriptome}.x.{database}.cmscan.benchmark')
     params:
         evalue_threshold = GLOBAL_EVALUE if GLOBAL_EVALUE is not None else config['cmscan']['params'].get('evalue', 0.00001),
         extra = config['cmscan']['params'].get('extra', ''),
@@ -201,6 +219,8 @@ rule busco_transcripts:
         os.path.join(results_dir, '{transcriptome}.busco', '{busco_db}_outputs', 'run_{busco_db}', 'full_table.tsv')
     log:
         os.path.join(logs_dir, "{transcriptome}.x.{busco_db}.log")
+    benchmark:
+        os.path.join(benchmarks_dir, "{transcriptome}.x.{busco_db}.benchmark")
     benchmark:
         os.path.join(logs_dir, "{transcriptome}.x.{busco_db}.benchmark")
     threads: THREADS_PER_TASK
@@ -233,6 +253,7 @@ rule plot_busco_summaries:
     input: expand_busco_files
     output: os.path.join(results_dir, '{transcriptome}.busco', "summary_figure.png")
     log: os.path.join(logs_dir, "{transcriptome}.busco", "summary_figure.log")
+    benchmark: os.path.join(benchmarks_dir, "{transcriptome}.busco", "summary_figure.benchmark")
     conda:
         f'file://{__path__}/wrappers/busco/environment.yaml'
     params:
@@ -259,6 +280,8 @@ rule dammit_busco_to_gff:
         os.path.join(results_dir, '{transcriptome}.x.busco.{busco_db}.gff3')
     log:
         os.path.join(logs_dir, '{transcriptome}.{busco_db}.busco-to-gff3.log')
+    benchmark:
+        os.path.join(benchmarks_dir, '{transcriptome}.{busco_db}.busco-to-gff3.benchmark')
     threads: 1
     shell:
         """
@@ -277,6 +300,8 @@ rule dammit_cmscan_to_gff:
         os.path.join(results_dir, "{transcriptome}.x.{database}.cmscan.gff3")
     log:
         os.path.join(logs_dir, "{transcriptome}.x.{database}.cmscan-to-gff3.log")
+    benchmark:
+        os.path.join(benchmarks_dir, "{transcriptome}.x.{database}.cmscan-to-gff3.benchmark")
     threads: 1
     shell:
         """
@@ -295,6 +320,8 @@ rule dammit_hmmscan_to_gff:
         os.path.join(results_dir, "{transcriptome}.x.{database}.hmmscan.gff3")
     log:
         os.path.join(logs_dir, "{transcriptome}.x.{database}.hmmscan-to-gff3.log")
+    benchmark:
+        os.path.join(benchmarks_dir, "{transcriptome}.x.{database}.hmmscan-to-gff3.benchmark")
     threads: 1
     shell:
         """
@@ -331,6 +358,8 @@ rule dammit_maf_to_gff:
         os.path.join(results_dir, "{transcriptome}.x.{database}.lastal.gff3")
     log:
         os.path.join(logs_dir, "{transcriptome}.x.{database}.lastal.maf-to-gff3.log")
+    benchmark:
+        os.path.join(benchmarks_dir, "{transcriptome}.x.{database}.lastal.maf-to-gff3.benchmark")
     threads: 1
     shell:
         """
@@ -348,6 +377,8 @@ rule dammit_shmlast_to_gff:
         os.path.join(results_dir, "{transcriptome}.x.{database}.shmlast_crbl.gff3")
     log:
         os.path.join(logs_dir, "{transcriptome}.x.{database}.shmlast-to-gff3.log")
+    benchmark:
+        os.path.join(benchmarks_dir, "{transcriptome}.x.{database}.shmlast-to-gff3.benchmark")
     threads: 1
     shell:
         """
@@ -364,6 +395,8 @@ rule dammit_merge_gff:
         os.path.join(results_dir, "{transcriptome}.dammit.gff3"),
     log:
         os.path.join(logs_dir, "{transcriptome}.merge_gffs.log")
+    benchmark:
+        os.path.join(benchmarks_dir, "{transcriptome}.merge_gffs.benchmark")
     threads: 1
     shell:
         """
@@ -383,6 +416,8 @@ rule dammit_annotate_fasta:
         os.path.join(results_dir, "{transcriptome}.dammit.fasta")
     log:
         os.path.join(logs_dir, "{transcriptome}.annotate_fasta.log")
+    benchmark:
+        os.path.join(benchmarks_dir, "{transcriptome}.annotate_fasta.benchmark")
     params:
         name_map = '' if config['rename'] else '--name-map ' + rules.dammit_rename_transcriptome.output.names
     threads: 1
