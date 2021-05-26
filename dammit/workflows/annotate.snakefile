@@ -183,7 +183,6 @@ rule cmscan:
     log:
         os.path.join(logs_dir, '{transcriptome}.x.{database}.cmscan.log')
     params:
-        evalue_threshold = GLOBAL_EVALUE if GLOBAL_EVALUE is not None else config['cmscan']['params'].get('evalue', 0.00001),
         extra = config['cmscan']['params'].get('extra', ''),
     threads: THREADS_PER_TASK
     wrapper: f'file://{__wrappers__}/infernal/cmscan.wrapper.py'

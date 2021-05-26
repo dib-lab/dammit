@@ -58,7 +58,7 @@ cp $TEST_NAME.dammit.norename/$TEST_NAME.dammit.fasta $DATA_DIR/$TEST_NAME.dammi
 #cp $TEST_NAME.dammit.nr/$TEST_NAME.dammit.fasta $DATA_DIR/$TEST_NAME.dammit.fasta.nr
 #cp $TEST_NAME.dammit.nr/$TEST_NAME.dammit.gff3 $DATA_DIR/$TEST_NAME.dammit.gff3.nr
 
-#cp $TEST_NAME.dammit.norename/$TEST_NAME.dammit.fasta $DATA_DIR/$TEST_NAME.dammit.fasta.norename
-#cp $TEST_NAME.dammit.norename/$TEST_NAME.dammit.gff3 $DATA_DIR/$TEST_NAME.dammit.gff3.norename
+cp $TEST_NAME.dammit.norename/$TEST_NAME.dammit.fasta $DATA_DIR/$TEST_NAME.dammit.fasta.norename
+cp $TEST_NAME.dammit.norename/$TEST_NAME.dammit.gff3 $DATA_DIR/$TEST_NAME.dammit.gff3.norename
 
 

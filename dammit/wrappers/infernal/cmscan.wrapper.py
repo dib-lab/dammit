@@ -11,7 +11,7 @@ from snakemake.shell import shell
 profile = snakemake.input.get("profile")
 profile = profile.rsplit(".i", 1)[0]
 
-assert not snakemake.params.get('evalue_threshold') and snakemake.params.get('score_threshold')
+assert not (snakemake.params.get('evalue_threshold', '') and snakemake.params.get('score_threshold', ''))
 assert profile.endswith(".cm"), 'your profile file should end with ".cm"'
 
 # direct output to file <f>, not stdout
@@ -34,6 +34,7 @@ evalue_threshold = snakemake.params.get("evalue_threshold", '')  # use cmscan de
 # report >= this score threshold in output
 score_threshold = snakemake.params.get("score_threshold", '')
 
+thresh_cmd = ''
 if score_threshold:
     thresh_cmd = f" -T {float(score_threshold)} "
 if evalue_threshold:
