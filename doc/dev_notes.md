@@ -9,41 +9,42 @@ In particular, we welcome contributions that address bugs reported in the [issue
 All additions and bugfixes must be properly covered by tests.
 
 Dammit relies on the snakemake workflow software.
-To learn snakemake, check out the comprehensive [documentation](https://snakemake.readthedocs.io/en/stable/), and start with snakemake tutorials such as [this one by Titus Brown](https://github.com/ctb/2019-snakemake-ucdavis).
+To learn snakemake, check out the comprehensive [documentation](https://snakemake.readthedocs.io/en/stable/), and maybe start with snakemake tutorials such as [this one by Titus Brown](https://github.com/ctb/2019-snakemake-ucdavis).
 
-## Setting up your local computer for `dammit` devevelopment
+## Setting up your local computer for `dammit` development
 
-Make sure conda is installed and channels are properly set up, as in the [installation instructions](install.md)
+Make sure conda is installed and channels are properly set up, as in the [installation instructions](install.md).
 
 ### Set up the dammit code on your local machine
 
-Fork the [`dammit` repository](https://github.com/dib-lab/dammit) to your GitHub account.
+Fork the `dammit` [repository](https://github.com/dib-lab/dammit) to your GitHub account.
 `git clone` this fork to your local computer, then create and name a development branch.
-In this example, we name our dev branch `testing`:
+For example, the code below creates a dev branch named `testing`:
 
 ```
 git clone https://github.com/YOUR-USERNAME/dammit.git
+cd dammit
 git checkout -b testing
 git branch
 ```
 Now you are on the `testing` branch.
 
-Keep original repository in the `master` branch, so that you can stay up to date with any changes in the main repo.
+Keep the original repository in the `main` branch, so that you can stay up to date with any changes in the main repo.
 To do this, first add a remote called `upstream`, which links to the main dammit repository.
 ```
 git remote add upstream https://github.com/dib-lab/dammit.git 
 ```
 
-Then, make sure the `master` branch is up-to-date by periodically running:
+Then, make sure the `main` branch is up-to-date by periodically running:
 ```
-git pull upstream master
+git pull upstream main
 ```
 
 ### Create a development environment
 
 Create a conda environment with dependencies installed.
 
-In the main `dammit` folder, run:
+After setting up the code (above), run:
 ```
 conda env create -f environment.yml -n dammit_dev
 conda activate dammit_dev
@@ -54,7 +55,7 @@ Now, install an editable version of `dammit` into the `dammit_dev` environment:
 pip install -e '.'
 ```
 
-## What do we want/need below here?
+**What (of the below) do we want to keep?**
 
 ### Run Tests
 
@@ -69,56 +70,34 @@ make long-test
 
 ## Code structure
 
-#### Take a look at code and tests in the `dammit` directory:
+- Main command line: `dammit/cli.py`
+- command line code for each dammit component: `dammit/components`
+- Snakemake-related code:
+  - main snakefile: `dammit/workflows/dammit.snakefile`
+  - databases snakemake rules: `databases.snakefile`
+  - annotate snakemake rules: `annotate.snakefile`
+  - snakemake wrappers for each included tool:
+    - `dammit/wrappers`
 
-* The core driver of `dammit` is the `dammit/app.py` file, which sets up the commandline arguments. Everything happens here. If you want to add an argument, this is where it hapens.  
-* There are two subcommand task-handler files: `annotate.py` and `databases.py`
-* Tasks are steps being run, separated into different files. For example, the `hmmer.py` file contains all hmmer tasks.
-* The task handler has on logger, pulls from config to figure out where databases are located (all happens in background), some doit stuff happening
-* [Decorators](https://realpython.com/primer-on-python-decorators/) transfer the function's `return` into a doit function (e.g. line 59 of shell.py) `import doit_task` then `@doit_task`
+## Internal Configuration Files
 
-`databases`, 2 pipelines:
+  - primary config file: `dammit/config.yml`
+    - default configuration for all steps run within `dammit run`
+  - databases config file: `dammit/databases.yml`
+    - download and file naming info for all databases
+  - pipeline config file: `dammit/pipelines.yml`
+    - sets tools and databases used in each pipeline
 
-  * `quick`
-  * `full`
+## Regenerating test data
 
-`annotate`, more pipelines: 
-
-  * `uniref1`
-  * `full`
-  * `nr`
-
-#### `config.json`
-
-Can use custom `config.json` file to include different parameters for the programs run by the tasks, e.g. `transdecoder LongOrgs -m 50`, etc.
-
-#### `parallel.py`
-
-hmmer, infernal, lastl, 
-
-requires gnu parallel
-
-(There are instructions for how to runon multi-node hpc, somewhere.)
-
-#### `ui.py`
-
-output for user to markdown formatting for copying/pasting into GitHub issue reporting
-
-`generate-test-data-.sh` re-genreates test data adn puts it in proper dirs
-
-### TESTS!
-
-`dammit/tests`
-
-* `make long tests` (assumes environment is already setup)
-* `make-ci-test`, not long and not huge and not requires_datbases
+`generate-test-data-.sh` re-generates test data and puts it in proper dirs
 
 ## Reviewing a PR
 
 **Tests must pass before merging!**
 
 * Have there been radical changes? (Are you adding things to handler, maybe time to take a step back and make sure code uses reasonable variable names, tests, etc)
-* Does travis build?
+* Does github-actions build?
 * Try to make commit messages somewhat informative
 
 If these all seem reasonable to you, approve!

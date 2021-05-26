@@ -1,7 +1,5 @@
 # Advanced Configuration
 
-_in progress_
-
 Dammit's overall memory and CPU usage can be specified at the command line.
 The [annotation pipelines](pipelines.md) section contains info on the
 recommended minimum resources for each pipeline.
@@ -29,8 +27,6 @@ Commands:
   show-default      Show the selected default configuration file.
   show-directories  List dammit directory locations.
 ```
-
-
 
 ## Tool-Specific Specification
 

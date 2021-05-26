@@ -1,4 +1,4 @@
-[![image](https://travis-ci.org/dib-lab/dammit.svg)](https://travis-ci.org/dib-lab/dammit)
+![tests](https://github.com/github/docs/actions/workflows/tests.yml/badge.svg)
 [![Documentation Status](https://readthedocs.org/projects/dammit/badge/)](http://dammit.readthedocs.io/en/latest)
 
 *"I love writing BLAST parsers!" -- no one, ever*
@@ -19,11 +19,11 @@ Install dammit with (bio)conda:
 
 Download and install a subset of the databases:
 
-    dammit databases --install --quick
+    dammit run --pipeline quick databases --install
 
 And the annotate with:
 
-    dammit annotate <transcriptome_fasta>
+    dammit run --pipeline quick annotate <transcriptome_fasta>
 
 Head over to the [docs](http://dib-lab.github.io/dammit/) for much more detailed
 information!
