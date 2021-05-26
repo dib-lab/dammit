@@ -76,11 +76,6 @@ orthodb_genes:
   output_suffix:
     - ""
 busco:
-  url: https://gitlab.com/ezlab/busco/-/raw/4.0.6/config/config.ini
-  access: download
-  fileformat: uncompressed
-  output_suffix:
-    - ""
   # to update lineage list:
     # busco --list-datasets to see all
     # copy in list, do visual selection of lines (ctrl-V G)

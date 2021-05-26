@@ -1,0 +1,9 @@
+basename: Splat
+busco:
+  configfile: busco.default.ini
+  params:
+    extra: ''
+global_evalue: 1.0
+busco_groups:
+- saccharomycetes_odb10
+max_threads_per_task: 1

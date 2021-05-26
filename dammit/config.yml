@@ -15,7 +15,7 @@ regex_rename: null
 # n_threads: total threads to pass to snakemake -j
 n_threads: 0
 # max threads to use on a single job
-max_threads_per_task: 1
+max_threads_per_task: 0
 
 verbosity: 0
 
