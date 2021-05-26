@@ -38,17 +38,31 @@ extra_css:
 # give a title for each page
 nav:
   - 'Home': 'index.md'
-  - 'About': 'about.md'
-  - 'Installation':
-    - 'Requirements': 'system_requirements.md'
-    - 'Bioconda': 'install.md'
-
-  - 'Databases':
-    - 'Basic Usage': 'database-usage.md'
-    - 'About the Databases': 'database-about.md'
-    - 'Advanced Database Handling': 'database-advanced.md'
-
-  - 'Tutorial': 'tutorial.md'
-
+  - 'About dammit': 'about.md'
+  - 'Installation': 'install.md'
+  - 'Quickstart Tutorial': quickstart.md
+  - 'Understanding output':
+    - 'Use and parse results': 'dammit-results.md'
+  - 'Details and Configuration':
+    - 'Components': 'dammit-components.md'
+    - 'Databases':
+      - 'Database Usage': 'database-usage.md'
+      - 'Database Info': 'database-about.md'
+      - 'Advanced Database Setup': 'database-advanced.md'
+    - 'Annotate':
+      - 'Annotate Usage': 'annotate.md'
+      - 'Annotation Pipelines': 'pipelines.md'
+    
+  #- 'Full Tutorial': 'tutorial.md'
+  - 'Advanced Usage and Configuration':
+    - 'Advanced Configuration': 'configuration.md'
+    - 'Distributing dammit jobs on a Cluster': cluster.md
+    
   - 'For developers':
     - 'Notes for developers': 'dev_notes.md'
+
+markdown_extensions:
+    - toc:
+        permalink: 
+    - admonition
+    - def_list

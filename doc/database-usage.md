@@ -1,42 +1,58 @@
----
-title: 'Database Usage'
----
+# Database Usage
 
-dammit handles databases under the `dammit databases` subcommand. By
-default, dammit looks for databases in
-`$HOME/.dammit/databases` and will install them there if
-missing. If you have some of the databases already, you can inform
-dammit with the `--database-dir` flag.
+The dammit `databases` component handles downloading and preparing the annotation databases.
 
+## Check and install databases
+
+By default, dammit downloads databases to your home directory: `$HOME/.dammit/databases`
 To check for databases in the default location:
 
 ```
-dammit databases
+dammit run databases
 ```
+This will tell you what databases still need to be installed to run the default annotation pipeline.
 
-To check for them in a custom location, you can either use the
-`--database-dir` flag:
+To install databases:
+```
+dammit run databases --install
+```
+> Notes:
+>
+> 1. If you're on an HPC or other system with limited space in your home directory, follow
+>    the instructions below to specify a custom location.
+>
+> 2. If you've already downloaded some databases and you'd like to use them with dammit, see the [Advanced Database Handling](database-advanced.md) section.
 
+
+## Custom database locations
+
+If you'd like to store dammit databases elsewhere, there are two ways to specify a custom location, the `--database-dir` flag or the `DAMMIT_DB_DIR` environment variable.
+
+### Using the `--database-dir` flag:
+
+Check for databases in `/path/to/databases`:
 ```
 dammit databases --database-dir /path/to/databases
 ```
 
-or, you can set the `DAMMIT_DB_DIR` environment variable.
-The flag will supersede this variable, falling back to the default if
-neither is set. For example:
+Install databases in `/path/to/databases`:
+```
+dammit databases --database-dir /path/to/databases --install
+```
 
+### Set up an environment variable
+
+Alternatively, you can set up the `DAMMIT_DB_DIR` environment variable.
+
+
+Set up the variable in bash. Execute this the command line to use during a single session, or add this to your `$HOME/.bashrc` file to make it persistent.
 ```
 export DAMMIT_DB_DIR=/path/to/databases
 ```
+> Note that the `--database-dir` flag (above) will supersede this variable,
+> falling back to the default if neither is set.
 
-This can also be added to your `$HOME/.bashrc` file to make
-it persistent.
-
-To download and install them into the default directory:
-
-```
-dammit databases --install
-```
+When this variable is set up, the standard commands will check for databases in `/path/to/databases` rather than `$HOME/.dammit/databases`
 
 For info on the specific databases used in dammit, see [About Databases](database-about.md).
 

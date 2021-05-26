@@ -14,7 +14,7 @@ are a few scenarios you might run in to.
     > `--install`, it will find the existing files and prep them if
     > necessary.:
     >
-    >     dammit databases --database-dir <my_database_dir> --install
+    >     dammit run databases --database-dir <my_database_dir> --install
 
 2.  Same as above, but they have different names.
 
@@ -39,7 +39,7 @@ are a few scenarios you might run in to.
     > For a complete listing of the expected names, just run the
     > `databases` command:
     >
-    >     dammit databases
+    >     dammit run databases
 
 3.  You have the databases, but they're scattered to the virtual winds.
 
@@ -60,6 +60,6 @@ lots of hard drive space, you can just say "to hell with it!" and
 reinstall everything with:
 
 ```
-dammit databases --install
+dammit run databases --install
 ```
 

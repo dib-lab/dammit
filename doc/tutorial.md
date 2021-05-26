@@ -1,10 +1,11 @@
-# Tutorial
+---
+title: Just Annotate it, dammit!
+---
 
 Once you have the dependencies installed, it's time to actually
 annotate something! This guide will take you through a short example on
 some test data. 
 
-See this workshop [tutorial](https://angus.readthedocs.io/en/2018/dammit_annotation.html) for further practice with using `dammit` for annotating a *de novo* transcriptome assembly.
 
 ## Data
 
@@ -62,3 +63,8 @@ dammit annotate cdna_nointrons_utrs.fa --user-databases pep.fa --busco-group euk
 ```
 
 This will take a bit, so go get another cup of coffee...
+
+## Other tutorials and Workshop materials
+
+See this workshop [tutorial](https://angus.readthedocs.io/en/2018/dammit_annotation.html) for further practice with using `dammit` for annotating a *de novo* transcriptome assembly.
+
