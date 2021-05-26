@@ -1,12 +1,6 @@
 Dammit Results
 ===
 
-_in progress_
-
-When `dammit` finishes running, you should see:
-
-**to do: consider using https://angus.readthedocs.io/en/2019/dammit_annotation.html#annotation-with-dammit**
-
 ## dammit output
 
 After a successful run, you'll have a new directory called `BASENAME.fasta.dammit`. If you look inside, you'll see a lot of files. For example, for a transcriptome with basename `trinity.nema`, the folder `trinity.nema.fasta.dammit` should contain the following files:
@@ -14,6 +8,7 @@ After a successful run, you'll have a new directory called `BASENAME.fasta.dammi
 ```
 ls trinity.nema.fasta.dammit/
 ```    
+
 ```    
     annotate.doit.db                              trinity.nema.fasta.dammit.namemap.csv  trinity.nema.fasta.transdecoder.pep
     dammit.log                                    trinity.nema.fasta.dammit.stats.json   trinity.nema.fasta.x.nema.reference.prot.faa.crbl.csv
@@ -26,15 +21,6 @@ ls trinity.nema.fasta.dammit/
 
 The two most important files are `trinity.nema.fasta.dammit.fasta` and `trinity.nema.fasta.dammit.gff3`, as they contain the aggregated annotation info per transcript.
 `trinity.nema.fasta.dammit.stats.json` also gives summary stats that are quite useful. If you'd like to look into the remaining files, here are the programs that produced each.
-
-dammit results:
-  - \*gff3
-
-external program results:
-  - to do: LIST EACH FILE + some info for it
-
-
-
 
 ## Parsing the dammit GFF3
 
@@ -70,12 +56,7 @@ annotations.head(50)
 ```
 
 
-
-**todo: add R code?**
-
-
 ## Other tutorials and Workshop materials
 
-See this workshop [tutorial](https://angus.readthedocs.io/en/2018/dammit_annotation.html) for further practice with using `dammit` for annotating a *de novo* transcriptome assembly.
+See this workshop [tutorial](https://angus.readthedocs.io/en/2018/dammit_annotation.html)for further practice with using `dammit` for annotating a *de novo* transcriptome assembly.
 Please note that the commands used were for a prior version of dammit, but all analysis remains relevant.
-
