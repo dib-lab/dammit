@@ -21,6 +21,9 @@ dammit run  --busco-group saccharomycetes_odb10  --n-threads 4 annotate --global
 # Passing a user database
 dammit run  --busco-group saccharomycetes_odb10  --n-threads 4 --pipeline quick annotate $DATA_DIR/$TEST_FILE --user-database $DATA_DIR/$TEST_PEP -o $TEST_NAME.dammit.udb 
 
+# multiple user databases
+dammit run --n-threads 4 --busco-group saccharomycetes_odb10 --pipeline quick annotate --user-database $DATA_DIR/pep.fa --user-database $DATA_DIR/odb_subset.fa $DATA_DIR/$TEST_FILE -o $TEST_NAME.dammit.multi-udb
+
 # Passing multiple musco groups
 dammit run --n-threads 4 --pipeline quick --busco-group bacteria_odb10 --busco-group saccharomycetes_odb10 annotate -o pom.256.dammit.busco-multi $DATA_DIR/pom.256.fa 
 
@@ -29,6 +32,7 @@ dammit run --busco-group saccharomycetes_odb10 --pipeline quick annotate --regex
 
 # Rename with backmapping
 #dammit run annotate $DATA_DIR/$TEST_FILE --no-rename -o $TEST_FILE.dammit.norename
+
 
 #
 # Copy the data
