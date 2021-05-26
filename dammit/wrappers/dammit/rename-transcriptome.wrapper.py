@@ -22,6 +22,9 @@ if snakemake.params.get('basename', False):
 if snakemake.params.get('split_regex', False):
     opts.extend(['--split-regex', '"{0}"'.format(snakemake.params.get('split_regex'))])
 
+if snakemake.params.get('fail_on_repeats', False):
+    opts.append('--fail-on-repeats')
+
 opts.extend([str(snakemake.input), snakemake.output.fasta, snakemake.output.names])
 
 log = snakemake.log_fmt_shell(stdout=True, stderr=True)

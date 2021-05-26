@@ -101,6 +101,34 @@ class TestRenameFasta:
 
             renamed_records = list(ReadParser(renamed_fn))
             assert renamed_records[0].name == 'SPAC212'
+    
+    def test_fail_on_repeats_fail(self, tmpdir, datadir):
+        '''--fail-on-repeats should fail with exit code 1 on repeated header names'''
+        with tmpdir.as_cwd():
+            input_fa = datadir('repeated-names.fa')
+            names_fn = 'names.csv'
+            renamed_fn = 'renamed.fa'
+
+            status, out, err = run('rename-fasta', '--fail-on-repeats',
+                                   input_fa, renamed_fn, names_fn)
+            assert status == 1
+            assert 'ERROR: Repeated sequence names' in err
+
+    def test_fail_on_repeats_pass(self, tmpdir, datadir):
+        '''--fail-on-repeats should still pass in the absence of repeated header names'''
+        with tmpdir.as_cwd():
+            input_fa = datadir('pom.20.fa')
+            names_fn = 'names.csv'
+            renamed_fn = 'renamed.fa'
+
+            status, out, err = run('rename-fasta', '--fail-on-repeats',
+                                   input_fa, renamed_fn, names_fn)
+            assert status == 0
+            
+            names = pd.read_csv(names_fn)
+
+            # OOPS pom.20.fa actually has 21 sequences loooooool
+            assert len(names) == 21
 
 
 class TestTranscriptomeStats:

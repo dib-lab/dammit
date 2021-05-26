@@ -31,7 +31,8 @@ def rename_fasta(fasta_fn,
                  output_fn,
                  names_fn,
                  basename,
-                 split_regex):
+                 split_regex,
+                 fail_on_repeats=False):
     '''Copy a FASTA file and rename the headers.
     \f
 
@@ -42,7 +43,6 @@ def rename_fasta(fasta_fn,
         basename (str): String to contruct new names from.
         split_regex (regex): Regex to split the input names with; must contain
             a `name` field.
-
     '''
 
     if split_regex is None:
@@ -65,9 +65,14 @@ def rename_fasta(fasta_fn,
             fp.write('>{0}\n{1}\n'.format(header, record.sequence))
             names.append((record.name, header))
 
-    pd.DataFrame(names, columns=['original', 'renamed']).to_csv(names_fn,
-                                                                index=False)
+    names_df = pd.DataFrame(names, columns=['original', 'renamed'])
+    
+    if fail_on_repeats and names_df.original.nunique() != len(names_df):
+        print('ERROR: Repeated sequence names detected with --fail-on-repeats!', file=sys.stderr)
+        sys.exit(1)
 
+    names_df.to_csv(names_fn, index=False)
+    
 
 @click.command('rename-fasta')
 @click.argument('fasta_fn')
@@ -75,11 +80,13 @@ def rename_fasta(fasta_fn,
 @click.argument('names_fn')
 @click.option('--basename', default='Transcript', show_default=True)
 @click.option('--split-regex', default=None, type=str)
+@click.option('--fail-on-repeats', flag_value=True)
 def rename_fasta_cmd(fasta_fn,
                      output_fn,
                      names_fn,
                      basename,
-                     split_regex):
+                     split_regex,
+                     fail_on_repeats):
     ''' Copy a FASTA file and rename the headers. If --split-regex is used,
     it should be provided in Python `re` format and contain a named field keyed
     as `name` that extracts the desired string. For example, providing 
@@ -95,7 +102,7 @@ def rename_fasta_cmd(fasta_fn,
     if split_regex is not None and basename != 'Transcript':
         print('NOTE: --split-regex supersedes --basename', file=sys.stderr)
 
-    rename_fasta(fasta_fn, output_fn, names_fn, basename, split_regex)
+    rename_fasta(fasta_fn, output_fn, names_fn, basename, split_regex, fail_on_repeats)
 
 
 def transcriptome_stats(transcriptome_fn, output_fn, per_contig_fn, k):

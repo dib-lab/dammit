@@ -20,7 +20,8 @@ rule dammit_rename_transcriptome:
     threads: 1
     params:
         basename = config.get("basename", None),
-        split_regex = config.get("regex_rename", None)
+        split_regex = config.get("regex_rename", None),
+        fail_on_repeats = False if config['rename'] else True
     script: f'file://{__path__}/wrappers/dammit/rename-transcriptome.wrapper.py'
 
 
