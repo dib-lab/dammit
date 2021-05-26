@@ -188,6 +188,25 @@ class TestDammitAnnotate:
             gff3_fn = os.path.join('pom.20.dammit', 'pom.20.dammit.gff3')
             assert compare_gff(gff3_fn, exp_gff3_fn)
 
+    def test_norename(self, tmpdir, datadir):
+        '''
+        '''
+
+        with tmpdir.as_cwd():
+            transcripts = datadir('pom.20.fa')
+            exp_gff3_fn = datadir('pom.20.dammit.norename.gff3')
+
+            args = ['run', '--pipeline', 'quick',
+                    '--busco-group', 'saccharomycetes_odb10',
+                    'annotate', '--no-rename',
+                    transcripts]
+            
+            status, out, err = run(*args)
+            assert status == 0
+
+            gff3_fn = os.path.join('pom.20.dammit', 'pom.20.dammit.gff3')
+
+            assert compare_gff(gff3_fn, exp_gff3_fn)
 
     def test_annotate_outdir(self, tmpdir, datadir):
         '''

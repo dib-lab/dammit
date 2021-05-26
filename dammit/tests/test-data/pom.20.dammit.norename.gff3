@@ -1,0 +1,213 @@
+##gff-version 3.2.1
+Transcript_0	HMMER	protein_hmm_match	1455	1787	8.800000e-15	.	.	ID=homology:9e7debe20d5864489389385196e8ce1f582ce080;Name=TPP_enzyme_C;Target=TPP_enzyme_C 15 120 +;accuracy=0.73;env_coords=1416 1880;Dbxref="Pfam-A:PF02775.17";Note=Thiamine pyrophosphate enzyme, C-terminal TPP binding domain
+Transcript_0	HMMER	protein_hmm_match	261	773	4.900000e-34	.	.	ID=homology:b7bd2085166d404acba13f1d98b5b89a6b788034;Name=TPP_enzyme_N;Target=TPP_enzyme_N 3 166 +;accuracy=0.94;env_coords=255 788;Dbxref="Pfam-A:PF02776.14";Note=Thiamine pyrophosphate enzyme, N-terminal TPP binding domain
+Transcript_0	HMMER	protein_hmm_match	630	746	8.100000e+02	.	.	ID=homology:499fcc76f5ace0dfdce5ebafbac99fc062ed7041;Name=TPP_enzyme_C;Target=TPP_enzyme_C 112 151 +;accuracy=0.62;env_coords=540 752;Dbxref="Pfam-A:PF02775.17";Note=Thiamine pyrophosphate enzyme, C-terminal TPP binding domain
+Transcript_0	HMMER	protein_hmm_match	633	740	6.300000e+03	.	.	ID=homology:8c5e9814c89cad321361a9e17a1b0a517062eb26;Name=TPP_enzyme_M;Target=TPP_enzyme_M 7 42 +;accuracy=0.6;env_coords=624 815;Dbxref="Pfam-A:PF00205.18";Note=Thiamine pyrophosphate enzyme, central domain
+Transcript_0	HMMER	protein_hmm_match	852	1244	4.800000e-28	.	.	ID=homology:aafc5146615c383024816cc864a986c311a1f373;Name=TPP_enzyme_M;Target=TPP_enzyme_M 1 131 +;accuracy=0.9;env_coords=852 1262;Dbxref="Pfam-A:PF00205.18";Note=Thiamine pyrophosphate enzyme, central domain
+Transcript_0	transdecoder	CDS	243	1958	.	+	0	ID=cds.Transcript_0.p1;Parent=Transcript_0.p1
+Transcript_0	transdecoder	exon	1	2141	.	+	.	ID=Transcript_0.p1.exon1;Parent=Transcript_0.p1
+Transcript_0	transdecoder	five_prime_UTR	1	242	.	+	.	ID=Transcript_0.p1.utr5p1;Parent=Transcript_0.p1
+Transcript_0	transdecoder	gene	1	2141	.	+	.	ID=GENE.Transcript_0~~Transcript_0.p1;Name=ORF%20type%3Acomplete%20len%3A572%20%28%2B%29%2Cscore%3D269.50%2CTPP_enzyme_N%7CPF02776.14%7C4.9e-34%2CTPP_enzyme_M%7CPF00205.18%7C6.3e%2B03%2CTPP_enzyme_M%7CPF00205.18%7C4.8e-28%2CTPP_enzyme_C%7CPF02775.17%7C8.1e%2B02%2CTPP_enzyme_C%7CPF02775.17%7C8.8e-15
+Transcript_0	transdecoder	mRNA	1	2141	.	+	.	ID=Transcript_0.p1;Parent=GENE.Transcript_0~~Transcript_0.p1;Name=ORF%20type%3Acomplete%20len%3A572%20%28%2B%29%2Cscore%3D269.50%2CTPP_enzyme_N%7CPF02776.14%7C4.9e-34%2CTPP_enzyme_M%7CPF00205.18%7C6.3e%2B03%2CTPP_enzyme_M%7CPF00205.18%7C4.8e-28%2CTPP_enzyme_C%7CPF02775.17%7C8.1e%2B02%2CTPP_enzyme_C%7CPF02775.17%7C8.8e-15
+Transcript_0	transdecoder	three_prime_UTR	1959	2141	.	+	.	ID=Transcript_0.p1.utr3p1;Parent=Transcript_0.p1
+Transcript_10	BUSCO	BUSCO_ortholog	57	2374	456.5	.	.	ID=busco:5c4a5d982ea687d0838f35937e5e0570a5cb4b90;Name=6427at4891;length=481;status=Complete
+Transcript_10	HMMER	protein_hmm_match	1380	1580	1.700000e-13	.	.	ID=homology:b020baac38cd37de1fd51d6859a5c32336dfe271;Name=HRDC;Target=HRDC 2 68 +;accuracy=0.96;env_coords=1377 1580;Dbxref="Pfam-A:PF00570.19";Note=HRDC domain
+Transcript_10	HMMER	protein_hmm_match	1647	1745	5.700000e+03	.	.	ID=homology:188c7429a0a925d6fd5f579c8d96520691c0571f;Name=DNA_pol_A_exo1;Target=DNA_pol_A_exo1 18 52 +;accuracy=0.58;env_coords=1614 1793;Dbxref="Pfam-A:PF01612.16";Note=3'-5' exonuclease
+Transcript_10	HMMER	protein_hmm_match	699	1199	2.000000e-54	.	.	ID=homology:f714fc1ee0347dbbc4535677efa4aee167256505;Name=DNA_pol_A_exo1;Target=DNA_pol_A_exo1 2 174 +;accuracy=0.99;env_coords=696 1202;Dbxref="Pfam-A:PF01612.16";Note=3'-5' exonuclease
+Transcript_10	HMMER	protein_hmm_match	78	338	5.200000e-18	.	.	ID=homology:1b730598f53ff015ca7cf48bcec1622baef9fe2a;Name=PMC2NT;Target=PMC2NT 2 92 +;accuracy=0.95;env_coords=75 338;Dbxref="Pfam-A:PF08066.8";Note=PMC2NT (NUC016) domain
+Transcript_10	HMMER	protein_hmm_match	84	164	1.600000e+03	.	.	ID=homology:3d7e4051ac420f137deb02902cb54c2a443a4bcf;Name=DNA_pol_A_exo1;Target=DNA_pol_A_exo1 11 34 +;accuracy=0.76;env_coords=66 212;Dbxref="Pfam-A:PF01612.16";Note=3'-5' exonuclease
+Transcript_10	transdecoder	CDS	45	2378	.	+	0	ID=cds.Transcript_10.p1;Parent=Transcript_10.p1
+Transcript_10	transdecoder	exon	1	2439	.	+	.	ID=Transcript_10.p1.exon1;Parent=Transcript_10.p1
+Transcript_10	transdecoder	five_prime_UTR	1	44	.	+	.	ID=Transcript_10.p1.utr5p1;Parent=Transcript_10.p1
+Transcript_10	transdecoder	gene	1	2439	.	+	.	ID=GENE.Transcript_10~~Transcript_10.p1;Name=ORF%20type%3Acomplete%20len%3A778%20%28%2B%29%2Cscore%3D359.02%2CDNA_pol_A_exo1%7CPF01612.16%7C1.6e%2B03%2CDNA_pol_A_exo1%7CPF01612.16%7C2e-54%2CDNA_pol_A_exo1%7CPF01612.16%7C5.7e%2B03%2CPMC2NT%7CPF08066.8%7C5.2e-18%2CHRDC%7CPF00570.19%7C1.7e-13
+Transcript_10	transdecoder	mRNA	1	2439	.	+	.	ID=Transcript_10.p1;Parent=GENE.Transcript_10~~Transcript_10.p1;Name=ORF%20type%3Acomplete%20len%3A778%20%28%2B%29%2Cscore%3D359.02%2CDNA_pol_A_exo1%7CPF01612.16%7C1.6e%2B03%2CDNA_pol_A_exo1%7CPF01612.16%7C2e-54%2CDNA_pol_A_exo1%7CPF01612.16%7C5.7e%2B03%2CPMC2NT%7CPF08066.8%7C5.2e-18%2CHRDC%7CPF00570.19%7C1.7e-13
+Transcript_10	transdecoder	three_prime_UTR	2379	2439	.	+	.	ID=Transcript_10.p1.utr3p1;Parent=Transcript_10.p1
+Transcript_11	BUSCO	BUSCO_ortholog	1365	3808	479.8	.	.	ID=busco:16b84e701e7c0883803b1b04812c3558ee2a6339;Name=1979at4891;length=341;status=Complete
+Transcript_11	HMMER	protein_hmm_match	2955	3758	5.500000e-67	.	.	ID=homology:0b09435b720b4ffcc7879d1d397b8be194ee0d5e;Name=Pkinase;Target=Pkinase 3 262 +;accuracy=0.9;env_coords=2949 3758;Dbxref="Pfam-A:PF00069.21";Note=Protein kinase domain
+Transcript_11	HMMER	protein_hmm_match	2958	3746	2.300000e-42	.	.	ID=homology:ec435277ea6b3f81a5e6d8f14e78760424cfcb33;Name=Pkinase_Tyr;Target=Pkinase_Tyr 4 258 +;accuracy=0.84;env_coords=2952 3749;Dbxref="Pfam-A:PF07714.13";Note=Protein tyrosine kinase
+Transcript_11	transdecoder	CDS	477	3827	.	+	0	ID=cds.Transcript_11.p1;Parent=Transcript_11.p1
+Transcript_11	transdecoder	exon	1	3956	.	+	.	ID=Transcript_11.p1.exon1;Parent=Transcript_11.p1
+Transcript_11	transdecoder	five_prime_UTR	1	476	.	+	.	ID=Transcript_11.p1.utr5p1;Parent=Transcript_11.p1
+Transcript_11	transdecoder	gene	1	3956	.	+	.	ID=GENE.Transcript_11~~Transcript_11.p1;Name=ORF%20type%3Acomplete%20len%3A1117%20%28%2B%29%2Cscore%3D521.04%2CPkinase%7CPF00069.21%7C5.5e-67%2CPkinase_Tyr%7CPF07714.13%7C2.3e-42
+Transcript_11	transdecoder	mRNA	1	3956	.	+	.	ID=Transcript_11.p1;Parent=GENE.Transcript_11~~Transcript_11.p1;Name=ORF%20type%3Acomplete%20len%3A1117%20%28%2B%29%2Cscore%3D521.04%2CPkinase%7CPF00069.21%7C5.5e-67%2CPkinase_Tyr%7CPF07714.13%7C2.3e-42
+Transcript_11	transdecoder	three_prime_UTR	3828	3956	.	+	.	ID=Transcript_11.p1.utr3p1;Parent=Transcript_11.p1
+Transcript_12	BUSCO	BUSCO_ortholog	3455	4273	250.0	.	.	ID=busco:8eea87d684deb7dee6ce84c85522565efef64511;Name=23784at4891;length=163;status=Duplicated
+Transcript_12	HMMER	protein_hmm_match	1604	2725	8.400000e-109	.	.	ID=homology:a815fc767027eef954c09ea846b01bc323897a15;Name=Lgl_C;Target=Lgl_C 3 393 +;accuracy=0.98;env_coords=1598 2725;Dbxref="Pfam-A:PF08596.6";Note=Lethal giant larvae(Lgl) like, C-terminal
+Transcript_12	HMMER	protein_hmm_match	3236	3388	1.200000e-13	.	.	ID=homology:dda9a4d07523e1267b7d56ab96c05f479c80a786;Name=DUF367;Target=DUF367 77 127 +;accuracy=0.98;env_coords=3236 3388;Dbxref="Pfam-A:PF04034.9";Note=Domain of unknown function (DUF367)
+Transcript_12	transdecoder	CDS	2	3043	.	+	0	ID=cds.Transcript_12.p1;Parent=Transcript_12.p1
+Transcript_12	transdecoder	CDS	3236	3682	.	-	0	ID=cds.Transcript_12.p2;Parent=Transcript_12.p2
+Transcript_12	transdecoder	exon	1	4750	.	+	.	ID=Transcript_12.p1.exon1;Parent=Transcript_12.p1
+Transcript_12	transdecoder	exon	1	4750	.	-	.	ID=Transcript_12.p2.exon1;Parent=Transcript_12.p2
+Transcript_12	transdecoder	five_prime_UTR	3683	4750	.	-	.	ID=Transcript_12.p2.utr5p1;Parent=Transcript_12.p2
+Transcript_12	transdecoder	gene	1	4750	.	+	.	ID=GENE.Transcript_12~~Transcript_12.p1;Name=ORF%20type%3A5prime_partial%20len%3A1014%20%28%2B%29%2Cscore%3D458.23%2CLgl_C%7CPF08596.6%7C8.4e-109
+Transcript_12	transdecoder	gene	1	4750	.	-	.	ID=GENE.Transcript_12~~Transcript_12.p2;Name=ORF%20type%3Acomplete%20len%3A149%20%28-%29%2Cscore%3D69.62%2CDUF367%7CPF04034.9%7C1.2e-13
+Transcript_12	transdecoder	mRNA	1	4750	.	+	.	ID=Transcript_12.p1;Parent=GENE.Transcript_12~~Transcript_12.p1;Name=ORF%20type%3A5prime_partial%20len%3A1014%20%28%2B%29%2Cscore%3D458.23%2CLgl_C%7CPF08596.6%7C8.4e-109
+Transcript_12	transdecoder	mRNA	1	4750	.	-	.	ID=Transcript_12.p2;Parent=GENE.Transcript_12~~Transcript_12.p2;Name=ORF%20type%3Acomplete%20len%3A149%20%28-%29%2Cscore%3D69.62%2CDUF367%7CPF04034.9%7C1.2e-13
+Transcript_12	transdecoder	three_prime_UTR	1	3235	.	-	.	ID=Transcript_12.p2.utr3p1;Parent=Transcript_12.p2
+Transcript_12	transdecoder	three_prime_UTR	3044	4750	.	+	.	ID=Transcript_12.p1.utr3p1;Parent=Transcript_12.p1
+Transcript_13	BUSCO	BUSCO_ortholog	41	723	250.0	.	.	ID=busco:53c2a8991213423793113d9948183cfffcc1eead;Name=23784at4891;length=163;status=Duplicated
+Transcript_13	HMMER	protein_hmm_match	158	259	1.100000e-12	.	.	ID=homology:6c397a2e5a78e97b252b4eb6e1d94c9867a0ef8f;Name=RLI;Target=RLI 2 35 +;accuracy=0.97;env_coords=155 259;Dbxref="Pfam-A:PF04068.11";Note=Possible Fer4-like domain in RNase L inhibitor, RLI
+Transcript_13	HMMER	protein_hmm_match	269	649	1.700000e-50	.	.	ID=homology:d09eb69832fcbf800ca9b38ce7afe7bc063a79d2;Name=DUF367;Target=DUF367 1 127 +;accuracy=0.99;env_coords=269 649;Dbxref="Pfam-A:PF04034.9";Note=Domain of unknown function (DUF367)
+Transcript_13	transdecoder	CDS	77	943	.	+	0	ID=cds.Transcript_13.p1;Parent=Transcript_13.p1
+Transcript_13	transdecoder	exon	1	1078	.	+	.	ID=Transcript_13.p1.exon1;Parent=Transcript_13.p1
+Transcript_13	transdecoder	five_prime_UTR	1	76	.	+	.	ID=Transcript_13.p1.utr5p1;Parent=Transcript_13.p1
+Transcript_13	transdecoder	gene	1	1078	.	+	.	ID=GENE.Transcript_13~~Transcript_13.p1;Name=ORF%20type%3Acomplete%20len%3A289%20%28%2B%29%2Cscore%3D133.35%2CDUF367%7CPF04034.9%7C1.7e-50%2CRLI%7CPF04068.11%7C1.1e-12
+Transcript_13	transdecoder	mRNA	1	1078	.	+	.	ID=Transcript_13.p1;Parent=GENE.Transcript_13~~Transcript_13.p1;Name=ORF%20type%3Acomplete%20len%3A289%20%28%2B%29%2Cscore%3D133.35%2CDUF367%7CPF04034.9%7C1.7e-50%2CRLI%7CPF04068.11%7C1.1e-12
+Transcript_13	transdecoder	three_prime_UTR	944	1078	.	+	.	ID=Transcript_13.p1.utr3p1;Parent=Transcript_13.p1
+Transcript_14	HMMER	protein_hmm_match	1241	1294	7.600000e+03	.	.	ID=homology:9dc8dedfa6d018182b6b6b8e3926509303f4f2b7;Name=Alpha_adaptinC2;Target=Alpha_adaptinC2 48 65 +;accuracy=0.59;env_coords=1229 1354;Dbxref="Pfam-A:PF02883.16";Note=Adaptin C-terminal domain
+Transcript_14	HMMER	protein_hmm_match	1370	1681	3.800000e-14	.	.	ID=homology:8e1531261aab8b0133bff537d87955d711f5b8ac;Name=Alpha_adaptinC2;Target=Alpha_adaptinC2 4 100 +;accuracy=0.9;env_coords=1361 1708;Dbxref="Pfam-A:PF02883.16";Note=Adaptin C-terminal domain
+Transcript_14	HMMER	protein_hmm_match	188	619	2.400000e-49	.	.	ID=homology:4363a3b3309490ef4dea834fd6914603af269f1d;Name=VHS;Target=VHS 3 141 +;accuracy=0.98;env_coords=182 619;Dbxref="Pfam-A:PF00790.15";Note=VHS domain
+Transcript_14	transdecoder	CDS	182	1714	.	+	0	ID=cds.Transcript_14.p1;Parent=Transcript_14.p1
+Transcript_14	transdecoder	exon	1	2035	.	+	.	ID=Transcript_14.p1.exon1;Parent=Transcript_14.p1
+Transcript_14	transdecoder	five_prime_UTR	1	181	.	+	.	ID=Transcript_14.p1.utr5p1;Parent=Transcript_14.p1
+Transcript_14	transdecoder	gene	1	2035	.	+	.	ID=GENE.Transcript_14~~Transcript_14.p1;Name=ORF%20type%3Acomplete%20len%3A511%20%28%2B%29%2Cscore%3D242.08%2CVHS%7CPF00790.15%7C2.4e-49%2CAlpha_adaptinC2%7CPF02883.16%7C7.6e%2B03%2CAlpha_adaptinC2%7CPF02883.16%7C3.8e-14
+Transcript_14	transdecoder	mRNA	1	2035	.	+	.	ID=Transcript_14.p1;Parent=GENE.Transcript_14~~Transcript_14.p1;Name=ORF%20type%3Acomplete%20len%3A511%20%28%2B%29%2Cscore%3D242.08%2CVHS%7CPF00790.15%7C2.4e-49%2CAlpha_adaptinC2%7CPF02883.16%7C7.6e%2B03%2CAlpha_adaptinC2%7CPF02883.16%7C3.8e-14
+Transcript_14	transdecoder	three_prime_UTR	1715	2035	.	+	.	ID=Transcript_14.p1.utr3p1;Parent=Transcript_14.p1
+Transcript_15	transdecoder	CDS	3	5972	.	+	0	ID=cds.Transcript_15.p1;Parent=Transcript_15.p1
+Transcript_15	transdecoder	exon	1	6229	.	+	.	ID=Transcript_15.p1.exon1;Parent=Transcript_15.p1
+Transcript_15	transdecoder	gene	1	6229	.	+	.	ID=GENE.Transcript_15~~Transcript_15.p1;Name=ORF%20type%3A5prime_partial%20len%3A1990%20%28%2B%29%2Cscore%3D255.50
+Transcript_15	transdecoder	mRNA	1	6229	.	+	.	ID=Transcript_15.p1;Parent=GENE.Transcript_15~~Transcript_15.p1;Name=ORF%20type%3A5prime_partial%20len%3A1990%20%28%2B%29%2Cscore%3D255.50
+Transcript_15	transdecoder	three_prime_UTR	5973	6229	.	+	.	ID=Transcript_15.p1.utr3p1;Parent=Transcript_15.p1
+Transcript_16	transdecoder	CDS	262	1473	.	+	0	ID=cds.Transcript_16.p1;Parent=Transcript_16.p1
+Transcript_16	transdecoder	exon	1	1518	.	+	.	ID=Transcript_16.p1.exon1;Parent=Transcript_16.p1
+Transcript_16	transdecoder	five_prime_UTR	1	261	.	+	.	ID=Transcript_16.p1.utr5p1;Parent=Transcript_16.p1
+Transcript_16	transdecoder	gene	1	1518	.	+	.	ID=GENE.Transcript_16~~Transcript_16.p1;Name=ORF%20type%3Acomplete%20len%3A404%20%28%2B%29%2Cscore%3D190.13
+Transcript_16	transdecoder	mRNA	1	1518	.	+	.	ID=Transcript_16.p1;Parent=GENE.Transcript_16~~Transcript_16.p1;Name=ORF%20type%3Acomplete%20len%3A404%20%28%2B%29%2Cscore%3D190.13
+Transcript_16	transdecoder	three_prime_UTR	1474	1518	.	+	.	ID=Transcript_16.p1.utr3p1;Parent=Transcript_16.p1
+Transcript_17	transdecoder	CDS	1	327	.	+	0	ID=cds.Transcript_17.p1;Parent=Transcript_17.p1
+Transcript_17	transdecoder	exon	1	327	.	+	.	ID=Transcript_17.p1.exon1;Parent=Transcript_17.p1
+Transcript_17	transdecoder	gene	1	327	.	+	.	ID=GENE.Transcript_17~~Transcript_17.p1;Name=ORF%20type%3Acomplete%20len%3A109%20%28%2B%29%2Cscore%3D31.04
+Transcript_17	transdecoder	mRNA	1	327	.	+	.	ID=Transcript_17.p1;Parent=GENE.Transcript_17~~Transcript_17.p1;Name=ORF%20type%3Acomplete%20len%3A109%20%28%2B%29%2Cscore%3D31.04
+Transcript_18	HMMER	protein_hmm_match	2291	2692	1.000000e-45	.	.	ID=homology:934ed21ee6c0774d7bcc3843a3b0696aed6b82ba;Name=CwfJ_C_1;Target=CwfJ_C_1 3 121 +;accuracy=0.98;env_coords=2285 2695;Dbxref="Pfam-A:PF04677.11";Note=Protein similar to CwfJ C-terminus 1
+Transcript_18	HMMER	protein_hmm_match	2732	2968	3.300000e-15	.	.	ID=homology:b5659e0755e432d0f60f315b3dacca8f80ee4741;Name=CwfJ_C_2;Target=CwfJ_C_2 18 98 +;accuracy=0.88;env_coords=2693 2968;Dbxref="Pfam-A:PF04676.10";Note=Protein similar to CwfJ C-terminus 2
+Transcript_18	transdecoder	CDS	1286	2971	.	+	0	ID=cds.Transcript_18.p1;Parent=Transcript_18.p1
+Transcript_18	transdecoder	exon	1	2971	.	+	.	ID=Transcript_18.p1.exon1;Parent=Transcript_18.p1
+Transcript_18	transdecoder	five_prime_UTR	1	1285	.	+	.	ID=Transcript_18.p1.utr5p1;Parent=Transcript_18.p1
+Transcript_18	transdecoder	gene	1	2971	.	+	.	ID=GENE.Transcript_18~~Transcript_18.p1;Name=ORF%20type%3Acomplete%20len%3A562%20%28%2B%29%2Cscore%3D261.47%2CCwfJ_C_1%7CPF04677.11%7C1e-45%2CCwfJ_C_2%7CPF04676.10%7C3.3e-15
+Transcript_18	transdecoder	mRNA	1	2971	.	+	.	ID=Transcript_18.p1;Parent=GENE.Transcript_18~~Transcript_18.p1;Name=ORF%20type%3Acomplete%20len%3A562%20%28%2B%29%2Cscore%3D261.47%2CCwfJ_C_1%7CPF04677.11%7C1e-45%2CCwfJ_C_2%7CPF04676.10%7C3.3e-15
+Transcript_19	BUSCO	BUSCO_ortholog	228	2377	453.7	.	.	ID=busco:862fcc3b055d4cb6d781a7531e12b3ead301d634;Name=5324at4891;length=552;status=Complete
+Transcript_19	HMMER	protein_hmm_match	2523	2819	2.100000e-28	.	.	ID=homology:3cb5651c5d8e58d5671869394015acce27cf7bed;Name=CwfJ_C_1;Target=CwfJ_C_1 38 121 +;accuracy=0.96;env_coords=2505 2822;Dbxref="Pfam-A:PF04677.11";Note=Protein similar to CwfJ C-terminus 1
+Transcript_19	HMMER	protein_hmm_match	2859	3095	5.400000e-16	.	.	ID=homology:2293e85f820ee0c563a66e85728b2605ae5e41f0;Name=CwfJ_C_2;Target=CwfJ_C_2 18 98 +;accuracy=0.88;env_coords=2814 3095;Dbxref="Pfam-A:PF04676.10";Note=Protein similar to CwfJ C-terminus 2
+Transcript_19	HMMER	protein_hmm_match	3018	3077	2.900000e+03	.	.	ID=homology:0038ca219f656a247cc2c9b56345d4848a5ec4fb;Name=CwfJ_C_1;Target=CwfJ_C_1 59 78 +;accuracy=0.78;env_coords=3012 3083;Dbxref="Pfam-A:PF04677.11";Note=Protein similar to CwfJ C-terminus 1
+Transcript_19	HMMER	protein_hmm_match	939	2366	2.800000e-153	.	.	ID=homology:1b945fcc2102b1ac3eb5228e6af692bfc5484003;Name=Peptidase_M3;Target=Peptidase_M3 2 457 +;accuracy=0.97;env_coords=936 2369;Dbxref="Pfam-A:PF01432.16";Note=Peptidase family M3
+Transcript_19	transdecoder	CDS	120	2408	.	+	0	ID=cds.Transcript_19.p1;Parent=Transcript_19.p1
+Transcript_19	transdecoder	CDS	2472	3098	.	-	0	ID=cds.Transcript_19.p3;Parent=Transcript_19.p3
+Transcript_19	transdecoder	CDS	3211	4020	.	-	0	ID=cds.Transcript_19.p2;Parent=Transcript_19.p2
+Transcript_19	transdecoder	exon	1	4533	.	+	.	ID=Transcript_19.p1.exon1;Parent=Transcript_19.p1
+Transcript_19	transdecoder	exon	1	4533	.	-	.	ID=Transcript_19.p2.exon1;Parent=Transcript_19.p2
+Transcript_19	transdecoder	exon	1	4533	.	-	.	ID=Transcript_19.p3.exon1;Parent=Transcript_19.p3
+Transcript_19	transdecoder	five_prime_UTR	1	119	.	+	.	ID=Transcript_19.p1.utr5p1;Parent=Transcript_19.p1
+Transcript_19	transdecoder	five_prime_UTR	3099	4533	.	-	.	ID=Transcript_19.p3.utr5p1;Parent=Transcript_19.p3
+Transcript_19	transdecoder	five_prime_UTR	4021	4533	.	-	.	ID=Transcript_19.p2.utr5p1;Parent=Transcript_19.p2
+Transcript_19	transdecoder	gene	1	4533	.	+	.	ID=GENE.Transcript_19~~Transcript_19.p1;Name=ORF%20type%3Acomplete%20len%3A763%20%28%2B%29%2Cscore%3D329.09%2CPeptidase_M3%7CPF01432.16%7C2.8e-153
+Transcript_19	transdecoder	gene	1	4533	.	-	.	ID=GENE.Transcript_19~~Transcript_19.p2;Name=ORF%20type%3Acomplete%20len%3A270%20%28-%29%2Cscore%3D125.18
+Transcript_19	transdecoder	gene	1	4533	.	-	.	ID=GENE.Transcript_19~~Transcript_19.p3;Name=ORF%20type%3Acomplete%20len%3A209%20%28-%29%2Cscore%3D88.03%2CCwfJ_C_1%7CPF04677.11%7C2.1e-28%2CCwfJ_C_1%7CPF04677.11%7C2.9e%2B03%2CCwfJ_C_2%7CPF04676.10%7C5.4e-16
+Transcript_19	transdecoder	mRNA	1	4533	.	+	.	ID=Transcript_19.p1;Parent=GENE.Transcript_19~~Transcript_19.p1;Name=ORF%20type%3Acomplete%20len%3A763%20%28%2B%29%2Cscore%3D329.09%2CPeptidase_M3%7CPF01432.16%7C2.8e-153
+Transcript_19	transdecoder	mRNA	1	4533	.	-	.	ID=Transcript_19.p2;Parent=GENE.Transcript_19~~Transcript_19.p2;Name=ORF%20type%3Acomplete%20len%3A270%20%28-%29%2Cscore%3D125.18
+Transcript_19	transdecoder	mRNA	1	4533	.	-	.	ID=Transcript_19.p3;Parent=GENE.Transcript_19~~Transcript_19.p3;Name=ORF%20type%3Acomplete%20len%3A209%20%28-%29%2Cscore%3D88.03%2CCwfJ_C_1%7CPF04677.11%7C2.1e-28%2CCwfJ_C_1%7CPF04677.11%7C2.9e%2B03%2CCwfJ_C_2%7CPF04676.10%7C5.4e-16
+Transcript_19	transdecoder	three_prime_UTR	1	2471	.	-	.	ID=Transcript_19.p3.utr3p1;Parent=Transcript_19.p3
+Transcript_19	transdecoder	three_prime_UTR	1	3210	.	-	.	ID=Transcript_19.p2.utr3p1;Parent=Transcript_19.p2
+Transcript_19	transdecoder	three_prime_UTR	2409	4533	.	+	.	ID=Transcript_19.p1.utr3p1;Parent=Transcript_19.p1
+Transcript_1	HMMER	protein_hmm_match	1580	1597	1.600000e+04	.	.	ID=homology:1cc2277983d54d82f2a0060ca1becc0ccaa035ab;Name=CRAL_TRIO_N;Target=CRAL_TRIO_N 39 44 +;accuracy=0.92;env_coords=1580 1597;Dbxref="Pfam-A:PF03765.11";Note=CRAL/TRIO, N-terminal domain
+Transcript_1	HMMER	protein_hmm_match	512	541	9.900000e+03	.	.	ID=homology:6eb530dcf9d8478c3be94de9840c7340daf9f354;Name=CRAL_TRIO_N;Target=CRAL_TRIO_N 5 14 +;accuracy=0.7;env_coords=509 601;Dbxref="Pfam-A:PF03765.11";Note=CRAL/TRIO, N-terminal domain
+Transcript_1	HMMER	protein_hmm_match	686	820	3.400000e-10	.	.	ID=homology:635a9561ea0c863d59f4c8a8fff83d5fb43adb41;Name=CRAL_TRIO_N;Target=CRAL_TRIO_N 9 56 +;accuracy=0.78;env_coords=638 823;Dbxref="Pfam-A:PF03765.11";Note=CRAL/TRIO, N-terminal domain
+Transcript_1	HMMER	protein_hmm_match	689	823	1.800000e+02	.	.	ID=homology:e323ac8fb83a0afaf6d29c7de07fe5c51f01fcd3;Name=CRAL_TRIO;Target=CRAL_TRIO 12 56 +;accuracy=0.83;env_coords=665 880;Dbxref="Pfam-A:PF00650.16";Note=CRAL/TRIO domain
+Transcript_1	HMMER	protein_hmm_match	917	1354	7.500000e-46	.	.	ID=homology:a26520ea6fec002f7f82e136b61e724e791e0fb5;Name=CRAL_TRIO;Target=CRAL_TRIO 5 158 +;accuracy=0.96;env_coords=908 1357;Dbxref="Pfam-A:PF00650.16";Note=CRAL/TRIO domain
+Transcript_1	HMMER	protein_hmm_match	959	1354	1.700000e-09	.	.	ID=homology:08122f28fecb8eca2ac447687657c01cb6fd386b;Name=CRAL_TRIO_2;Target=CRAL_TRIO_2 2 131 +;accuracy=0.91;env_coords=956 1387;Dbxref="Pfam-A:PF13716.2";Note=Divergent CRAL/TRIO domain
+Transcript_1	transdecoder	CDS	383	1717	.	+	0	ID=cds.Transcript_1.p1;Parent=Transcript_1.p1
+Transcript_1	transdecoder	exon	1	2209	.	+	.	ID=Transcript_1.p1.exon1;Parent=Transcript_1.p1
+Transcript_1	transdecoder	five_prime_UTR	1	382	.	+	.	ID=Transcript_1.p1.utr5p1;Parent=Transcript_1.p1
+Transcript_1	transdecoder	gene	1	2209	.	+	.	ID=GENE.Transcript_1~~Transcript_1.p1;Name=ORF%20type%3Acomplete%20len%3A445%20%28%2B%29%2Cscore%3D227.45%2CCRAL_TRIO%7CPF00650.16%7C1.8e%2B02%2CCRAL_TRIO%7CPF00650.16%7C7.5e-46%2CCRAL_TRIO_N%7CPF03765.11%7C9.9e%2B03%2CCRAL_TRIO_N%7CPF03765.11%7C3.4e-10%2CCRAL_TRIO_N%7CPF03765.11%7C1.6e%2B04%2CCRAL_TRIO_2%7CPF13716.2%7C1.7e-09
+Transcript_1	transdecoder	mRNA	1	2209	.	+	.	ID=Transcript_1.p1;Parent=GENE.Transcript_1~~Transcript_1.p1;Name=ORF%20type%3Acomplete%20len%3A445%20%28%2B%29%2Cscore%3D227.45%2CCRAL_TRIO%7CPF00650.16%7C1.8e%2B02%2CCRAL_TRIO%7CPF00650.16%7C7.5e-46%2CCRAL_TRIO_N%7CPF03765.11%7C9.9e%2B03%2CCRAL_TRIO_N%7CPF03765.11%7C3.4e-10%2CCRAL_TRIO_N%7CPF03765.11%7C1.6e%2B04%2CCRAL_TRIO_2%7CPF13716.2%7C1.7e-09
+Transcript_1	transdecoder	three_prime_UTR	1718	2209	.	+	.	ID=Transcript_1.p1.utr3p1;Parent=Transcript_1.p1
+Transcript_20	HMMER	protein_hmm_match	1452	1634	2.900000e-17	.	.	ID=homology:61ee16af95a60ab49b3add5135ae770036a44b59;Name=GRASP55_65;Target=GRASP55_65 31 91 +;accuracy=0.89;env_coords=1449 1727;Dbxref="Pfam-A:PF04495.10";Note=GRASP55/65 PDZ-like domain
+Transcript_20	HMMER	protein_hmm_match	208	285	3.500000e+02	.	.	ID=homology:016a59379fa90966017ed18a235adca6dc7f9760;Name=Hep_59;Target=Hep_59 24 82 +;accuracy=0.5;env_coords=88 315;Dbxref="Pfam-A:PF07052.7";Note=Hepatocellular carcinoma-associated antigen 59
+Transcript_20	HMMER	protein_hmm_match	316	606	3.300000e-10	.	.	ID=homology:5791e915229df3d67385263f0fda658b534e6339;Name=Hep_59;Target=Hep_59 1 102 +;accuracy=0.68;env_coords=316 618;Dbxref="Pfam-A:PF07052.7";Note=Hepatocellular carcinoma-associated antigen 59
+Transcript_20	HMMER	protein_hmm_match	655	687	9.800000e+02	.	.	ID=homology:a0ad3b8401d6602feacf550d3611aaa7129e31e7;Name=Hep_59;Target=Hep_59 11 21 +;accuracy=0.37;env_coords=571 729;Dbxref="Pfam-A:PF07052.7";Note=Hepatocellular carcinoma-associated antigen 59
+Transcript_20	transdecoder	CDS	1449	1769	.	-	0	ID=cds.Transcript_20.p3;Parent=Transcript_20.p3
+Transcript_20	transdecoder	CDS	1	771	.	+	0	ID=cds.Transcript_20.p1;Parent=Transcript_20.p1
+Transcript_20	transdecoder	CDS	995	1345	.	-	0	ID=cds.Transcript_20.p2;Parent=Transcript_20.p2
+Transcript_20	transdecoder	exon	1	1876	.	+	.	ID=Transcript_20.p1.exon1;Parent=Transcript_20.p1
+Transcript_20	transdecoder	exon	1	1876	.	-	.	ID=Transcript_20.p2.exon1;Parent=Transcript_20.p2
+Transcript_20	transdecoder	exon	1	1876	.	-	.	ID=Transcript_20.p3.exon1;Parent=Transcript_20.p3
+Transcript_20	transdecoder	five_prime_UTR	1346	1876	.	-	.	ID=Transcript_20.p2.utr5p1;Parent=Transcript_20.p2
+Transcript_20	transdecoder	five_prime_UTR	1770	1876	.	-	.	ID=Transcript_20.p3.utr5p1;Parent=Transcript_20.p3
+Transcript_20	transdecoder	gene	1	1876	.	+	.	ID=GENE.Transcript_20~~Transcript_20.p1;Name=ORF%20type%3A5prime_partial%20len%3A257%20%28%2B%29%2Cscore%3D121.42%2CHep_59%7CPF07052.7%7C3.5e%2B02%2CHep_59%7CPF07052.7%7C3.3e-10%2CHep_59%7CPF07052.7%7C9.8e%2B02
+Transcript_20	transdecoder	gene	1	1876	.	-	.	ID=GENE.Transcript_20~~Transcript_20.p2;Name=ORF%20type%3Acomplete%20len%3A117%20%28-%29%2Cscore%3D66.67
+Transcript_20	transdecoder	gene	1	1876	.	-	.	ID=GENE.Transcript_20~~Transcript_20.p3;Name=ORF%20type%3Acomplete%20len%3A107%20%28-%29%2Cscore%3D40.74%2CGRASP55_65%7CPF04495.10%7C2.9e-17
+Transcript_20	transdecoder	mRNA	1	1876	.	+	.	ID=Transcript_20.p1;Parent=GENE.Transcript_20~~Transcript_20.p1;Name=ORF%20type%3A5prime_partial%20len%3A257%20%28%2B%29%2Cscore%3D121.42%2CHep_59%7CPF07052.7%7C3.5e%2B02%2CHep_59%7CPF07052.7%7C3.3e-10%2CHep_59%7CPF07052.7%7C9.8e%2B02
+Transcript_20	transdecoder	mRNA	1	1876	.	-	.	ID=Transcript_20.p2;Parent=GENE.Transcript_20~~Transcript_20.p2;Name=ORF%20type%3Acomplete%20len%3A117%20%28-%29%2Cscore%3D66.67
+Transcript_20	transdecoder	mRNA	1	1876	.	-	.	ID=Transcript_20.p3;Parent=GENE.Transcript_20~~Transcript_20.p3;Name=ORF%20type%3Acomplete%20len%3A107%20%28-%29%2Cscore%3D40.74%2CGRASP55_65%7CPF04495.10%7C2.9e-17
+Transcript_20	transdecoder	three_prime_UTR	1	1448	.	-	.	ID=Transcript_20.p3.utr3p1;Parent=Transcript_20.p3
+Transcript_20	transdecoder	three_prime_UTR	1	994	.	-	.	ID=Transcript_20.p2.utr3p1;Parent=Transcript_20.p2
+Transcript_20	transdecoder	three_prime_UTR	772	1876	.	+	.	ID=Transcript_20.p1.utr3p1;Parent=Transcript_20.p1
+Transcript_2	HMMER	protein_hmm_match	443	691	5.500000e-26	.	.	ID=homology:8027aa3561b005abd390af35437e65d32710c453;Name=Img2;Target=Img2 1 80 +;accuracy=0.96;env_coords=443 691;Dbxref="Pfam-A:PF05046.10";Note=Mitochondrial large subunit ribosomal protein (Img2)
+Transcript_2	transdecoder	CDS	377	694	.	+	0	ID=cds.Transcript_2.p1;Parent=Transcript_2.p1
+Transcript_2	transdecoder	exon	1	1291	.	+	.	ID=Transcript_2.p1.exon1;Parent=Transcript_2.p1
+Transcript_2	transdecoder	five_prime_UTR	1	376	.	+	.	ID=Transcript_2.p1.utr5p1;Parent=Transcript_2.p1
+Transcript_2	transdecoder	gene	1	1291	.	+	.	ID=GENE.Transcript_2~~Transcript_2.p1;Name=ORF%20type%3Acomplete%20len%3A106%20%28%2B%29%2Cscore%3D49.61%2CImg2%7CPF05046.10%7C5.5e-26
+Transcript_2	transdecoder	mRNA	1	1291	.	+	.	ID=Transcript_2.p1;Parent=GENE.Transcript_2~~Transcript_2.p1;Name=ORF%20type%3Acomplete%20len%3A106%20%28%2B%29%2Cscore%3D49.61%2CImg2%7CPF05046.10%7C5.5e-26
+Transcript_2	transdecoder	three_prime_UTR	695	1291	.	+	.	ID=Transcript_2.p1.utr3p1;Parent=Transcript_2.p1
+Transcript_3	HMMER	protein_hmm_match	1265	1330	1.600000e+04	.	.	ID=homology:405effda0997113b71052e55260260847cf87b7d;Name=DUF4210;Target=DUF4210 24 45 +;accuracy=0.7;env_coords=1250 1336;Dbxref="Pfam-A:PF13915.2";Note=Domain of unknown function (DUF4210)
+Transcript_3	HMMER	protein_hmm_match	1376	1468	9.300000e-05	.	.	ID=homology:79d75d2f91cfcc272a185fce04ab274483d55801;Name=Chromosome_seg;Target=Chromosome_seg 2 32 +;accuracy=0.92;env_coords=1373 1510;Dbxref="Pfam-A:PF13889.2";Note=Chromosome segregation during meiosis
+Transcript_3	HMMER	protein_hmm_match	569	604	3.300000e+02	.	.	ID=homology:033ae3bfd0f6fdd32e19b729f9ef607d814e8d3f;Name=Chromosome_seg;Target=Chromosome_seg 20 31 +;accuracy=0.83;env_coords=545 664;Dbxref="Pfam-A:PF13889.2";Note=Chromosome segregation during meiosis
+Transcript_3	HMMER	protein_hmm_match	932	1132	1.200000e-21	.	.	ID=homology:4914682cff851ca629a650cc56be4e54b6b3f6c4;Name=DUF4210;Target=DUF4210 1 68 +;accuracy=0.97;env_coords=932 1132;Dbxref="Pfam-A:PF13915.2";Note=Domain of unknown function (DUF4210)
+Transcript_3	transdecoder	CDS	518	1534	.	+	0	ID=cds.Transcript_3.p1;Parent=Transcript_3.p1
+Transcript_3	transdecoder	exon	1	1681	.	+	.	ID=Transcript_3.p1.exon1;Parent=Transcript_3.p1
+Transcript_3	transdecoder	five_prime_UTR	1	517	.	+	.	ID=Transcript_3.p1.utr5p1;Parent=Transcript_3.p1
+Transcript_3	transdecoder	gene	1	1681	.	+	.	ID=GENE.Transcript_3~~Transcript_3.p1;Name=ORF%20type%3Acomplete%20len%3A339%20%28%2B%29%2Cscore%3D133.40%2CDUF4210%7CPF13915.2%7C1.2e-21%2CDUF4210%7CPF13915.2%7C1.6e%2B04%2CChromosome_seg%7CPF13889.2%7C3.3e%2B02%2CChromosome_seg%7CPF13889.2%7C9.3e-05
+Transcript_3	transdecoder	mRNA	1	1681	.	+	.	ID=Transcript_3.p1;Parent=GENE.Transcript_3~~Transcript_3.p1;Name=ORF%20type%3Acomplete%20len%3A339%20%28%2B%29%2Cscore%3D133.40%2CDUF4210%7CPF13915.2%7C1.2e-21%2CDUF4210%7CPF13915.2%7C1.6e%2B04%2CChromosome_seg%7CPF13889.2%7C3.3e%2B02%2CChromosome_seg%7CPF13889.2%7C9.3e-05
+Transcript_3	transdecoder	three_prime_UTR	1535	1681	.	+	.	ID=Transcript_3.p1.utr3p1;Parent=Transcript_3.p1
+Transcript_4	HMMER	protein_hmm_match	2743	3480	1.600000e-17	.	.	ID=homology:b6e8a0814ddda2c9716ec2479f1d30788e72164b;Name=CPSF_A;Target=CPSF_A 20 267 +;accuracy=0.85;env_coords=2719 3513;Dbxref="Pfam-A:PF03178.11";Note=CPSF A subunit region
+Transcript_4	HMMER	protein_hmm_match	2854	3009	1.200000e+03	.	.	ID=homology:85a47debd66613bff63e95e1239a3316e2e749ee;Name=MMS1_N;Target=MMS1_N 8 56 +;accuracy=0.52;env_coords=2848 3027;Dbxref="Pfam-A:PF10433.5";Note=Mono-functional DNA-alkylating methyl methanesulfonate N-term
+Transcript_4	HMMER	protein_hmm_match	547	1872	9.600000e-45	.	.	ID=homology:66e2d0aed267e0ca7e828d91ce2b290ae65eaab0;Name=MMS1_N;Target=MMS1_N 3 437 +;accuracy=0.8;env_coords=544 2007;Dbxref="Pfam-A:PF10433.5";Note=Mono-functional DNA-alkylating methyl methanesulfonate N-term
+Transcript_4	transdecoder	CDS	310	3531	.	+	0	ID=cds.Transcript_4.p1;Parent=Transcript_4.p1
+Transcript_4	transdecoder	exon	1	3607	.	+	.	ID=Transcript_4.p1.exon1;Parent=Transcript_4.p1
+Transcript_4	transdecoder	five_prime_UTR	1	309	.	+	.	ID=Transcript_4.p1.utr5p1;Parent=Transcript_4.p1
+Transcript_4	transdecoder	gene	1	3607	.	+	.	ID=GENE.Transcript_4~~Transcript_4.p1;Name=ORF%20type%3Acomplete%20len%3A1074%20%28%2B%29%2Cscore%3D410.74%2CMMS1_N%7CPF10433.5%7C9.6e-45%2CMMS1_N%7CPF10433.5%7C1.2e%2B03%2CCPSF_A%7CPF03178.11%7C1.6e-17
+Transcript_4	transdecoder	mRNA	1	3607	.	+	.	ID=Transcript_4.p1;Parent=GENE.Transcript_4~~Transcript_4.p1;Name=ORF%20type%3Acomplete%20len%3A1074%20%28%2B%29%2Cscore%3D410.74%2CMMS1_N%7CPF10433.5%7C9.6e-45%2CMMS1_N%7CPF10433.5%7C1.2e%2B03%2CCPSF_A%7CPF03178.11%7C1.6e-17
+Transcript_4	transdecoder	three_prime_UTR	3532	3607	.	+	.	ID=Transcript_4.p1.utr3p1;Parent=Transcript_4.p1
+Transcript_5	HMMER	protein_hmm_match	1167	1391	2.100000e-08	.	.	ID=homology:20a5ae526b4cf232341f7fb53a2e6cdf1c18fbaa;Name=PAP2;Target=PAP2 49 130 +;accuracy=0.86;env_coords=1047 1403;Dbxref="Pfam-A:PF01569.17";Note=PAP2 superfamily
+Transcript_5	HMMER	protein_hmm_match	657	749	1.300000e+03	.	.	ID=homology:bcee78517648aabec1a971bc103d6bc350c0f7bf;Name=PAP2;Target=PAP2 64 98 +;accuracy=0.54;env_coords=651 773;Dbxref="Pfam-A:PF01569.17";Note=PAP2 superfamily
+Transcript_5	HMMER	protein_hmm_match	738	956	2.700000e+03	.	.	ID=homology:a67a8122b8c9c6cc5a801a2620e063e175d9afdf;Name=PAP2;Target=PAP2 12 91 +;accuracy=0.52;env_coords=705 1025;Dbxref="Pfam-A:PF01569.17";Note=PAP2 superfamily
+Transcript_5	HMMER	protein_hmm_match	870	1373	2.800000e-08	.	.	ID=homology:6d9fe1a422b4169e2543b0250ebf118f3997bba0;Name=PAP2_3;Target=PAP2_3 28 189 +;accuracy=0.75;env_coords=828 1379;Dbxref="Pfam-A:PF14378.2";Note=PAP2 superfamily
+Transcript_5	transdecoder	CDS	444	1712	.	+	0	ID=cds.Transcript_5.p1;Parent=Transcript_5.p1
+Transcript_5	transdecoder	exon	1	2333	.	+	.	ID=Transcript_5.p1.exon1;Parent=Transcript_5.p1
+Transcript_5	transdecoder	five_prime_UTR	1	443	.	+	.	ID=Transcript_5.p1.utr5p1;Parent=Transcript_5.p1
+Transcript_5	transdecoder	gene	1	2333	.	+	.	ID=GENE.Transcript_5~~Transcript_5.p1;Name=ORF%20type%3Acomplete%20len%3A423%20%28%2B%29%2Cscore%3D222.07%2CPAP2_3%7CPF14378.2%7C2.8e-08%2CPAP2%7CPF01569.17%7C1.3e%2B03%2CPAP2%7CPF01569.17%7C2.7e%2B03%2CPAP2%7CPF01569.17%7C2.1e-08
+Transcript_5	transdecoder	mRNA	1	2333	.	+	.	ID=Transcript_5.p1;Parent=GENE.Transcript_5~~Transcript_5.p1;Name=ORF%20type%3Acomplete%20len%3A423%20%28%2B%29%2Cscore%3D222.07%2CPAP2_3%7CPF14378.2%7C2.8e-08%2CPAP2%7CPF01569.17%7C1.3e%2B03%2CPAP2%7CPF01569.17%7C2.7e%2B03%2CPAP2%7CPF01569.17%7C2.1e-08
+Transcript_5	transdecoder	three_prime_UTR	1713	2333	.	+	.	ID=Transcript_5.p1.utr3p1;Parent=Transcript_5.p1
+Transcript_6	BUSCO	BUSCO_ortholog	262	758	118.3	.	.	ID=busco:967309dd9b02edfb5177002d21836fa2c192b1f0;Name=33875at4891;length=122;status=Complete
+Transcript_6	HMMER	protein_hmm_match	328	372	1.900000e+03	.	.	ID=homology:208eced63426fa4c6b7f35d04502d6597002cb0c;Name=Prefoldin;Target=Prefoldin 86 100 +;accuracy=0.54;env_coords=313 378;Dbxref="Pfam-A:PF02996.13";Note=Prefoldin subunit
+Transcript_6	HMMER	protein_hmm_match	379	738	8.000000e-34	.	.	ID=homology:334cf02a2fc1b5a8d7a966933dd4300623fc6ed4;Name=Prefoldin;Target=Prefoldin 1 119 +;accuracy=0.99;env_coords=379 741;Dbxref="Pfam-A:PF02996.13";Note=Prefoldin subunit
+Transcript_6	transdecoder	CDS	265	774	.	+	0	ID=cds.Transcript_6.p1;Parent=Transcript_6.p1
+Transcript_6	transdecoder	exon	1	831	.	+	.	ID=Transcript_6.p1.exon1;Parent=Transcript_6.p1
+Transcript_6	transdecoder	five_prime_UTR	1	264	.	+	.	ID=Transcript_6.p1.utr5p1;Parent=Transcript_6.p1
+Transcript_6	transdecoder	gene	1	831	.	+	.	ID=GENE.Transcript_6~~Transcript_6.p1;Name=ORF%20type%3Acomplete%20len%3A170%20%28%2B%29%2Cscore%3D79.50%2CPrefoldin%7CPF02996.13%7C1.9e%2B03%2CPrefoldin%7CPF02996.13%7C8e-34
+Transcript_6	transdecoder	mRNA	1	831	.	+	.	ID=Transcript_6.p1;Parent=GENE.Transcript_6~~Transcript_6.p1;Name=ORF%20type%3Acomplete%20len%3A170%20%28%2B%29%2Cscore%3D79.50%2CPrefoldin%7CPF02996.13%7C1.9e%2B03%2CPrefoldin%7CPF02996.13%7C8e-34
+Transcript_6	transdecoder	three_prime_UTR	775	831	.	+	.	ID=Transcript_6.p1.utr3p1;Parent=Transcript_6.p1
+Transcript_7	HMMER	protein_hmm_match	1137	1163	3.500000e+03	.	.	ID=homology:f3b12c38f78f5c9265ac782078efeb5fbafa0c6e;Name=Zn_clus;Target=Zn_clus 23 31 +;accuracy=0.8;env_coords=1131 1178;Dbxref="Pfam-A:PF00172.14";Note=Fungal Zn(2)-Cys(6) binuclear cluster domain
+Transcript_7	HMMER	protein_hmm_match	1551	1565	3.700000e+03	.	.	ID=homology:73143411567bf289f89f82a13804244b04e21a7f;Name=Zn_clus;Target=Zn_clus 2 6 +;accuracy=0.59;env_coords=1548 1574;Dbxref="Pfam-A:PF00172.14";Note=Fungal Zn(2)-Cys(6) binuclear cluster domain
+Transcript_7	HMMER	protein_hmm_match	291	389	2.800000e-09	.	.	ID=homology:cdbabccc6cb0203e07f7b47162d44b4835e4257c;Name=Zn_clus;Target=Zn_clus 1 34 +;accuracy=0.9;env_coords=291 404;Dbxref="Pfam-A:PF00172.14";Note=Fungal Zn(2)-Cys(6) binuclear cluster domain
+Transcript_7	transdecoder	CDS	243	1934	.	+	0	ID=cds.Transcript_7.p1;Parent=Transcript_7.p1
+Transcript_7	transdecoder	exon	1	2146	.	+	.	ID=Transcript_7.p1.exon1;Parent=Transcript_7.p1
+Transcript_7	transdecoder	five_prime_UTR	1	242	.	+	.	ID=Transcript_7.p1.utr5p1;Parent=Transcript_7.p1
+Transcript_7	transdecoder	gene	1	2146	.	+	.	ID=GENE.Transcript_7~~Transcript_7.p1;Name=ORF%20type%3Acomplete%20len%3A564%20%28%2B%29%2Cscore%3D237.95%2CZn_clus%7CPF00172.14%7C2.8e-09%2CZn_clus%7CPF00172.14%7C3.5e%2B03%2CZn_clus%7CPF00172.14%7C3.7e%2B03
+Transcript_7	transdecoder	mRNA	1	2146	.	+	.	ID=Transcript_7.p1;Parent=GENE.Transcript_7~~Transcript_7.p1;Name=ORF%20type%3Acomplete%20len%3A564%20%28%2B%29%2Cscore%3D237.95%2CZn_clus%7CPF00172.14%7C2.8e-09%2CZn_clus%7CPF00172.14%7C3.5e%2B03%2CZn_clus%7CPF00172.14%7C3.7e%2B03
+Transcript_7	transdecoder	three_prime_UTR	1935	2146	.	+	.	ID=Transcript_7.p1.utr3p1;Parent=Transcript_7.p1
+Transcript_8	HMMER	protein_hmm_match	1986	2177	1.400000e-07	.	.	ID=homology:6c81497c9c07c85cc5bccde19b64231ca9ad48cd;Name=RRM_1;Target=RRM_1 1 70 +;accuracy=0.91;env_coords=1986 2177;Dbxref="Pfam-A:PF00076.18";Note=RNA recognition motif. (a.k.a. RRM, RBD, or RNP domain)
+Transcript_8	HMMER	protein_hmm_match	2031	2189	2.900000e-06	.	.	ID=homology:be0f5c69dc309638c4bc7ee3730bb103e640689e;Name=RRM_5;Target=RRM_5 1 56 +;accuracy=0.97;env_coords=2031 2189;Dbxref="Pfam-A:PF13893.2";Note=RNA recognition motif. (a.k.a. RRM, RBD, or RNP domain)
+Transcript_8	HMMER	protein_hmm_match	2271	2303	3.100000e+03	.	.	ID=homology:a2caa8f0087a7738a3dd31164691b16f25c2cda4;Name=RRM_1;Target=RRM_1 2 12 +;accuracy=0.82;env_coords=2271 2309;Dbxref="Pfam-A:PF00076.18";Note=RNA recognition motif. (a.k.a. RRM, RBD, or RNP domain)
+Transcript_8	transdecoder	CDS	894	3110	.	+	0	ID=cds.Transcript_8.p1;Parent=Transcript_8.p1
+Transcript_8	transdecoder	exon	1	3294	.	+	.	ID=Transcript_8.p1.exon1;Parent=Transcript_8.p1
+Transcript_8	transdecoder	five_prime_UTR	1	893	.	+	.	ID=Transcript_8.p1.utr5p1;Parent=Transcript_8.p1
+Transcript_8	transdecoder	gene	1	3294	.	+	.	ID=GENE.Transcript_8~~Transcript_8.p1;Name=ORF%20type%3Acomplete%20len%3A739%20%28%2B%29%2Cscore%3D320.56%2CRRM_1%7CPF00076.18%7C1.4e-07%2CRRM_1%7CPF00076.18%7C3.1e%2B03%2CRRM_5%7CPF13893.2%7C2.9e-06
+Transcript_8	transdecoder	mRNA	1	3294	.	+	.	ID=Transcript_8.p1;Parent=GENE.Transcript_8~~Transcript_8.p1;Name=ORF%20type%3Acomplete%20len%3A739%20%28%2B%29%2Cscore%3D320.56%2CRRM_1%7CPF00076.18%7C1.4e-07%2CRRM_1%7CPF00076.18%7C3.1e%2B03%2CRRM_5%7CPF13893.2%7C2.9e-06
+Transcript_8	transdecoder	three_prime_UTR	3111	3294	.	+	.	ID=Transcript_8.p1.utr3p1;Parent=Transcript_8.p1
+Transcript_9	HMMER	protein_hmm_match	238	315	4.300000e-08	.	.	ID=homology:a3544f04ba5833a2e0b422d7a57aeb66f7de2fb7;Name=CRAL_TRIO_N;Target=CRAL_TRIO_N 31 56 +;accuracy=0.74;env_coords=163 318;Dbxref="Pfam-A:PF03765.11";Note=CRAL/TRIO, N-terminal domain
+Transcript_9	HMMER	protein_hmm_match	391	885	1.500000e-38	.	.	ID=homology:c13857aaa94eca562afbb6b807e95894cd8a3e2e;Name=CRAL_TRIO;Target=CRAL_TRIO 3 159 +;accuracy=0.94;env_coords=385 885;Dbxref="Pfam-A:PF00650.16";Note=CRAL/TRIO domain
+Transcript_9	transdecoder	CDS	1	960	.	+	0	ID=cds.Transcript_9.p1;Parent=Transcript_9.p1
+Transcript_9	transdecoder	exon	1	1504	.	+	.	ID=Transcript_9.p1.exon1;Parent=Transcript_9.p1
+Transcript_9	transdecoder	gene	1	1504	.	+	.	ID=GENE.Transcript_9~~Transcript_9.p1;Name=ORF%20type%3A5prime_partial%20len%3A320%20%28%2B%29%2Cscore%3D147.90%2CCRAL_TRIO%7CPF00650.16%7C1.5e-38%2CCRAL_TRIO_N%7CPF03765.11%7C4.3e-08
+Transcript_9	transdecoder	mRNA	1	1504	.	+	.	ID=Transcript_9.p1;Parent=GENE.Transcript_9~~Transcript_9.p1;Name=ORF%20type%3A5prime_partial%20len%3A320%20%28%2B%29%2Cscore%3D147.90%2CCRAL_TRIO%7CPF00650.16%7C1.5e-38%2CCRAL_TRIO_N%7CPF03765.11%7C4.3e-08
+Transcript_9	transdecoder	three_prime_UTR	961	1504	.	+	.	ID=Transcript_9.p1.utr3p1;Parent=Transcript_9.p1

@@ -31,7 +31,7 @@ dammit run --n-threads 4 --pipeline quick --busco-group bacteria_odb10 --busco-g
 dammit run --busco-group saccharomycetes_odb10 --pipeline quick annotate --regex-rename "(?P<name>^[a-zA-Z0-9\.]+)" -o pom.20.dammit.regex dammit/tests/test-data/pom.20.fa
 
 # Rename with backmapping
-#dammit run annotate $DATA_DIR/$TEST_FILE --no-rename -o $TEST_FILE.dammit.norename
+dammit run --busco-group saccharomycetes_odb10 --pipeline quick annotate $DATA_DIR/$TEST_FILE --no-rename -o $TEST_NAME.dammit.norename
 
 
 #
@@ -48,6 +48,9 @@ cp $TEST_NAME.dammit.udb/$TEST_NAME.dammit.fasta $DATA_DIR/$TEST_NAME.udb.dammit
 cp $TEST_NAME.dammit.udb/$TEST_NAME.dammit.gff3 $DATA_DIR/$TEST_NAME.udb.dammit.gff3
 
 cp pom.256.dammit.busco-multi/pom.256.dammit.gff3 $DATA_DIR/pom.256.dammit.busco-multi.gff3
+
+cp $TEST_NAME.dammit.norename/$TEST_NAME.dammit.gff3 $DATA_DIR/$TEST_NAME.dammit.norename.gff3
+cp $TEST_NAME.dammit.norename/$TEST_NAME.dammit.fasta $DATA_DIR/$TEST_NAME.dammit.norename.fasta
 
 #cp $TEST_NAME.dammit.full/$TEST_NAME.dammit.fasta $DATA_DIR/$TEST_NAME.dammit.fasta.full
 #cp $TEST_NAME.dammit.full/$TEST_NAME.dammit.gff3 $DATA_DIR/$TEST_NAME.dammit.gff3.full
