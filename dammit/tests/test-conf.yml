@@ -1,0 +1,7 @@
+basename: Transcript
+busco:
+  configfile: busco.default.ini
+  params:
+    extra: ''
+busco_groups:
+- bacteria_odb10
