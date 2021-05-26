@@ -43,7 +43,8 @@ class TestDammitAnnotate:
             exp_gff3 = datadir('pom.20.dammit.gff3')
             exp_fasta = datadir('pom.20.dammit.fasta')
 
-            args = ['run', '--busco-group', 'saccharomycetes_odb10', '--n-threads', str(n_threads), 'annotate', transcripts]
+            args = ['run', '--busco-group', 'saccharomycetes_odb10', 
+                    '--n-threads', str(n_threads), 'annotate', transcripts]
             status, out, err = run(*args)
 
             outdir = 'pom.20.dammit'
@@ -66,7 +67,8 @@ class TestDammitAnnotate:
             exp_gff3 = datadir('pom.20.dammit.evalue10.gff3')
             exp_fasta = datadir('pom.20.dammit.evalue10.fasta')
 
-            args = ['run', '--busco-group', 'saccharomycetes_odb10', 'annotate', transcripts, '--global-evalue', '10.0']
+            args = ['run', '--busco-group', 'saccharomycetes_odb10', 
+                    'annotate', transcripts, '--global-evalue', '10.0']
             status, out, err = run(*args)
 
             outdir = 'pom.20.dammit'
@@ -87,7 +89,8 @@ class TestDammitAnnotate:
             exp_gff3 = datadir('pom.20.udb.dammit.gff3')
             exp_fasta = datadir('pom.20.udb.dammit.fasta')
 
-            args = ['run', '--busco-group', 'saccharomycetes_odb10', '--n-threads', str(n_threads), '--pipeline', 'quick', 'annotate',
+            args = ['run', '--busco-group', 'saccharomycetes_odb10', 
+                    '--n-threads', str(n_threads), '--pipeline', 'quick', 'annotate',
                     transcripts, '--user-database', pep]
             status, out, err = run(*args)
 
@@ -101,7 +104,6 @@ class TestDammitAnnotate:
             assert compare_gff(gff3_fn, exp_gff3)
             assert open(fasta_fn).read() == open(exp_fasta).read()
 
-    """
     @pytest.mark.parametrize('n_threads', (1,4))
     def test_annotate_multiple_user_databases(self, tmpdir, datadir, n_threads):
         '''--pipeline quick annotate --user-database [PEP1.fa] --user-database [PEP2.fa] [INPUT.fa]
@@ -129,7 +131,7 @@ class TestDammitAnnotate:
             assert status == 0
             assert compare_gff(gff3_fn, exp_gff3)
             assert open(fasta_fn).read() == open(exp_fasta).read()
-    """
+ 
     def test_annotate_basename(self, tmpdir, datadir):
         '''Test annotate --pipeline quick annotate --base-name [NAME] [INPUT.fa]
         '''
@@ -227,7 +229,8 @@ class TestDammitAnnotate:
             transcripts = datadir('pom.20.fa')
             database_dir = os.environ['DAMMIT_DB_DIR']
 
-            args = ['run', '--busco-group', 'saccharomycetes_odb10', '--pipeline', 'quick', '--database-dir', database_dir, 'annotate', '--dry-run', transcripts]
+            args = ['run', '--busco-group', 'saccharomycetes_odb10', '--pipeline', 'quick',
+                    '--database-dir', database_dir, 'annotate', '--dry-run', transcripts]
             status, out, err = run(*args)
 
             assert status == 0
@@ -252,7 +255,8 @@ class TestDammitAnnotate:
 
         with tmpdir.as_cwd():
             transcripts = datadir('pom.20.fa')
-            args = ['run', '--max-threads-per-task', 1, '--busco-group', 'saccharomycetes_odb10', '--pipeline', 'quick', 'annotate',  '--dry-run', transcripts]
+            args = ['run', '--max-threads-per-task', 1, '--busco-group', 'saccharomycetes_odb10',
+                    '--pipeline', 'quick', 'annotate',  '--dry-run', transcripts]
             status, out, err = run(*args)
             outdir = 'pom.20.dammit'
 
@@ -267,7 +271,8 @@ class TestDammitAnnotate:
         with tmpdir.as_cwd():
             transcripts = datadir('pom.20.fa')
             conf = datadir('test-conf.yml')
-            args = ['--config-file', conf, 'run', '--busco-group', 'saccharomycetes_odb10', '--pipeline', 'quick', 'annotate', '--dry-run', transcripts]
+            args = ['--config-file', conf, 'run', '--busco-group', 'saccharomycetes_odb10', 
+                    '--pipeline', 'quick', 'annotate', '--dry-run', transcripts]
             status, out, err = run(*args)
             outdir = 'pom.20.dammit'
 
@@ -287,7 +292,8 @@ class TestDammitAnnotate:
         with tmpdir.as_cwd():
             transcripts = datadir('pom.20.fa')
             busco_conf = os.path.join(__path__, 'busco.default.ini')
-            args = ['run', '--busco-config-file', busco_conf, '--busco-group', 'saccharomycetes_odb10', '--pipeline', 'quick', 'annotate', '--dry-run', transcripts]
+            args = ['run', '--busco-config-file', busco_conf, '--busco-group', 'saccharomycetes_odb10', 
+                    '--pipeline', 'quick', 'annotate', '--dry-run', transcripts]
             status, out, err = run(*args)
             outdir = 'pom.20.dammit'
 
