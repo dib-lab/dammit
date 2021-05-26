@@ -264,25 +264,26 @@ class TestDammitAnnotate:
             assert "Threads (per-task):       1" in err
 
 
-    def test_config_file(self, tmpdir, datadir):
+    def test_user_config_file(self, tmpdir, datadir):
         '''Test that --config-file works.
         '''
 
         with tmpdir.as_cwd():
             transcripts = datadir('pom.20.fa')
             conf = datadir('test-conf.yml')
-            args = ['--config-file', conf, 'run', '--busco-group', 'saccharomycetes_odb10', 
+            args = ['--config-file', conf, 'run', '--n-threads', '2',
                     '--pipeline', 'quick', 'annotate', '--dry-run', transcripts]
             status, out, err = run(*args)
             outdir = 'pom.20.dammit'
+
+            print(out, err)
 
             assert status == 0
             assert "BUSCO groups:             saccharomycetes_odb10" in err
             assert "E-value Cutoff (global):  1.0" in err
             assert "Pipeline:                 quick" in err
-            # these two are failing
-    #        assert "Threads (per-task):       1" in err
-    #        assert "Threads (total):          2" in err
+            assert "Threads (per-task):       1" in err
+            assert "Threads (total):          2" in err
 
 
     def test_busco_config_file(self, tmpdir, datadir):
