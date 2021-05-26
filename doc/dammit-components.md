@@ -1,10 +1,5 @@
 # Dammit Components
 
-_in progress_
-
-Under the hood, dammit uses the snakemake workflow management system
-to manage database downloads and run the external annotation software.
-
 ## **`dammit run`**
 
 `dammit` can run two main workflows, `databases`, and `annotate`.
@@ -13,14 +8,23 @@ to manage database downloads and run the external annotation software.
   > databases must be used to properly prepare databases pror to running annotatation
   - [**`annotate`**](annotate.md) uses these databases for transcriptome annotation. Usage info [here](annotate.md).
 
+### Command line arguments
+The `dammit run` command includes a number of command-line options that can be used with 
+either `databases` or `annotate` ("shared arguments"). To view these, run `dammit run --help`. When adding
+these to the command line, the must come _before_ the workflow name.
+
+Thus the command line structure should be:
+
+`dammit run [shared arguments] <databases | annotate> [workflow-specific arguments]`
+
+To see the workflow-specific command-line options, run:
+
+`dammit run databases --help`
+or
+`dammit run annotate --help`
 
 
-TODO: add note on _where_ command line args need to go (shared args vs unique args)
-
-
-
-
-## dammit file conversion components
+## Advanced usage: additional dammit components
 
 Each annotation program run as part of a dammit pipeline produces an
 annotation file with a tool-specific formatting and indexing (0-based or 1-based).
@@ -56,4 +60,3 @@ dammit pipelines.
   
   - **`merge-gff3`**           Merge a collection of GFF3 files.
   - **`remap-hmmer-coords`**   Remap hmmscan coordinates using TransDecoder ORF predictions.
-
