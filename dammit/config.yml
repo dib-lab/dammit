@@ -60,7 +60,7 @@ hmmpress:
 cmscan:
   params:
     evalue: 0.00001
-    extra: "--nohmmonly"
+    extra: "--nohmmonly --rfam --cut_ga"
 
 cmpress:
   params:
