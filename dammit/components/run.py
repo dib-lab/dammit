@@ -111,7 +111,8 @@ def run_group(config,
         config.core['n_threads'] = n_threads
     
     if not max_threads_per_task:
-        config.core['max_threads_per_task'] = config.core['n_threads']
+        config.core['max_threads_per_task'] = config.core['n_threads'] if config.core['max_threads_per_task'] == 0 \
+                                              else min(config.core['n_threads'], config.core['max_threads_per_task'])
     else:
         config.core['max_threads_per_task'] = min(config.core['n_threads'], max_threads_per_task)
 

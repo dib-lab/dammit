@@ -11,6 +11,7 @@ from snakemake.shell import shell
 profile = snakemake.input.get("profile")
 profile = profile.rsplit(".i", 1)[0]
 
+assert not (snakemake.params.get('evalue_threshold', '') and snakemake.params.get('score_threshold', ''))
 assert profile.endswith(".cm"), 'your profile file should end with ".cm"'
 
 # direct output to file <f>, not stdout
@@ -29,13 +30,14 @@ else:
 ## default params: enable evalue threshold. If bitscore thresh is provided, use that instead (both not allowed)
 
 # report <= this evalue threshold in output
-evalue_threshold = snakemake.params.get("evalue_threshold", 10)  # use cmscan default
+evalue_threshold = snakemake.params.get("evalue_threshold", '')  # use cmscan default
 # report >= this score threshold in output
-score_threshold = snakemake.params.get("score_threshold", "")
+score_threshold = snakemake.params.get("score_threshold", '')
 
+thresh_cmd = ''
 if score_threshold:
     thresh_cmd = f" -T {float(score_threshold)} "
-else:
+if evalue_threshold:
     thresh_cmd = f" -E {float(evalue_threshold)} "
 
 extra = snakemake.params.get("extra", "")
