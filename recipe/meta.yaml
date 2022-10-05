@@ -44,7 +44,9 @@ requirements:
     - sphinx_rtd_theme >=0.1.9
     - pytest
     - pytest-runner
-    - doit >=0.29.0
+    # After we upgrade to doit.TaskLoader2, we can remove upper pin
+    # https://github.com/dib-lab/dammit/issues/239
+    - doit >=0.29.0,<0.36.0
     - matplotlib
     - shmlast
 
