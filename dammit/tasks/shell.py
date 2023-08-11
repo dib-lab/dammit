@@ -67,7 +67,7 @@ def get_download_task(url, target_fn, md5=None, metalink=None):
         dict: doit task.
     '''
 
-    cmd = ['curl', '-o', target_fn]
+    cmd = ['curl', '-L', '-o', target_fn]
     if metalink is not None:
         cmd.extend(['--metalink', metalink])
     cmd.append(url)
@@ -147,7 +147,7 @@ def get_download_and_gunzip_task(url, target_fn):
     Returns:
         dict: doit task.
     '''
-    cmd = 'curl {url} | gunzip -c > {target_fn}'.format(**locals())
+    cmd = 'curl -L {url} | gunzip -c > {target_fn}'.format(**locals())
 
     name = 'download_and_gunzip:{0}'.format(os.path.basename(target_fn))
 
@@ -175,7 +175,7 @@ def get_download_and_untar_task(url, target_dir, label=None):
     if label is None:
         label = os.path.basename(url)
 
-    cmd1 = 'mkdir -p {target_dir}; curl {url} | tar -xz -C {target_dir}'.format(**locals())
+    cmd1 = 'mkdir -p {target_dir}; curl -L {url} | tar -xz -C {target_dir}'.format(**locals())
     name = 'download_and_untar:{0}-{1}'.format(os.path.basename(target_dir), label)
     done = os.path.join(target_dir, name) + '.done'
     cmd2 = 'touch {done}'.format(done=done)
